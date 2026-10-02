@@ -1,0 +1,4 @@
+# 作品说明：保留发布文件原始字节，使跨平台Git克隆与SHA-256验收清单一致。
+* -text
+*.pdf binary
+*.png binary

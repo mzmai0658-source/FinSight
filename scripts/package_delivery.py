@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 DIRECTORIES=('src','config','scripts','tests','backend-java','frontend','shared','demo','eval','database','deploy','monitoring','.github','docs')
-ROOT_FILES=('README.md','LICENSE','NOTICE','.gitignore','.env.example','.env.demo.example','requirements.txt','requirements.lock.txt','pytest.ini','pyproject.toml')
+ROOT_FILES=('README.md','LICENSE','NOTICE','.gitignore','.gitattributes','.env.example','.env.demo.example','requirements.txt','requirements.lock.txt','pytest.ini','pyproject.toml')
 EXCLUDE_DIRS={'node_modules','target','dist','__pycache__','.pytest_cache','.vite','runs'}
 
 

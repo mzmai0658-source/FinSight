@@ -3,6 +3,7 @@
   "files": {
     ".env.demo.example": "4c4eeab2cb0a60f571bc83f314555075fd08f6a39ce584e87e8bf29017015d78",
     ".env.example": "b3569630e203a6c804278b78e5f6aad7b88f562557f0a65a0fef76f9895fab2b",
+    ".gitattributes": "4f18e7bce3c318044f3b944d97fad1ae9c0657de13c0daf1101049fee5b54051",
     ".github/workflows/ci.yml": "85261f85718e6e7c2c4a64cd54f39b9d5ae1aeeff858f5b90e8583fb8243119d",
     ".gitignore": "5d444b4fe365c01303688d724b1af13cf4b1e1d0ea94cdada73feb4cfb369b6c",
     "backend-java/.gitignore": "4810fd4196111c2f3bd394c2c1cc75d7be551c0f1a362ff436c93fc5c0cd9b53",
@@ -376,7 +377,7 @@
     "scripts/import_local_research_materials.py": "d2a65ad420850d5abc9a09c38c4b501a093fbedff9046fa485878f6587edb66d",
     "scripts/Load-Env.ps1": "1b92ec874eac8319f96ee8dc9a54a256270d76efb46fa8942aec79c36d474f41",
     "scripts/native-packages.json": "9e602a80a085ad0b18c1f419f922a645bbb47512295180ca596769779d3a8687",
-    "scripts/package_delivery.py": "335586b7b472f3e736fbf2d1d92d8080e55031aa02352860e04f6f1f5c337282",
+    "scripts/package_delivery.py": "7ccad3eb3cd8f65c55be6d597d997e11539d5b380542ecf717dfdf2a2720ad39",
     "scripts/populate_financial_qa.py": "eb56169579fcf108f72dc4edb646aae53fbf49d0e6086fe5c31c510967adcbc0",
     "scripts/preflight.py": "3d3e9818feb00945092239f15a9cf9667cff516c657c00b9f9c993b20b7ea723",
     "scripts/prepare-native-packages.py": "123ad9980bda6f0608ff038691210fc3c887b8eb534c96ec783b9aaeb0dd87e4",
@@ -574,5 +575,5 @@
     "tests/test_verifier.py": "b477c45b71a30d665ae1f805ec4fc9b34a0009e0cefd31df999545f4e216944d"
   },
   "scope": "source/public synthetic definitions; no private corpus, credentials, weights or runtime",
-  "source_sha256": "160fa6c3aacd411e94db063ddf2c7b31910bf841a56f383d085eca1ffe31d030"
+  "source_sha256": "6db3d2fe512a96095d2a1da47e2dbd1d8107d6421c01a70f9ed80373d75fc6a0"
 }
