@@ -1,0 +1,197 @@
+{
+  "total": 200,
+  "passed": 150,
+  "automated_pass": 159,
+  "target": 170,
+  "source_review_pending": 0,
+  "critical": {
+    "evidence_gap_marked_completed": 1,
+    "unsupported_cause_published": 1,
+    "financial_output_before_clarification": 1
+  },
+  "by_category": {
+    "查询口径": {
+      "total": 50,
+      "passed": 36
+    },
+    "比较计算": {
+      "total": 20,
+      "passed": 16
+    },
+    "图表": {
+      "total": 12,
+      "passed": 8
+    },
+    "原文出处": {
+      "total": 12,
+      "passed": 10
+    },
+    "概念复合": {
+      "total": 10,
+      "passed": 3
+    },
+    "经营证据": {
+      "total": 8,
+      "passed": 3
+    },
+    "澄清边界": {
+      "total": 8,
+      "passed": 5
+    },
+    "公司对话": {
+      "total": 20,
+      "passed": 16
+    },
+    "条件对话": {
+      "total": 20,
+      "passed": 20
+    },
+    "话题对话": {
+      "total": 20,
+      "passed": 20
+    },
+    "事实对话": {
+      "total": 20,
+      "passed": 13
+    }
+  },
+  "dialogue_groups": {
+    "事实引用1": false,
+    "事实引用2": false,
+    "事实引用3": false,
+    "事实引用4": false,
+    "事实引用5": false,
+    "公司修改1": false,
+    "公司修改2": true,
+    "公司修改3": false,
+    "公司修改4": false,
+    "公司修改5": false,
+    "插话恢复1": true,
+    "插话恢复2": true,
+    "插话恢复3": true,
+    "插话恢复4": true,
+    "插话恢复5": true,
+    "条件修改1": true,
+    "条件修改2": true,
+    "条件修改3": true,
+    "条件修改4": true,
+    "条件修改5": true
+  },
+  "accuracy": 0.75,
+  "acceptance_passed": false,
+  "median_seconds": 20.1565,
+  "mean_seconds": 23.24612,
+  "max_seconds": 94.719,
+  "p95_seconds": 42.453,
+  "percentile_method": "nearest_rank",
+  "segments": {
+    "independent_turns": {
+      "total": 120,
+      "passed": 81
+    },
+    "dialogue_turns": {
+      "total": 80,
+      "passed": 69
+    },
+    "classical": {
+      "total": 94,
+      "passed": 70
+    },
+    "supported": {
+      "total": 192,
+      "passed": 145
+    }
+  },
+  "whole_dialogues_passed": 11,
+  "whole_dialogues_total": 20,
+  "by_company": {
+    "002082": {
+      "total": 27,
+      "passed": 20,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "002390": {
+      "total": 19,
+      "passed": 14,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "002737": {
+      "total": 18,
+      "passed": 16,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "002821": {
+      "total": 19,
+      "passed": 17,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "002864": {
+      "total": 26,
+      "passed": 21,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "600080": {
+      "total": 25,
+      "passed": 19,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "600085": {
+      "total": 38,
+      "passed": 28,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "600129": {
+      "total": 25,
+      "passed": 21,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "600222": {
+      "total": 26,
+      "passed": 19,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "600252": {
+      "total": 23,
+      "passed": 18,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    }
+  },
+  "failure_categories": {
+    "accepted_data_version_missing": 29,
+    "company_set_mismatch": 24,
+    "metric_set_mismatch": 23,
+    "missing_or_extra_requested_facts": 22,
+    "missing_request_contract": 25,
+    "requested_goal_missing": 23,
+    "supported_request_not_completed": 19,
+    "task_not_completed_and_saved": 25,
+    "presentation_unit_mismatch": 9,
+    "Requested calculation missing": 4,
+    "chart_missing": 4,
+    "goal_quote_not_completed": 2,
+    "original_page_missing": 2,
+    "incomplete_parent_profit_definition": 1,
+    "concept_unit_reason_missing": 1,
+    "tautological_concept_definition": 1,
+    "explicit_answer_order_not_retained": 4,
+    "evidence_gap_marked_completed": 1,
+    "invented_data_availability_clarification": 1,
+    "reliable_part_lost": 3,
+    "unsupported_cause_published": 1,
+    "available_numeric_goal_lost": 2,
+    "financial_output_before_clarification": 1,
+    "required_clarification_missing": 2,
+    "boundary_not_explained": 1,
+    "table_only_has_prose": 3,
+    "missing_data_not_explained": 7
+  },
+  "model_calls": {
+    "observed_turns": 200,
+    "distribution": {
+      "1": 163,
+      "2": 32,
+      "3": 5
+    },
+    "mean": 1.21
+  }
+}

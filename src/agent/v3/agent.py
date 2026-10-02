@@ -45,6 +45,7 @@ class GraphState(TypedDict, total=False):
     references: list[dict]
     evidence_checks: list[Check]
     prose: list[str]
+    prose_by_goal: dict[str,list[str]]
     verification: Verification
     result: dict
     emit: object
@@ -132,7 +133,8 @@ class V3Agent:
         from .request_bindings import is_negated_span
         import re
         explicit_compare=any(not is_negated_span(request.question,m.start(),m.end()) for m in re.finditer(r'比较|对比|比一比|谁更(?:高|低|多|少)|哪家更(?:高|低|多|少)',request.question))
-        if financial and explicit_compare and not any(g.kind=='compare' for g in financial) and not request.clarification:
+        visual_compare=any(g.kind=='chart' for g in financial) and not re.search(r'谁更|哪家更|哪年更|结论|相差|差额',request.question)
+        if financial and explicit_compare and not visual_compare and not any(g.kind=='compare' for g in financial) and not request.clarification:
             semantic.goals_correct=False
             semantic.planner_defects.append('原话明确要求财务比较，须登记compare目标并给出比较结论，不能只罗列数值。')
             if 'intent' not in semantic.repair_domains:semantic.repair_domains.append('intent')
@@ -178,6 +180,9 @@ class V3Agent:
             semantic.metrics_and_scope_correct=False
         from .request_bindings import metric_candidates
         explicit_metrics=metric_candidates(request.question,positive_only=True)
+        # 作品说明：程序计算同比需要基础金额；披露增长率与基础金额是两种可选实现，不是同时必查的两项。
+        if re.search(r'计算|基期|相对',request.question) and not re.search(r'披露.*(?:同比|增长率)',request.question):
+            explicit_metrics={m for m in explicit_metrics if not m.endswith('_reported_yoy')}
         all_metrics={m for g in request.goals for m in request.for_goal(g).conditions.metrics}
         if financial and explicit_metrics-all_metrics and not request.clarification:
             semantic.metrics_and_scope_correct=False
@@ -186,7 +191,7 @@ class V3Agent:
         if concept_goals and any(alias in request.question for alias in ALIASES) and any(not request.for_goal(g).conditions.metrics for g in concept_goals):
             semantic.metrics_and_scope_correct=False
             semantic.planner_defects.append('概念已对应指标目录，定义目标不能遗漏该指标。')
-        if any(g.concept_mode=='difference' and len(set(request.for_goal(g).conditions.metrics))<2 for g in concept_goals):
+        if any(g.concept_mode=='difference' and len(set(request.for_goal(g).conditions.metrics))<2 for g in concept_goals if not g.clarification):
             semantic.goals_correct=False
             semantic.planner_defects.append('概念区别目标需要两个明确指标，单个指标不能冒充概念对比。')
             if 'intent' not in semantic.repair_domains:semantic.repair_domains.append('intent')
@@ -220,7 +225,8 @@ class V3Agent:
             for goal in financial:
                 time_selection=request.for_goal(goal).conditions.time
                 planned_periods.update(time_selection.pairs or [(year,period) for year in time_selection.years for period in time_selection.periods])
-            if planned_periods!=bound:
+            bound_years={year for year,_ in bound}
+            if {(year,period) for year,period in planned_periods if year in bound_years}!=bound:
                 semantic.time_correct=False
                 semantic.planner_defects.append('原话明确绑定了年份与报告期，须逐项配对，不能遗漏或扩大为其他组合。')
         quarters=explicit_single_quarters(request.question)
@@ -237,7 +243,8 @@ class V3Agent:
         if financial and count is not None and positive_calendar_mentions(request.question) and any(request.for_goal(g).conditions.time.mode!='calendar_years' for g in financial):
             semantic.time_correct=False
             semantic.planner_defects.append('明确自然年窗口必须使用calendar_years，不能改成最新入库年份。')
-        years=mentioned_years(request.question)
+        from .request_bindings import positive_years
+        years=positive_years(request.question)
         if financial and years:
             for goal in financial:
                 selected=request.for_goal(goal).conditions
@@ -326,6 +333,7 @@ class V3Agent:
     async def _evidence(self, s):
         request, result = s['request'], s['executed']
         refs, checks, prose = [], list(s.get('evidence_checks',[])), list(s.get('prose',[]))
+        prose_by_goal={}
         context_facts=s.get('context_facts',[])
         context_computed=s.get('context_computed',[])
         context_values=[*context_facts,*context_computed]
@@ -373,6 +381,7 @@ class V3Agent:
                     prose.append('上面保留原表单位；答案数字另按所要求单位换算，摘录未改写。')
         for goal in request.goals:
             if goal.clarification or goal.kind!='concept' or goal.concept_mode not in {'definition','difference'}:continue
+            start=len(prose)
             conditions=request.for_goal(goal).conditions
             metrics=conditions.metrics
             valid=bool(metrics) and all(metric in METRICS for metric in metrics) and (goal.concept_mode!='difference' or len(set(metrics))>=2)
@@ -380,6 +389,7 @@ class V3Agent:
                 if goal.concept_mode=='difference':prose.append('它们是不同指标，定义如下：')
                 prose.extend(f'{"母公司净利润" if metric=="net_profit" and conditions.scope=="parent" else METRICS[metric].label}：{metric_definition(metric,conditions.scope)}。' for metric in metrics)
             else:prose.append('概念目标没有明确对应到指标目录，尚未完成解释。')
+            prose_by_goal[goal.id]=prose[start:]
             result.goals.append(GoalResult(id=goal.id,kind=goal.kind,status='completed' if valid else 'no_data',detail='' if valid else '概念指标身份不完整'))
             checks.append(Check(name=goal.id,status='pass' if valid else 'unknown',detail='定义和公式来自指标目录；请求条件由程序检查，自由语义仍可能理解失败'))
         implications={g.id for g in result.goals}
@@ -407,6 +417,9 @@ class V3Agent:
                 except Exception:
                     # 作品说明：检索与查数分开处理，检索失败保留可靠数字，并说明经营原因尚未取得证据。
                     result.notes.append('原文检索暂不可用，经营原因未确认；保留已核实数字。')
+            from .cause_evidence import bound_cause_snippets,is_evidence_limit
+            cause_metrics={metric for goal in explanation_goals if goal.kind=='cause' for metric in request.for_goal(goal).conditions.metrics}
+            snippets=bound_cause_snippets(snippets,cause_metrics) if cause_metrics else snippets
             goal_snippets={}
             for goal in explanation_goals:
                 selected=result.for_goal(goal.id)
@@ -414,7 +427,8 @@ class V3Agent:
                 versions={f.source.document_version for f in selected.facts if f.source}
                 goal_snippets[goal.id]=[x['id'] for x in snippets if
                     (x.get('year'),x.get('period')) in pairs.get(x.get('stock_code'),[]) and
-                    (not versions or x.get('document_version') in versions)] if goal.kind=='cause' else []
+                    (not versions or x.get('document_version') in versions) and
+                    x.get('target_metric') in request.for_goal(goal).conditions.metrics] if goal.kind=='cause' else []
             payload = dict(question=request.question, goals=[g.model_dump() for g in explanation_goals],
                 verified_facts=[dict(id=f.id,metric=f.metric,company=f.company,year=f.year,period=f.period,scope=f.scope,
                     sign='positive' if f.decimal>0 else 'negative' if f.decimal<0 else 'zero')
@@ -425,9 +439,13 @@ class V3Agent:
                 concept_definitions={g.id:{m:dict(name=METRICS[m].label,definition=metric_definition(m,request.for_goal(g).conditions.scope))
                     for m in request.for_goal(g).conditions.metrics if m in METRICS} for g in explanation_goals if g.kind=='concept'})
             try:
-                explanation = await self.model.structured(Explanations, EXPLAIN, payload, s['budget'])
-                review = await self.model.structured(EvidenceReview, AUDIT,
-                    {**payload, 'claims': [claim.model_dump() for claim in explanation.claims]}, s['budget'])
+                if any(goal.kind!='cause' or goal_snippets[goal.id] for goal in explanation_goals):
+                    explanation = await self.model.structured(Explanations, EXPLAIN, payload, s['budget'])
+                    review = await self.model.structured(EvidenceReview, AUDIT,
+                        {**payload, 'claims': [claim.model_dump() for claim in explanation.claims]}, s['budget'])
+                else:
+                    explanation=Explanations(claims=[],incomplete_goals=[g.id for g in explanation_goals])
+                    review=EvidenceReview(judgments=[])
             except ModelFailure as exc:
                 result.notes.append('解释尚未完成：' + exc.reason)
                 explanation, review = Explanations(claims=[], incomplete_goals=[g.id for g in explanation_goals]), EvidenceReview(judgments=[])
@@ -442,7 +460,7 @@ class V3Agent:
                     if goal.kind=='concept':supported = supported and not claim.evidence_ids
                     supported = supported and safe_narrative_claim(claim.text, [f.year for f in [*result.facts,*context_facts]])
                     if goal.kind == 'cause':
-                        supported = supported and bool(claim.evidence_ids)
+                        supported = supported and bool(claim.evidence_ids) and not is_evidence_limit(claim.text)
                     checks.append(Check(name=f'{goal.id}_claim_{i}', status='pass' if supported else 'unknown', detail=judgment[0].detail if judgment else '未取得独立审核'))
                     if supported:
                         accepted.append(claim); prose.append(claim.text)
@@ -462,7 +480,7 @@ class V3Agent:
                     prose.append('经营原因尚未找到足够原文依据。' if goal.kind == 'cause' else '概念解释尚未通过核对。')
                     checks.append(Check(name=goal.id, status='unknown', detail='该解释目标未完成'))
         refs = list({r['id']: r for r in refs}.values())
-        return dict(executed=result, references=refs, evidence_checks=checks, prose=prose)
+        return dict(executed=result, references=refs, evidence_checks=checks, prose=prose,prose_by_goal=prose_by_goal)
 
     async def _verify(self, s):
         await s['emit']('plan', {'label': '核验结果', 'detail': '分别核对数字、要求和证据支持度'})
@@ -504,7 +522,12 @@ class V3Agent:
                     previous_ids = {f.id for f in s['previous'].recent_facts}
                     if result.facts and all(f.id in previous_ids for f in result.facts) and not result.derived:
                         financial_body = ''
-                content = '\n\n'.join(filter(None, [financial_body, *dict.fromkeys(s['prose']), *request.clarification,*request.unsupported]))
+                before=[]
+                for goal in request.goals:
+                    if goal.kind in {'lookup','compare','rank','chart','quote','cause','sign'}:break
+                    before.extend(s.get('prose_by_goal',{}).get(goal.id,[]))
+                remaining=[p for p in s['prose'] if p not in before]
+                content = '\n\n'.join(filter(None, [*dict.fromkeys(before),financial_body, *dict.fromkeys(remaining), *request.clarification,*request.unsupported]))
             if not content and not result.charts:
                 verification.request.append(Check(name='published_deliverable',status='unknown',detail='没有可展示的回答、出处或图表；不能判为全部完成'))
                 if verification.status=='pass': verification.status='partial'
@@ -559,6 +582,7 @@ class V3Agent:
             validation=dict(status=legacy_verification['status'], verification=legacy_verification, facts=fact_payload, evidence=refs),
             diagnostics=dict(model_calls=s['budget'].calls, timings=s['budget'].timings,request_audit_mode='program',
                 structured_trace=s['budget'].artifacts.get('structured_trace',[]),
+                literal_bindings=s['budget'].artifacts.get('literal_bindings',[]),
                 semantic_audit=s['semantic'].model_dump(mode='json'),
                 **({'format_repairs':s['budget'].artifacts['format_repairs']} if s['budget'].artifacts.get('format_repairs') else {})))}
 

@@ -1,0 +1,11 @@
+{
+  "login": true,
+  "real_company_and_saved_table": true,
+  "no_synthetic_label": true,
+  "mobile_no_horizontal_overflow": true,
+  "refresh_restores_actual_session": true,
+  "original_page_button_present": true,
+  "original_pdf_opened_at_registered_page": true,
+  "served_pdf_sha256_matches_real_original": true,
+  "real_chart_after_session_switch": true
+}

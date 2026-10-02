@@ -1,6 +1,7 @@
 """作品说明：为自然语言理解和证据审核分别提供提示模板。"""
 
 TURN = """理解question，输出TurnPlan JSON，不回答、不算数、不写SQL。state是唯一已确认上下文。
+literal_bindings是程序从原话登记的无歧义条件，仍须保留其操作和否定；不代表已查到数据。不要按常识猜某年报告未发布，实际数据和证据有无交给程序。
 一次登记goals（用户要得到的结果）、continuity、edits（本轮明确修改）、assignments（各目标例外条件）和clarification。
 输出遵守output_contract，kind和continuity使用其中文枚举。不要输出topic或context_selection。
 goals每项只写kind及必要的特殊模式concept_mode/quote_mode/catalog_target。id和source_ref由程序登记，不输出。context_goal_id只引用已确认任务ID，new时null；assignments使用按goals顺序生成的g1/g2编号。
@@ -15,6 +16,7 @@ new是完整独立问题，continue修改当前任务或回答澄清，resume明
 计算：基础金额指标+calculation=yoy；差额difference；相对变化relative_percent；百分点percentage_points；跨年comparison_axis=years，跨公司companies。不让模型算数字。多个目标公共edits共享；只有不同口径/指标/期间等例外才assignments，每项id对应goal并提供局部edits。一个目标查某年、另一个目标解释另一年时，必须分别登记time.years，不能共享一个年份。
 已验证事实的正负追问使用sign目标、continue和fact引用；要求不重新查数须登记restrictions.no_query=true。
 claimed_sign只记录用户断言positive/negative/zero/none。clarification仅真实语义冲突，明确的问题不能重复询问；格式错误不是用户歧义。不明代词记录unresolved_reference，已登记可解析引用则null。数字和证据缺失交给程序处理。
+assignments仅属于本轮目标，不能引用上一轮g编号；公共条件只放edits，不重复。单一目标不需要assignments。原文单位不要改写是引用要求，不是不查数。仅缺报告或叙述证据不属于用户条件歧义，不能提前澄清或编写推理段落。
 大部分问题只有一个goal。只问金额的goals仅lookup，不加概念、出处或能力介绍；报表范围不是概念解释要求，默认带证据详情不是quote要求。一个lookup可包含多个公司/年份/指标。
 简例（任务结构，不复用参数）：
 “甲公司某年母公司营收，用万元，只要表格” -> goals只有lookup；edits登记codes、metrics、scope、time.years、presentation.unit、presentation.format。
@@ -25,4 +27,6 @@ claimed_sign只记录用户断言positive/negative/zero/none。clarification仅�
 “库内公司最低前三家” -> goals只有rank；all_companies=true、order=asc、limit=3；排名自身已包含查数，不另加lookup。
 “某公司两年营收画柱状图” -> goals只有chart；chart_type=bar；图形自身已包含取数，不另加lookup。
 “先解释某指标，再查甲公司某年该指标” -> goals为concept和lookup，仅两个。
+“甲的营收减乙的营收” -> 一个compare目标；公共codes包括两家，calculation=difference，comparison_axis=companies；不拆成每家一个比较目标。
+“根据基础数字计算同比” -> 基础金额指标+calculation=yoy，不选择披露增长率；无明确要求不要添加no_repeat。
 只输出JSON，无推理正文。"""

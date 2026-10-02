@@ -1,0 +1,38 @@
+{
+  "version": 3,
+  "data_kind": "real",
+  "original_turns": 200,
+  "source_run": "run1",
+  "source_records_sha256": "cb41635682a5e2bf74e56ed14756cd2d73f31d1aa2d68e9f0649a3522b6001cb",
+  "data_version": "d552fce3c1089ee1840ba388d641e83ee961df63884a735e107a30933d0f5d37",
+  "index_collection": "financial_v3_d552fce3c1089ee1",
+  "model": {
+    "name": "qwen3.5:9b-q4_K_M",
+    "model": "qwen3.5:9b-q4_K_M",
+    "modified_at": "2026-09-06T23:43:24.1757663+08:00",
+    "size": 6594474711,
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "details": {
+      "parent_model": "",
+      "format": "gguf",
+      "family": "qwen35",
+      "families": [
+        "qwen35"
+      ],
+      "parameter_size": "9.7B",
+      "quantization_level": "Q4_K_M",
+      "context_length": 262144,
+      "embedding_length": 4096
+    },
+    "capabilities": [
+      "vision",
+      "completion",
+      "tools",
+      "thinking"
+    ]
+  },
+  "source_hashes_sha256": "e925cf16b3f4400774219b4fdf39e9a07f1288ce8ed17288b68f8cdaca385c47",
+  "suite_sha256": "0762c7304f36f26fcf39a6265be2b0e29e3af7add1c139d7f10446d0a0691bc1",
+  "reference_date": "2026-10-02",
+  "scope": "local evaluation documentation; no financial PDF redistribution permission implied"
+}

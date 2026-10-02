@@ -81,6 +81,19 @@ def display_value(value: str | Decimal, unit: str, output_unit: str | None, deci
     return f'{number:,.{digits}f}', target
 
 
+def calculation_targets(request, selections):
+    """作品说明：明确相对某年计算同比时，基期只作为输入，不额外要求计算基期自身同比。"""
+    import re
+    c=request.conditions
+    if c.calculation=='yoy' and c.comparison_axis=='years':
+        relations=re.findall(r'(20\d{2})年[^。；]{0,80}?(?:相对|相比|相较|对比|比|较)(20\d{2})年',request.question)
+        valid={(int(current),int(base)) for current,base in relations if int(current)==int(base)+1 and {int(current),int(base)}==set(c.time.years)}
+        if len(valid)==1:
+            current,_=next(iter(valid))
+            return {code:[pair for pair in pairs if pair[0]==current] for code,pairs in selections.items()}
+    return selections
+
+
 def calculate(request: Request, result: ExecutionResult):
     c = request.conditions
     if c.calculation == 'none':
@@ -110,7 +123,7 @@ def calculate(request: Request, result: ExecutionResult):
                 else:
                     pairs = [(values[0], values[-1])] if len(values) >= 2 else []
             for a, b in pairs:
-                if c.calculation=='yoy' and result.selections and (b.year,b.period) not in result.selections.get(b.stock_code,[]):continue
+                if c.calculation=='yoy' and result.selections and (b.year,b.period) not in calculation_targets(request,result.selections).get(b.stock_code,[]):continue
                 if a.unit!=b.unit or a.data_version!=b.data_version:continue
                 if c.calculation == 'yoy' and axis == 'years' and b.year != a.year + 1:
                     result.notes.append(f'{b.company}{b.year}年缺少相邻基期，不能跨年补算同比。')
@@ -309,7 +322,7 @@ def _execute_selection(request: Request, repository) -> ExecutionResult:
     c = request.conditions
     result.facts = repository.query(c.codes, result.selections, c.metrics, c.scope)
     if c.calculation=='yoy' and c.comparison_axis=='years':
-        baselines={code:sorted({(year-1,period) for year,period in pairs}) for code,pairs in result.selections.items()}
+        baselines={code:sorted({(year-1,period) for year,period in pairs}) for code,pairs in calculation_targets(request,result.selections).items()}
         requested_ids={fact.id for fact in result.facts}
         result.support_facts=[fact for fact in repository.query(c.codes,baselines,c.metrics,c.scope) if fact.id not in requested_ids]
     identities = {(f.stock_code, f.year, f.period, f.metric, f.scope) for f in result.facts}
@@ -334,7 +347,9 @@ def _execute_selection(request: Request, repository) -> ExecutionResult:
     calculate(request, result)
     if c.calculation=='yoy':
         computed={(d['company'],d['year'],d['period'],d['metric']) for d in result.derived}
+        targets=calculation_targets(request,result.selections)
         for fact in result.facts:
+            if (fact.year,fact.period) not in targets.get(fact.stock_code,[]):continue
             if (fact.company,fact.year,fact.period,fact.metric) not in computed:
                 result.missing.append(dict(stock_code=fact.stock_code,year=fact.year-1,period=fact.period,metric=fact.metric,
                     scope=fact.scope,reason='no_verified_yoy_base',requested_year=fact.year))
@@ -364,7 +379,7 @@ def _execute_selection(request: Request, repository) -> ExecutionResult:
         if c.calculation != 'none':
             expected = len(c.metrics) * (len(c.codes) if c.comparison_axis == 'years' else 1) * len(c.time.periods)
             if c.calculation=='yoy' and c.comparison_axis=='years':
-                expected=len(c.metrics)*sum(len(pairs) for pairs in result.selections.values())
+                expected=len(c.metrics)*sum(len(pairs) for pairs in calculation_targets(request,result.selections).values())
             elif c.time.pairs and len(c.time.pairs)==2 and c.comparison_axis=='years':
                 expected=len(c.metrics)*len(c.codes)
             elif c.calculation in {'relative_percent', 'percentage_points'} and c.comparison_axis == 'years':

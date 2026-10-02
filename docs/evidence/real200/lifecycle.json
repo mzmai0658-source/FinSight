@@ -1,0 +1,231 @@
+[
+  {
+    "name": "same_session_concurrency",
+    "passed": true,
+    "evidence": {
+      "http": 409
+    }
+  },
+  {
+    "name": "active_session_delete_guard",
+    "passed": true,
+    "evidence": {
+      "http": 409
+    }
+  },
+  {
+    "name": "real_ollama_cancel_gpu_and_slots",
+    "passed": true,
+    "evidence": {
+      "baseline": {
+        "stage": "baseline",
+        "seconds": 1790929653.865933,
+        "utilization": 3,
+        "memory_mb": 7634,
+        "active": 0,
+        "workers": 0
+      },
+      "busy": [
+        {
+          "stage": "inference",
+          "seconds": 1790929654.4861562,
+          "utilization": 98,
+          "memory_mb": 7635,
+          "active": 1,
+          "workers": 1
+        },
+        {
+          "stage": "inference",
+          "seconds": 1790929654.869885,
+          "utilization": 100,
+          "memory_mb": 7635,
+          "active": 1,
+          "workers": 1
+        }
+      ],
+      "samples": [
+        {
+          "stage": "after_cancel",
+          "seconds": 1790929655.498214,
+          "utilization": 100,
+          "memory_mb": 7635,
+          "active": 0,
+          "workers": 0
+        },
+        {
+          "stage": "after_cancel",
+          "seconds": 1790929656.082838,
+          "utilization": 97,
+          "memory_mb": 7635,
+          "active": 0,
+          "workers": 0
+        },
+        {
+          "stage": "after_cancel",
+          "seconds": 1790929656.6534367,
+          "utilization": 96,
+          "memory_mb": 7635,
+          "active": 0,
+          "workers": 0
+        },
+        {
+          "stage": "after_cancel",
+          "seconds": 1790929657.2895179,
+          "utilization": 100,
+          "memory_mb": 7635,
+          "active": 0,
+          "workers": 0
+        },
+        {
+          "stage": "after_cancel",
+          "seconds": 1790929657.8447146,
+          "utilization": 1,
+          "memory_mb": 7635,
+          "active": 0,
+          "workers": 0
+        },
+        {
+          "stage": "after_cancel",
+          "seconds": 1790929658.409947,
+          "utilization": 3,
+          "memory_mb": 7635,
+          "active": 0,
+          "workers": 0
+        },
+        {
+          "stage": "after_cancel",
+          "seconds": 1790929658.9753656,
+          "utilization": 4,
+          "memory_mb": 7635,
+          "active": 0,
+          "workers": 0
+        },
+        {
+          "stage": "after_cancel",
+          "seconds": 1790929659.5395212,
+          "utilization": 2,
+          "memory_mb": 7635,
+          "active": 0,
+          "workers": 0
+        },
+        {
+          "stage": "after_cancel",
+          "seconds": 1790929660.0935812,
+          "utilization": 2,
+          "memory_mb": 7635,
+          "active": 0,
+          "workers": 0
+        }
+      ],
+      "cancel_seconds": 0.078,
+      "task_id": "58346e15-193c-4de2-a13d-890d2d1f5910"
+    }
+  },
+  {
+    "name": "cancelled_no_financial_publication",
+    "passed": true,
+    "evidence": {
+      "outcome": {
+        "status": "cancelled",
+        "reason_codes": [
+          "user_cancelled"
+        ]
+      },
+      "fact_count": 0
+    }
+  },
+  {
+    "name": "disconnect_recovers_saved_task",
+    "passed": true,
+    "evidence": {
+      "task_id": "5ba56040-d761-4ceb-a762-12986ce80476",
+      "seconds": 16.313
+    }
+  },
+  {
+    "name": "duplicate_submission_one_saved_turn",
+    "passed": true,
+    "evidence": {
+      "task_id": "5ba56040-d761-4ceb-a762-12986ce80476",
+      "messages": 2
+    }
+  },
+  {
+    "name": "terminal_status_not_overwritten",
+    "passed": true,
+    "evidence": {
+      "completed": "completed",
+      "cancelled": "cancelled"
+    }
+  },
+  {
+    "name": "native_user_isolation",
+    "passed": true,
+    "evidence": {
+      "responses": [
+        {
+          "method": "GET",
+          "http": 404
+        },
+        {
+          "method": "POST",
+          "http": 404
+        },
+        {
+          "method": "GET",
+          "http": 404
+        }
+      ]
+    }
+  },
+  {
+    "name": "blank_and_2000_codepoint_boundary",
+    "passed": true,
+    "evidence": {
+      "responses": [
+        {
+          "codepoints": 4,
+          "http": 400
+        },
+        {
+          "codepoints": 2001,
+          "http": 400
+        },
+        {
+          "codepoints": 2001,
+          "http": 400
+        }
+      ]
+    }
+  },
+  {
+    "name": "native_save_failure_rollback",
+    "passed": true,
+    "evidence": {
+      "status": "failed",
+      "saved": false,
+      "messages": 0
+    }
+  },
+  {
+    "name": "native_reader_no_write_or_admin_grants",
+    "passed": true,
+    "evidence": {
+      "grant_count": 12
+    }
+  },
+  {
+    "name": "native_sql_permission_failure_no_fake_data",
+    "passed": true,
+    "evidence": {
+      "status": "failed",
+      "outcome": {
+        "status": "failed",
+        "reason_codes": [
+          "OperationalError"
+        ]
+      },
+      "answer": "本轮执行失败，未取得可发布的结果。"
+    }
+  }
+]

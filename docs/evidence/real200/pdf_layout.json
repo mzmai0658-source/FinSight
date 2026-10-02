@@ -1,0 +1,31 @@
+{
+  "pdf": "docs/FinSight-技术报告.pdf",
+  "sha256": "a5baaf3d4cb878c99bff0ab075bb633231852159c32f3b8dcfd4679fa682018d",
+  "bytes": 96886,
+  "main_pages": 13,
+  "appendix_pages": 5,
+  "total_pages": 18,
+  "rendered_pages": 18,
+  "visual_review": "All 18 pages inspected by assistant; latest appendix update re-rendered and inspected. No clipping, overlap, blank pages or missing Chinese glyphs observed. Not a team-member manual review.",
+  "page_text_characters": [
+    1083,
+    1072,
+    1218,
+    1028,
+    1425,
+    1228,
+    1359,
+    1144,
+    1344,
+    1036,
+    419,
+    866,
+    884,
+    1270,
+    1068,
+    1046,
+    1100,
+    1576
+  ],
+  "intermediate_rendering": "retained only in local archive; excluded from packages"
+}

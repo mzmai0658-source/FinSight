@@ -23,6 +23,8 @@ def release_files(root):
             if not path.is_file() or any(p in EXCLUDE_DIRS for p in path.relative_to(root).parts):continue
             # 作品说明：旧内部回归数据及其清单仅留本机，不随公开代码包披露。
             if path.relative_to(root).parts[:2] == ('eval','regression_v3'):continue
+            # 作品说明：当前验收仅用真实财报，旧合成PDF保留本机历史，不混入本轮代码包。
+            if path.relative_to(root).parts[:3] == ('demo','v3','example_reports'):continue
             if path.suffix in {'.pyc','.log','.tmp','.sqlite','.db'} or path.name.startswith('.env'):continue
             if path.name in {'local_keys_private.py'}:continue
             files.append(path)
@@ -35,7 +37,7 @@ def package(output: Path):
     errors=check_release(ROOT,files=files)
     if errors:raise ValueError('\n'.join(errors))
     identities={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
-    manifest=dict(format_version=1,files=identities,scope='source/public synthetic definitions; no private corpus, credentials, weights or runtime',
+    manifest=dict(format_version=1,files=identities,scope='source and real200 evidence; historical demo definitions retained but synthetic PDFs, private corpus, credentials, weights and runtime excluded',
                   source_sha256=hashlib.sha256(json.dumps(identities,sort_keys=True).encode()).hexdigest())
     output.parent.mkdir(parents=True,exist_ok=True)
     with zipfile.ZipFile(output,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as archive:

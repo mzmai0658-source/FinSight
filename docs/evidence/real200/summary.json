@@ -1,0 +1,188 @@
+{
+  "total": 200,
+  "passed": 195,
+  "automated_pass": 195,
+  "target": 170,
+  "source_review_pending": 0,
+  "critical": {},
+  "by_category": {
+    "查询口径": {
+      "total": 50,
+      "passed": 50
+    },
+    "比较计算": {
+      "total": 20,
+      "passed": 20
+    },
+    "图表": {
+      "total": 12,
+      "passed": 11
+    },
+    "原文出处": {
+      "total": 12,
+      "passed": 12
+    },
+    "概念复合": {
+      "total": 10,
+      "passed": 10
+    },
+    "经营证据": {
+      "total": 8,
+      "passed": 6
+    },
+    "澄清边界": {
+      "total": 8,
+      "passed": 6
+    },
+    "公司对话": {
+      "total": 20,
+      "passed": 20
+    },
+    "条件对话": {
+      "total": 20,
+      "passed": 20
+    },
+    "话题对话": {
+      "total": 20,
+      "passed": 20
+    },
+    "事实对话": {
+      "total": 20,
+      "passed": 20
+    }
+  },
+  "dialogue_groups": {
+    "事实引用1": true,
+    "事实引用2": true,
+    "事实引用3": true,
+    "事实引用4": true,
+    "事实引用5": true,
+    "公司修改1": true,
+    "公司修改2": true,
+    "公司修改3": true,
+    "公司修改4": true,
+    "公司修改5": true,
+    "插话恢复1": true,
+    "插话恢复2": true,
+    "插话恢复3": true,
+    "插话恢复4": true,
+    "插话恢复5": true,
+    "条件修改1": true,
+    "条件修改2": true,
+    "条件修改3": true,
+    "条件修改4": true,
+    "条件修改5": true
+  },
+  "accuracy": 0.975,
+  "acceptance_passed": true,
+  "median_seconds": 15.703,
+  "mean_seconds": 16.306715,
+  "max_seconds": 60.844,
+  "p95_seconds": 23.25,
+  "percentile_method": "nearest_rank",
+  "segments": {
+    "independent_turns": {
+      "total": 120,
+      "passed": 115
+    },
+    "dialogue_turns": {
+      "total": 80,
+      "passed": 80
+    },
+    "classical": {
+      "total": 94,
+      "passed": 93
+    },
+    "supported": {
+      "total": 192,
+      "passed": 189
+    }
+  },
+  "whole_dialogues_passed": 20,
+  "whole_dialogues_total": 20,
+  "by_company": {
+    "002082": {
+      "total": 27,
+      "passed": 27,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "002390": {
+      "total": 19,
+      "passed": 19,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "002737": {
+      "total": 18,
+      "passed": 18,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "002821": {
+      "total": 19,
+      "passed": 19,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "002864": {
+      "total": 26,
+      "passed": 26,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "600080": {
+      "total": 25,
+      "passed": 25,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "600085": {
+      "total": 38,
+      "passed": 36,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "600129": {
+      "total": 25,
+      "passed": 25,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "600222": {
+      "total": 26,
+      "passed": 26,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    },
+    "600252": {
+      "total": 23,
+      "passed": 21,
+      "overlap": "multi-company cases appear under each requested company; do not sum these denominators"
+    }
+  },
+  "failure_categories": {
+    "accepted_data_version_missing": 3,
+    "chart_missing": 1,
+    "missing_or_extra_requested_facts": 3,
+    "supported_request_not_completed": 1,
+    "available_numeric_goal_lost": 1,
+    "reliable_part_lost": 2,
+    "company_set_mismatch": 1,
+    "metric_set_mismatch": 1,
+    "missing_request_contract": 3,
+    "model_identity_not_confirmed": 1,
+    "model_timeout": 1,
+    "requested_goal_missing": 1,
+    "task_not_completed_and_saved": 3,
+    "required_clarification_missing": 1,
+    "boundary_not_explained": 1
+  },
+  "model_calls": {
+    "observed_turns": 200,
+    "distribution": {
+      "1": 191,
+      "2": 8,
+      "3": 1
+    },
+    "mean": 1.05
+  },
+  "cause_delivery": {
+    "turns": 8,
+    "supported_explanation_delivered": 1,
+    "reliable_number_with_honest_evidence_limit": 5,
+    "failed": 2,
+    "note": "Permitted honest evidence gaps may pass the question but do not count as delivered causal explanations"
+  }
+}

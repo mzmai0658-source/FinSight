@@ -26,7 +26,7 @@ def metric_candidates(text, positive_only=False):
 
 
 PERIOD_ALIASES={'年度报告':'FY','年报':'FY','全年':'FY','半年度报告':'HY','半年报':'HY',
-    '上半年':'HY','半年':'HY','第一季度报告':'Q1','一季报':'Q1','一季度累计':'Q1',
+    '上半年':'HY','半年':'HY','第一季度报告':'Q1','第一季度累计':'Q1','一季报':'Q1','一季度累计':'Q1',
     '第三季度报告':'Q3','前三季度':'Q3','三季报':'Q3'}
 
 
@@ -111,7 +111,12 @@ def explicit_report_count(question):
 
 
 def explicit_output_unit(question):
-    units=re.findall(r'(?:单位(?:为|是|用)?|用|以|换成|改成|多少|换算(?:为|成))\s*(亿元|万元|元/股|元|%|百分比)',question)
+    units=[]
+    pattern=r'(?:单位(?:为|是|用|[:：])?|金额(?:用|以|按)|按|用|以|换成|改成|改用|多少|换算(?:为|成))\s*(亿元|万元|元/股|元|%|百分比)'
+    for match in re.finditer(pattern,question):
+        start,end=match.span(1)
+        if is_negated_span(question,start,end) or re.search(r'(?:不|别|不要|不再|无需)(?:用|按|以|换算为|换成)\s*$',question[:start]):continue
+        units.append(match[1])
     distinct=set('%' if unit=='百分比' else unit for unit in units)
     return next(iter(distinct)) if len(distinct)==1 else None
 
@@ -271,3 +276,14 @@ def requirement_source_supported(requirement,request):
     if requirement.kind=='greeting':return bool(re.search(r'你好|您好|hello|\bhi\b|早上好|晚上好',source,re.IGNORECASE))
     if requirement.kind not in {'rules','quote','chart','cause'}:return True
     return goal_source_supported(Goal(id='requirement',kind=requirement.kind,text=source,intent_source=source),request,DialogueState())
+
+
+def positive_years(question):
+    """作品说明：直接排除的年份不属于正向查询要求；范围中的中间年仍按原规则展开。"""
+    from .condition_updates import mentioned_years
+    excluded=set();positive=set()
+    for match in re.finditer(r'(?<!\d)(20\d{2})(?!\d)',question):
+        before=re.split(r'[，,。；;]',question[:match.start()])[-1]
+        negated=is_negated_span(question,match.start(),match.end()) or re.search(r'(?:不|不要|别|禁止|不再)(?:拿|用|取|查|看|查询|采用)\s*$',before)
+        (excluded if negated else positive).add(int(match[1]))
+    return mentioned_years(question)-(excluded-positive)

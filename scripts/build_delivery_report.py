@@ -10,7 +10,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 
 
-def build(output):
+def build(output, source_path=None):
     from reportlab.platypus import SimpleDocTemplate,Paragraph,Spacer,PageBreak,Table,TableStyle,Image,KeepTogether
     from reportlab.lib.styles import ParagraphStyle
     from reportlab.lib.colors import HexColor,white
@@ -79,12 +79,14 @@ def build(output):
             else:style='body'
             flows.append(Paragraph(markup(line),styles[style]))
         return flows
-    source=(ROOT/'docs/TECHNICAL_REPORT.md').read_text('utf-8')
+    source=(source_path or ROOT/'docs/TECHNICAL_REPORT.md').read_text('utf-8')
     if '{{' in source:raise ValueError('技术报告还有未填写的验收占位符，不能生成冒充完成的 PDF')
     main=source.split('<!-- appendix -->')[0]
     flows=parse(main)
     flows.extend([PageBreak(),Paragraph('附件：第三方资源使用清单',styles['h2'])])
-    flows.extend(parse((ROOT/'docs/THIRD_PARTY.md').read_text('utf-8')))
+    appendix_text=(ROOT/'docs/THIRD_PARTY.md').read_text('utf-8')
+    appendix_text=re.sub(r'^# [^\n]+\n', '', appendix_text, count=1)
+    flows.extend(parse(appendix_text))
     def page(canvas,doc):
         canvas.setTitle('FinSight财报证据助手 技术报告');canvas.setAuthor('FinSight')
         canvas.setStrokeColor(HexColor('#197c83'));canvas.setLineWidth(1);canvas.line(50,804,545,804)
@@ -102,4 +104,8 @@ def build(output):
 
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output',type=Path,default=ROOT/'deliverables/20261002/FinSight-技术报告.pdf');build(parser.parse_args().output.resolve())
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output',type=Path,default=ROOT/'deliverables/20261002/FinSight-技术报告.pdf')
+    parser.add_argument('--source',type=Path)
+    args=parser.parse_args()
+    build(args.output.resolve(),args.source.resolve() if args.source else None)

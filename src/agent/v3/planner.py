@@ -128,12 +128,15 @@ class Planner:
         from .prompts import TURN
         from .proposals import TurnPlan
         from .catalog import METRICS
+        from .explicit_conditions import explicit_conditions,bind_explicit
         if feedback:budget.artifacts.setdefault('correction_feedback',[]).append(list(feedback))
         payload=dict(question=question,state=planner_state(state),today=date.today().isoformat(),
             companies=self.companies,
             metrics={id:dict(name=m.label,unit=m.unit,scopes=m.scopes,aliases=m.aliases) for id,m in METRICS.items()},
-            correction_feedback=list(feedback))
+            literal_bindings=explicit_conditions(question),correction_feedback=list(feedback))
         plan=await self.model.structured(TurnPlan,TURN,payload,budget)
+        plan,bound=bind_explicit(plan,question,self.companies)
+        if bound:budget.artifacts.setdefault('literal_bindings',[]).append(bound)
         try:
             return plan.compile(question,self.companies)
         except ValueError as exc:

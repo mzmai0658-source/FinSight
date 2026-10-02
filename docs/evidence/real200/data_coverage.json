@@ -1,0 +1,123 @@
+{
+  "data_kind": "real",
+  "companies": 10,
+  "reports": 117,
+  "facts": 7466,
+  "fact_statuses": {
+    "verified": 6798,
+    "derived": 668
+  },
+  "original_bytes": 241487723,
+  "periods": {
+    "FY": 29,
+    "HY": 29,
+    "Q1": 30,
+    "Q3": 29
+  },
+  "independent_oracle": {
+    "facts": 112,
+    "reports": 46,
+    "sha256": "69280e522288d02325505a4cb86bd46d52c8db9fb74f6341ce7c8d4d615cb356"
+  },
+  "data_version": "d552fce3c1089ee1840ba388d641e83ee961df63884a735e107a30933d0f5d37",
+  "acceptance_sha256": "bedcbd43e82be6fdb330da3d7616794c2dce04b5104c7b71de263ad2832862cb",
+  "index": {
+    "version": "d552fce3c1089ee1840ba388d641e83ee961df63884a735e107a30933d0f5d37",
+    "collection": "financial_v3_d552fce3c1089ee1",
+    "chunks": 22828,
+    "reports": 117
+  },
+  "company_period_counts": {
+    "002082": {
+      "company": "万邦德",
+      "periods": {
+        "FY": 3,
+        "HY": 3,
+        "Q1": 3,
+        "Q3": 3
+      }
+    },
+    "002390": {
+      "company": "信邦制药",
+      "periods": {
+        "FY": 3,
+        "HY": 3,
+        "Q1": 3,
+        "Q3": 3
+      }
+    },
+    "002737": {
+      "company": "葵花药业",
+      "periods": {
+        "FY": 3,
+        "HY": 3,
+        "Q1": 3,
+        "Q3": 3
+      }
+    },
+    "002821": {
+      "company": "凯莱英",
+      "periods": {
+        "FY": 2,
+        "HY": 3,
+        "Q1": 3,
+        "Q3": 3
+      }
+    },
+    "002864": {
+      "company": "盘龙药业",
+      "periods": {
+        "FY": 3,
+        "HY": 3,
+        "Q1": 3,
+        "Q3": 3
+      }
+    },
+    "600080": {
+      "company": "金花股份",
+      "periods": {
+        "FY": 3,
+        "HY": 3,
+        "Q1": 3,
+        "Q3": 3
+      }
+    },
+    "600085": {
+      "company": "同仁堂",
+      "periods": {
+        "FY": 3,
+        "HY": 2,
+        "Q1": 3,
+        "Q3": 3
+      }
+    },
+    "600129": {
+      "company": "太极集团",
+      "periods": {
+        "FY": 3,
+        "HY": 3,
+        "Q1": 3,
+        "Q3": 3
+      }
+    },
+    "600222": {
+      "company": "太龙药业",
+      "periods": {
+        "FY": 3,
+        "HY": 3,
+        "Q1": 3,
+        "Q3": 2
+      }
+    },
+    "600252": {
+      "company": "中恒集团",
+      "periods": {
+        "FY": 3,
+        "HY": 3,
+        "Q1": 3,
+        "Q3": 3
+      }
+    }
+  },
+  "publication": "Aggregate test metadata only. Original PDFs, OCR, per-file manifests, complete canonical facts and source proofs remain local."
+}

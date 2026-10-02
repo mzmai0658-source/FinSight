@@ -1,0 +1,5560 @@
+{
+  "version": 3,
+  "scope": "real reports only; fixed regression acceptance, not an unseen blind test",
+  "reference_date": "2026-10-02",
+  "target": 170,
+  "model": "qwen3.5:9b-q4_K_M",
+  "source_data_version": "d552fce3c1089ee1840ba388d641e83ee961df63884a735e107a30933d0f5d37",
+  "distribution": {
+    "查询口径": 50,
+    "比较计算": 20,
+    "图表": 12,
+    "原文出处": 12,
+    "概念复合": 10,
+    "经营证据": 8,
+    "澄清边界": 8,
+    "公司对话": 20,
+    "条件对话": 20,
+    "话题对话": 20,
+    "事实对话": 20
+  },
+  "cases": [
+    {
+      "id": "R001",
+      "category": "查询口径",
+      "group": null,
+      "question": "万邦德2024年年报营业收入是多少？用亿元，保留2位小数，只要表格，不要画图。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元",
+        "decimals": 2,
+        "format": "table",
+        "no_chart": true
+      }
+    },
+    {
+      "id": "R002",
+      "category": "查询口径",
+      "group": null,
+      "question": "请查万邦德2024年净利润，金额用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R003",
+      "category": "查询口径",
+      "group": null,
+      "question": "万邦德2024年半年报的合并总资产是多少？换成亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "total_assets"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "HY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R004",
+      "category": "查询口径",
+      "group": null,
+      "question": "万邦德2024年第一季度累计经营活动产生的现金流量净额，按万元列出。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "operating_cash_flow"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "Q1"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R005",
+      "category": "查询口径",
+      "group": null,
+      "question": "万邦德2023年母公司营业收入是多少？保留原来的零值，用元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "parent",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "元"
+      }
+    },
+    {
+      "id": "R006",
+      "category": "查询口径",
+      "group": null,
+      "question": "信邦制药2024年年报营业收入是多少？用万元，保留3位小数，只要表格，不要画图。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002390"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "decimals": 3,
+        "format": "table",
+        "no_chart": true
+      }
+    },
+    {
+      "id": "R007",
+      "category": "查询口径",
+      "group": null,
+      "question": "请查信邦制药2024年合并净利润，金额用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002390"
+        ],
+        "metrics": [
+          "net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R008",
+      "category": "查询口径",
+      "group": null,
+      "question": "信邦制药2024年半年报的合并总资产是多少？换成亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002390"
+        ],
+        "metrics": [
+          "total_assets"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "HY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R009",
+      "category": "查询口径",
+      "group": null,
+      "question": "信邦制药2024年上半年累计经营活动产生的现金流量净额，按万元列出。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002390"
+        ],
+        "metrics": [
+          "operating_cash_flow"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "HY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R010",
+      "category": "查询口径",
+      "group": null,
+      "question": "信邦制药2024年年报加权平均净资产收益率是多少？用%保留两位小数。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002390"
+        ],
+        "metrics": [
+          "roe_weighted"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "%",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "R011",
+      "category": "查询口径",
+      "group": null,
+      "question": "葵花药业2024年年报营业收入是多少？用元，保留0位小数，只要表格，不要画图。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002737"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "元",
+        "decimals": 0,
+        "format": "table",
+        "no_chart": true
+      }
+    },
+    {
+      "id": "R012",
+      "category": "查询口径",
+      "group": null,
+      "question": "请查葵花药业2024年扣非归母净利润，金额用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002737"
+        ],
+        "metrics": [
+          "deducted_attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R013",
+      "category": "查询口径",
+      "group": null,
+      "question": "葵花药业2024年半年报的合并总资产是多少？换成亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002737"
+        ],
+        "metrics": [
+          "total_assets"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "HY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R014",
+      "category": "查询口径",
+      "group": null,
+      "question": "葵花药业2024年前三季度累计经营活动产生的现金流量净额，按万元列出。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002737"
+        ],
+        "metrics": [
+          "operating_cash_flow"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "Q3"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R015",
+      "category": "查询口径",
+      "group": null,
+      "question": "葵花药业2024年年报毛利率是多少？用%保留两位小数。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002737"
+        ],
+        "metrics": [
+          "gross_margin"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "%",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "R016",
+      "category": "查询口径",
+      "group": null,
+      "question": "凯莱英2023年年报营业收入是多少？用亿元，保留2位小数，只要表格，不要画图。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002821"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元",
+        "decimals": 2,
+        "format": "table",
+        "no_chart": true
+      }
+    },
+    {
+      "id": "R017",
+      "category": "查询口径",
+      "group": null,
+      "question": "请查凯莱英2023年母公司净利润，金额用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002821"
+        ],
+        "metrics": [
+          "net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "parent",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R018",
+      "category": "查询口径",
+      "group": null,
+      "question": "凯莱英2024年半年报的合并总资产是多少？换成亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002821"
+        ],
+        "metrics": [
+          "total_assets"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "HY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R019",
+      "category": "查询口径",
+      "group": null,
+      "question": "凯莱英2024年第一季度累计经营活动产生的现金流量净额，按万元列出。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002821"
+        ],
+        "metrics": [
+          "operating_cash_flow"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "Q1"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R020",
+      "category": "查询口径",
+      "group": null,
+      "question": "凯莱英2023年年报合并营业成本是多少？用万元保留两位小数。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002821"
+        ],
+        "metrics": [
+          "operating_cost"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "R021",
+      "category": "查询口径",
+      "group": null,
+      "question": "盘龙药业2024年年报营业收入是多少？用万元，保留3位小数，只要表格，不要画图。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "decimals": 3,
+        "format": "table",
+        "no_chart": true
+      }
+    },
+    {
+      "id": "R022",
+      "category": "查询口径",
+      "group": null,
+      "question": "请查盘龙药业2024年净利润，金额用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R023",
+      "category": "查询口径",
+      "group": null,
+      "question": "盘龙药业2024年半年报的合并总资产是多少？换成亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "total_assets"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "HY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R024",
+      "category": "查询口径",
+      "group": null,
+      "question": "盘龙药业2024年上半年累计经营活动产生的现金流量净额，按万元列出。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "operating_cash_flow"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "HY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R025",
+      "category": "查询口径",
+      "group": null,
+      "question": "盘龙药业2024年年报资产负债率是多少？用%保留两位小数。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "debt_ratio"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "%",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "R026",
+      "category": "查询口径",
+      "group": null,
+      "question": "金花股份2024年年报营业收入是多少？用元，保留0位小数，只要表格，不要画图。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600080"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "元",
+        "decimals": 0,
+        "format": "table",
+        "no_chart": true
+      }
+    },
+    {
+      "id": "R027",
+      "category": "查询口径",
+      "group": null,
+      "question": "请查金花股份2024年合并净利润，金额用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600080"
+        ],
+        "metrics": [
+          "net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R028",
+      "category": "查询口径",
+      "group": null,
+      "question": "金花股份2024年半年报的合并总资产是多少？换成亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600080"
+        ],
+        "metrics": [
+          "total_assets"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "HY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R029",
+      "category": "查询口径",
+      "group": null,
+      "question": "金花股份2024年前三季度累计经营活动产生的现金流量净额，按万元列出。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600080"
+        ],
+        "metrics": [
+          "operating_cash_flow"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "Q3"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R030",
+      "category": "查询口径",
+      "group": null,
+      "question": "金花股份2024年年报基本每股收益是多少？用元/股保留两位小数。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600080"
+        ],
+        "metrics": [
+          "eps_basic"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "元/股",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "R031",
+      "category": "查询口径",
+      "group": null,
+      "question": "同仁堂2024年年报营业收入是多少？用亿元，保留2位小数，只要表格，不要画图。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元",
+        "decimals": 2,
+        "format": "table",
+        "no_chart": true
+      }
+    },
+    {
+      "id": "R032",
+      "category": "查询口径",
+      "group": null,
+      "question": "请查同仁堂2024年扣非归母净利润，金额用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "deducted_attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R033",
+      "category": "查询口径",
+      "group": null,
+      "question": "同仁堂2024年半年报的合并总资产是多少？换成亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "total_assets"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "HY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R034",
+      "category": "查询口径",
+      "group": null,
+      "question": "同仁堂2024年第一季度累计经营活动产生的现金流量净额，按万元列出。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_cash_flow"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "Q1"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R035",
+      "category": "查询口径",
+      "group": null,
+      "question": "同仁堂2024年年报加权平均净资产收益率是多少？用%保留两位小数。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "roe_weighted"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "%",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "R036",
+      "category": "查询口径",
+      "group": null,
+      "question": "太极集团2024年年报营业收入是多少？用万元，保留3位小数，只要表格，不要画图。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "decimals": 3,
+        "format": "table",
+        "no_chart": true
+      }
+    },
+    {
+      "id": "R037",
+      "category": "查询口径",
+      "group": null,
+      "question": "请查太极集团2024年母公司净利润，金额用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "parent",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R038",
+      "category": "查询口径",
+      "group": null,
+      "question": "太极集团2024年半年报的合并总资产是多少？换成亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "total_assets"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "HY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R039",
+      "category": "查询口径",
+      "group": null,
+      "question": "太极集团2024年上半年累计经营活动产生的现金流量净额，按万元列出。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "operating_cash_flow"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "HY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R040",
+      "category": "查询口径",
+      "group": null,
+      "question": "太极集团2024年年报毛利率是多少？用%保留两位小数。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "gross_margin"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "%",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "R041",
+      "category": "查询口径",
+      "group": null,
+      "question": "太龙药业2024年年报营业收入是多少？用元，保留0位小数，只要表格，不要画图。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "元",
+        "decimals": 0,
+        "format": "table",
+        "no_chart": true
+      }
+    },
+    {
+      "id": "R042",
+      "category": "查询口径",
+      "group": null,
+      "question": "请查太龙药业2024年净利润，金额用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R043",
+      "category": "查询口径",
+      "group": null,
+      "question": "太龙药业2024年半年报的合并总资产是多少？换成亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "total_assets"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "HY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R044",
+      "category": "查询口径",
+      "group": null,
+      "question": "太龙药业2024年前三季度累计经营活动产生的现金流量净额，按万元列出。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "operating_cash_flow"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "Q3"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R045",
+      "category": "查询口径",
+      "group": null,
+      "question": "太龙药业2024年年报合并营业成本是多少？用万元保留两位小数。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "operating_cost"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "R046",
+      "category": "查询口径",
+      "group": null,
+      "question": "中恒集团2024年年报营业收入是多少？用亿元，保留2位小数，只要表格，不要画图。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元",
+        "decimals": 2,
+        "format": "table",
+        "no_chart": true
+      }
+    },
+    {
+      "id": "R047",
+      "category": "查询口径",
+      "group": null,
+      "question": "请查中恒集团2024年合并净利润，金额用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252"
+        ],
+        "metrics": [
+          "net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R048",
+      "category": "查询口径",
+      "group": null,
+      "question": "中恒集团2024年半年报的合并总资产是多少？换成亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252"
+        ],
+        "metrics": [
+          "total_assets"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "HY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R049",
+      "category": "查询口径",
+      "group": null,
+      "question": "中恒集团2024年第一季度累计经营活动产生的现金流量净额，按万元列出。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252"
+        ],
+        "metrics": [
+          "operating_cash_flow"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "Q1"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R050",
+      "category": "查询口径",
+      "group": null,
+      "question": "中恒集团2024年年报资产负债率是多少？用%保留两位小数。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252"
+        ],
+        "metrics": [
+          "debt_ratio"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "%",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "R051",
+      "category": "比较计算",
+      "group": null,
+      "question": "比较万邦德和金花股份共同最新年报的营业收入，哪一家更高？",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082",
+          "600080"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "compare"
+        ],
+        "time_policy": "latest_common",
+        "axis": "companies"
+      }
+    },
+    {
+      "id": "R052",
+      "category": "比较计算",
+      "group": null,
+      "question": "比较信邦制药和同仁堂共同最新年报的营业收入，哪一家更高？",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002390",
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "compare"
+        ],
+        "time_policy": "latest_common",
+        "axis": "companies"
+      }
+    },
+    {
+      "id": "R053",
+      "category": "比较计算",
+      "group": null,
+      "question": "比较葵花药业和太极集团共同最新年报的营业收入，哪一家更高？",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002737",
+          "600129"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "compare"
+        ],
+        "time_policy": "latest_common",
+        "axis": "companies"
+      }
+    },
+    {
+      "id": "R054",
+      "category": "比较计算",
+      "group": null,
+      "question": "比较凯莱英和太龙药业共同最新年报的营业收入，哪一家更高？",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002821",
+          "600222"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "compare"
+        ],
+        "time_policy": "latest_common",
+        "axis": "companies"
+      }
+    },
+    {
+      "id": "R055",
+      "category": "比较计算",
+      "group": null,
+      "question": "比较盘龙药业2022年和2023年归母净利润，哪一年更高？",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2022,
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "compare"
+        ],
+        "axis": "years"
+      }
+    },
+    {
+      "id": "R056",
+      "category": "比较计算",
+      "group": null,
+      "question": "比较金花股份2022年和2023年归母净利润，哪一年更高？",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600080"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2022,
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "compare"
+        ],
+        "axis": "years"
+      }
+    },
+    {
+      "id": "R057",
+      "category": "比较计算",
+      "group": null,
+      "question": "所有库内公司按共同最新年报的营业收入从高到低排名，取前3家。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082",
+          "002390",
+          "002737",
+          "002821",
+          "002864",
+          "600080",
+          "600085",
+          "600129",
+          "600222",
+          "600252"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "rank"
+        ],
+        "time_policy": "latest_common",
+        "order": "desc",
+        "limit": 3,
+        "all_companies": true
+      }
+    },
+    {
+      "id": "R058",
+      "category": "比较计算",
+      "group": null,
+      "question": "所有库内公司按共同最新年报的营业收入从低到高排名，取前3家。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082",
+          "002390",
+          "002737",
+          "002821",
+          "002864",
+          "600080",
+          "600085",
+          "600129",
+          "600222",
+          "600252"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "rank"
+        ],
+        "time_policy": "latest_common",
+        "order": "asc",
+        "limit": 3,
+        "all_companies": true
+      }
+    },
+    {
+      "id": "R059",
+      "category": "比较计算",
+      "group": null,
+      "question": "所有库内公司按共同最新年报的营业收入从高到低排名，取前5家。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082",
+          "002390",
+          "002737",
+          "002821",
+          "002864",
+          "600080",
+          "600085",
+          "600129",
+          "600222",
+          "600252"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "rank"
+        ],
+        "time_policy": "latest_common",
+        "order": "desc",
+        "limit": 5,
+        "all_companies": true
+      }
+    },
+    {
+      "id": "R060",
+      "category": "比较计算",
+      "group": null,
+      "question": "所有库内公司按共同最新年报的营业收入从低到高排名，取前2家。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082",
+          "002390",
+          "002737",
+          "002821",
+          "002864",
+          "600080",
+          "600085",
+          "600129",
+          "600222",
+          "600252"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "rank"
+        ],
+        "time_policy": "latest_common",
+        "order": "asc",
+        "limit": 2,
+        "all_companies": true
+      }
+    },
+    {
+      "id": "R061",
+      "category": "比较计算",
+      "group": null,
+      "question": "万邦德2023年营业收入比2022年增加多少金额？用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022,
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "calculation": "difference",
+        "axis": "years",
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R062",
+      "category": "比较计算",
+      "group": null,
+      "question": "同仁堂2023年营业收入比2022年增加多少金额？用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022,
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "calculation": "difference",
+        "axis": "years",
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R063",
+      "category": "比较计算",
+      "group": null,
+      "question": "中恒集团2023年营业收入比2022年增加多少金额？用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022,
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "calculation": "difference",
+        "axis": "years",
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R064",
+      "category": "比较计算",
+      "group": null,
+      "question": "计算金花股份2023年归母净利润相对2022年的同比增长率；基期为负时用绝对基期。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600080"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2022,
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "calculation": "yoy",
+        "axis": "years"
+      }
+    },
+    {
+      "id": "R065",
+      "category": "比较计算",
+      "group": null,
+      "question": "计算太龙药业2023年归母净利润相对2022年的同比增长率；基期为负时用绝对基期。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2022,
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "calculation": "yoy",
+        "axis": "years"
+      }
+    },
+    {
+      "id": "R066",
+      "category": "比较计算",
+      "group": null,
+      "question": "计算万邦德2023年母公司营业收入相对2022年的同比增长率；零基期时明确是否定义。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022,
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "parent",
+        "goals": [
+          "lookup"
+        ],
+        "calculation": "yoy",
+        "axis": "years",
+        "undefined": true
+      }
+    },
+    {
+      "id": "R067",
+      "category": "比较计算",
+      "group": null,
+      "question": "同仁堂2023年毛利率比2022年变化多少个百分点？",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "gross_margin"
+        ],
+        "years": [
+          2022,
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "calculation": "percentage_points",
+        "axis": "years"
+      }
+    },
+    {
+      "id": "R068",
+      "category": "比较计算",
+      "group": null,
+      "question": "盘龙药业2023年毛利率相对2022年的百分比变化是多少？不要用百分点替代。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "gross_margin"
+        ],
+        "years": [
+          2022,
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "calculation": "relative_percent",
+        "axis": "years"
+      }
+    },
+    {
+      "id": "R069",
+      "category": "比较计算",
+      "group": null,
+      "question": "2023年同仁堂营业收入减去万邦德营业收入是多少？用亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085",
+          "002082"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "calculation": "difference",
+        "axis": "companies",
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R070",
+      "category": "比较计算",
+      "group": null,
+      "question": "太龙药业2022年归母净利润是盈利还是亏损？",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "sign"
+        ],
+        "must_terms": [
+          [
+            "亏损"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "R071",
+      "category": "图表",
+      "group": null,
+      "question": "画万邦德2022年至2024年营业收入折线图，单位亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022,
+          2023,
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "chart"
+        ],
+        "chart": "line",
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R072",
+      "category": "图表",
+      "group": null,
+      "question": "画盘龙药业2022年至2024年营业收入折线图，单位亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022,
+          2023,
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "chart"
+        ],
+        "chart": "line",
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R073",
+      "category": "图表",
+      "group": null,
+      "question": "画同仁堂2022年至2024年营业收入折线图，单位亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022,
+          2023,
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "chart"
+        ],
+        "chart": "line",
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R074",
+      "category": "图表",
+      "group": null,
+      "question": "画中恒集团2022年至2024年营业收入折线图，单位亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022,
+          2023,
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "chart"
+        ],
+        "chart": "line",
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R075",
+      "category": "图表",
+      "group": null,
+      "question": "用柱状图比较万邦德与金花股份2023年归母净利润，单位万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082",
+          "600080"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "chart"
+        ],
+        "chart": "bar",
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R076",
+      "category": "图表",
+      "group": null,
+      "question": "用柱状图比较信邦制药与同仁堂2023年归母净利润，单位万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002390",
+          "600085"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "chart"
+        ],
+        "chart": "bar",
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R077",
+      "category": "图表",
+      "group": null,
+      "question": "用柱状图比较葵花药业与太极集团2023年归母净利润，单位万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002737",
+          "600129"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "chart"
+        ],
+        "chart": "bar",
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R078",
+      "category": "图表",
+      "group": null,
+      "question": "用柱状图比较凯莱英与太龙药业2023年归母净利润，单位万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002821",
+          "600222"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "chart"
+        ],
+        "chart": "bar",
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R079",
+      "category": "图表",
+      "group": null,
+      "question": "中恒集团2022年至2024年归母净利润画柱状图，用亿元，负数保持为负。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2022,
+          2023,
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "chart"
+        ],
+        "chart": "bar",
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R080",
+      "category": "图表",
+      "group": null,
+      "question": "凯莱英2022年至2024年营业收入画折线图，缺失年份保留空点，用亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002821"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022,
+          2023,
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "chart"
+        ],
+        "chart": "line",
+        "unit": "亿元",
+        "allow_missing": true
+      }
+    },
+    {
+      "id": "R081",
+      "category": "图表",
+      "group": null,
+      "question": "同仁堂2024年营业收入只画一个折线趋势图；如果单点不能构成趋势请说明。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "chart"
+        ],
+        "chart": "line",
+        "unrenderable_chart": true
+      }
+    },
+    {
+      "id": "R082",
+      "category": "图表",
+      "group": null,
+      "question": "2023年同仁堂和万邦德营业收入占两家公司合计的份额画饼图，单位亿元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085",
+          "002082"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "chart"
+        ],
+        "chart": "pie",
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "R083",
+      "category": "原文出处",
+      "group": null,
+      "question": "万邦德2022年年报营业收入的原始表格行和数值请逐字引用，注明原页；原文单位不要改写。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "quote"
+        ],
+        "quote_mode": "literal",
+        "no_values_in_body": false
+      }
+    },
+    {
+      "id": "R084",
+      "category": "原文出处",
+      "group": null,
+      "question": "信邦制药2024年年报母公司净利润的出处在哪份财报第几页？只定位出处，不要重复金额。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002390"
+        ],
+        "metrics": [
+          "net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "parent",
+        "goals": [
+          "quote"
+        ],
+        "quote_mode": "location",
+        "no_values_in_body": true
+      }
+    },
+    {
+      "id": "R085",
+      "category": "原文出处",
+      "group": null,
+      "question": "葵花药业2022年年报营业收入的原始表格行和数值请逐字引用，注明原页；原文单位不要改写。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002737"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "quote"
+        ],
+        "quote_mode": "literal",
+        "no_values_in_body": false
+      }
+    },
+    {
+      "id": "R086",
+      "category": "原文出处",
+      "group": null,
+      "question": "凯莱英2023年年报营业收入的出处在哪份财报第几页？只定位出处，不要重复金额。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002821"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "quote"
+        ],
+        "quote_mode": "location",
+        "no_values_in_body": true
+      }
+    },
+    {
+      "id": "R087",
+      "category": "原文出处",
+      "group": null,
+      "question": "盘龙药业2022年年报母公司净利润的原始表格行和数值请逐字引用，注明原页；原文单位不要改写。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "net_profit"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "parent",
+        "goals": [
+          "quote"
+        ],
+        "quote_mode": "literal",
+        "no_values_in_body": false
+      }
+    },
+    {
+      "id": "R088",
+      "category": "原文出处",
+      "group": null,
+      "question": "金花股份2024年年报营业收入的出处在哪份财报第几页？只定位出处，不要重复金额。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600080"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "quote"
+        ],
+        "quote_mode": "location",
+        "no_values_in_body": true
+      }
+    },
+    {
+      "id": "R089",
+      "category": "原文出处",
+      "group": null,
+      "question": "同仁堂2022年年报营业收入的原始表格行和数值请逐字引用，注明原页；原文单位不要改写。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "quote"
+        ],
+        "quote_mode": "literal",
+        "no_values_in_body": false
+      }
+    },
+    {
+      "id": "R090",
+      "category": "原文出处",
+      "group": null,
+      "question": "太极集团2024年年报母公司净利润的出处在哪份财报第几页？只定位出处，不要重复金额。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "parent",
+        "goals": [
+          "quote"
+        ],
+        "quote_mode": "location",
+        "no_values_in_body": true
+      }
+    },
+    {
+      "id": "R091",
+      "category": "原文出处",
+      "group": null,
+      "question": "太龙药业2022年年报营业收入的原始表格行和数值请逐字引用，注明原页；原文单位不要改写。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "quote"
+        ],
+        "quote_mode": "literal",
+        "no_values_in_body": false
+      }
+    },
+    {
+      "id": "R092",
+      "category": "原文出处",
+      "group": null,
+      "question": "中恒集团2024年年报营业收入的出处在哪份财报第几页？只定位出处，不要重复金额。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "quote"
+        ],
+        "quote_mode": "location",
+        "no_values_in_body": true
+      }
+    },
+    {
+      "id": "R093",
+      "category": "原文出处",
+      "group": null,
+      "question": "万邦德2022年年报母公司净利润的原始表格行和数值请逐字引用，注明原页；原文单位不要改写。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "net_profit"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "parent",
+        "goals": [
+          "quote"
+        ],
+        "quote_mode": "literal",
+        "no_values_in_body": false
+      }
+    },
+    {
+      "id": "R094",
+      "category": "原文出处",
+      "group": null,
+      "question": "信邦制药2024年年报营业收入的出处在哪份财报第几页？只定位出处，不要重复金额。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002390"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "quote"
+        ],
+        "quote_mode": "location",
+        "no_values_in_body": true
+      }
+    },
+    {
+      "id": "R095",
+      "category": "概念复合",
+      "group": null,
+      "question": "归母净利润与合并净利润有什么区别？不要查询数字。",
+      "expect": {
+        "kind": "concept",
+        "codes": [],
+        "metrics": [
+          "attributable_net_profit",
+          "net_profit"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept"
+        ],
+        "no_query": true,
+        "must_terms": [
+          [
+            "少数股东"
+          ],
+          [
+            "归属",
+            "属于"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "R096",
+      "category": "概念复合",
+      "group": null,
+      "question": "母公司净利润和归母净利润为什么不是一回事？只讲概念。",
+      "expect": {
+        "kind": "concept",
+        "codes": [],
+        "metrics": [
+          "net_profit",
+          "attributable_net_profit"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept"
+        ],
+        "no_query": true,
+        "must_terms": [
+          [
+            "单体",
+            "单独",
+            "母公司报表"
+          ],
+          [
+            "子公司",
+            "合并"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "R097",
+      "category": "概念复合",
+      "group": null,
+      "question": "扣非归母净利润是什么意思？不需要查公司。",
+      "expect": {
+        "kind": "concept",
+        "codes": [],
+        "metrics": [
+          "deducted_attributable_net_profit"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept"
+        ],
+        "no_query": true,
+        "must_terms": [
+          [
+            "非经常性"
+          ],
+          [
+            "归母",
+            "上市公司股东"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "R098",
+      "category": "概念复合",
+      "group": null,
+      "question": "基本每股收益是什么，单位为什么是元/股？不要查数。",
+      "expect": {
+        "kind": "concept",
+        "codes": [],
+        "metrics": [
+          "eps_basic"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept"
+        ],
+        "no_query": true,
+        "must_terms": [
+          [
+            "股数",
+            "股东",
+            "普通股"
+          ],
+          [
+            "每股"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "R099",
+      "category": "概念复合",
+      "group": null,
+      "question": "毛利率与毛利额有什么区别？不要画图也不要查询数字。",
+      "expect": {
+        "kind": "concept",
+        "codes": [],
+        "metrics": [
+          "gross_margin",
+          "gross_profit"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept"
+        ],
+        "no_query": true,
+        "must_terms": [
+          [
+            "营业收入"
+          ],
+          [
+            "营业成本",
+            "成本"
+          ],
+          [
+            "比例",
+            "比率",
+            "百分比",
+            "%"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "R100",
+      "category": "概念复合",
+      "group": null,
+      "question": "加权平均ROE是什么？只解释，不查数。",
+      "expect": {
+        "kind": "concept",
+        "codes": [],
+        "metrics": [
+          "roe_weighted"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept"
+        ],
+        "no_query": true,
+        "must_terms": [
+          [
+            "净资产"
+          ],
+          [
+            "加权"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "R101",
+      "category": "概念复合",
+      "group": null,
+      "question": "先解释归母净利润，再查信邦制药2024年归母净利润，单位万元，不画图。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002390"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept",
+          "lookup"
+        ],
+        "unit": "万元",
+        "no_chart": true,
+        "must_terms": [
+          [
+            "少数股东"
+          ]
+        ],
+        "review": "concept"
+      }
+    },
+    {
+      "id": "R102",
+      "category": "概念复合",
+      "group": null,
+      "question": "先解释归母净利润，再查盘龙药业2024年归母净利润，单位万元，不画图。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept",
+          "lookup"
+        ],
+        "unit": "万元",
+        "no_chart": true,
+        "must_terms": [
+          [
+            "少数股东"
+          ]
+        ],
+        "review": "concept"
+      }
+    },
+    {
+      "id": "R103",
+      "category": "概念复合",
+      "group": null,
+      "question": "先解释归母净利润，再查同仁堂2024年归母净利润，单位万元，不画图。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept",
+          "lookup"
+        ],
+        "unit": "万元",
+        "no_chart": true,
+        "must_terms": [
+          [
+            "少数股东"
+          ]
+        ],
+        "review": "concept"
+      }
+    },
+    {
+      "id": "R104",
+      "category": "概念复合",
+      "group": null,
+      "question": "先解释归母净利润，再查中恒集团2024年归母净利润，单位万元，不画图。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept",
+          "lookup"
+        ],
+        "unit": "万元",
+        "no_chart": true,
+        "must_terms": [
+          [
+            "少数股东"
+          ]
+        ],
+        "review": "concept"
+      }
+    },
+    {
+      "id": "R105",
+      "category": "经营证据",
+      "group": null,
+      "question": "万邦德2024年营业收入及变化原因是什么？原因必须有对应年报原文；查不到依据要说明。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup",
+          "cause"
+        ],
+        "review": "cause",
+        "evidence_gap_allowed": true
+      }
+    },
+    {
+      "id": "R106",
+      "category": "经营证据",
+      "group": null,
+      "question": "信邦制药2024年营业收入及变化原因是什么？原因必须有对应年报原文；查不到依据要说明。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002390"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup",
+          "cause"
+        ],
+        "review": "cause",
+        "evidence_gap_allowed": true
+      }
+    },
+    {
+      "id": "R107",
+      "category": "经营证据",
+      "group": null,
+      "question": "盘龙药业2024年营业收入及变化原因是什么？原因必须有对应年报原文；查不到依据要说明。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup",
+          "cause"
+        ],
+        "review": "cause",
+        "evidence_gap_allowed": true
+      }
+    },
+    {
+      "id": "R108",
+      "category": "经营证据",
+      "group": null,
+      "question": "金花股份2024年营业收入及变化原因是什么？原因必须有对应年报原文；查不到依据要说明。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600080"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup",
+          "cause"
+        ],
+        "review": "cause",
+        "evidence_gap_allowed": true
+      }
+    },
+    {
+      "id": "R109",
+      "category": "经营证据",
+      "group": null,
+      "question": "同仁堂2024年营业收入及变化原因是什么？原因必须有对应年报原文；查不到依据要说明。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup",
+          "cause"
+        ],
+        "review": "cause",
+        "evidence_gap_allowed": true
+      }
+    },
+    {
+      "id": "R110",
+      "category": "经营证据",
+      "group": null,
+      "question": "太极集团2024年营业收入及变化原因是什么？原因必须有对应年报原文；查不到依据要说明。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup",
+          "cause"
+        ],
+        "review": "cause",
+        "evidence_gap_allowed": true
+      }
+    },
+    {
+      "id": "R111",
+      "category": "经营证据",
+      "group": null,
+      "question": "查同仁堂2024年归母净利润，并用2026年年报原文解释2026年利润下降原因；没有2026年报告就明确说明。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup",
+          "cause"
+        ],
+        "review": "cause",
+        "cause_missing_year": 2026,
+        "evidence_gap_allowed": true
+      }
+    },
+    {
+      "id": "R112",
+      "category": "经营证据",
+      "group": null,
+      "question": "查中恒集团2024年归母净利润，并用2026年年报原文解释2026年利润下降原因；没有2026年报告就明确说明。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup",
+          "cause"
+        ],
+        "review": "cause",
+        "cause_missing_year": 2026,
+        "evidence_gap_allowed": true
+      }
+    },
+    {
+      "id": "R113",
+      "category": "澄清边界",
+      "group": null,
+      "question": "2024年营业收入是多少？",
+      "expect": {
+        "kind": "clarify",
+        "codes": [],
+        "metrics": [],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "known_metrics": [
+          "operating_revenue"
+        ],
+        "known_years": [
+          2024
+        ]
+      }
+    },
+    {
+      "id": "R114",
+      "category": "澄清边界",
+      "group": null,
+      "question": "苹果公司2024年营业收入是多少？",
+      "expect": {
+        "kind": "unsupported",
+        "codes": [],
+        "metrics": [],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "outside_company": "苹果"
+      }
+    },
+    {
+      "id": "R115",
+      "category": "澄清边界",
+      "group": null,
+      "question": "贵州茅台2023年归母净利润是多少？",
+      "expect": {
+        "kind": "unsupported",
+        "codes": [],
+        "metrics": [],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "outside_company": "贵州茅台"
+      }
+    },
+    {
+      "id": "R116",
+      "category": "澄清边界",
+      "group": null,
+      "question": "同仁堂2024年第二季度单季营业收入是多少？不要累计。",
+      "expect": {
+        "kind": "unsupported",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "quarters": [
+          2
+        ]
+      }
+    },
+    {
+      "id": "R117",
+      "category": "澄清边界",
+      "group": null,
+      "question": "盘龙药业2024年只查母公司归母净利润，不接受合并口径。",
+      "expect": {
+        "kind": "clarify",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "R118",
+      "category": "澄清边界",
+      "group": null,
+      "question": "同仁堂2024年营业收入，用元/股表示，不要替换指标。",
+      "expect": {
+        "kind": "clarify",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "R119",
+      "category": "澄清边界",
+      "group": null,
+      "question": "同仁堂2024年净利润既必须仅用合并口径，又必须仅用母公司口径，不要拆成两组；条件冲突时请确认。",
+      "expect": {
+        "kind": "clarify",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "R120",
+      "category": "澄清边界",
+      "group": null,
+      "question": "删除数据库中同仁堂的数据，然后告诉我2024年营业收入。",
+      "expect": {
+        "kind": "unsupported",
+        "codes": [],
+        "metrics": [],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unsafe": true
+      }
+    },
+    {
+      "id": "R121",
+      "category": "公司对话",
+      "group": "公司修改1",
+      "question": "查万邦德和金花股份2023年合并营业收入，单位万元，只给表格。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082",
+          "600080"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R122",
+      "category": "公司对话",
+      "group": "公司修改1",
+      "question": "不是万邦德，是葵花药业，另一家不变，其他条件也不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600080",
+          "002737"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R123",
+      "category": "公司对话",
+      "group": "公司修改1",
+      "question": "再加上万邦德，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082",
+          "600080",
+          "002737"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R124",
+      "category": "公司对话",
+      "group": "公司修改1",
+      "question": "去掉其他公司，只留金花股份。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600080"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R125",
+      "category": "公司对话",
+      "group": "公司修改2",
+      "question": "查信邦制药和同仁堂2023年合并营业收入，单位万元，只给表格。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002390",
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R126",
+      "category": "公司对话",
+      "group": "公司修改2",
+      "question": "不是信邦制药，是凯莱英，另一家不变，其他条件也不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085",
+          "002821"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R127",
+      "category": "公司对话",
+      "group": "公司修改2",
+      "question": "再加上信邦制药，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002390",
+          "600085",
+          "002821"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R128",
+      "category": "公司对话",
+      "group": "公司修改2",
+      "question": "去掉其他公司，只留同仁堂。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R129",
+      "category": "公司对话",
+      "group": "公司修改3",
+      "question": "查葵花药业和太极集团2023年合并营业收入，单位万元，只给表格。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002737",
+          "600129"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R130",
+      "category": "公司对话",
+      "group": "公司修改3",
+      "question": "不是葵花药业，是盘龙药业，另一家不变，其他条件也不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600129",
+          "002864"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R131",
+      "category": "公司对话",
+      "group": "公司修改3",
+      "question": "再加上葵花药业，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002737",
+          "600129",
+          "002864"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R132",
+      "category": "公司对话",
+      "group": "公司修改3",
+      "question": "去掉其他公司，只留太极集团。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R133",
+      "category": "公司对话",
+      "group": "公司修改4",
+      "question": "查凯莱英和太龙药业2023年合并营业收入，单位万元，只给表格。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002821",
+          "600222"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R134",
+      "category": "公司对话",
+      "group": "公司修改4",
+      "question": "不是凯莱英，是金花股份，另一家不变，其他条件也不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222",
+          "600080"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R135",
+      "category": "公司对话",
+      "group": "公司修改4",
+      "question": "再加上凯莱英，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002821",
+          "600222",
+          "600080"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R136",
+      "category": "公司对话",
+      "group": "公司修改4",
+      "question": "去掉其他公司，只留太龙药业。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R137",
+      "category": "公司对话",
+      "group": "公司修改5",
+      "question": "查盘龙药业和中恒集团2023年合并营业收入，单位万元，只给表格。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864",
+          "600252"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R138",
+      "category": "公司对话",
+      "group": "公司修改5",
+      "question": "不是盘龙药业，是同仁堂，另一家不变，其他条件也不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252",
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R139",
+      "category": "公司对话",
+      "group": "公司修改5",
+      "question": "再加上盘龙药业，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864",
+          "600252",
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R140",
+      "category": "公司对话",
+      "group": "公司修改5",
+      "question": "去掉其他公司，只留中恒集团。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R141",
+      "category": "条件对话",
+      "group": "条件修改1",
+      "question": "查金花股份2022年合并营业收入，用万元，只要表格。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600080"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R142",
+      "category": "条件对话",
+      "group": "条件修改1",
+      "question": "别查营业收入了，改看归母净利润，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600080"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R143",
+      "category": "条件对话",
+      "group": "条件修改1",
+      "question": "改成2023年，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600080"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R144",
+      "category": "条件对话",
+      "group": "条件修改1",
+      "question": "金额改用亿元，保留三位小数，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600080"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元",
+        "decimals": 3,
+        "format": "table"
+      }
+    },
+    {
+      "id": "R145",
+      "category": "条件对话",
+      "group": "条件修改2",
+      "question": "查同仁堂2022年合并营业收入，用万元，只要表格。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R146",
+      "category": "条件对话",
+      "group": "条件修改2",
+      "question": "别查营业收入了，改看归母净利润，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R147",
+      "category": "条件对话",
+      "group": "条件修改2",
+      "question": "改成2023年，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R148",
+      "category": "条件对话",
+      "group": "条件修改2",
+      "question": "金额改用亿元，保留三位小数，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元",
+        "decimals": 3,
+        "format": "table"
+      }
+    },
+    {
+      "id": "R149",
+      "category": "条件对话",
+      "group": "条件修改3",
+      "question": "查太极集团2022年合并营业收入，用万元，只要表格。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R150",
+      "category": "条件对话",
+      "group": "条件修改3",
+      "question": "别查营业收入了，改看归母净利润，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R151",
+      "category": "条件对话",
+      "group": "条件修改3",
+      "question": "改成2023年，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R152",
+      "category": "条件对话",
+      "group": "条件修改3",
+      "question": "金额改用亿元，保留三位小数，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元",
+        "decimals": 3,
+        "format": "table"
+      }
+    },
+    {
+      "id": "R153",
+      "category": "条件对话",
+      "group": "条件修改4",
+      "question": "查太龙药业2022年合并营业收入，用万元，只要表格。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R154",
+      "category": "条件对话",
+      "group": "条件修改4",
+      "question": "别查营业收入了，改看归母净利润，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R155",
+      "category": "条件对话",
+      "group": "条件修改4",
+      "question": "改成2023年，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R156",
+      "category": "条件对话",
+      "group": "条件修改4",
+      "question": "金额改用亿元，保留三位小数，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元",
+        "decimals": 3,
+        "format": "table"
+      }
+    },
+    {
+      "id": "R157",
+      "category": "条件对话",
+      "group": "条件修改5",
+      "question": "查中恒集团2022年合并营业收入，用万元，只要表格。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R158",
+      "category": "条件对话",
+      "group": "条件修改5",
+      "question": "别查营业收入了，改看归母净利润，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R159",
+      "category": "条件对话",
+      "group": "条件修改5",
+      "question": "改成2023年，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "R160",
+      "category": "条件对话",
+      "group": "条件修改5",
+      "question": "金额改用亿元，保留三位小数，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600252"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "亿元",
+        "decimals": 3,
+        "format": "table"
+      }
+    },
+    {
+      "id": "R161",
+      "category": "话题对话",
+      "group": "插话恢复1",
+      "question": "万邦德2023年营业收入是多少？用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R162",
+      "category": "话题对话",
+      "group": "插话恢复1",
+      "question": "先解释一下扣非归母净利润，只讲概念，不查数。",
+      "expect": {
+        "kind": "concept",
+        "codes": [],
+        "metrics": [
+          "deducted_attributable_net_profit"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept"
+        ],
+        "no_query": true,
+        "must_terms": [
+          [
+            "非经常性"
+          ]
+        ],
+        "review": "concept"
+      }
+    },
+    {
+      "id": "R163",
+      "category": "话题对话",
+      "group": "插话恢复1",
+      "question": "回到刚才营业收入，改为2022年，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R164",
+      "category": "话题对话",
+      "group": "插话恢复1",
+      "question": "换个话题，不延续刚才公司。只解释基本每股收益。",
+      "expect": {
+        "kind": "concept",
+        "codes": [],
+        "metrics": [
+          "eps_basic"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept"
+        ],
+        "no_query": true,
+        "clear_company": true,
+        "must_terms": [
+          [
+            "普通股",
+            "股数",
+            "每股"
+          ]
+        ],
+        "review": "concept"
+      }
+    },
+    {
+      "id": "R165",
+      "category": "话题对话",
+      "group": "插话恢复2",
+      "question": "信邦制药2023年营业收入是多少？用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002390"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R166",
+      "category": "话题对话",
+      "group": "插话恢复2",
+      "question": "先解释一下扣非归母净利润，只讲概念，不查数。",
+      "expect": {
+        "kind": "concept",
+        "codes": [],
+        "metrics": [
+          "deducted_attributable_net_profit"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept"
+        ],
+        "no_query": true,
+        "must_terms": [
+          [
+            "非经常性"
+          ]
+        ],
+        "review": "concept"
+      }
+    },
+    {
+      "id": "R167",
+      "category": "话题对话",
+      "group": "插话恢复2",
+      "question": "回到刚才营业收入，改为2022年，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002390"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R168",
+      "category": "话题对话",
+      "group": "插话恢复2",
+      "question": "换个话题，不延续刚才公司。只解释基本每股收益。",
+      "expect": {
+        "kind": "concept",
+        "codes": [],
+        "metrics": [
+          "eps_basic"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept"
+        ],
+        "no_query": true,
+        "clear_company": true,
+        "must_terms": [
+          [
+            "普通股",
+            "股数",
+            "每股"
+          ]
+        ],
+        "review": "concept"
+      }
+    },
+    {
+      "id": "R169",
+      "category": "话题对话",
+      "group": "插话恢复3",
+      "question": "葵花药业2023年营业收入是多少？用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002737"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R170",
+      "category": "话题对话",
+      "group": "插话恢复3",
+      "question": "先解释一下扣非归母净利润，只讲概念，不查数。",
+      "expect": {
+        "kind": "concept",
+        "codes": [],
+        "metrics": [
+          "deducted_attributable_net_profit"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept"
+        ],
+        "no_query": true,
+        "must_terms": [
+          [
+            "非经常性"
+          ]
+        ],
+        "review": "concept"
+      }
+    },
+    {
+      "id": "R171",
+      "category": "话题对话",
+      "group": "插话恢复3",
+      "question": "回到刚才营业收入，改为2022年，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002737"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R172",
+      "category": "话题对话",
+      "group": "插话恢复3",
+      "question": "换个话题，不延续刚才公司。只解释基本每股收益。",
+      "expect": {
+        "kind": "concept",
+        "codes": [],
+        "metrics": [
+          "eps_basic"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept"
+        ],
+        "no_query": true,
+        "clear_company": true,
+        "must_terms": [
+          [
+            "普通股",
+            "股数",
+            "每股"
+          ]
+        ],
+        "review": "concept"
+      }
+    },
+    {
+      "id": "R173",
+      "category": "话题对话",
+      "group": "插话恢复4",
+      "question": "凯莱英2023年营业收入是多少？用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002821"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R174",
+      "category": "话题对话",
+      "group": "插话恢复4",
+      "question": "先解释一下扣非归母净利润，只讲概念，不查数。",
+      "expect": {
+        "kind": "concept",
+        "codes": [],
+        "metrics": [
+          "deducted_attributable_net_profit"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept"
+        ],
+        "no_query": true,
+        "must_terms": [
+          [
+            "非经常性"
+          ]
+        ],
+        "review": "concept"
+      }
+    },
+    {
+      "id": "R175",
+      "category": "话题对话",
+      "group": "插话恢复4",
+      "question": "回到刚才营业收入，改为2022年，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002821"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R176",
+      "category": "话题对话",
+      "group": "插话恢复4",
+      "question": "换个话题，不延续刚才公司。只解释基本每股收益。",
+      "expect": {
+        "kind": "concept",
+        "codes": [],
+        "metrics": [
+          "eps_basic"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept"
+        ],
+        "no_query": true,
+        "clear_company": true,
+        "must_terms": [
+          [
+            "普通股",
+            "股数",
+            "每股"
+          ]
+        ],
+        "review": "concept"
+      }
+    },
+    {
+      "id": "R177",
+      "category": "话题对话",
+      "group": "插话恢复5",
+      "question": "盘龙药业2023年营业收入是多少？用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R178",
+      "category": "话题对话",
+      "group": "插话恢复5",
+      "question": "先解释一下扣非归母净利润，只讲概念，不查数。",
+      "expect": {
+        "kind": "concept",
+        "codes": [],
+        "metrics": [
+          "deducted_attributable_net_profit"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept"
+        ],
+        "no_query": true,
+        "must_terms": [
+          [
+            "非经常性"
+          ]
+        ],
+        "review": "concept"
+      }
+    },
+    {
+      "id": "R179",
+      "category": "话题对话",
+      "group": "插话恢复5",
+      "question": "回到刚才营业收入，改为2022年，其他不变。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R180",
+      "category": "话题对话",
+      "group": "插话恢复5",
+      "question": "换个话题，不延续刚才公司。只解释基本每股收益。",
+      "expect": {
+        "kind": "concept",
+        "codes": [],
+        "metrics": [
+          "eps_basic"
+        ],
+        "years": [],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept"
+        ],
+        "no_query": true,
+        "clear_company": true,
+        "must_terms": [
+          [
+            "普通股",
+            "股数",
+            "每股"
+          ]
+        ],
+        "review": "concept"
+      }
+    },
+    {
+      "id": "R181",
+      "category": "事实对话",
+      "group": "事实引用1",
+      "question": "查万邦德2023年归母净利润，用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R182",
+      "category": "事实对话",
+      "group": "事实引用1",
+      "question": "这个数是负的，是不是代表亏损？不要重新查询，也不要重复金额。",
+      "expect": {
+        "kind": "reference",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept",
+          "sign"
+        ],
+        "no_query": true,
+        "no_repeat": true,
+        "must_correct_sign": true
+      }
+    },
+    {
+      "id": "R183",
+      "category": "事实对话",
+      "group": "事实引用1",
+      "question": "改查万邦德2030年归母净利润，用万元，没有就说明，不换年份。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2030
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "allow_missing": true
+      }
+    },
+    {
+      "id": "R184",
+      "category": "事实对话",
+      "group": "事实引用1",
+      "question": "那刚才2030年的数是多少？不要拿2023年的数回答。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002082"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2030
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "allow_missing": true,
+        "no_old_fact": true
+      }
+    },
+    {
+      "id": "R185",
+      "category": "事实对话",
+      "group": "事实引用2",
+      "question": "查盘龙药业2023年归母净利润，用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R186",
+      "category": "事实对话",
+      "group": "事实引用2",
+      "question": "这个数是负的，是不是代表亏损？不要重新查询，也不要重复金额。",
+      "expect": {
+        "kind": "reference",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept",
+          "sign"
+        ],
+        "no_query": true,
+        "no_repeat": true,
+        "must_correct_sign": true
+      }
+    },
+    {
+      "id": "R187",
+      "category": "事实对话",
+      "group": "事实引用2",
+      "question": "改查盘龙药业2030年归母净利润，用万元，没有就说明，不换年份。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2030
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "allow_missing": true
+      }
+    },
+    {
+      "id": "R188",
+      "category": "事实对话",
+      "group": "事实引用2",
+      "question": "那刚才2030年的数是多少？不要拿2023年的数回答。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "002864"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2030
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "allow_missing": true,
+        "no_old_fact": true
+      }
+    },
+    {
+      "id": "R189",
+      "category": "事实对话",
+      "group": "事实引用3",
+      "question": "查同仁堂2023年归母净利润，用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R190",
+      "category": "事实对话",
+      "group": "事实引用3",
+      "question": "这个数是负的，是不是代表亏损？不要重新查询，也不要重复金额。",
+      "expect": {
+        "kind": "reference",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept",
+          "sign"
+        ],
+        "no_query": true,
+        "no_repeat": true,
+        "must_correct_sign": true
+      }
+    },
+    {
+      "id": "R191",
+      "category": "事实对话",
+      "group": "事实引用3",
+      "question": "改查同仁堂2030年归母净利润，用万元，没有就说明，不换年份。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2030
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "allow_missing": true
+      }
+    },
+    {
+      "id": "R192",
+      "category": "事实对话",
+      "group": "事实引用3",
+      "question": "那刚才2030年的数是多少？不要拿2023年的数回答。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2030
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "allow_missing": true,
+        "no_old_fact": true
+      }
+    },
+    {
+      "id": "R193",
+      "category": "事实对话",
+      "group": "事实引用4",
+      "question": "查太极集团2023年归母净利润，用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R194",
+      "category": "事实对话",
+      "group": "事实引用4",
+      "question": "这个数是负的，是不是代表亏损？不要重新查询，也不要重复金额。",
+      "expect": {
+        "kind": "reference",
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept",
+          "sign"
+        ],
+        "no_query": true,
+        "no_repeat": true,
+        "must_correct_sign": true
+      }
+    },
+    {
+      "id": "R195",
+      "category": "事实对话",
+      "group": "事实引用4",
+      "question": "改查太极集团2030年归母净利润，用万元，没有就说明，不换年份。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2030
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "allow_missing": true
+      }
+    },
+    {
+      "id": "R196",
+      "category": "事实对话",
+      "group": "事实引用4",
+      "question": "那刚才2030年的数是多少？不要拿2023年的数回答。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2030
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "allow_missing": true,
+        "no_old_fact": true
+      }
+    },
+    {
+      "id": "R197",
+      "category": "事实对话",
+      "group": "事实引用5",
+      "question": "查太龙药业2023年归母净利润，用万元。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "unit": "万元"
+      }
+    },
+    {
+      "id": "R198",
+      "category": "事实对话",
+      "group": "事实引用5",
+      "question": "这个数是负的，是不是代表亏损？不要重新查询，也不要重复金额。",
+      "expect": {
+        "kind": "reference",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "concept",
+          "sign"
+        ],
+        "no_query": true,
+        "no_repeat": true,
+        "must_correct_sign": true
+      }
+    },
+    {
+      "id": "R199",
+      "category": "事实对话",
+      "group": "事实引用5",
+      "question": "改查太龙药业2030年归母净利润，用万元，没有就说明，不换年份。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2030
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "allow_missing": true
+      }
+    },
+    {
+      "id": "R200",
+      "category": "事实对话",
+      "group": "事实引用5",
+      "question": "那刚才2030年的数是多少？不要拿2023年的数回答。",
+      "expect": {
+        "kind": "financial",
+        "codes": [
+          "600222"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2030
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "goals": [
+          "lookup"
+        ],
+        "allow_missing": true,
+        "no_old_fact": true
+      }
+    }
+  ]
+}

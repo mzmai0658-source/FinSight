@@ -37,11 +37,11 @@ _METRICS = [
     amount('deducted_attributable_net_profit', '扣非归母净利润', '扣非净利润', '扣非归母', '归属于上市公司股东的扣除非经常性损益的净利润', definition='从归母净利润中扣除按披露规则认定的非经常性损益后的净利润，不等于合并净利润或母公司单体净利润', scopes=('consolidated',), legacy=(('core_performance_indicators_sheet', 'net_profit_excl_non_recurring'),)),
     amount('operating_cost', '营业成本', legacy=(('income_sheet', 'operating_expense_cost_of_sales'),)),
     Metric('gross_profit', '毛利额', 'money', '相同公司、期间、范围、文件版本的营业收入减营业成本', ('毛利',), formula=('operating_revenue', 'operating_cost')),
-    Metric('gross_margin', '毛利率', 'percent', '毛利額 / 营业收入 × 100', ('销售毛利率',), formula=('gross_profit', 'operating_revenue'), legacy=(('core_performance_indicators_sheet', 'gross_profit_margin'),)),
+    Metric('gross_margin', '毛利率', 'percent', '毛利额 / 营业收入 × 100，表示毛利占营业收入的比例，单位为%；毛利额是金额，毛利率是比率', ('销售毛利率',), formula=('gross_profit', 'operating_revenue'), legacy=(('core_performance_indicators_sheet', 'gross_profit_margin'),)),
     Metric('net_margin', '净利率', 'percent', '净利润合计 / 营业收入 × 100', ('销售净利率',), formula=('net_profit', 'operating_revenue'), legacy=(('core_performance_indicators_sheet', 'net_profit_margin'),)),
-    Metric('eps_basic', '基本每股收益', 'per_share', '归属于普通股股东的净利润 / 加权平均普通股股数', ('每股收益', 'EPS'), ('consolidated',), legacy=(('core_performance_indicators_sheet', 'eps'),)),
+    Metric('eps_basic', '基本每股收益', 'per_share', '归属于普通股股东的净利润 / 发行在外普通股的加权平均股数；金额以元计、股数以股计，元除以股，因此单位为元/股', ('每股收益', 'EPS'), ('consolidated',), legacy=(('core_performance_indicators_sheet', 'eps'),)),
     Metric('eps_diluted', '稀释每股收益', 'per_share', '按稀释潜在普通股调整的每股收益', scopes=('consolidated',)),
-    Metric('roe_weighted', '加权平均净资产收益率', 'percent', '报告披露的加权平均净资产收益率', ('ROE', '净资产收益率'), ('consolidated',), legacy=(('core_performance_indicators_sheet', 'roe'),)),
+    Metric('roe_weighted', '加权平均净资产收益率', 'percent', '归属于公司普通股股东的净利润 / 加权平均归属于普通股股东的净资产 × 100，反映股东资本的盈利水平；净资产变动按在报告期内存续时间加权，单位为%，不同于期末净资产口径', ('ROE', '净资产收益率'), ('consolidated',), legacy=(('core_performance_indicators_sheet', 'roe'),)),
     Metric('roe_weighted_deducted', '扣非加权平均净资产收益率', 'percent', '扣非归母净利润口径的加权平均净资产收益率', ('扣非ROE',), ('consolidated',), legacy=(('core_performance_indicators_sheet', 'roe_weighted_excl_non_recurring'),)),
     Metric('roe_diluted', '全面摊薄净资产收益率', 'percent', '期末归母净资产口径的净资产收益率', scopes=('consolidated',)),
 ]
@@ -114,6 +114,6 @@ def catalog_for_prompt() -> list[dict]:
 def metric_definition(metric,scope='consolidated'):
     item=METRICS[metric]
     if metric=='net_profit':
-        return '母公司单体利润表的净利润；不包含子公司经营成果，不能替代合并归母净利润' if scope=='parent' else item.definition
+        return '母公司单体利润表的净利润；不直接合并子公司的收入和费用，但可能通过投资收益反映子公司分红等，不能替代合并归母净利润' if scope=='parent' else item.definition
     if metric=='net_margin' and scope=='parent':return '同期间母公司净利润 / 母公司营业收入 × 100'
     return item.definition

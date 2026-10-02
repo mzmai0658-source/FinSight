@@ -195,7 +195,7 @@ def test_registered_definition_is_delivered_without_financial_query_or_numeric_p
         previous=None,repository=None,budget=None,emit=emit)))
     assert result['executed'].goals[0].status=='completed'
     assert result['prose'][0]=='它们是不同指标，定义如下：'
-    assert any('净利润合计' in line for line in result['prose']) and any('毛利額' in line for line in result['prose'])
+    assert any('净利润合计' in line for line in result['prose']) and any('毛利额' in line for line in result['prose'])
 
 
 def test_same_company_time_goals_remember_both_metrics_but_different_pairs_stay_bound():
