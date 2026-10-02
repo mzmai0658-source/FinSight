@@ -1,0 +1,144 @@
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  application:
+    name: finsight-api
+  main:
+    web-application-type: servlet # 作品说明：webflux 仅用于 WebClient，主容器保持 servlet
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:financial_report}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 5000
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    # 作品说明：库里已有 ETL 维护的财务数据表（balance_sheet 等），baseline 到 0 让 V1 业务表迁移正常执行
+    baseline-on-migrate: true
+    baseline-version: 0
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+      timeout: 3s
+      lettuce:
+        pool:
+          max-active: 16
+          max-idle: 8
+  rabbitmq:
+    host: ${RABBITMQ_HOST:127.0.0.1}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    virtual-host: ${RABBITMQ_VHOST:/}
+    # 作品说明：发布确认 + 路由失败回退，保证消息可靠投递
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+    listener:
+      simple:
+        acknowledge-mode: manual
+        # 作品说明：重试耗尽后不重新入队 → 触发 DLX 进死信队列
+        default-requeue-rejected: false
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1s
+          multiplier: 2
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 110MB
+
+server:
+  port: ${SERVER_PORT:8080}
+  shutdown: graceful
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      agent:
+        sliding-window-size: 20
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 20s
+        permitted-number-of-calls-in-half-open-state: 3
+  retry:
+    instances:
+      agent:
+        max-attempts: 2
+        wait-duration: 500ms
+
+finsight:
+  features:
+    advisor-enabled: ${ADVISOR_ENABLED:false}
+  etl:
+    # 作品说明：管理端上传 PDF 的落盘目录（与 Python 共享的工作区路径）
+    upload-dir: ${ETL_UPLOAD_DIR:../data_root/uploads}
+    # 作品说明：单文件管线最长等待（LLM 抽取耗时较长）
+    request-timeout: ${ETL_REQUEST_TIMEOUT:2h}
+    # 作品说明：恢复等待须长于 HTTP 等待，因为调用方断连不会终止 Python 导入。
+    run-timeout: ${ETL_RUN_TIMEOUT:3h}
+    # 作品说明：管线内同步 RAG 入库（需向量服务可达；默认关闭，避免本机演示被网络阻塞）
+    ingest-rag: ${ETL_INGEST_RAG:false}
+  jwt:
+    # 作品说明：生产环境务必通过环境变量覆盖
+    secret: ${JWT_SECRET:}
+    access-token-ttl: 2h
+    refresh-token-ttl: 7d
+    issuer: finsight
+  agent:
+    internal-api-token: ${INTERNAL_API_TOKEN:}
+    # 作品说明：Python AI 微服务内网地址
+    base-url: ${AGENT_BASE_URL:http://127.0.0.1:8000}
+    connect-timeout: 5s
+    # 作品说明：SSE 长对话：读超时放宽
+    response-timeout: 300s
+  admin:
+    # 作品说明：首次启动自动播种的管理员账号（仅当用户不存在时创建）
+    username: ${ADMIN_USERNAME:admin}
+    password: ${ADMIN_PASSWORD:admin123456}
+  quota:
+    # 作品说明：每用户每日 AI 对话额度（ADMIN 豁免）
+    chat-per-day: ${CHAT_QUOTA_PER_DAY:100}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
+
+logging:
+  level:
+    com.finsight: debug
+  pattern:
+    console: "%d{HH:mm:ss.SSS} %-5level [%X{traceId:-}] %logger{36} - %msg%n"

@@ -52,4 +52,3 @@ Apache-2.0，见 [LICENSE](LICENSE) 与 [NOTICE](NOTICE)。团队信息、人工
 [技术报告PDF](docs/FinSight-技术报告.pdf)、[可编辑报告](docs/TECHNICAL_REPORT.md)、[作品简介](docs/WORK_INTRO.md)、[第三方清单](docs/THIRD_PARTY.md)、[验收结果](docs/DELIVERY_ACCEPTANCE.md)和[上传检查清单](docs/UPLOAD_CHECKLIST.md)。
 
 公开示例PDF见 demo/v3/example_reports/，全部标注虚构演示数据；实际初始化仍从同一份spec定义生成并核验，不直接放行示例文件。
-

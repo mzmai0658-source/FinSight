@@ -1,0 +1,522 @@
+{
+  "version": 1,
+  "blind": false,
+  "description": "Frozen before revised-model runs; expected identities are independent of model output",
+  "cases": [
+    {
+      "id": "C01",
+      "question": "您好，帮我查太极集团2024年合并营业收入，用亿元，只给表格。",
+      "category": "classic",
+      "group": null,
+      "expect": {
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "unit": "亿元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "C02",
+      "question": "同仁堂2024年母公司营业收入，用亿元，只给表格。",
+      "category": "classic",
+      "group": null,
+      "expect": {
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "scope": "parent",
+        "unit": "亿元",
+        "format": "table"
+      }
+    },
+    {
+      "id": "C03",
+      "question": "同仁堂2024年净利润是多少？用万元，保留两位小数。",
+      "category": "classic",
+      "group": null,
+      "expect": {
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "C04",
+      "question": "同仁堂2024年合并净利润是多少？",
+      "category": "classic",
+      "group": null,
+      "expect": {
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "scope": "consolidated"
+      }
+    },
+    {
+      "id": "C05",
+      "question": "太极集团最新年报的营业收入是多少？",
+      "category": "classic",
+      "group": null,
+      "expect": {
+        "codes": [
+          "600129"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "time_mode": "latest_each"
+      }
+    },
+    {
+      "id": "C06",
+      "question": "比较同仁堂和万邦德共同最新年报的营业收入，哪家更高？",
+      "category": "classic",
+      "group": null,
+      "expect": {
+        "codes": [
+          "600085",
+          "002082"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "time_mode": "latest_common",
+        "goal": "compare"
+      }
+    },
+    {
+      "id": "C07",
+      "question": "同仁堂2024年与2023年营业收入相差多少？用亿元。",
+      "category": "classic",
+      "group": null,
+      "expect": {
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023,
+          2024
+        ],
+        "unit": "亿元",
+        "calculation": "difference"
+      }
+    },
+    {
+      "id": "C08",
+      "question": "库内公司2024年归母净利润最低的前三家，用万元列个表。",
+      "category": "classic",
+      "group": null,
+      "expect": {
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "goal": "rank",
+        "order": "asc",
+        "limit": 3,
+        "unit": "万元",
+        "format": "table",
+        "all_companies": true
+      }
+    },
+    {
+      "id": "C09",
+      "question": "同仁堂2023年和2024年营业收入，用亿元画柱状图。",
+      "category": "classic",
+      "group": null,
+      "expect": {
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023,
+          2024
+        ],
+        "goal": "chart",
+        "chart_type": "bar",
+        "unit": "亿元"
+      }
+    },
+    {
+      "id": "C10",
+      "question": "毛利额和毛利率有什么区别？只解释，不查数，不画图。",
+      "category": "classic",
+      "group": null,
+      "expect": {
+        "goal": "concept",
+        "metrics": [
+          "gross_profit",
+          "gross_margin"
+        ],
+        "no_query": true,
+        "no_chart": true
+      }
+    },
+    {
+      "id": "C11",
+      "question": "同仁堂2024年合并营业收入在原报告哪一页？只给来源位置。",
+      "category": "classic",
+      "group": null,
+      "expect": {
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "goal": "quote",
+        "quote_mode": "location"
+      }
+    },
+    {
+      "id": "C12",
+      "question": "同仁堂2024年基本每股收益是多少？用元/股。",
+      "category": "classic",
+      "group": null,
+      "expect": {
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "eps_basic"
+        ],
+        "years": [
+          2024
+        ],
+        "unit": "元/股"
+      }
+    },
+    {
+      "id": "E01",
+      "question": "解释归属于母公司股东的净利润，先别查数，也不要画图。",
+      "category": "edge",
+      "group": null,
+      "expect": {
+        "goal": "concept",
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "no_query": true,
+        "no_chart": true
+      }
+    },
+    {
+      "id": "E02",
+      "question": "先解释合并净利润与归母的区别，再查同仁堂2024年这两个数。",
+      "category": "edge",
+      "group": null,
+      "expect": {
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "net_profit",
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "goals": [
+          "concept",
+          "lookup"
+        ]
+      }
+    },
+    {
+      "id": "E03",
+      "question": "同仁堂2024年母公司口径的归母净利润是多少？",
+      "category": "edge",
+      "group": null,
+      "expect": {
+        "clarify": true
+      }
+    },
+    {
+      "id": "E04",
+      "question": "贵州茅台2024年营业收入是多少？",
+      "category": "edge",
+      "group": null,
+      "expect": {
+        "unsupported": true
+      }
+    },
+    {
+      "id": "E05",
+      "question": "盘龙药业2024年第四季度单季营收是多少？",
+      "category": "edge",
+      "group": null,
+      "expect": {
+        "unsupported": true
+      }
+    },
+    {
+      "id": "E06",
+      "question": "查同仁堂2024年营业收入，并解释2026年必定增长10%的原因；报告没写就明确说明未确认。",
+      "category": "edge",
+      "group": null,
+      "expect": {
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "goals": [
+          "lookup",
+          "cause"
+        ],
+        "evidence_missing": true,
+        "years_goal": "lookup"
+      }
+    },
+    {
+      "id": "A1",
+      "question": "查同仁堂和万邦德2024年营业收入，用亿元，保留三位小数，只给表格。",
+      "category": "dialogue",
+      "group": "A",
+      "expect": {
+        "codes": [
+          "600085",
+          "002082"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "unit": "亿元",
+        "decimals": 3,
+        "format": "table"
+      }
+    },
+    {
+      "id": "A2",
+      "question": "先删掉万邦德，保留同仁堂，年份不变。",
+      "category": "dialogue",
+      "group": "A",
+      "expect": {
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "unit": "亿元",
+        "decimals": 3,
+        "format": "table"
+      }
+    },
+    {
+      "id": "A3",
+      "question": "加上太极集团，其余照旧。",
+      "category": "dialogue",
+      "group": "A",
+      "expect": {
+        "codes": [
+          "600085",
+          "600129"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "unit": "亿元",
+        "decimals": 3,
+        "format": "table"
+      }
+    },
+    {
+      "id": "A4",
+      "question": "不是太极集团，是盘龙药业，其余不变。",
+      "category": "dialogue",
+      "group": "A",
+      "expect": {
+        "codes": [
+          "600085",
+          "002864"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "unit": "亿元",
+        "decimals": 3,
+        "format": "table"
+      }
+    },
+    {
+      "id": "B1",
+      "question": "同仁堂2024年营业收入，用亿元，保留两位小数，只给表格。",
+      "category": "dialogue",
+      "group": "B",
+      "expect": {
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "unit": "亿元",
+        "decimals": 2,
+        "format": "table"
+      }
+    },
+    {
+      "id": "B2",
+      "question": "别查营收，改看归母，其他不变。",
+      "category": "dialogue",
+      "group": "B",
+      "expect": {
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "unit": "亿元",
+        "decimals": 2,
+        "format": "table"
+      }
+    },
+    {
+      "id": "B3",
+      "question": "先岔开一下，毛利额和毛利率到底差在哪？不查数，不画图。",
+      "category": "dialogue",
+      "group": "B",
+      "expect": {
+        "goal": "concept",
+        "metrics": [
+          "gross_profit",
+          "gross_margin"
+        ],
+        "no_query": true,
+        "no_chart": true
+      }
+    },
+    {
+      "id": "B4",
+      "question": "回到刚才归母，改成2023年，其他不变。",
+      "category": "dialogue",
+      "group": "B",
+      "expect": {
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "unit": "亿元",
+        "decimals": 2,
+        "format": "table"
+      }
+    },
+    {
+      "id": "D1",
+      "question": "同仁堂2024年合并净利润是多少？用万元，保留两位小数。",
+      "category": "dialogue",
+      "group": "D",
+      "expect": {
+        "codes": [
+          "600085"
+        ],
+        "metrics": [
+          "net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "D2",
+      "question": "这个数是负的，说明亏损吗？",
+      "category": "dialogue",
+      "group": "D",
+      "expect": {
+        "goal": "concept",
+        "correct_positive": true
+      }
+    },
+    {
+      "id": "D3",
+      "question": "刚才那个数字出自原报告哪一页？不要重复金额。",
+      "category": "dialogue",
+      "group": "D",
+      "expect": {
+        "goal": "quote",
+        "quote_mode": "location",
+        "no_repeat": true
+      }
+    },
+    {
+      "id": "D4",
+      "question": "换个话题，不延续刚才公司。它2023年营收是多少？",
+      "category": "dialogue",
+      "group": "D",
+      "expect": {
+        "clarify": true,
+        "cleared_company": true
+      }
+    }
+  ]
+}

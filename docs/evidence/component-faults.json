@@ -1,0 +1,37 @@
+[
+  {
+    "name": "java_sse_native_sql_failure",
+    "passed": true,
+    "evidence": {
+      "status": "failed",
+      "outcome": {
+        "status": "failed",
+        "reason_codes": [
+          "OperationalError"
+        ]
+      },
+      "answer": "本轮执行失败，未取得可发布的结果。"
+    }
+  },
+  {
+    "name": "native_python_model_connection_unreachable",
+    "passed": true,
+    "evidence": {
+      "component": "Real Uvicorn and Ollama client with unreachable child-process endpoint; not Java/SSE end-to-end",
+      "outcome": {
+        "status": "failed",
+        "reason_codes": [
+          "model_connection_failed"
+        ]
+      },
+      "answer": "本地模型连接失败，本轮未完成。"
+    }
+  },
+  {
+    "name": "native_python_database_connection_unreachable",
+    "passed": true,
+    "evidence": {
+      "component": "Real Uvicorn/MySQL protocol with wrong child-process port; not Java/SSE end-to-end"
+    }
+  }
+]

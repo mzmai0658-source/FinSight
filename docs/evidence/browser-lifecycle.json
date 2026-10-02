@@ -1,0 +1,58 @@
+[
+  {
+    "name": "refresh_active_task_identity",
+    "passed": true,
+    "evidence": {
+      "task": {
+        "taskId": "f221a2bb-961a-4fff-8bed-7f1d13399a42",
+        "sessionUid": "ae772256-a034-456b-a38b-214a6dfd4791",
+        "clientRequestId": "ff413575-e360-4b14-b3f3-7486dc8d0af4"
+      }
+    }
+  },
+  {
+    "name": "temporary_disconnect_keeps_task",
+    "passed": true,
+    "evidence": {
+      "task_id": "f221a2bb-961a-4fff-8bed-7f1d13399a42",
+      "status": "running"
+    }
+  },
+  {
+    "name": "switch_session_keeps_task",
+    "passed": true,
+    "evidence": {
+      "other_session": "f3eb8b31-338d-48b1-b0f3-d279165e1b29"
+    }
+  },
+  {
+    "name": "late_result_stays_in_origin_session",
+    "passed": true,
+    "evidence": {
+      "task_id": "f221a2bb-961a-4fff-8bed-7f1d13399a42",
+      "status": "completed"
+    }
+  },
+  {
+    "name": "origin_saved_result_recovers",
+    "passed": true,
+    "evidence": {
+      "task_id": "f221a2bb-961a-4fff-8bed-7f1d13399a42"
+    }
+  },
+  {
+    "name": "native_stop_button_cancels",
+    "passed": true,
+    "evidence": {
+      "task_id": "fc565d19-657c-4390-96a2-10f1de51f08d",
+      "status": "cancelled"
+    }
+  },
+  {
+    "name": "cancelled_turn_has_no_financial_publish",
+    "passed": true,
+    "evidence": {
+      "task_id": "fc565d19-657c-4390-96a2-10f1de51f08d"
+    }
+  }
+]

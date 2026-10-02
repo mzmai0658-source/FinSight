@@ -1,0 +1,6 @@
+{
+  "packages": [
+    {"name":"erlang","version":"28.5.0.7","url":"https://github.com/erlang/otp/releases/download/OTP-28.5.0.7/otp_win64_28.5.0.7.zip","sha256":"9ff998d7a612b6697f6f737078783557bced63e5bf2a96a9d5f7d7d2a840cb98"},
+    {"name":"rabbitmq","version":"4.3.6","url":"https://github.com/rabbitmq/rabbitmq-server/releases/download/v4.3.6/rabbitmq-server-windows-4.3.6.zip","sha256":"48161b084f1257edc112b24fccda378cc3e83c8e4b94984801cd6651817981f1"}
+  ]
+}

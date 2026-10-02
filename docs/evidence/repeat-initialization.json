@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "counts": {
+    "financial_data_releases": 1,
+    "financial_canonical_reports": 15,
+    "financial_canonical_facts": 240
+  },
+  "index_chunks": 30,
+  "repeat_seed_verified": true,
+  "mysql_version": "9.3.0",
+  "scope": "Fresh isolated demo seed + repeat; final publication counts and collection coverage"
+}

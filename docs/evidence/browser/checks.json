@@ -1,0 +1,10 @@
+{
+  "login": true,
+  "history_and_synthetic_label": true,
+  "numeric_page_rendered": true,
+  "mobile_no_horizontal_overflow": true,
+  "chart_rendered_after_refresh": true,
+  "session_switch": true,
+  "original_page_button_present": true,
+  "original_pdf_opened_at_registered_page": true
+}

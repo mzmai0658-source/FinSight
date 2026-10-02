@@ -1,0 +1,194 @@
+[
+  {
+    "name": "same_session_concurrency",
+    "passed": true,
+    "evidence": {
+      "http": 409
+    }
+  },
+  {
+    "name": "active_session_delete_guard",
+    "passed": true,
+    "evidence": {
+      "http": 409
+    }
+  },
+  {
+    "name": "real_ollama_cancel_gpu_and_slots",
+    "passed": true,
+    "evidence": {
+      "baseline": {
+        "stage": "baseline",
+        "seconds": 1790881487.526581,
+        "utilization": 4,
+        "memory_mb": 1204,
+        "active": 0,
+        "workers": 0
+      },
+      "busy": [
+        {
+          "stage": "inference",
+          "seconds": 1790881491.46343,
+          "utilization": 77,
+          "memory_mb": 5616,
+          "active": 1,
+          "workers": 1
+        },
+        {
+          "stage": "inference",
+          "seconds": 1790881491.8686323,
+          "utilization": 44,
+          "memory_mb": 5616,
+          "active": 1,
+          "workers": 1
+        }
+      ],
+      "samples": [
+        {
+          "stage": "after_cancel",
+          "seconds": 1790881492.07545,
+          "utilization": 42,
+          "memory_mb": 1196,
+          "active": 0,
+          "workers": 0
+        },
+        {
+          "stage": "after_cancel",
+          "seconds": 1790881492.6334548,
+          "utilization": 2,
+          "memory_mb": 1196,
+          "active": 0,
+          "workers": 0
+        },
+        {
+          "stage": "after_cancel",
+          "seconds": 1790881493.1871145,
+          "utilization": 2,
+          "memory_mb": 1196,
+          "active": 0,
+          "workers": 0
+        },
+        {
+          "stage": "after_cancel",
+          "seconds": 1790881493.8088949,
+          "utilization": 2,
+          "memory_mb": 1196,
+          "active": 0,
+          "workers": 0
+        },
+        {
+          "stage": "after_cancel",
+          "seconds": 1790881494.372917,
+          "utilization": 2,
+          "memory_mb": 1196,
+          "active": 0,
+          "workers": 0
+        },
+        {
+          "stage": "after_cancel",
+          "seconds": 1790881495.0179908,
+          "utilization": 2,
+          "memory_mb": 1196,
+          "active": 0,
+          "workers": 0
+        }
+      ],
+      "cancel_seconds": 0.046,
+      "task_id": "c1d37387-3394-4872-99c9-1bc255398fd9"
+    }
+  },
+  {
+    "name": "disconnect_recovers_saved_task",
+    "passed": true,
+    "evidence": {
+      "task_id": "09c986f4-96b9-4d45-bf49-5122d4dcf807",
+      "seconds": 22.469
+    }
+  },
+  {
+    "name": "duplicate_submission_one_saved_turn",
+    "passed": true,
+    "evidence": {
+      "task_id": "09c986f4-96b9-4d45-bf49-5122d4dcf807",
+      "messages": 2
+    }
+  },
+  {
+    "name": "terminal_status_not_overwritten",
+    "passed": true,
+    "evidence": {
+      "completed": "completed",
+      "cancelled": "cancelled"
+    }
+  },
+  {
+    "name": "native_user_isolation",
+    "passed": true,
+    "evidence": {
+      "responses": [
+        {
+          "method": "GET",
+          "http": 404
+        },
+        {
+          "method": "POST",
+          "http": 404
+        },
+        {
+          "method": "GET",
+          "http": 404
+        }
+      ]
+    }
+  },
+  {
+    "name": "blank_and_2000_codepoint_boundary",
+    "passed": true,
+    "evidence": {
+      "responses": [
+        {
+          "codepoints": 4,
+          "http": 400
+        },
+        {
+          "codepoints": 2001,
+          "http": 400
+        },
+        {
+          "codepoints": 2001,
+          "http": 400
+        }
+      ]
+    }
+  },
+  {
+    "name": "native_save_failure_rollback",
+    "passed": true,
+    "evidence": {
+      "status": "failed",
+      "saved": false,
+      "messages": 0
+    }
+  },
+  {
+    "name": "native_reader_no_write_or_admin_grants",
+    "passed": true,
+    "evidence": {
+      "grant_count": 12
+    }
+  },
+  {
+    "name": "native_sql_permission_failure_no_fake_data",
+    "passed": true,
+    "evidence": {
+      "status": "failed",
+      "outcome": {
+        "status": "failed",
+        "reason_codes": [
+          "OperationalError"
+        ]
+      },
+      "answer": "本轮执行失败，未取得可发布的结果。"
+    }
+  }
+]

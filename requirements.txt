@@ -1,0 +1,53 @@
+# -*- coding: utf-8 -*-
+# Pin resolution to the checked reference versions; update the lock intentionally.
+-c requirements.lock.txt
+
+# Core data processing
+pandas>=2.0.0
+numpy>=1.24.0
+openpyxl>=3.1.0
+
+# Database
+SQLAlchemy>=2.0.0
+pymysql>=1.1.0
+mysql-connector-python>=8.0.0
+sqlglot>=25.0.0
+
+# API service
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.0.0
+
+# LLM / RAG / embeddings
+# 主路径为本地开源模型：Ollama（对话）+ sentence-transformers 加载 BAAI/bge-small-zh-v1.5（向量）。
+# dashscope 仅为可选回退，未配置 Key 时不会被使用。
+requests>=2.31.0
+langgraph>=1.1.4,<1.2
+langchain-ollama>=1.1.0,<2
+sentence-transformers>=2.7.0
+dashscope>=1.14.0
+chromadb>=0.4.0
+
+# OCR / PDF / document parsing
+beautifulsoup4>=4.12.0
+pypdf>=4.2.0
+pdfplumber>=0.10.0
+pdf2image>=1.17.0
+Pillow>=10.0.0
+
+# Visualization and utilities
+matplotlib>=3.7.0
+python-dotenv>=1.0.0
+tqdm>=4.65.0
+loguru>=0.7.0
+prometheus-client>=0.20.0
+
+# Testing
+PyMuPDF>=1.26.0,<2
+pytest>=8.0.0
+agentevals>=0.0.9,<1
+
+jsonschema>=4.20,<5
+
+# 作品说明：公开演示报告及技术报告的 PDF 生成依赖。
+reportlab>=4.5,<5

@@ -1,0 +1,19 @@
+{
+  "python": {
+    "passed": 945,
+    "skipped": 3,
+    "failures": 0,
+    "scope": "Clean extracted Python 3.11.9 venv; private historical assets not redistributed"
+  },
+  "java": {
+    "passed": 69,
+    "failures": 0
+  },
+  "frontend": {
+    "passed": 44,
+    "failures": 0,
+    "build": "passed"
+  },
+  "simulation_scope": "Bad JSON/empty output/timeout/queue capacity/late done/task ownership and terminal constraints; real faults separately recorded",
+  "validation_revision": "Final new ZIP extraction, fixed parent-env isolation and offline unit fixture; current dependencies installed independently"
+}

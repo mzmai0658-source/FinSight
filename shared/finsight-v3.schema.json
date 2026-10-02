@@ -1,0 +1,4328 @@
+{
+  "$defs": {
+    "AxisEdit": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "comparison_axis",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "enum": [
+            "years",
+            "companies",
+            "none"
+          ],
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "AxisEdit",
+      "type": "object"
+    },
+    "CalculationEdit": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "calculation",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "enum": [
+            "none",
+            "difference",
+            "yoy",
+            "relative_percent",
+            "percentage_points"
+          ],
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "CalculationEdit",
+      "type": "object"
+    },
+    "Check": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "fail",
+            "unknown",
+            "not_applicable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "status",
+        "detail"
+      ],
+      "title": "Check",
+      "type": "object"
+    },
+    "ClarificationChoices": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "const": "metrics",
+          "default": "metrics",
+          "title": "Field",
+          "type": "string"
+        },
+        "family": {
+          "title": "Family",
+          "type": "string"
+        },
+        "options": {
+          "additionalProperties": {
+            "enum": [
+              "operating_revenue",
+              "total_operating_revenue",
+              "main_business_revenue",
+              "net_profit",
+              "attributable_net_profit",
+              "deducted_attributable_net_profit",
+              "operating_cost",
+              "gross_profit",
+              "gross_margin",
+              "net_margin",
+              "eps_basic",
+              "eps_diluted",
+              "roe_weighted",
+              "roe_weighted_deducted",
+              "roe_diluted",
+              "total_assets",
+              "total_liabilities",
+              "total_equity",
+              "cash",
+              "receivables",
+              "inventory",
+              "trading_assets",
+              "construction",
+              "payables",
+              "advances",
+              "contract_liabilities",
+              "short_loans",
+              "retained_earnings",
+              "operating_profit",
+              "total_profit",
+              "other_income",
+              "selling_expense",
+              "administration_expense",
+              "finance_expense",
+              "research_expense",
+              "tax_surcharges",
+              "total_operating_cost",
+              "asset_impairment",
+              "credit_impairment",
+              "operating_cash_flow",
+              "investing_cash_flow",
+              "financing_cash_flow",
+              "net_cash_change",
+              "sales_cash",
+              "investment_cash_paid",
+              "cash_begin",
+              "cash_end",
+              "debt_ratio",
+              "net_assets_per_share",
+              "operating_cash_per_share",
+              "operating_revenue_reported_yoy",
+              "total_operating_revenue_reported_yoy",
+              "attributable_net_profit_reported_yoy",
+              "net_profit_reported_yoy",
+              "deducted_attributable_net_profit_reported_yoy",
+              "total_assets_reported_yoy",
+              "total_liabilities_reported_yoy",
+              "net_cash_change_reported_yoy",
+              "total_assets_reported_change_vs_year_end",
+              "total_liabilities_reported_change_vs_year_end"
+            ],
+            "type": "string"
+          },
+          "title": "Options",
+          "type": "object"
+        }
+      },
+      "required": [
+        "family",
+        "options"
+      ],
+      "title": "ClarificationChoices",
+      "type": "object"
+    },
+    "CollectionEdit": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "all_companies",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "CollectionEdit",
+      "type": "object"
+    },
+    "CompanyEdit": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "add",
+            "remove",
+            "keep",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "codes",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "items": {
+            "pattern": "^\\d{6}$",
+            "type": "string"
+          },
+          "title": "Value",
+          "type": "array"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "CompanyEdit",
+      "type": "object"
+    },
+    "CompanyMention": {
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "description": "本轮原话中实际出现的公司名字、代码、集合或代词，逐字保留",
+          "title": "Text",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "explicit",
+            "context",
+            "collection",
+            "ambiguous",
+            "uncovered",
+            "candidate"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "codes": {
+          "description": "登记名单内匹配的代码；明确库外名称填空数组，不选择相近登记公司",
+          "items": {
+            "pattern": "^\\d{6}$",
+            "type": "string"
+          },
+          "title": "Codes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "text",
+        "kind",
+        "codes"
+      ],
+      "title": "CompanyMention",
+      "type": "object"
+    },
+    "ComputedReference": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "data_version": {
+          "title": "Data Version",
+          "type": "string"
+        },
+        "inputs": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Inputs",
+          "type": "array"
+        },
+        "calculation": {
+          "enum": [
+            "difference",
+            "yoy",
+            "relative_percent",
+            "percentage_points"
+          ],
+          "title": "Calculation",
+          "type": "string"
+        },
+        "comparison_axis": {
+          "enum": [
+            "years",
+            "companies"
+          ],
+          "title": "Comparison Axis",
+          "type": "string"
+        },
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "scope": {
+          "enum": [
+            "consolidated",
+            "parent"
+          ],
+          "title": "Scope",
+          "type": "string"
+        },
+        "company": {
+          "title": "Company",
+          "type": "string"
+        },
+        "year": {
+          "maximum": 2100,
+          "minimum": 2000,
+          "title": "Year",
+          "type": "integer"
+        },
+        "period": {
+          "enum": [
+            "FY",
+            "HY",
+            "Q1",
+            "Q3"
+          ],
+          "title": "Period",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "pattern": "^-?\\d+(?:\\.\\d+)?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        },
+        "unit": {
+          "enum": [
+            "元",
+            "%",
+            "元/股",
+            "百分点"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "formula": {
+          "title": "Formula",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "detail": {
+          "default": "",
+          "title": "Detail",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "data_version",
+        "inputs",
+        "calculation",
+        "comparison_axis",
+        "metric",
+        "scope",
+        "company",
+        "year",
+        "period",
+        "value",
+        "unit",
+        "formula",
+        "label"
+      ],
+      "title": "ComputedReference",
+      "type": "object"
+    },
+    "Conditions": {
+      "additionalProperties": false,
+      "properties": {
+        "codes": {
+          "items": {
+            "pattern": "^\\d{6}$",
+            "type": "string"
+          },
+          "title": "Codes",
+          "type": "array"
+        },
+        "all_companies": {
+          "default": false,
+          "title": "All Companies",
+          "type": "boolean"
+        },
+        "metrics": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Metrics",
+          "type": "array"
+        },
+        "scope": {
+          "default": "consolidated",
+          "enum": [
+            "consolidated",
+            "parent"
+          ],
+          "title": "Scope",
+          "type": "string"
+        },
+        "time": {
+          "$ref": "#/$defs/TimeSelection"
+        },
+        "presentation": {
+          "$ref": "#/$defs/Presentation"
+        },
+        "restrictions": {
+          "$ref": "#/$defs/Restrictions"
+        },
+        "calculation": {
+          "default": "none",
+          "enum": [
+            "none",
+            "difference",
+            "yoy",
+            "relative_percent",
+            "percentage_points"
+          ],
+          "title": "Calculation",
+          "type": "string"
+        },
+        "comparison_axis": {
+          "default": "none",
+          "enum": [
+            "years",
+            "companies",
+            "none"
+          ],
+          "title": "Comparison Axis",
+          "type": "string"
+        },
+        "origins": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Origin"
+          },
+          "title": "Origins",
+          "type": "object"
+        }
+      },
+      "title": "Conditions",
+      "type": "object"
+    },
+    "ContextReference": {
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "description": "本轮逐字出现的代词或回到前一财务任务的表述",
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "target": {
+          "enum": [
+            "company",
+            "fact",
+            "financial_task"
+          ],
+          "title": "Target",
+          "type": "string"
+        },
+        "number": {
+          "default": "singular",
+          "enum": [
+            "singular",
+            "plural"
+          ],
+          "title": "Number",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "target"
+      ],
+      "title": "ContextReference",
+      "type": "object"
+    },
+    "DialogueState": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": 3,
+          "default": 3,
+          "title": "Version",
+          "type": "integer"
+        },
+        "revision": {
+          "default": 0,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "topic": {
+          "default": "other",
+          "title": "Topic",
+          "type": "string"
+        },
+        "legacy_scope_unknown": {
+          "default": false,
+          "title": "Legacy Scope Unknown",
+          "type": "boolean"
+        },
+        "conditions": {
+          "$ref": "#/$defs/Conditions"
+        },
+        "active_goals": {
+          "items": {
+            "$ref": "#/$defs/Goal"
+          },
+          "title": "Active Goals",
+          "type": "array"
+        },
+        "goal_conditions": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Conditions"
+          },
+          "title": "Goal Conditions",
+          "type": "object"
+        },
+        "suspended": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Conditions"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "pending": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Request"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "recent_facts": {
+          "items": {
+            "$ref": "#/$defs/FactReference"
+          },
+          "title": "Recent Facts",
+          "type": "array"
+        },
+        "recent_computed": {
+          "items": {
+            "$ref": "#/$defs/ComputedReference"
+          },
+          "title": "Recent Computed",
+          "type": "array"
+        },
+        "interrupted_request": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InterruptedRequest"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "last_execution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Execution"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "executions": {
+          "items": {
+            "$ref": "#/$defs/Execution"
+          },
+          "title": "Executions",
+          "type": "array"
+        },
+        "modifications": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "all_companies": "#/$defs/CollectionEdit",
+                "calculation": "#/$defs/CalculationEdit",
+                "codes": "#/$defs/CompanyEdit",
+                "comparison_axis": "#/$defs/AxisEdit",
+                "metrics": "#/$defs/MetricEdit",
+                "presentation": "#/$defs/PresentationEdit",
+                "presentation.chart_type": "#/$defs/EditPresentationChartType",
+                "presentation.decimals": "#/$defs/EditPresentationDecimals",
+                "presentation.format": "#/$defs/EditPresentationFormat",
+                "presentation.include_inputs": "#/$defs/EditPresentationIncludeInputs",
+                "presentation.limit": "#/$defs/EditPresentationLimit",
+                "presentation.order": "#/$defs/EditPresentationOrder",
+                "presentation.unit": "#/$defs/EditPresentationUnit",
+                "restrictions": "#/$defs/RestrictionEdit",
+                "restrictions.excluded_codes": "#/$defs/EditRestrictionsExcludedCodes",
+                "restrictions.excluded_metrics": "#/$defs/EditRestrictionsExcludedMetrics",
+                "restrictions.no_chart": "#/$defs/EditRestrictionsNoChart",
+                "restrictions.no_query": "#/$defs/EditRestrictionsNoQuery",
+                "restrictions.no_repeat": "#/$defs/EditRestrictionsNoRepeat",
+                "scope": "#/$defs/ScopeEdit",
+                "time": "#/$defs/TimeEdit",
+                "time.mode": "#/$defs/EditTimeMode",
+                "time.pairs": "#/$defs/EditTimePairs",
+                "time.periods": "#/$defs/EditTimePeriods",
+                "time.quarters": "#/$defs/EditTimeQuarters",
+                "time.single_quarter": "#/$defs/EditTimeSingleQuarter",
+                "time.span": "#/$defs/EditTimeSpan",
+                "time.years": "#/$defs/EditTimeYears"
+              },
+              "propertyName": "field"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/CompanyEdit"
+              },
+              {
+                "$ref": "#/$defs/MetricEdit"
+              },
+              {
+                "$ref": "#/$defs/ScopeEdit"
+              },
+              {
+                "$ref": "#/$defs/CollectionEdit"
+              },
+              {
+                "$ref": "#/$defs/CalculationEdit"
+              },
+              {
+                "$ref": "#/$defs/AxisEdit"
+              },
+              {
+                "$ref": "#/$defs/EditTimeMode"
+              },
+              {
+                "$ref": "#/$defs/EditTimeYears"
+              },
+              {
+                "$ref": "#/$defs/EditTimePeriods"
+              },
+              {
+                "$ref": "#/$defs/EditTimeSpan"
+              },
+              {
+                "$ref": "#/$defs/EditTimePairs"
+              },
+              {
+                "$ref": "#/$defs/EditTimeSingleQuarter"
+              },
+              {
+                "$ref": "#/$defs/EditTimeQuarters"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationUnit"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationDecimals"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationFormat"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationChartType"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationOrder"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationLimit"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationIncludeInputs"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsNoQuery"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsNoChart"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsNoRepeat"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsExcludedCodes"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsExcludedMetrics"
+              },
+              {
+                "$ref": "#/$defs/TimeEdit"
+              },
+              {
+                "$ref": "#/$defs/PresentationEdit"
+              },
+              {
+                "$ref": "#/$defs/RestrictionEdit"
+              }
+            ]
+          },
+          "title": "Modifications",
+          "type": "array"
+        }
+      },
+      "title": "DialogueState",
+      "type": "object"
+    },
+    "EditPresentationChartType": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "presentation.chart_type",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "enum": [
+            "line",
+            "bar",
+            "pie",
+            "scatter"
+          ],
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditPresentationChartType",
+      "type": "object"
+    },
+    "EditPresentationDecimals": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "presentation.decimals",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "maximum": 12,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditPresentationDecimals",
+      "type": "object"
+    },
+    "EditPresentationFormat": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "presentation.format",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "enum": [
+            "auto",
+            "text",
+            "table",
+            "chart"
+          ],
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditPresentationFormat",
+      "type": "object"
+    },
+    "EditPresentationIncludeInputs": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "presentation.include_inputs",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditPresentationIncludeInputs",
+      "type": "object"
+    },
+    "EditPresentationLimit": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "presentation.limit",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditPresentationLimit",
+      "type": "object"
+    },
+    "EditPresentationOrder": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "presentation.order",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "enum": [
+            "asc",
+            "desc"
+          ],
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditPresentationOrder",
+      "type": "object"
+    },
+    "EditPresentationUnit": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "presentation.unit",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "enum": [
+                "元",
+                "万元",
+                "亿元",
+                "%",
+                "元/股"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditPresentationUnit",
+      "type": "object"
+    },
+    "EditRestrictionsExcludedCodes": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "add",
+            "remove",
+            "keep",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "restrictions.excluded_codes",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "items": {
+            "pattern": "^\\d{6}$",
+            "type": "string"
+          },
+          "title": "Value",
+          "type": "array"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditRestrictionsExcludedCodes",
+      "type": "object"
+    },
+    "EditRestrictionsExcludedMetrics": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "add",
+            "remove",
+            "keep",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "restrictions.excluded_metrics",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "items": {
+            "enum": [
+              "operating_revenue",
+              "total_operating_revenue",
+              "main_business_revenue",
+              "net_profit",
+              "attributable_net_profit",
+              "deducted_attributable_net_profit",
+              "operating_cost",
+              "gross_profit",
+              "gross_margin",
+              "net_margin",
+              "eps_basic",
+              "eps_diluted",
+              "roe_weighted",
+              "roe_weighted_deducted",
+              "roe_diluted",
+              "total_assets",
+              "total_liabilities",
+              "total_equity",
+              "cash",
+              "receivables",
+              "inventory",
+              "trading_assets",
+              "construction",
+              "payables",
+              "advances",
+              "contract_liabilities",
+              "short_loans",
+              "retained_earnings",
+              "operating_profit",
+              "total_profit",
+              "other_income",
+              "selling_expense",
+              "administration_expense",
+              "finance_expense",
+              "research_expense",
+              "tax_surcharges",
+              "total_operating_cost",
+              "asset_impairment",
+              "credit_impairment",
+              "operating_cash_flow",
+              "investing_cash_flow",
+              "financing_cash_flow",
+              "net_cash_change",
+              "sales_cash",
+              "investment_cash_paid",
+              "cash_begin",
+              "cash_end",
+              "debt_ratio",
+              "net_assets_per_share",
+              "operating_cash_per_share",
+              "operating_revenue_reported_yoy",
+              "total_operating_revenue_reported_yoy",
+              "attributable_net_profit_reported_yoy",
+              "net_profit_reported_yoy",
+              "deducted_attributable_net_profit_reported_yoy",
+              "total_assets_reported_yoy",
+              "total_liabilities_reported_yoy",
+              "net_cash_change_reported_yoy",
+              "total_assets_reported_change_vs_year_end",
+              "total_liabilities_reported_change_vs_year_end"
+            ],
+            "type": "string"
+          },
+          "title": "Value",
+          "type": "array"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditRestrictionsExcludedMetrics",
+      "type": "object"
+    },
+    "EditRestrictionsNoChart": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "restrictions.no_chart",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditRestrictionsNoChart",
+      "type": "object"
+    },
+    "EditRestrictionsNoQuery": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "restrictions.no_query",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditRestrictionsNoQuery",
+      "type": "object"
+    },
+    "EditRestrictionsNoRepeat": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "restrictions.no_repeat",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditRestrictionsNoRepeat",
+      "type": "object"
+    },
+    "EditTimeMode": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "time.mode",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "enum": [
+            "explicit",
+            "calendar_years",
+            "latest_common",
+            "latest_each",
+            "latest"
+          ],
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditTimeMode",
+      "type": "object"
+    },
+    "EditTimePairs": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "time.pairs",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "items": {
+                "maxItems": 2,
+                "minItems": 2,
+                "prefixItems": [
+                  {
+                    "maximum": 2100,
+                    "minimum": 2000,
+                    "type": "integer"
+                  },
+                  {
+                    "enum": [
+                      "FY",
+                      "HY",
+                      "Q1",
+                      "Q3"
+                    ],
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditTimePairs",
+      "type": "object"
+    },
+    "EditTimePeriods": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "add",
+            "remove",
+            "keep",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "time.periods",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "items": {
+            "enum": [
+              "FY",
+              "HY",
+              "Q1",
+              "Q3"
+            ],
+            "type": "string"
+          },
+          "title": "Value",
+          "type": "array"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditTimePeriods",
+      "type": "object"
+    },
+    "EditTimeQuarters": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "add",
+            "remove",
+            "keep",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "time.quarters",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "items": {
+            "enum": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "type": "integer"
+          },
+          "title": "Value",
+          "type": "array"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditTimeQuarters",
+      "type": "object"
+    },
+    "EditTimeSingleQuarter": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "time.single_quarter",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditTimeSingleQuarter",
+      "type": "object"
+    },
+    "EditTimeSpan": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "time.span",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "maximum": 30,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditTimeSpan",
+      "type": "object"
+    },
+    "EditTimeYears": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "add",
+            "remove",
+            "keep",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "time.years",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "items": {
+            "maximum": 2100,
+            "minimum": 2000,
+            "type": "integer"
+          },
+          "title": "Value",
+          "type": "array"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditTimeYears",
+      "type": "object"
+    },
+    "Execution": {
+      "additionalProperties": false,
+      "properties": {
+        "turn_id": {
+          "title": "Turn Id",
+          "type": "string"
+        },
+        "data_version": {
+          "title": "Data Version",
+          "type": "string"
+        },
+        "resolved_periods": {
+          "additionalProperties": {
+            "items": {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "enum": [
+                    "FY",
+                    "HY",
+                    "Q1",
+                    "Q3"
+                  ],
+                  "type": "string"
+                }
+              ],
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "title": "Resolved Periods",
+          "type": "object"
+        },
+        "time_rule": {
+          "title": "Time Rule",
+          "type": "string"
+        },
+        "fact_refs": {
+          "items": {
+            "$ref": "#/$defs/FactReference"
+          },
+          "title": "Fact Refs",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "completed",
+            "partial",
+            "no_data",
+            "clarification",
+            "cancelled",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "conditions": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Conditions"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "goal_conditions": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Conditions"
+          },
+          "title": "Goal Conditions",
+          "type": "object"
+        }
+      },
+      "required": [
+        "turn_id",
+        "data_version",
+        "resolved_periods",
+        "time_rule",
+        "fact_refs",
+        "status"
+      ],
+      "title": "Execution",
+      "type": "object"
+    },
+    "Fact": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": 3,
+          "default": 3,
+          "title": "Version",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "data_version": {
+          "title": "Data Version",
+          "type": "string"
+        },
+        "stock_code": {
+          "pattern": "^\\d{6}$",
+          "title": "Stock Code",
+          "type": "string"
+        },
+        "company": {
+          "title": "Company",
+          "type": "string"
+        },
+        "year": {
+          "title": "Year",
+          "type": "integer"
+        },
+        "period": {
+          "enum": [
+            "FY",
+            "HY",
+            "Q1",
+            "Q3"
+          ],
+          "title": "Period",
+          "type": "string"
+        },
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "scope": {
+          "enum": [
+            "consolidated",
+            "parent"
+          ],
+          "title": "Scope",
+          "type": "string"
+        },
+        "value": {
+          "pattern": "^-?\\d+(?:\\.\\d+)?$",
+          "title": "Value",
+          "type": "string"
+        },
+        "unit": {
+          "enum": [
+            "元",
+            "%",
+            "元/股"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "derived",
+            "conflict",
+            "scope_unknown",
+            "unverified"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Source"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "formula": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Formula"
+        },
+        "inputs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Inputs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "data_version",
+        "stock_code",
+        "company",
+        "year",
+        "period",
+        "metric",
+        "scope",
+        "value",
+        "unit",
+        "status"
+      ],
+      "title": "Fact",
+      "type": "object"
+    },
+    "FactReference": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "data_version": {
+          "title": "Data Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "data_version"
+      ],
+      "title": "FactReference",
+      "type": "object"
+    },
+    "Goal": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "lookup",
+            "compare",
+            "rank",
+            "chart",
+            "quote",
+            "cause",
+            "concept",
+            "rules",
+            "catalog",
+            "sign",
+            "unsupported"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "intent_source": {
+          "default": "",
+          "title": "Intent Source",
+          "type": "string"
+        },
+        "context_goal_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Context Goal Id"
+        },
+        "context_conditions": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Conditions"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "selection": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GoalSelection"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "condition_edits": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "all_companies": "#/$defs/CollectionEdit",
+                "calculation": "#/$defs/CalculationEdit",
+                "codes": "#/$defs/CompanyEdit",
+                "comparison_axis": "#/$defs/AxisEdit",
+                "metrics": "#/$defs/MetricEdit",
+                "presentation.chart_type": "#/$defs/EditPresentationChartType",
+                "presentation.decimals": "#/$defs/EditPresentationDecimals",
+                "presentation.format": "#/$defs/EditPresentationFormat",
+                "presentation.include_inputs": "#/$defs/EditPresentationIncludeInputs",
+                "presentation.limit": "#/$defs/EditPresentationLimit",
+                "presentation.order": "#/$defs/EditPresentationOrder",
+                "presentation.unit": "#/$defs/EditPresentationUnit",
+                "restrictions.excluded_codes": "#/$defs/EditRestrictionsExcludedCodes",
+                "restrictions.excluded_metrics": "#/$defs/EditRestrictionsExcludedMetrics",
+                "restrictions.no_chart": "#/$defs/EditRestrictionsNoChart",
+                "restrictions.no_query": "#/$defs/EditRestrictionsNoQuery",
+                "restrictions.no_repeat": "#/$defs/EditRestrictionsNoRepeat",
+                "scope": "#/$defs/ScopeEdit",
+                "time.mode": "#/$defs/EditTimeMode",
+                "time.pairs": "#/$defs/EditTimePairs",
+                "time.periods": "#/$defs/EditTimePeriods",
+                "time.quarters": "#/$defs/EditTimeQuarters",
+                "time.single_quarter": "#/$defs/EditTimeSingleQuarter",
+                "time.span": "#/$defs/EditTimeSpan",
+                "time.years": "#/$defs/EditTimeYears"
+              },
+              "propertyName": "field"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/CompanyEdit"
+              },
+              {
+                "$ref": "#/$defs/MetricEdit"
+              },
+              {
+                "$ref": "#/$defs/ScopeEdit"
+              },
+              {
+                "$ref": "#/$defs/CollectionEdit"
+              },
+              {
+                "$ref": "#/$defs/CalculationEdit"
+              },
+              {
+                "$ref": "#/$defs/AxisEdit"
+              },
+              {
+                "$ref": "#/$defs/EditTimeMode"
+              },
+              {
+                "$ref": "#/$defs/EditTimeYears"
+              },
+              {
+                "$ref": "#/$defs/EditTimePeriods"
+              },
+              {
+                "$ref": "#/$defs/EditTimeSpan"
+              },
+              {
+                "$ref": "#/$defs/EditTimePairs"
+              },
+              {
+                "$ref": "#/$defs/EditTimeSingleQuarter"
+              },
+              {
+                "$ref": "#/$defs/EditTimeQuarters"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationUnit"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationDecimals"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationFormat"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationChartType"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationOrder"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationLimit"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationIncludeInputs"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsNoQuery"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsNoChart"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsNoRepeat"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsExcludedCodes"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsExcludedMetrics"
+              }
+            ]
+          },
+          "title": "Condition Edits",
+          "type": "array"
+        },
+        "catalog_target": {
+          "anyOf": [
+            {
+              "enum": [
+                "companies",
+                "periods",
+                "metrics",
+                "capabilities"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Catalog Target"
+        },
+        "execution_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Execution Ref"
+        },
+        "quote_mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "literal",
+                "location"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Quote Mode"
+        },
+        "concept_mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "definition",
+                "difference",
+                "implication"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Concept Mode"
+        },
+        "clarification": {
+          "description": "只阻塞此目标的缺条件或歧义；独立且明确的其他目标仍可执行",
+          "items": {
+            "type": "string"
+          },
+          "title": "Clarification",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "text"
+      ],
+      "title": "Goal",
+      "type": "object"
+    },
+    "GoalResult": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "lookup",
+            "compare",
+            "rank",
+            "chart",
+            "quote",
+            "cause",
+            "concept",
+            "rules",
+            "catalog",
+            "sign",
+            "unsupported"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "completed",
+            "partial",
+            "no_data",
+            "unsupported",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "fact_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fact Ids",
+          "type": "array"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "detail": {
+          "default": "",
+          "title": "Detail",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "status"
+      ],
+      "title": "GoalResult",
+      "type": "object"
+    },
+    "GoalSelection": {
+      "additionalProperties": false,
+      "description": "作品说明：描述本轮共享条件的明确例外，独立目标保留自己的选择，避免公司和指标扩大组合。",
+      "properties": {
+        "codes": {
+          "anyOf": [
+            {
+              "items": {
+                "pattern": "^\\d{6}$",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Codes"
+        },
+        "metrics": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Metrics"
+        },
+        "scope": {
+          "anyOf": [
+            {
+              "enum": [
+                "consolidated",
+                "parent"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scope"
+        },
+        "time": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TimePatch"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "presentation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PresentationPatch"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "calculation": {
+          "anyOf": [
+            {
+              "enum": [
+                "none",
+                "difference",
+                "yoy",
+                "relative_percent",
+                "percentage_points"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Calculation"
+        },
+        "comparison_axis": {
+          "anyOf": [
+            {
+              "enum": [
+                "years",
+                "companies",
+                "none"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Comparison Axis"
+        }
+      },
+      "title": "GoalSelection",
+      "type": "object"
+    },
+    "HashedOriginalRegion": {
+      "additionalProperties": false,
+      "properties": {
+        "page": {
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "bbox": {
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Bbox",
+          "type": "array"
+        },
+        "text_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Text Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "page",
+        "bbox",
+        "text_sha256"
+      ],
+      "title": "HashedOriginalRegion",
+      "type": "object"
+    },
+    "InterruptedRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "turn_id": {
+          "title": "Turn Id",
+          "type": "string"
+        },
+        "question": {
+          "title": "Question",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "failed",
+            "cancelled"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "confirmed_fields": {
+          "items": {
+            "enum": [
+              "codes",
+              "metrics"
+            ],
+            "type": "string"
+          },
+          "title": "Confirmed Fields",
+          "type": "array"
+        },
+        "uncertain_paths": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uncertain Paths"
+        }
+      },
+      "required": [
+        "turn_id",
+        "question",
+        "status"
+      ],
+      "title": "InterruptedRequest",
+      "type": "object"
+    },
+    "MemoryEdit": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "enum": [
+            "company_context",
+            "financial_context"
+          ],
+          "title": "Field",
+          "type": "string"
+        },
+        "operation": {
+          "const": "clear",
+          "default": "clear",
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "description": "明确删除记忆的本轮逐字依据；与新请求的空条件不同",
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field",
+        "text"
+      ],
+      "title": "MemoryEdit",
+      "type": "object"
+    },
+    "MetricEdit": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "add",
+            "remove",
+            "keep",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "metrics",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "items": {
+            "enum": [
+              "operating_revenue",
+              "total_operating_revenue",
+              "main_business_revenue",
+              "net_profit",
+              "attributable_net_profit",
+              "deducted_attributable_net_profit",
+              "operating_cost",
+              "gross_profit",
+              "gross_margin",
+              "net_margin",
+              "eps_basic",
+              "eps_diluted",
+              "roe_weighted",
+              "roe_weighted_deducted",
+              "roe_diluted",
+              "total_assets",
+              "total_liabilities",
+              "total_equity",
+              "cash",
+              "receivables",
+              "inventory",
+              "trading_assets",
+              "construction",
+              "payables",
+              "advances",
+              "contract_liabilities",
+              "short_loans",
+              "retained_earnings",
+              "operating_profit",
+              "total_profit",
+              "other_income",
+              "selling_expense",
+              "administration_expense",
+              "finance_expense",
+              "research_expense",
+              "tax_surcharges",
+              "total_operating_cost",
+              "asset_impairment",
+              "credit_impairment",
+              "operating_cash_flow",
+              "investing_cash_flow",
+              "financing_cash_flow",
+              "net_cash_change",
+              "sales_cash",
+              "investment_cash_paid",
+              "cash_begin",
+              "cash_end",
+              "debt_ratio",
+              "net_assets_per_share",
+              "operating_cash_per_share",
+              "operating_revenue_reported_yoy",
+              "total_operating_revenue_reported_yoy",
+              "attributable_net_profit_reported_yoy",
+              "net_profit_reported_yoy",
+              "deducted_attributable_net_profit_reported_yoy",
+              "total_assets_reported_yoy",
+              "total_liabilities_reported_yoy",
+              "net_cash_change_reported_yoy",
+              "total_assets_reported_change_vs_year_end",
+              "total_liabilities_reported_change_vs_year_end"
+            ],
+            "type": "string"
+          },
+          "title": "Value",
+          "type": "array"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "MetricEdit",
+      "type": "object"
+    },
+    "Origin": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "current",
+            "context",
+            "default"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "turn_id": {
+          "default": "",
+          "title": "Turn Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "text"
+      ],
+      "title": "Origin",
+      "type": "object"
+    },
+    "OriginalCellProof": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "$ref": "#/$defs/OriginalRegion"
+        },
+        "row": {
+          "$ref": "#/$defs/OriginalRegion"
+        },
+        "heading": {
+          "$ref": "#/$defs/OriginalRegion"
+        },
+        "context": {
+          "$ref": "#/$defs/OriginalRegion"
+        },
+        "scope_context": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OriginalRegion"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "value",
+        "row",
+        "heading",
+        "context"
+      ],
+      "title": "OriginalCellProof",
+      "type": "object"
+    },
+    "OriginalRegion": {
+      "additionalProperties": false,
+      "properties": {
+        "page": {
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "bbox": {
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Bbox",
+          "type": "array"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "page",
+        "bbox",
+        "text"
+      ],
+      "title": "OriginalRegion",
+      "type": "object"
+    },
+    "Presentation": {
+      "additionalProperties": false,
+      "properties": {
+        "unit": {
+          "anyOf": [
+            {
+              "enum": [
+                "元",
+                "万元",
+                "亿元",
+                "%",
+                "元/股"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "decimals": {
+          "anyOf": [
+            {
+              "maximum": 12,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Decimals"
+        },
+        "format": {
+          "default": "auto",
+          "enum": [
+            "auto",
+            "text",
+            "table",
+            "chart"
+          ],
+          "title": "Format",
+          "type": "string"
+        },
+        "chart_type": {
+          "default": "line",
+          "enum": [
+            "line",
+            "bar",
+            "pie",
+            "scatter"
+          ],
+          "title": "Chart Type",
+          "type": "string"
+        },
+        "order": {
+          "default": "desc",
+          "enum": [
+            "asc",
+            "desc"
+          ],
+          "title": "Order",
+          "type": "string"
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Limit"
+        },
+        "include_inputs": {
+          "default": false,
+          "title": "Include Inputs",
+          "type": "boolean"
+        }
+      },
+      "title": "Presentation",
+      "type": "object"
+    },
+    "PresentationEdit": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "presentation",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/$defs/PresentationPatch"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "PresentationEdit",
+      "type": "object"
+    },
+    "PresentationPatch": {
+      "additionalProperties": false,
+      "properties": {
+        "unit": {
+          "anyOf": [
+            {
+              "enum": [
+                "元",
+                "万元",
+                "亿元",
+                "%",
+                "元/股"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "decimals": {
+          "anyOf": [
+            {
+              "maximum": 12,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Decimals"
+        },
+        "format": {
+          "anyOf": [
+            {
+              "enum": [
+                "auto",
+                "text",
+                "table",
+                "chart"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Format"
+        },
+        "chart_type": {
+          "anyOf": [
+            {
+              "enum": [
+                "line",
+                "bar",
+                "pie",
+                "scatter"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Chart Type"
+        },
+        "order": {
+          "anyOf": [
+            {
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Order"
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Limit"
+        },
+        "include_inputs": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Include Inputs"
+        }
+      },
+      "title": "PresentationPatch",
+      "type": "object"
+    },
+    "Request": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": 3,
+          "default": 3,
+          "title": "Version",
+          "type": "integer"
+        },
+        "turn_id": {
+          "title": "Turn Id",
+          "type": "string"
+        },
+        "question": {
+          "title": "Question",
+          "type": "string"
+        },
+        "continuity": {
+          "default": "new",
+          "enum": [
+            "continue",
+            "new",
+            "resume",
+            "clear"
+          ],
+          "title": "Continuity",
+          "type": "string"
+        },
+        "conditions": {
+          "$ref": "#/$defs/Conditions"
+        },
+        "modifications": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "all_companies": "#/$defs/CollectionEdit",
+                "calculation": "#/$defs/CalculationEdit",
+                "codes": "#/$defs/CompanyEdit",
+                "comparison_axis": "#/$defs/AxisEdit",
+                "metrics": "#/$defs/MetricEdit",
+                "presentation": "#/$defs/PresentationEdit",
+                "presentation.chart_type": "#/$defs/EditPresentationChartType",
+                "presentation.decimals": "#/$defs/EditPresentationDecimals",
+                "presentation.format": "#/$defs/EditPresentationFormat",
+                "presentation.include_inputs": "#/$defs/EditPresentationIncludeInputs",
+                "presentation.limit": "#/$defs/EditPresentationLimit",
+                "presentation.order": "#/$defs/EditPresentationOrder",
+                "presentation.unit": "#/$defs/EditPresentationUnit",
+                "restrictions": "#/$defs/RestrictionEdit",
+                "restrictions.excluded_codes": "#/$defs/EditRestrictionsExcludedCodes",
+                "restrictions.excluded_metrics": "#/$defs/EditRestrictionsExcludedMetrics",
+                "restrictions.no_chart": "#/$defs/EditRestrictionsNoChart",
+                "restrictions.no_query": "#/$defs/EditRestrictionsNoQuery",
+                "restrictions.no_repeat": "#/$defs/EditRestrictionsNoRepeat",
+                "scope": "#/$defs/ScopeEdit",
+                "time": "#/$defs/TimeEdit",
+                "time.mode": "#/$defs/EditTimeMode",
+                "time.pairs": "#/$defs/EditTimePairs",
+                "time.periods": "#/$defs/EditTimePeriods",
+                "time.quarters": "#/$defs/EditTimeQuarters",
+                "time.single_quarter": "#/$defs/EditTimeSingleQuarter",
+                "time.span": "#/$defs/EditTimeSpan",
+                "time.years": "#/$defs/EditTimeYears"
+              },
+              "propertyName": "field"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/CompanyEdit"
+              },
+              {
+                "$ref": "#/$defs/MetricEdit"
+              },
+              {
+                "$ref": "#/$defs/ScopeEdit"
+              },
+              {
+                "$ref": "#/$defs/CollectionEdit"
+              },
+              {
+                "$ref": "#/$defs/CalculationEdit"
+              },
+              {
+                "$ref": "#/$defs/AxisEdit"
+              },
+              {
+                "$ref": "#/$defs/EditTimeMode"
+              },
+              {
+                "$ref": "#/$defs/EditTimeYears"
+              },
+              {
+                "$ref": "#/$defs/EditTimePeriods"
+              },
+              {
+                "$ref": "#/$defs/EditTimeSpan"
+              },
+              {
+                "$ref": "#/$defs/EditTimePairs"
+              },
+              {
+                "$ref": "#/$defs/EditTimeSingleQuarter"
+              },
+              {
+                "$ref": "#/$defs/EditTimeQuarters"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationUnit"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationDecimals"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationFormat"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationChartType"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationOrder"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationLimit"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationIncludeInputs"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsNoQuery"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsNoChart"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsNoRepeat"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsExcludedCodes"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsExcludedMetrics"
+              },
+              {
+                "$ref": "#/$defs/TimeEdit"
+              },
+              {
+                "$ref": "#/$defs/PresentationEdit"
+              },
+              {
+                "$ref": "#/$defs/RestrictionEdit"
+              }
+            ]
+          },
+          "title": "Modifications",
+          "type": "array"
+        },
+        "memory_edits": {
+          "items": {
+            "$ref": "#/$defs/MemoryEdit"
+          },
+          "title": "Memory Edits",
+          "type": "array"
+        },
+        "clarification_choices": {
+          "items": {
+            "$ref": "#/$defs/ClarificationChoices"
+          },
+          "title": "Clarification Choices",
+          "type": "array"
+        },
+        "goals": {
+          "items": {
+            "$ref": "#/$defs/Goal"
+          },
+          "title": "Goals",
+          "type": "array"
+        },
+        "context_references": {
+          "items": {
+            "$ref": "#/$defs/ContextReference"
+          },
+          "title": "Context References",
+          "type": "array"
+        },
+        "company_mentions": {
+          "items": {
+            "$ref": "#/$defs/CompanyMention"
+          },
+          "title": "Company Mentions",
+          "type": "array"
+        },
+        "clarification": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Clarification",
+          "type": "array"
+        },
+        "unsupported": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unsupported",
+          "type": "array"
+        }
+      },
+      "required": [
+        "turn_id",
+        "question",
+        "conditions",
+        "goals"
+      ],
+      "title": "Request",
+      "type": "object"
+    },
+    "RestrictionEdit": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "restrictions",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/$defs/RestrictionPatch"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "RestrictionEdit",
+      "type": "object"
+    },
+    "RestrictionPatch": {
+      "additionalProperties": false,
+      "properties": {
+        "no_query": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "No Query"
+        },
+        "no_chart": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "No Chart"
+        },
+        "no_repeat": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "No Repeat"
+        },
+        "excluded_codes": {
+          "anyOf": [
+            {
+              "items": {
+                "pattern": "^\\d{6}$",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Excluded Codes"
+        },
+        "excluded_metrics": {
+          "anyOf": [
+            {
+              "items": {
+                "enum": [
+                  "operating_revenue",
+                  "total_operating_revenue",
+                  "main_business_revenue",
+                  "net_profit",
+                  "attributable_net_profit",
+                  "deducted_attributable_net_profit",
+                  "operating_cost",
+                  "gross_profit",
+                  "gross_margin",
+                  "net_margin",
+                  "eps_basic",
+                  "eps_diluted",
+                  "roe_weighted",
+                  "roe_weighted_deducted",
+                  "roe_diluted",
+                  "total_assets",
+                  "total_liabilities",
+                  "total_equity",
+                  "cash",
+                  "receivables",
+                  "inventory",
+                  "trading_assets",
+                  "construction",
+                  "payables",
+                  "advances",
+                  "contract_liabilities",
+                  "short_loans",
+                  "retained_earnings",
+                  "operating_profit",
+                  "total_profit",
+                  "other_income",
+                  "selling_expense",
+                  "administration_expense",
+                  "finance_expense",
+                  "research_expense",
+                  "tax_surcharges",
+                  "total_operating_cost",
+                  "asset_impairment",
+                  "credit_impairment",
+                  "operating_cash_flow",
+                  "investing_cash_flow",
+                  "financing_cash_flow",
+                  "net_cash_change",
+                  "sales_cash",
+                  "investment_cash_paid",
+                  "cash_begin",
+                  "cash_end",
+                  "debt_ratio",
+                  "net_assets_per_share",
+                  "operating_cash_per_share",
+                  "operating_revenue_reported_yoy",
+                  "total_operating_revenue_reported_yoy",
+                  "attributable_net_profit_reported_yoy",
+                  "net_profit_reported_yoy",
+                  "deducted_attributable_net_profit_reported_yoy",
+                  "total_assets_reported_yoy",
+                  "total_liabilities_reported_yoy",
+                  "net_cash_change_reported_yoy",
+                  "total_assets_reported_change_vs_year_end",
+                  "total_liabilities_reported_change_vs_year_end"
+                ],
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Excluded Metrics"
+        }
+      },
+      "title": "RestrictionPatch",
+      "type": "object"
+    },
+    "Restrictions": {
+      "additionalProperties": false,
+      "properties": {
+        "no_query": {
+          "default": false,
+          "title": "No Query",
+          "type": "boolean"
+        },
+        "no_chart": {
+          "default": false,
+          "title": "No Chart",
+          "type": "boolean"
+        },
+        "no_repeat": {
+          "default": false,
+          "title": "No Repeat",
+          "type": "boolean"
+        },
+        "excluded_codes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Excluded Codes",
+          "type": "array"
+        },
+        "excluded_metrics": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Excluded Metrics",
+          "type": "array"
+        }
+      },
+      "title": "Restrictions",
+      "type": "object"
+    },
+    "ScopeEdit": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "scope",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "enum": [
+            "consolidated",
+            "parent"
+          ],
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "ScopeEdit",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "document_id": {
+          "title": "Document Id",
+          "type": "string"
+        },
+        "document_version": {
+          "title": "Document Version",
+          "type": "string"
+        },
+        "source_sha256": {
+          "title": "Source Sha256",
+          "type": "string"
+        },
+        "source_path": {
+          "title": "Source Path",
+          "type": "string"
+        },
+        "page": {
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "table": {
+          "title": "Table",
+          "type": "string"
+        },
+        "row": {
+          "title": "Row",
+          "type": "string"
+        },
+        "column": {
+          "title": "Column",
+          "type": "string"
+        },
+        "row_index": {
+          "minimum": 0,
+          "title": "Row Index",
+          "type": "integer"
+        },
+        "column_index": {
+          "minimum": 0,
+          "title": "Column Index",
+          "type": "integer"
+        },
+        "raw_value": {
+          "title": "Raw Value",
+          "type": "string"
+        },
+        "raw_unit": {
+          "title": "Raw Unit",
+          "type": "string"
+        },
+        "raw_precision": {
+          "minimum": 0,
+          "title": "Raw Precision",
+          "type": "integer"
+        },
+        "literal": {
+          "title": "Literal",
+          "type": "string"
+        },
+        "extraction": {
+          "enum": [
+            "ocr",
+            "pdf_text",
+            "manual"
+          ],
+          "title": "Extraction",
+          "type": "string"
+        },
+        "verification": {
+          "enum": [
+            "literal_checked",
+            "human_checked",
+            "unverified"
+          ],
+          "title": "Verification",
+          "type": "string"
+        },
+        "original_cell": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OriginalCellProof"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "scope_proof": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StatementScopeProof"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "document_id",
+        "document_version",
+        "source_sha256",
+        "source_path",
+        "page",
+        "table",
+        "row",
+        "column",
+        "row_index",
+        "column_index",
+        "raw_value",
+        "raw_unit",
+        "raw_precision",
+        "literal",
+        "extraction",
+        "verification"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "StatementScopeProof": {
+      "additionalProperties": false,
+      "properties": {
+        "caption": {
+          "$ref": "#/$defs/OriginalRegion"
+        },
+        "family": {
+          "enum": [
+            "资产负债表",
+            "利润表",
+            "现金流量表",
+            "notes",
+            "indicators"
+          ],
+          "title": "Family",
+          "type": "string"
+        },
+        "value_region": {
+          "$ref": "#/$defs/HashedOriginalRegion"
+        },
+        "label_region": {
+          "$ref": "#/$defs/HashedOriginalRegion"
+        }
+      },
+      "required": [
+        "caption",
+        "family",
+        "value_region",
+        "label_region"
+      ],
+      "title": "StatementScopeProof",
+      "type": "object"
+    },
+    "TaskRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": 3,
+          "default": 3,
+          "title": "Version",
+          "type": "integer"
+        },
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        },
+        "client_request_id": {
+          "title": "Client Request Id",
+          "type": "string"
+        },
+        "session_uid": {
+          "title": "Session Uid",
+          "type": "string"
+        },
+        "question": {
+          "default": "",
+          "title": "Question",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "running",
+            "cancelling",
+            "completed",
+            "cancelled",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "deadline": {
+          "description": "Unix epoch milliseconds",
+          "title": "Deadline",
+          "type": "integer"
+        },
+        "saved": {
+          "default": false,
+          "title": "Saved",
+          "type": "boolean"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Result"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error"
+        }
+      },
+      "required": [
+        "task_id",
+        "client_request_id",
+        "session_uid",
+        "status",
+        "deadline"
+      ],
+      "title": "TaskRecord",
+      "type": "object"
+    },
+    "TimeEdit": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "field": {
+          "const": "time",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/$defs/TimePatch"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "TimeEdit",
+      "type": "object"
+    },
+    "TimePatch": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "explicit",
+                "calendar_years",
+                "latest_common",
+                "latest_each",
+                "latest"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mode"
+        },
+        "years": {
+          "anyOf": [
+            {
+              "items": {
+                "maximum": 2100,
+                "minimum": 2000,
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Years"
+        },
+        "periods": {
+          "anyOf": [
+            {
+              "items": {
+                "enum": [
+                  "FY",
+                  "HY",
+                  "Q1",
+                  "Q3"
+                ],
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Periods"
+        },
+        "single_quarter": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Single Quarter"
+        },
+        "quarters": {
+          "anyOf": [
+            {
+              "items": {
+                "enum": [
+                  1,
+                  2,
+                  3,
+                  4
+                ],
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Quarters"
+        },
+        "span": {
+          "anyOf": [
+            {
+              "maximum": 30,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Span"
+        },
+        "pairs": {
+          "anyOf": [
+            {
+              "items": {
+                "maxItems": 2,
+                "minItems": 2,
+                "prefixItems": [
+                  {
+                    "maximum": 2100,
+                    "minimum": 2000,
+                    "type": "integer"
+                  },
+                  {
+                    "enum": [
+                      "FY",
+                      "HY",
+                      "Q1",
+                      "Q3"
+                    ],
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pairs"
+        }
+      },
+      "title": "TimePatch",
+      "type": "object"
+    },
+    "TimeSelection": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "default": "latest",
+          "enum": [
+            "explicit",
+            "calendar_years",
+            "latest_common",
+            "latest_each",
+            "latest"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "years": {
+          "items": {
+            "maximum": 2100,
+            "minimum": 2000,
+            "type": "integer"
+          },
+          "title": "Years",
+          "type": "array"
+        },
+        "periods": {
+          "items": {
+            "enum": [
+              "FY",
+              "HY",
+              "Q1",
+              "Q3"
+            ],
+            "type": "string"
+          },
+          "title": "Periods",
+          "type": "array"
+        },
+        "single_quarter": {
+          "default": false,
+          "title": "Single Quarter",
+          "type": "boolean"
+        },
+        "quarters": {
+          "description": "Requested single quarters, distinct from cumulative report periods; unsupported for execution",
+          "items": {
+            "enum": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "type": "integer"
+          },
+          "title": "Quarters",
+          "type": "array"
+        },
+        "span": {
+          "anyOf": [
+            {
+              "maximum": 30,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Span"
+        },
+        "pairs": {
+          "anyOf": [
+            {
+              "items": {
+                "maxItems": 2,
+                "minItems": 2,
+                "prefixItems": [
+                  {
+                    "maximum": 2100,
+                    "minimum": 2000,
+                    "type": "integer"
+                  },
+                  {
+                    "enum": [
+                      "FY",
+                      "HY",
+                      "Q1",
+                      "Q3"
+                    ],
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pairs"
+        }
+      },
+      "title": "TimeSelection",
+      "type": "object"
+    },
+    "Understanding": {
+      "additionalProperties": false,
+      "properties": {
+        "topic": {
+          "enum": [
+            "financial",
+            "concept",
+            "rules",
+            "catalog",
+            "greeting",
+            "other"
+          ],
+          "title": "Topic",
+          "type": "string"
+        },
+        "continuity": {
+          "enum": [
+            "continue",
+            "new",
+            "resume",
+            "clear"
+          ],
+          "title": "Continuity",
+          "type": "string"
+        },
+        "context_references": {
+          "items": {
+            "$ref": "#/$defs/ContextReference"
+          },
+          "title": "Context References",
+          "type": "array"
+        },
+        "company_mentions": {
+          "description": "先识别本轮实际公司表述并区分明确、歧义、库外，再规划目标",
+          "items": {
+            "$ref": "#/$defs/CompanyMention"
+          },
+          "title": "Company Mentions",
+          "type": "array"
+        },
+        "goals": {
+          "items": {
+            "$ref": "#/$defs/Goal"
+          },
+          "title": "Goals",
+          "type": "array"
+        },
+        "modifications": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "all_companies": "#/$defs/CollectionEdit",
+                "calculation": "#/$defs/CalculationEdit",
+                "codes": "#/$defs/CompanyEdit",
+                "comparison_axis": "#/$defs/AxisEdit",
+                "metrics": "#/$defs/MetricEdit",
+                "presentation": "#/$defs/PresentationEdit",
+                "presentation.chart_type": "#/$defs/EditPresentationChartType",
+                "presentation.decimals": "#/$defs/EditPresentationDecimals",
+                "presentation.format": "#/$defs/EditPresentationFormat",
+                "presentation.include_inputs": "#/$defs/EditPresentationIncludeInputs",
+                "presentation.limit": "#/$defs/EditPresentationLimit",
+                "presentation.order": "#/$defs/EditPresentationOrder",
+                "presentation.unit": "#/$defs/EditPresentationUnit",
+                "restrictions": "#/$defs/RestrictionEdit",
+                "restrictions.excluded_codes": "#/$defs/EditRestrictionsExcludedCodes",
+                "restrictions.excluded_metrics": "#/$defs/EditRestrictionsExcludedMetrics",
+                "restrictions.no_chart": "#/$defs/EditRestrictionsNoChart",
+                "restrictions.no_query": "#/$defs/EditRestrictionsNoQuery",
+                "restrictions.no_repeat": "#/$defs/EditRestrictionsNoRepeat",
+                "scope": "#/$defs/ScopeEdit",
+                "time": "#/$defs/TimeEdit",
+                "time.mode": "#/$defs/EditTimeMode",
+                "time.pairs": "#/$defs/EditTimePairs",
+                "time.periods": "#/$defs/EditTimePeriods",
+                "time.quarters": "#/$defs/EditTimeQuarters",
+                "time.single_quarter": "#/$defs/EditTimeSingleQuarter",
+                "time.span": "#/$defs/EditTimeSpan",
+                "time.years": "#/$defs/EditTimeYears"
+              },
+              "propertyName": "field"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/CompanyEdit"
+              },
+              {
+                "$ref": "#/$defs/MetricEdit"
+              },
+              {
+                "$ref": "#/$defs/ScopeEdit"
+              },
+              {
+                "$ref": "#/$defs/CollectionEdit"
+              },
+              {
+                "$ref": "#/$defs/CalculationEdit"
+              },
+              {
+                "$ref": "#/$defs/AxisEdit"
+              },
+              {
+                "$ref": "#/$defs/EditTimeMode"
+              },
+              {
+                "$ref": "#/$defs/EditTimeYears"
+              },
+              {
+                "$ref": "#/$defs/EditTimePeriods"
+              },
+              {
+                "$ref": "#/$defs/EditTimeSpan"
+              },
+              {
+                "$ref": "#/$defs/EditTimePairs"
+              },
+              {
+                "$ref": "#/$defs/EditTimeSingleQuarter"
+              },
+              {
+                "$ref": "#/$defs/EditTimeQuarters"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationUnit"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationDecimals"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationFormat"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationChartType"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationOrder"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationLimit"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationIncludeInputs"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsNoQuery"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsNoChart"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsNoRepeat"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsExcludedCodes"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsExcludedMetrics"
+              },
+              {
+                "$ref": "#/$defs/TimeEdit"
+              },
+              {
+                "$ref": "#/$defs/PresentationEdit"
+              },
+              {
+                "$ref": "#/$defs/RestrictionEdit"
+              }
+            ]
+          },
+          "title": "Modifications",
+          "type": "array"
+        },
+        "memory_edits": {
+          "items": {
+            "$ref": "#/$defs/MemoryEdit"
+          },
+          "title": "Memory Edits",
+          "type": "array"
+        },
+        "clarification": {
+          "description": "需要用户回答的具体问题。明确公司不在库属于unknown_companies/unsupported，不是澄清；不能把公司名字单独放这里",
+          "items": {
+            "type": "string"
+          },
+          "title": "Clarification",
+          "type": "array"
+        },
+        "unsupported": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unsupported",
+          "type": "array"
+        },
+        "unknown_companies": {
+          "description": "原话明确指名而登记名单未覆盖的公司名字，保留原名字，不能换公司",
+          "items": {
+            "type": "string"
+          },
+          "title": "Unknown Companies",
+          "type": "array"
+        },
+        "claimed_sign": {
+          "default": "none",
+          "enum": [
+            "positive",
+            "negative",
+            "zero",
+            "none"
+          ],
+          "title": "Claimed Sign",
+          "type": "string"
+        }
+      },
+      "required": [
+        "topic",
+        "continuity",
+        "goals",
+        "modifications",
+        "clarification",
+        "unsupported",
+        "unknown_companies"
+      ],
+      "title": "Understanding",
+      "type": "object"
+    },
+    "Verification": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "const": 3,
+          "default": 3,
+          "title": "Version",
+          "type": "integer"
+        },
+        "numeric": {
+          "items": {
+            "$ref": "#/$defs/Check"
+          },
+          "title": "Numeric",
+          "type": "array"
+        },
+        "request": {
+          "items": {
+            "$ref": "#/$defs/Check"
+          },
+          "title": "Request",
+          "type": "array"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Check"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "partial",
+            "fail"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "numeric",
+        "request",
+        "evidence",
+        "status"
+      ],
+      "title": "Verification",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "understanding": {
+      "$ref": "#/$defs/Understanding"
+    },
+    "request": {
+      "$ref": "#/$defs/Request"
+    },
+    "modification": {
+      "discriminator": {
+        "mapping": {
+          "all_companies": "#/$defs/CollectionEdit",
+          "calculation": "#/$defs/CalculationEdit",
+          "codes": "#/$defs/CompanyEdit",
+          "comparison_axis": "#/$defs/AxisEdit",
+          "metrics": "#/$defs/MetricEdit",
+          "presentation": "#/$defs/PresentationEdit",
+          "presentation.chart_type": "#/$defs/EditPresentationChartType",
+          "presentation.decimals": "#/$defs/EditPresentationDecimals",
+          "presentation.format": "#/$defs/EditPresentationFormat",
+          "presentation.include_inputs": "#/$defs/EditPresentationIncludeInputs",
+          "presentation.limit": "#/$defs/EditPresentationLimit",
+          "presentation.order": "#/$defs/EditPresentationOrder",
+          "presentation.unit": "#/$defs/EditPresentationUnit",
+          "restrictions": "#/$defs/RestrictionEdit",
+          "restrictions.excluded_codes": "#/$defs/EditRestrictionsExcludedCodes",
+          "restrictions.excluded_metrics": "#/$defs/EditRestrictionsExcludedMetrics",
+          "restrictions.no_chart": "#/$defs/EditRestrictionsNoChart",
+          "restrictions.no_query": "#/$defs/EditRestrictionsNoQuery",
+          "restrictions.no_repeat": "#/$defs/EditRestrictionsNoRepeat",
+          "scope": "#/$defs/ScopeEdit",
+          "time": "#/$defs/TimeEdit",
+          "time.mode": "#/$defs/EditTimeMode",
+          "time.pairs": "#/$defs/EditTimePairs",
+          "time.periods": "#/$defs/EditTimePeriods",
+          "time.quarters": "#/$defs/EditTimeQuarters",
+          "time.single_quarter": "#/$defs/EditTimeSingleQuarter",
+          "time.span": "#/$defs/EditTimeSpan",
+          "time.years": "#/$defs/EditTimeYears"
+        },
+        "propertyName": "field"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/CompanyEdit"
+        },
+        {
+          "$ref": "#/$defs/MetricEdit"
+        },
+        {
+          "$ref": "#/$defs/ScopeEdit"
+        },
+        {
+          "$ref": "#/$defs/CollectionEdit"
+        },
+        {
+          "$ref": "#/$defs/CalculationEdit"
+        },
+        {
+          "$ref": "#/$defs/AxisEdit"
+        },
+        {
+          "$ref": "#/$defs/EditTimeMode"
+        },
+        {
+          "$ref": "#/$defs/EditTimeYears"
+        },
+        {
+          "$ref": "#/$defs/EditTimePeriods"
+        },
+        {
+          "$ref": "#/$defs/EditTimeSpan"
+        },
+        {
+          "$ref": "#/$defs/EditTimePairs"
+        },
+        {
+          "$ref": "#/$defs/EditTimeSingleQuarter"
+        },
+        {
+          "$ref": "#/$defs/EditTimeQuarters"
+        },
+        {
+          "$ref": "#/$defs/EditPresentationUnit"
+        },
+        {
+          "$ref": "#/$defs/EditPresentationDecimals"
+        },
+        {
+          "$ref": "#/$defs/EditPresentationFormat"
+        },
+        {
+          "$ref": "#/$defs/EditPresentationChartType"
+        },
+        {
+          "$ref": "#/$defs/EditPresentationOrder"
+        },
+        {
+          "$ref": "#/$defs/EditPresentationLimit"
+        },
+        {
+          "$ref": "#/$defs/EditPresentationIncludeInputs"
+        },
+        {
+          "$ref": "#/$defs/EditRestrictionsNoQuery"
+        },
+        {
+          "$ref": "#/$defs/EditRestrictionsNoChart"
+        },
+        {
+          "$ref": "#/$defs/EditRestrictionsNoRepeat"
+        },
+        {
+          "$ref": "#/$defs/EditRestrictionsExcludedCodes"
+        },
+        {
+          "$ref": "#/$defs/EditRestrictionsExcludedMetrics"
+        },
+        {
+          "$ref": "#/$defs/TimeEdit"
+        },
+        {
+          "$ref": "#/$defs/PresentationEdit"
+        },
+        {
+          "$ref": "#/$defs/RestrictionEdit"
+        }
+      ],
+      "title": "Modification"
+    },
+    "dialogue_state": {
+      "$ref": "#/$defs/DialogueState"
+    },
+    "fact": {
+      "$ref": "#/$defs/Fact"
+    },
+    "task": {
+      "$ref": "#/$defs/TaskRecord"
+    },
+    "verification": {
+      "$ref": "#/$defs/Verification"
+    },
+    "goal_result": {
+      "$ref": "#/$defs/GoalResult"
+    }
+  },
+  "required": [
+    "understanding",
+    "request",
+    "modification",
+    "dialogue_state",
+    "fact",
+    "task",
+    "verification",
+    "goal_result"
+  ],
+  "title": "ContractBundle",
+  "type": "object",
+  "$id": "https://finsight.local/contracts/v3",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

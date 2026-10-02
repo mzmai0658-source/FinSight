@@ -1,0 +1,11 @@
+{
+  "model": "qwen3.5:9b-q4_K_M",
+  "data_version": "c3ba0f976263cff1c91de1836113aca2f457d051d63af5afe58370aa9e7a9929",
+  "cases_sha256": "521b8901e1edde81f43d043b7a892d666fbad235f929c1ef792cfa818a1862a6",
+  "limits": {
+    "context": 16384,
+    "temperature": 0,
+    "num_predict": 3072
+  },
+  "scope": "Real Java/SSE/Python/Ollama/MySQL; independently accepted PDF cells; actual saved dialogue"
+}

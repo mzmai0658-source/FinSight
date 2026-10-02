@@ -1,0 +1,4 @@
+ALTER TABLE etl_task
+    ADD COLUMN run_token CHAR(36) NULL,
+    ADD COLUMN retryable BOOLEAN NOT NULL DEFAULT FALSE,
+    ADD COLUMN attempt_count INT NOT NULL DEFAULT 0;

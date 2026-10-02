@@ -1,0 +1,16 @@
+{
+  "version": "c3ba0f976263cff1c91de1836113aca2f457d051d63af5afe58370aa9e7a9929",
+  "extractor_sha256": "cfff7f1c26a90ef6c45272bfc436d4b1794b504830b69d269c24aeeebb256c64",
+  "reports": 15,
+  "dataset_profile": {
+    "id": "synthetic-demo-v3",
+    "kind": "synthetic",
+    "reports": 15,
+    "companies": 5,
+    "label": "虚构演示数据"
+  },
+  "errors": [],
+  "conflicts": [],
+  "synthetic": true,
+  "license": "Apache-2.0"
+}

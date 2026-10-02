@@ -1,0 +1,21 @@
+{
+  "scope": "Final source packaging check; current native full-run production/input hashes retained; documentation and evidence are material-only updates",
+  "frozen_production_file_count": 272,
+  "original_workspace_and_final_clean_copy_match": true,
+  "data_profile": "synthetic_demo_v3",
+  "reports": 15,
+  "companies": 5,
+  "facts": 240,
+  "narrative_chunks": 30,
+  "data_version": "c3ba0f976263cff1c91de1836113aca2f457d051d63af5afe58370aa9e7a9929",
+  "final_run": "final20-package",
+  "full_run_score": "18/20",
+  "private_corpus_redistributed": false,
+  "upload_or_git_commit_performed": false,
+  "remaining": [
+    "team identity and real human-review facts",
+    "video",
+    "submission channel and accessible link",
+    "real user study and defense slides outside this phase"
+  ]
+}

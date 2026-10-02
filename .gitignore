@@ -1,0 +1,72 @@
+# Local secrets
+.env
+.env.*
+!.env.example
+!.env.demo.example
+config/local_keys_private.py
+
+# Python
+.venv/
+.mcp_mysql_venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node / frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Java / Maven
+target/
+backend-java/target/
+
+# Runtime data and generated artifacts
+dump.rdb
+erl_crash.dump
+*.rdb
+data/runtime/
+data/chroma_db/
+data/demo_chroma_db/
+data/*chroma*/
+.local_archive/
+.local_runtime/
+eval/runs/
+data/*.zip
+data_root/
+data_root/uploads/
+logs/
+*.log
+result/
+results/
+temp/
+tmp/
+pdf/
+*.tmp
+
+# Office lock files and copied macOS resource forks
+~$*
+._*
+**/._*
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# 作品说明：交付物由白名单脚本生成，不加入源码追踪。
+deliverables/
+
+# 作品说明：内部历史回归数据不进入公开交付。
+/eval/regression_v3/

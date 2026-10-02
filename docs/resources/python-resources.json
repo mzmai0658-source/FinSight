@@ -1,0 +1,1250 @@
+[
+  {
+    "name": "agentevals",
+    "version": "0.0.9",
+    "installed_version": "0.0.9",
+    "license": "MIT",
+    "source": "https://pypi.org/project/agentevals/0.0.9/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "aiohappyeyeballs",
+    "version": "2.6.1",
+    "installed_version": "2.6.1",
+    "license": "License :: OSI Approved :: Python Software Foundation License",
+    "source": "https://pypi.org/project/aiohappyeyeballs/2.6.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "aiohttp",
+    "version": "3.13.5",
+    "installed_version": "3.13.5",
+    "license": "Apache-2.0 AND MIT",
+    "source": "https://pypi.org/project/aiohttp/3.13.5/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "aiosignal",
+    "version": "1.4.0",
+    "installed_version": "1.4.0",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/aiosignal/1.4.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "annotated-doc",
+    "version": "0.0.4",
+    "installed_version": "0.0.4",
+    "license": "MIT",
+    "source": "https://pypi.org/project/annotated-doc/0.0.4/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "annotated-types",
+    "version": "0.7.0",
+    "installed_version": "0.7.0",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/annotated-types/0.7.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "anyio",
+    "version": "4.13.0",
+    "installed_version": "4.13.0",
+    "license": "MIT",
+    "source": "https://pypi.org/project/anyio/4.13.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "attrs",
+    "version": "26.1.0",
+    "installed_version": "26.1.0",
+    "license": "MIT",
+    "source": "https://pypi.org/project/attrs/26.1.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "bcrypt",
+    "version": "5.0.0",
+    "installed_version": "5.0.0",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/bcrypt/5.0.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "beautifulsoup4",
+    "version": "4.14.3",
+    "installed_version": "4.14.3",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/beautifulsoup4/4.14.3/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "build",
+    "version": "1.4.2",
+    "installed_version": "1.4.2",
+    "license": "MIT",
+    "source": "https://pypi.org/project/build/1.4.2/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "certifi",
+    "version": "2026.2.25",
+    "installed_version": "2026.2.25",
+    "license": "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+    "source": "https://pypi.org/project/certifi/2026.2.25/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "cffi",
+    "version": "2.0.0",
+    "installed_version": "2.0.0",
+    "license": "MIT",
+    "source": "https://pypi.org/project/cffi/2.0.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "charset-normalizer",
+    "version": "3.4.6",
+    "installed_version": "3.4.6",
+    "license": "MIT",
+    "source": "https://pypi.org/project/charset-normalizer/3.4.6/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "chromadb",
+    "version": "1.5.5",
+    "installed_version": "1.5.5",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/chromadb/1.5.5/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "click",
+    "version": "8.3.1",
+    "installed_version": "8.3.1",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/click/8.3.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "colorama",
+    "version": "0.4.6",
+    "installed_version": "0.4.6",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/colorama/0.4.6/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "contourpy",
+    "version": "1.3.3",
+    "installed_version": "1.3.3",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/contourpy/1.3.3/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "cryptography",
+    "version": "46.0.6",
+    "installed_version": "46.0.6",
+    "license": "Apache-2.0 OR BSD-3-Clause",
+    "source": "https://pypi.org/project/cryptography/46.0.6/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "cycler",
+    "version": "0.12.1",
+    "installed_version": "0.12.1",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/cycler/0.12.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "dashscope",
+    "version": "1.25.15",
+    "installed_version": "1.25.15",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/dashscope/1.25.15/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "distro",
+    "version": "1.9.0",
+    "installed_version": "1.9.0",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/distro/1.9.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "durationpy",
+    "version": "0.10",
+    "installed_version": "0.10",
+    "license": "MIT",
+    "source": "https://pypi.org/project/durationpy/0.10/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "et_xmlfile",
+    "version": "2.0.0",
+    "installed_version": "2.0.0",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/et_xmlfile/2.0.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "fastapi",
+    "version": "0.136.0",
+    "installed_version": "0.136.0",
+    "license": "MIT",
+    "source": "https://pypi.org/project/fastapi/0.136.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "filelock",
+    "version": "3.25.2",
+    "installed_version": "3.25.2",
+    "license": "MIT",
+    "source": "https://pypi.org/project/filelock/3.25.2/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "flatbuffers",
+    "version": "25.12.19",
+    "installed_version": "25.12.19",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/flatbuffers/25.12.19/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "fonttools",
+    "version": "4.62.1",
+    "installed_version": "4.62.1",
+    "license": "MIT",
+    "source": "https://pypi.org/project/fonttools/4.62.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "frozenlist",
+    "version": "1.8.0",
+    "installed_version": "1.8.0",
+    "license": "Apache-2.0",
+    "source": "https://pypi.org/project/frozenlist/1.8.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "fsspec",
+    "version": "2026.3.0",
+    "installed_version": "2026.3.0",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/fsspec/2026.3.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "googleapis-common-protos",
+    "version": "1.73.1",
+    "installed_version": "1.73.1",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/googleapis-common-protos/1.73.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "greenlet",
+    "version": "3.3.2",
+    "installed_version": "3.3.2",
+    "license": "MIT AND PSF-2.0",
+    "source": "https://pypi.org/project/greenlet/3.3.2/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "grpcio",
+    "version": "1.80.0",
+    "installed_version": "1.80.0",
+    "license": "Apache-2.0",
+    "source": "https://pypi.org/project/grpcio/1.80.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "h11",
+    "version": "0.16.0",
+    "installed_version": "0.16.0",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/h11/0.16.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "hf-xet",
+    "version": "1.4.3",
+    "installed_version": "1.4.3",
+    "license": "Apache-2.0",
+    "source": "https://pypi.org/project/hf-xet/1.4.3/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "httpcore",
+    "version": "1.0.9",
+    "installed_version": "1.0.9",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/httpcore/1.0.9/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "httptools",
+    "version": "0.7.1",
+    "installed_version": "0.7.1",
+    "license": "MIT",
+    "source": "https://pypi.org/project/httptools/0.7.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "httpx",
+    "version": "0.28.1",
+    "installed_version": "0.28.1",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/httpx/0.28.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "huggingface_hub",
+    "version": "1.8.0",
+    "installed_version": "1.8.0",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/huggingface_hub/1.8.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "idna",
+    "version": "3.11",
+    "installed_version": "3.11",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/idna/3.11/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "importlib_metadata",
+    "version": "8.7.1",
+    "installed_version": "8.7.1",
+    "license": "Apache-2.0",
+    "source": "https://pypi.org/project/importlib_metadata/8.7.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "importlib_resources",
+    "version": "6.5.2",
+    "installed_version": "6.5.2",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/importlib_resources/6.5.2/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "iniconfig",
+    "version": "2.3.0",
+    "installed_version": "2.3.0",
+    "license": "MIT",
+    "source": "https://pypi.org/project/iniconfig/2.3.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "Jinja2",
+    "version": "3.1.6",
+    "installed_version": "3.1.6",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/Jinja2/3.1.6/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "jiter",
+    "version": "0.13.0",
+    "installed_version": "0.13.0",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/jiter/0.13.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "joblib",
+    "version": "1.5.3",
+    "installed_version": "1.5.3",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/joblib/1.5.3/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "jsonpatch",
+    "version": "1.33",
+    "installed_version": "1.33",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/jsonpatch/1.33/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "jsonpointer",
+    "version": "3.1.1",
+    "installed_version": "3.1.1",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/jsonpointer/3.1.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "jsonschema",
+    "version": "4.26.0",
+    "installed_version": "4.26.0",
+    "license": "MIT",
+    "source": "https://pypi.org/project/jsonschema/4.26.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "jsonschema-specifications",
+    "version": "2025.9.1",
+    "installed_version": "2025.9.1",
+    "license": "MIT",
+    "source": "https://pypi.org/project/jsonschema-specifications/2025.9.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "kiwisolver",
+    "version": "1.5.0",
+    "installed_version": "1.5.0",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/kiwisolver/1.5.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "kubernetes",
+    "version": "35.0.0",
+    "installed_version": "35.0.0",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/kubernetes/35.0.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "langchain",
+    "version": "1.2.14",
+    "installed_version": "1.2.14",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/langchain/1.2.14/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "langchain-core",
+    "version": "1.2.23",
+    "installed_version": "1.2.23",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/langchain-core/1.2.23/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "langchain-ollama",
+    "version": "1.1.0",
+    "installed_version": "1.1.0",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/langchain-ollama/1.1.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "langchain-openai",
+    "version": "1.1.12",
+    "installed_version": "1.1.12",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/langchain-openai/1.1.12/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "langgraph",
+    "version": "1.1.4",
+    "installed_version": "1.1.4",
+    "license": "MIT",
+    "source": "https://pypi.org/project/langgraph/1.1.4/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "langgraph-checkpoint",
+    "version": "4.0.1",
+    "installed_version": "4.0.1",
+    "license": "MIT",
+    "source": "https://pypi.org/project/langgraph-checkpoint/4.0.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "langgraph-prebuilt",
+    "version": "1.0.8",
+    "installed_version": "1.0.8",
+    "license": "MIT",
+    "source": "https://pypi.org/project/langgraph-prebuilt/1.0.8/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "langgraph-sdk",
+    "version": "0.3.12",
+    "installed_version": "0.3.12",
+    "license": "MIT",
+    "source": "https://pypi.org/project/langgraph-sdk/0.3.12/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "langsmith",
+    "version": "0.7.23",
+    "installed_version": "0.7.23",
+    "license": "MIT",
+    "source": "https://pypi.org/project/langsmith/0.7.23/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "loguru",
+    "version": "0.7.3",
+    "installed_version": "0.7.3",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/loguru/0.7.3/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "markdown-it-py",
+    "version": "4.0.0",
+    "installed_version": "4.0.0",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/markdown-it-py/4.0.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "MarkupSafe",
+    "version": "3.0.3",
+    "installed_version": "3.0.3",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/MarkupSafe/3.0.3/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "matplotlib",
+    "version": "3.10.8",
+    "installed_version": "3.10.8",
+    "license": "License :: OSI Approved :: Python Software Foundation License",
+    "source": "https://pypi.org/project/matplotlib/3.10.8/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "mdurl",
+    "version": "0.1.2",
+    "installed_version": "0.1.2",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/mdurl/0.1.2/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "mmh3",
+    "version": "5.2.1",
+    "installed_version": "5.2.1",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/mmh3/5.2.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "mpmath",
+    "version": "1.3.0",
+    "installed_version": "1.3.0",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/mpmath/1.3.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "multidict",
+    "version": "6.7.1",
+    "installed_version": "6.7.1",
+    "license": "Apache License 2.0",
+    "source": "https://pypi.org/project/multidict/6.7.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "mysql-connector-python",
+    "version": "9.6.0",
+    "installed_version": "9.6.0",
+    "license": "License :: OSI Approved :: GNU General Public License (GPL)",
+    "source": "https://pypi.org/project/mysql-connector-python/9.6.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "networkx",
+    "version": "3.6.1",
+    "installed_version": "3.6.1",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/networkx/3.6.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "numpy",
+    "version": "2.4.4",
+    "installed_version": "2.4.4",
+    "license": "BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0",
+    "source": "https://pypi.org/project/numpy/2.4.4/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "oauthlib",
+    "version": "3.3.1",
+    "installed_version": "3.3.1",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/oauthlib/3.3.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "ollama",
+    "version": "0.6.2",
+    "installed_version": "0.6.2",
+    "license": "MIT",
+    "source": "https://pypi.org/project/ollama/0.6.2/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "onnxruntime",
+    "version": "1.24.4",
+    "installed_version": "1.24.4",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/onnxruntime/1.24.4/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "openai",
+    "version": "2.30.0",
+    "installed_version": "2.30.0",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/openai/2.30.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "openevals",
+    "version": "0.2.0",
+    "installed_version": "0.2.0",
+    "license": "MIT",
+    "source": "https://pypi.org/project/openevals/0.2.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "openpyxl",
+    "version": "3.1.5",
+    "installed_version": "3.1.5",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/openpyxl/3.1.5/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "opentelemetry-api",
+    "version": "1.40.0",
+    "installed_version": "1.40.0",
+    "license": "Apache-2.0",
+    "source": "https://pypi.org/project/opentelemetry-api/1.40.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "opentelemetry-exporter-otlp-proto-common",
+    "version": "1.40.0",
+    "installed_version": "1.40.0",
+    "license": "Apache-2.0",
+    "source": "https://pypi.org/project/opentelemetry-exporter-otlp-proto-common/1.40.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "opentelemetry-exporter-otlp-proto-grpc",
+    "version": "1.40.0",
+    "installed_version": "1.40.0",
+    "license": "Apache-2.0",
+    "source": "https://pypi.org/project/opentelemetry-exporter-otlp-proto-grpc/1.40.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "opentelemetry-proto",
+    "version": "1.40.0",
+    "installed_version": "1.40.0",
+    "license": "Apache-2.0",
+    "source": "https://pypi.org/project/opentelemetry-proto/1.40.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "opentelemetry-sdk",
+    "version": "1.40.0",
+    "installed_version": "1.40.0",
+    "license": "Apache-2.0",
+    "source": "https://pypi.org/project/opentelemetry-sdk/1.40.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "opentelemetry-semantic-conventions",
+    "version": "0.61b0",
+    "installed_version": "0.61b0",
+    "license": "Apache-2.0",
+    "source": "https://pypi.org/project/opentelemetry-semantic-conventions/0.61b0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "orjson",
+    "version": "3.11.8",
+    "installed_version": "3.11.8",
+    "license": "MPL-2.0 AND (Apache-2.0 OR MIT)",
+    "source": "https://pypi.org/project/orjson/3.11.8/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "ormsgpack",
+    "version": "1.12.2",
+    "installed_version": "1.12.2",
+    "license": "Apache-2.0 OR MIT",
+    "source": "https://pypi.org/project/ormsgpack/1.12.2/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "overrides",
+    "version": "7.7.0",
+    "installed_version": "7.7.0",
+    "license": "Apache License, Version 2.0",
+    "source": "https://pypi.org/project/overrides/7.7.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "packaging",
+    "version": "26.0",
+    "installed_version": "26.0",
+    "license": "Apache-2.0 OR BSD-2-Clause",
+    "source": "https://pypi.org/project/packaging/26.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pandas",
+    "version": "3.0.2",
+    "installed_version": "3.0.2",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/pandas/3.0.2/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pdf2image",
+    "version": "1.17.0",
+    "installed_version": "1.17.0",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/pdf2image/1.17.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pdfplumber",
+    "version": "0.11.9",
+    "installed_version": "0.11.9",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/pdfplumber/0.11.9/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pillow",
+    "version": "12.1.1",
+    "installed_version": "12.1.1",
+    "license": "MIT-CMU",
+    "source": "https://pypi.org/project/pillow/12.1.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pluggy",
+    "version": "1.6.0",
+    "installed_version": "1.6.0",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/pluggy/1.6.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "prometheus_client",
+    "version": "0.25.0",
+    "installed_version": "0.25.0",
+    "license": "Apache-2.0 AND BSD-2-Clause",
+    "source": "https://pypi.org/project/prometheus_client/0.25.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "propcache",
+    "version": "0.4.1",
+    "installed_version": "0.4.1",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/propcache/0.4.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "protobuf",
+    "version": "6.33.6",
+    "installed_version": "6.33.6",
+    "license": "3-Clause BSD License",
+    "source": "https://pypi.org/project/protobuf/6.33.6/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pybase64",
+    "version": "1.4.3",
+    "installed_version": "1.4.3",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/pybase64/1.4.3/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pycparser",
+    "version": "3.0",
+    "installed_version": "3.0",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/pycparser/3.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pydantic",
+    "version": "2.12.5",
+    "installed_version": "2.12.5",
+    "license": "MIT",
+    "source": "https://pypi.org/project/pydantic/2.12.5/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pydantic-core",
+    "version": "2.41.5",
+    "installed_version": "2.41.5",
+    "license": "MIT",
+    "source": "https://pypi.org/project/pydantic-core/2.41.5/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pydantic-settings",
+    "version": "2.13.1",
+    "installed_version": "2.13.1",
+    "license": "MIT",
+    "source": "https://pypi.org/project/pydantic-settings/2.13.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pygments",
+    "version": "2.20.0",
+    "installed_version": "2.20.0",
+    "license": "BSD-2-Clause",
+    "source": "https://pypi.org/project/pygments/2.20.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "PyMySQL",
+    "version": "1.1.2",
+    "installed_version": "1.1.2",
+    "license": "MIT",
+    "source": "https://pypi.org/project/PyMySQL/1.1.2/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pyparsing",
+    "version": "3.3.2",
+    "installed_version": "3.3.2",
+    "license": "MIT",
+    "source": "https://pypi.org/project/pyparsing/3.3.2/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pypdf",
+    "version": "6.9.2",
+    "installed_version": "6.9.2",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/pypdf/6.9.2/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pypdfium2",
+    "version": "5.6.0",
+    "installed_version": "5.6.0",
+    "license": "BSD-3-Clause, Apache-2.0, dependency licenses",
+    "source": "https://pypi.org/project/pypdfium2/5.6.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "PyPika",
+    "version": "0.51.1",
+    "installed_version": "0.51.1",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/PyPika/0.51.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pyproject_hooks",
+    "version": "1.2.0",
+    "installed_version": "1.2.0",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/pyproject_hooks/1.2.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pytest",
+    "version": "9.0.3",
+    "installed_version": "9.0.3",
+    "license": "MIT",
+    "source": "https://pypi.org/project/pytest/9.0.3/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "python-dateutil",
+    "version": "2.9.0.post0",
+    "installed_version": "2.9.0.post0",
+    "license": "License :: OSI Approved :: BSD License; License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/python-dateutil/2.9.0.post0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "python-dotenv",
+    "version": "1.2.2",
+    "installed_version": "1.2.2",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/python-dotenv/1.2.2/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "pyyaml",
+    "version": "6.0.3",
+    "installed_version": "6.0.3",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/pyyaml/6.0.3/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "referencing",
+    "version": "0.37.0",
+    "installed_version": "0.37.0",
+    "license": "MIT",
+    "source": "https://pypi.org/project/referencing/0.37.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "regex",
+    "version": "2026.3.32",
+    "installed_version": "2026.3.32",
+    "license": "Apache-2.0 AND CNRI-Python",
+    "source": "https://pypi.org/project/regex/2026.3.32/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "requests",
+    "version": "2.33.1",
+    "installed_version": "2.33.1",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/requests/2.33.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "requests-oauthlib",
+    "version": "2.0.0",
+    "installed_version": "2.0.0",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/requests-oauthlib/2.0.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "requests-toolbelt",
+    "version": "1.0.0",
+    "installed_version": "1.0.0",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/requests-toolbelt/1.0.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "rich",
+    "version": "14.3.3",
+    "installed_version": "14.3.3",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/rich/14.3.3/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "rpds-py",
+    "version": "0.30.0",
+    "installed_version": "0.30.0",
+    "license": "MIT",
+    "source": "https://pypi.org/project/rpds-py/0.30.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "safetensors",
+    "version": "0.7.0",
+    "installed_version": "0.7.0",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/safetensors/0.7.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "scikit-learn",
+    "version": "1.8.0",
+    "installed_version": "1.8.0",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/scikit-learn/1.8.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "scipy",
+    "version": "1.17.1",
+    "installed_version": "1.17.1",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/scipy/1.17.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "sentence-transformers",
+    "version": "5.3.0",
+    "installed_version": "5.3.0",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/sentence-transformers/5.3.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "setuptools",
+    "version": "80.3.1",
+    "installed_version": "80.3.1",
+    "license": "MIT",
+    "source": "https://pypi.org/project/setuptools/80.3.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "shellingham",
+    "version": "1.5.4",
+    "installed_version": "1.5.4",
+    "license": "License :: OSI Approved :: ISC License (ISCL)",
+    "source": "https://pypi.org/project/shellingham/1.5.4/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "six",
+    "version": "1.17.0",
+    "installed_version": "1.17.0",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/six/1.17.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "sniffio",
+    "version": "1.3.1",
+    "installed_version": "1.3.1",
+    "license": "License :: OSI Approved :: MIT License; License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/sniffio/1.3.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "soupsieve",
+    "version": "2.8.3",
+    "installed_version": "2.8.3",
+    "license": "MIT",
+    "source": "https://pypi.org/project/soupsieve/2.8.3/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "SQLAlchemy",
+    "version": "2.0.48",
+    "installed_version": "2.0.48",
+    "license": "MIT",
+    "source": "https://pypi.org/project/SQLAlchemy/2.0.48/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "sqlglot",
+    "version": "30.17.0",
+    "installed_version": "30.17.0",
+    "license": "MIT",
+    "source": "https://pypi.org/project/sqlglot/30.17.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "starlette",
+    "version": "1.0.0",
+    "installed_version": "1.0.0",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/starlette/1.0.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "sympy",
+    "version": "1.14.0",
+    "installed_version": "1.14.0",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/sympy/1.14.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "tenacity",
+    "version": "9.1.4",
+    "installed_version": "9.1.4",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/tenacity/9.1.4/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "threadpoolctl",
+    "version": "3.6.0",
+    "installed_version": "3.6.0",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/threadpoolctl/3.6.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "tiktoken",
+    "version": "0.12.0",
+    "installed_version": "0.12.0",
+    "license": "MIT License",
+    "source": "https://pypi.org/project/tiktoken/0.12.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "tokenizers",
+    "version": "0.22.2",
+    "installed_version": "0.22.2",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/tokenizers/0.22.2/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "torch",
+    "version": "2.11.0",
+    "installed_version": "2.11.0",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/torch/2.11.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "tqdm",
+    "version": "4.67.3",
+    "installed_version": "4.67.3",
+    "license": "MPL-2.0 AND MIT",
+    "source": "https://pypi.org/project/tqdm/4.67.3/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "transformers",
+    "version": "5.4.0",
+    "installed_version": "5.4.0",
+    "license": "Apache 2.0 License",
+    "source": "https://pypi.org/project/transformers/5.4.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "typer",
+    "version": "0.24.1",
+    "installed_version": "0.24.1",
+    "license": "MIT",
+    "source": "https://pypi.org/project/typer/0.24.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "typing-extensions",
+    "version": "4.15.0",
+    "installed_version": "4.15.0",
+    "license": "PSF-2.0",
+    "source": "https://pypi.org/project/typing-extensions/4.15.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "typing-inspection",
+    "version": "0.4.2",
+    "installed_version": "0.4.2",
+    "license": "MIT",
+    "source": "https://pypi.org/project/typing-inspection/0.4.2/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "tzdata",
+    "version": "2025.3",
+    "installed_version": "2025.3",
+    "license": "Apache-2.0",
+    "source": "https://pypi.org/project/tzdata/2025.3/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "urllib3",
+    "version": "2.6.3",
+    "installed_version": "2.6.3",
+    "license": "MIT",
+    "source": "https://pypi.org/project/urllib3/2.6.3/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "uuid-utils",
+    "version": "0.14.1",
+    "installed_version": "0.14.1",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/uuid-utils/0.14.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "uvicorn",
+    "version": "0.42.0",
+    "installed_version": "0.42.0",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/uvicorn/0.42.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "watchfiles",
+    "version": "1.1.1",
+    "installed_version": "1.1.1",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/watchfiles/1.1.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "websocket-client",
+    "version": "1.9.0",
+    "installed_version": "1.9.0",
+    "license": "License :: OSI Approved :: Apache Software License",
+    "source": "https://pypi.org/project/websocket-client/1.9.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "websockets",
+    "version": "16.0",
+    "installed_version": "16.0",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/websockets/16.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "win32_setctime",
+    "version": "1.2.0",
+    "installed_version": "1.2.0",
+    "license": "License :: OSI Approved :: MIT License",
+    "source": "https://pypi.org/project/win32_setctime/1.2.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "xxhash",
+    "version": "3.6.0",
+    "installed_version": "3.6.0",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/xxhash/3.6.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "yarl",
+    "version": "1.23.0",
+    "installed_version": "1.23.0",
+    "license": "Apache-2.0",
+    "source": "https://pypi.org/project/yarl/1.23.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "zipp",
+    "version": "3.23.0",
+    "installed_version": "3.23.0",
+    "license": "MIT",
+    "source": "https://pypi.org/project/zipp/3.23.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "zstandard",
+    "version": "0.25.0",
+    "installed_version": "0.25.0",
+    "license": "BSD-3-Clause",
+    "source": "https://pypi.org/project/zstandard/0.25.0/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "reportlab",
+    "version": "4.5.1",
+    "installed_version": "4.5.1",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/reportlab/4.5.1/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "PyMuPDF",
+    "version": "1.27.2.3",
+    "installed_version": "1.27.2.3",
+    "license": "Dual Licensed - GNU AFFERO GPL 3.0 or Artifex Commercial License",
+    "source": "https://pypi.org/project/PyMuPDF/1.27.2.3/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  }
+]

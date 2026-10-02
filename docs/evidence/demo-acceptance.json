@@ -1,0 +1,23 @@
+{
+  "facts_verified": true,
+  "reports_verified": true,
+  "index_verified": true,
+  "projections_verified": true,
+  "dataset_profile": {
+    "id": "synthetic-demo-v3",
+    "kind": "synthetic",
+    "reports": 15,
+    "companies": 5,
+    "label": "虚构演示数据"
+  },
+  "included_facts": 240,
+  "unresolved": 0,
+  "scope": "Only included verified cells/derived facts; unresolved metrics are excluded",
+  "artifacts": {
+    "facts.json": "37169d7cbc16d4462e445451c41535f0a4049c2b3858050f643eb254f24cdb2b",
+    "reports.json": "2e5693fa3c2244dbf45d10633ee8470c51aea83509680bffbe484be8a29a8a3f",
+    "index_coverage.json": "94ad70bba74cf447ac921a89e217a2ff01854dd75f53904acdbd73c60ba3da43",
+    "narratives.jsonl": "ca922de627aa5b0bcbcbdb574d21410b59f17e8a2aabf12fba348f47e61654a6"
+  },
+  "projection_sha256": "40a00f5d3753d8a9651dbab53049b6de02e6bc176a94051131ae48dad7826861"
+}

@@ -1,0 +1,15 @@
+{
+  "description": "真实财报数字问答录屏固定演示集；代码顺序不影响导入结果。",
+  "companies": [
+    {"stock_code": "002082", "stock_abbr": "万邦德"},
+    {"stock_code": "002390", "stock_abbr": "信邦制药"},
+    {"stock_code": "002737", "stock_abbr": "葵花药业"},
+    {"stock_code": "002821", "stock_abbr": "凯莱英"},
+    {"stock_code": "002864", "stock_abbr": "盘龙药业"},
+    {"stock_code": "600080", "stock_abbr": "金花股份"},
+    {"stock_code": "600085", "stock_abbr": "同仁堂"},
+    {"stock_code": "600129", "stock_abbr": "太极集团"},
+    {"stock_code": "600222", "stock_abbr": "太龙药业"},
+    {"stock_code": "600252", "stock_abbr": "中恒集团"}
+  ]
+}

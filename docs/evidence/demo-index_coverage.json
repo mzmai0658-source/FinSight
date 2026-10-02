@@ -1,0 +1,102 @@
+{
+  "version": "c3ba0f976263cff1c91de1836113aca2f457d051d63af5afe58370aa9e7a9929",
+  "collection": "financial_v3_c3ba0f976263cff1",
+  "chunks": 30,
+  "reports": 15,
+  "coverage": [
+    {
+      "stock_code": "990001",
+      "year": 2022,
+      "period": "FY",
+      "chunks": 2
+    },
+    {
+      "stock_code": "990001",
+      "year": 2023,
+      "period": "FY",
+      "chunks": 2
+    },
+    {
+      "stock_code": "990001",
+      "year": 2024,
+      "period": "FY",
+      "chunks": 2
+    },
+    {
+      "stock_code": "990002",
+      "year": 2022,
+      "period": "FY",
+      "chunks": 2
+    },
+    {
+      "stock_code": "990002",
+      "year": 2023,
+      "period": "FY",
+      "chunks": 2
+    },
+    {
+      "stock_code": "990002",
+      "year": 2024,
+      "period": "FY",
+      "chunks": 2
+    },
+    {
+      "stock_code": "990003",
+      "year": 2022,
+      "period": "FY",
+      "chunks": 2
+    },
+    {
+      "stock_code": "990003",
+      "year": 2023,
+      "period": "FY",
+      "chunks": 2
+    },
+    {
+      "stock_code": "990003",
+      "year": 2024,
+      "period": "FY",
+      "chunks": 2
+    },
+    {
+      "stock_code": "990004",
+      "year": 2022,
+      "period": "FY",
+      "chunks": 2
+    },
+    {
+      "stock_code": "990004",
+      "year": 2023,
+      "period": "FY",
+      "chunks": 2
+    },
+    {
+      "stock_code": "990004",
+      "year": 2024,
+      "period": "FY",
+      "chunks": 2
+    },
+    {
+      "stock_code": "990005",
+      "year": 2022,
+      "period": "FY",
+      "chunks": 2
+    },
+    {
+      "stock_code": "990005",
+      "year": 2023,
+      "period": "FY",
+      "chunks": 2
+    },
+    {
+      "stock_code": "990005",
+      "year": 2024,
+      "period": "FY",
+      "chunks": 2
+    }
+  ],
+  "reused_vectors": 0,
+  "new_vectors": 0,
+  "reuse_source": null,
+  "accepted": true
+}

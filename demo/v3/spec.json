@@ -1,0 +1,12 @@
+{
+  "version":"synthetic-demo-v3", "synthetic":true, "license":"Apache-2.0", "years":[2022,2023,2024],
+  "companies":[
+    {"code":"990001","name":"星河医药","revenue":[10000,12000,15000],"attributable_profit":[1000,1200,1800],"reasons":["研发服务订单增加","研发服务订单增加","客户续约增加"]},
+    {"code":"990002","name":"晨光医疗","revenue":[18000,16000,14000],"attributable_profit":[1800,800,-200],"reasons":["设备采购推迟","设备采购推迟","维护成本上升"]},
+    {"code":"990003","name":"青禾生物","revenue":[8000,8000,9200],"attributable_profit":[400,0,460],"reasons":["试剂销售恢复","试剂销售恢复","产线利用率提升"]},
+    {"code":"990004","name":"远山诊断","revenue":[25000,21000,22000],"attributable_profit":[2500,-1000,1100],"reasons":["常规检测需求恢复","常规检测需求恢复","网点费用下降"]},
+    {"code":"990005","name":"云杉科技","revenue":[6000,7500,9000],"attributable_profit":[300,600,900],"reasons":["软件订阅增加","软件订阅增加","交付效率提升"]}
+  ],
+  "construction":{"amount_unit":"万元","total_revenue_extra":"100","minority_profit":"100","nonrecurring_profit":"50","parent_ratio":"0.6",
+    "note":"虚构设定：营业总收入=营业收入+100万元，合并净利润=归母+100万元，扣非归母=归母-50万元，母公司收入和净利润分别为营业收入和归母的60%。数字与情节均非上市公司披露。"}
+}

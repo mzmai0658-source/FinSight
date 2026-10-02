@@ -1,0 +1,31 @@
+{
+  "name": "financial-qa-demo-frontend",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "test": "vitest run",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.18.0",
+    "dompurify": "^3.4.14",
+    "echarts": "^6.1.0",
+    "marked": "^18.0.5",
+    "pinia": "^2.1.7",
+    "vue": "^3.5.13",
+    "vue-echarts": "^8.3.0",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "jsdom": "^26.1.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.4.3",
+    "vitest": "^3.2.6",
+    "vue-tsc": "^2.2.8"
+  }
+}

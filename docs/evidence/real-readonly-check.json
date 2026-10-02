@@ -1,0 +1,32 @@
+{
+  "version": "ce16d901633a2d85d210980f4961677d3d035e1c5ffb42524eeb7c7aba97e306",
+  "profile": {
+    "id": "real-117-v1",
+    "kind": "real",
+    "reports": 117,
+    "companies": 10,
+    "label": "真实财报验证数据"
+  },
+  "facts": 7466,
+  "fact_status": {
+    "verified": 6798,
+    "derived": 668
+  },
+  "reports": 117,
+  "files_hash_matched": 117,
+  "chunks": 22828,
+  "indexed_report_periods": 117,
+  "index_identity_match": true,
+  "excluded_unresolved": 5287,
+  "scope": "Read-only current accepted release and byte/index coverage; no fresh OCR or manual cell audit",
+  "source_audit_modes": {
+    "coordinate_bound_verified": 29,
+    "legacy_literal_verified": 6769,
+    "derived": 668
+  },
+  "source_audit_note": "Existing accepted coordinates and literal proof modes are distinct; no new manual cell audit or upgrade of old accepted metadata",
+  "excluded_status_counts": {
+    "not_found": 5286,
+    "not_disclosed": 1
+  }
+}

@@ -1,0 +1,365 @@
+{
+  "version": 2,
+  "scope": "public synthetic native Qwen acceptance; fixed before execution",
+  "target": 17,
+  "cases": [
+    {
+      "id": "C01",
+      "question": "星河医药2024年合并营业收入是多少？用亿元，保留两位小数。",
+      "expect": {
+        "codes": [
+          "990001"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "scope": "consolidated",
+        "unit": "亿元",
+        "decimals": 2
+      },
+      "category": "classic",
+      "group": null
+    },
+    {
+      "id": "C02",
+      "question": "星河医药2024年母公司净利润多少？用万元。",
+      "expect": {
+        "codes": [
+          "990001"
+        ],
+        "metrics": [
+          "net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "scope": "parent",
+        "unit": "万元"
+      },
+      "category": "classic",
+      "group": null
+    },
+    {
+      "id": "C03",
+      "question": "星河医药2024年合并净利润、归母净利润、扣非归母净利润分别是多少？用万元列个表。",
+      "expect": {
+        "codes": [
+          "990001"
+        ],
+        "metrics": [
+          "net_profit",
+          "attributable_net_profit",
+          "deducted_attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "format": "table"
+      },
+      "category": "classic",
+      "group": null
+    },
+    {
+      "id": "C04",
+      "question": "比较星河医药和云杉科技2024年营业收入，哪家更高？",
+      "expect": {
+        "codes": [
+          "990001",
+          "990005"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "goal": "compare"
+      },
+      "category": "classic",
+      "group": null
+    },
+    {
+      "id": "C05",
+      "question": "库内公司2024年归母净利润从高到低排名，给前三名。",
+      "expect": {
+        "goal": "rank",
+        "all_companies": true,
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "order": "desc",
+        "limit": 3
+      },
+      "category": "classic",
+      "group": null
+    },
+    {
+      "id": "C06",
+      "question": "把星河医药2022、2023、2024年营业收入画成柱状图，用万元。",
+      "expect": {
+        "codes": [
+          "990001"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2022,
+          2023,
+          2024
+        ],
+        "goal": "chart",
+        "chart_type": "bar",
+        "unit": "万元"
+      },
+      "category": "classic",
+      "group": null
+    },
+    {
+      "id": "C07",
+      "question": "解释归母净利润和母公司净利润的区别，不查数字，不画图。",
+      "expect": {
+        "goal": "concept",
+        "metrics": [
+          "attributable_net_profit",
+          "net_profit"
+        ],
+        "no_query": true,
+        "no_chart": true
+      },
+      "category": "classic",
+      "group": null
+    },
+    {
+      "id": "C08",
+      "question": "定位星河医药2024年营业收入的原文表格及页码。",
+      "expect": {
+        "codes": [
+          "990001"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "goal": "quote",
+        "quote_mode": "location"
+      },
+      "category": "classic",
+      "group": null
+    },
+    {
+      "id": "E01",
+      "question": "你好，星河医药2024年营业收入，用万元，只要表格，不要画图。",
+      "expect": {
+        "codes": [
+          "990001"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "unit": "万元",
+        "format": "table",
+        "no_chart": true
+      },
+      "category": "edge",
+      "group": null
+    },
+    {
+      "id": "E02",
+      "question": "贵州茅台2024年营业收入是多少？",
+      "expect": {
+        "outside_company": "贵州茅台"
+      },
+      "category": "edge",
+      "group": null
+    },
+    {
+      "id": "E03",
+      "question": "不查数，只解释为什么不能把母公司净利润叫归母净利润。",
+      "expect": {
+        "goal": "concept",
+        "metrics": [
+          "net_profit",
+          "attributable_net_profit"
+        ],
+        "no_query": true
+      },
+      "category": "edge",
+      "group": null
+    },
+    {
+      "id": "E04",
+      "question": "查星河医药2024年营业收入；分析2025年收入变化的原因，并给出原文。",
+      "expect": {
+        "codes": [
+          "990001"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "goals": [
+          "lookup",
+          "cause"
+        ],
+        "years_goal": "lookup",
+        "evidence_missing": true
+      },
+      "category": "edge",
+      "group": null
+    },
+    {
+      "id": "A1",
+      "question": "查星河医药和云杉科技2024年营业收入，用亿元，保留三位小数，只给表格。",
+      "expect": {
+        "codes": [
+          "990001",
+          "990005"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "unit": "亿元",
+        "decimals": 3,
+        "format": "table"
+      },
+      "category": "dialogue",
+      "group": "A"
+    },
+    {
+      "id": "A2",
+      "question": "去掉云杉科技，只留星河医药，其余不变。",
+      "expect": {
+        "codes": [
+          "990001"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "unit": "亿元",
+        "decimals": 3,
+        "format": "table"
+      },
+      "category": "dialogue",
+      "group": "A"
+    },
+    {
+      "id": "A3",
+      "question": "先岔开一下，毛利额和毛利率有什么不同？不查数，不画图。",
+      "expect": {
+        "goal": "concept",
+        "metrics": [
+          "gross_profit",
+          "gross_margin"
+        ],
+        "no_query": true,
+        "no_chart": true
+      },
+      "category": "dialogue",
+      "group": "A"
+    },
+    {
+      "id": "A4",
+      "question": "回到刚才营业收入，不是星河医药，是云杉科技，改成2023年，其它不变。",
+      "expect": {
+        "codes": [
+          "990005"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "unit": "亿元",
+        "decimals": 3,
+        "format": "table"
+      },
+      "category": "dialogue",
+      "group": "A"
+    },
+    {
+      "id": "B1",
+      "question": "晨光医疗2024年归母净利润多少？用万元。",
+      "expect": {
+        "codes": [
+          "990002"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "unit": "万元"
+      },
+      "category": "dialogue",
+      "group": "B"
+    },
+    {
+      "id": "B2",
+      "question": "别看归母了，改查2023年营业收入，其它不变。",
+      "expect": {
+        "codes": [
+          "990002"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2023
+        ],
+        "unit": "万元"
+      },
+      "category": "dialogue",
+      "group": "B"
+    },
+    {
+      "id": "B3",
+      "question": "这个数是负的，所以亏损了吗？先核对正负，不重新查数，不重复金额。",
+      "expect": {
+        "goal": "sign",
+        "correct_positive": true,
+        "no_query": true,
+        "no_repeat": true
+      },
+      "category": "dialogue",
+      "group": "B"
+    },
+    {
+      "id": "B4",
+      "question": "换个话题，不延续刚才的公司。那它2024年营收是多少？",
+      "expect": {
+        "clarify": true,
+        "cleared_company": true
+      },
+      "category": "dialogue",
+      "group": "B"
+    }
+  ],
+  "scoring_corrections": [
+    "E02 accepts clarification or explicit unsupported without publishing facts, as authorized scope permits.",
+    "B3 sign goal is the financial sign-check task; concept label was an incorrect interface mapping."
+  ]
+}

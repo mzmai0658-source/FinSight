@@ -1,0 +1,20 @@
+FinSight 可信财报智能体
+Copyright 2026 FinSight contributors
+
+The original FinSight source files are licensed under the Apache License,
+Version 2.0. This does not replace third-party or combined-work obligations.
+
+The project uses third-party open-source software and separately distributed
+model weights. Their copyrights and licenses remain with their respective
+owners. See docs/THIRD_PARTY.md for versions, usage, license obligations, and
+the boundary between third-party resources and the project's original work.
+
+The files under demo/knowledge are original demonstration materials released
+under the same Apache-2.0 license. They are not official company disclosures
+and must not be treated as investment advice.
+
+The public v3 synthetic PDF definitions and generated fictional reports are
+also original Apache-2.0 materials. No real financial PDFs, OCR ledgers, model
+weights or third-party binaries are redistributed. PyMuPDF is AGPL-3.0 or
+commercially licensed; see docs/THIRD_PARTY.md for the source availability and
+combined distribution/network service obligations before public use.
