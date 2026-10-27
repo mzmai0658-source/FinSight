@@ -1,4 +1,4 @@
-"""作品说明：只解析已定位单元格的精确数值及声明单位。允许单元格内部空白，不跨单元格拼接，也不在整页搜索替代值。"""
+"""只解析已定位单元格的精确数值及声明单位。允许单元格内部空白，不跨单元格拼接，也不在整页搜索替代值。"""
 import re
 from decimal import Decimal,InvalidOperation,localcontext
 

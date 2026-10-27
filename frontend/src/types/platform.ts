@@ -1,4 +1,4 @@
-/** 作品说明：平台扩展类型覆盖诊股、研报库、自选、站内信及管理端。 */
+/** 平台扩展类型覆盖诊股、研报库、自选、站内信及管理端。 */
 
 export interface AdvisorDimension {
   name: string;

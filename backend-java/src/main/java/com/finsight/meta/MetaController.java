@@ -18,7 +18,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.List;
 import java.util.Map;
 
-/** 作品说明：门户元信息：健康状态（聚合 Python 微服务）与精选示例问题。免登录可访问。 */
+/** 门户元信息：健康状态（聚合 Python 微服务）与精选示例问题。免登录可访问。 */
 @Slf4j
 @Tag(name = "元信息")
 @RestController

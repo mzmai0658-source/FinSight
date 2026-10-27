@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 作品说明：ETL 任务消费者：串行（concurrency=1）调用 Python 单文件管线，回写状态机。
+ * ETL 任务消费者：串行（concurrency=1）调用 Python 单文件管线，回写状态机。
  * 管线内部 LLM 抽取已有并发，任务级再并发会撞 API 限速。
  */
 @Slf4j
@@ -33,7 +33,7 @@ public class EtlTaskConsumer {
     private final StringRedisTemplate redis;
     private final ObservabilityService observabilityService;
 
-    /** 作品说明：是否在管线中同步做 RAG 入库（依赖向量服务可用，默认关闭） */
+    /** 是否在管线中同步做 RAG 入库（依赖向量服务可用，默认关闭） */
     @Value("${finsight.etl.ingest-rag:false}")
     private boolean ingestRag;
 
@@ -49,12 +49,12 @@ public class EtlTaskConsumer {
                 || EtlTaskService.STATUS_PARTIAL.equals(task.getStatus())
                 || (EtlTaskService.STATUS_FAILED.equals(task.getStatus()) && !Boolean.TRUE.equals(task.getRetryable()))) {
             ManualAckSupport.ack(channel, amqpMessage);
-            return; // 作品说明：重复投递保护
+            return; // 重复投递保护
         }
 
         long startedAt = System.currentTimeMillis();
         if (!taskService.markRunning(task)) {
-            // 作品说明：任务已由其他消费者持久占用，遗留执行状态由恢复流程处理。
+            // 任务已由其他消费者持久占用，遗留执行状态由恢复流程处理。
             ManualAckSupport.ack(channel, amqpMessage);
             return;
         }
@@ -64,13 +64,14 @@ public class EtlTaskConsumer {
             taskService.complete(task, report);
             observabilityService.recordEtlTask(task.getStatus(), System.currentTimeMillis() - startedAt);
             observabilityService.recordMqEtl(task.getStatus());
-            if (EtlTaskService.STATUS_SUCCESS.equals(task.getStatus()) || EtlTaskService.STATUS_PARTIAL.equals(task.getStatus())) {
+            if (!"financial".equals(task.getFileType()) && (EtlTaskService.STATUS_SUCCESS.equals(task.getStatus())
+                    || EtlTaskService.STATUS_PARTIAL.equals(task.getStatus()))) {
                 evictMarketCaches();
             }
             log.info("[etl] 任务完成 taskId={} status={} message={}",
                     task.getId(), task.getStatus(), task.getMessage());
         } catch (Exception e) {
-            // 作品说明：先保存可见状态，再抛出异常，交由监听器重试与死信机制恢复。
+            // 先保存可见状态，再抛出异常，交由监听器重试与死信机制恢复。
             log.error("[etl] 任务执行失败 taskId={}: {}", task.getId(), e.toString());
             try {
                 if (e instanceof EtlExecutionUncertainException) {
@@ -93,7 +94,7 @@ public class EtlTaskConsumer {
         ManualAckSupport.ack(channel, amqpMessage);
     }
 
-    /** 作品说明：新财务数据入库后失效行情缓存，门户立刻可见 */
+    /** 新财务数据入库后失效行情缓存，门户立刻可见 */
     private void evictMarketCaches() {
         try {
             Set<String> keys = redis.keys("market:companies*");

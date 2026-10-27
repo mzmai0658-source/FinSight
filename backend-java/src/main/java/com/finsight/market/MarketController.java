@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/** 作品说明：行情门户（公开只读，无需登录） */
+/** 行情门户（公开只读，无需登录） */
 @Tag(name = "market", description = "公司行情与门户大屏")
 @RestController
 @RequestMapping("/api/market")

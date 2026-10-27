@@ -1,4 +1,4 @@
-"""作品说明：使用已校验意图统一约束 SQL、检索与展示。"""
+"""使用已校验意图统一约束 SQL、检索与展示。"""
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
@@ -58,7 +58,7 @@ class QueryPlan:
 
 
 def normalize_model_text(value: Any) -> str:
-    """作品说明：只恢复文字列表的换行转义，不任意修改路径或代码转义。"""
+    """只恢复文字列表的换行转义，不任意修改路径或代码转义。"""
     text=str(value or '').replace('\r\n','\n')
     pieces=re.split(r'(```[\s\S]*?```|`[^`]*`)',text)
     for i in range(0,len(pieces),2):
@@ -108,7 +108,7 @@ def main_metrics(question):
 
 
 def hints(question, history):
-    """作品说明：历史仅提供用户选择的条件，不将旧回答当作事实。"""
+    """历史仅提供用户选择的条件，不将旧回答当作事实。"""
     previous={'codes':[], 'metrics':[], 'pairs':[], 'period':'FY','latest_count':0,'unit':''}
     for message in history[-16:]:
         if message.get('role')!='user': continue
@@ -152,7 +152,7 @@ def _latest(question):
 
 
 def propose_rule_plan(question: str) -> dict[str, Any]:
-    """作品说明：思考预算耗尽时只采用保守的结构恢复。"""
+    """思考预算耗尽时只采用保守的结构恢复。"""
     q=question.strip()
     intent='facts'
     if re.fullmatch(r'(你好|您好|嗨|hi|hello)[！!。\s]*',q,re.I): intent='greeting'
@@ -180,7 +180,7 @@ def propose_rule_plan(question: str) -> dict[str, Any]:
 
 
 def planning_messages(question,history):
-    # 作品说明：减少小模型决策字段，避免在显式字段生成前耗尽预算。
+    # 减少小模型决策字段，避免在显式字段生成前耗尽预算。
     prompt=('你是财报问答意图分类器。思考后立即只输出一个JSON对象，唯一的键为intent。'
             'intent只能为facts,coverage_companies,coverage_periods,coverage_metrics,explanation,'
             'conversation_scope,greeting,capabilities,clarify,unsupported。不要回答财务数字，也不要解释。')
@@ -212,7 +212,7 @@ def validate_plan(question: str, raw: Any, history=()) -> QueryPlan:
     followup=is_followup(question) or (not direct_codes and bool(history) and len(question)<28)
     plan.codes=direct_codes or (previous['codes'] if followup else [])
     proposed=[str(c) for c in raw.get('codes',[]) if str(c) in CODE_TO_NAME_MAP]
-    # 作品说明：已登记短名称必须实际出现在原话中。
+    # 已登记短名称必须实际出现在原话中。
     if not plan.codes:
         plan.codes=[c for c in proposed if any(len(n)>=2 and n in question for n in [CODE_TO_NAME_MAP[c],CODE_TO_NAME_MAP[c].replace('集团','').replace('股份','')])]
     if any(c not in CODE_TO_NAME_MAP for c in direct_codes):
@@ -253,11 +253,11 @@ def validate_plan(question: str, raw: Any, history=()) -> QueryPlan:
             else: plan.pairs=[(y,periods[0] if periods else (previous['period'] if followup else 'FY')) for y in years]
         elif followup: plan.pairs=[(y,periods[0] if periods else p) for y,p in previous['pairs']]
         else:
-            # 作品说明：中文年份依据可见表达解析，不猜年份。
+            # 中文年份依据可见表达解析，不猜年份。
             plan.pairs=valid if re.search(r'[〇零一二三四五六七八九]{2,4}年',question) else []
     plan.calculation='none'
     rate_fields={field for field in plan.metrics if field.endswith(('_yoy_growth','_qoq_growth'))}
-    # 作品说明：已存增长率是百分比指标，不能再次计算其增长率。
+    # 已存增长率是百分比指标，不能再次计算其增长率。
     if ('同比' in question or re.search(r'增长率|变动率',question)) and not rate_fields:
         plan.calculation='yoy'
     if '百分点' in question: plan.calculation='percentage_points'

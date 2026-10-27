@@ -1,4 +1,4 @@
-"""作品说明：采用向量召回、词法召回与规则重排定位叙述证据。指标词组用于召回加权，不作为财务事实口径等价证明；报告期权重随请求计算，不绑定固定公司。"""
+"""采用向量召回、词法召回与规则重排定位叙述证据。指标词组用于召回加权，不作为财务事实口径等价证明；报告期权重随请求计算，不绑定固定公司。"""
 
 import json
 import re
@@ -18,7 +18,7 @@ from src.agent.providers import assert_collection_embedding, resolve_embedding_f
 from src.agent.tool_shared import normalize_reference_path, resolve_chroma_db_path
 
 
-# 作品说明：指标语义分组：RAG 召回加权用（不绑定任何特定公司/产品）
+# 指标语义分组：RAG 召回加权用（不绑定任何特定公司/产品）
 INDICATOR_KEYWORDS: Dict[str, List[str]] = {
     "收入": ["收入", "营收", "主营业务收入", "营业总收入", "营业收入", "销售额", "销售收入"],
     "利润": ["利润", "净利", "净利润", "利润总额", "归母净利润", "营业利润", "扣非净利润"],
@@ -56,7 +56,7 @@ _TREND_KEYWORDS = ["趋势", "走势", "变化趋势", "绘图", "可视化", "�
 
 
 def compute_period_weights(query: str) -> Dict[str, float]:
-    """作品说明：根据用户问法动态计算年报 / 季报半年报的权重。
+    """根据用户问法动态计算年报 / 季报半年报的权重。
     
     返回 {\"annual\": 0~1, \"interim\": 0~1}
     - annual  越高 → 年度报告来源越优先
@@ -104,7 +104,7 @@ def compute_period_weights(query: str) -> Dict[str, float]:
 
 
 class RAGTool:
-    """作品说明：研报/年报 RAG 检索工具：向量召回 + 词法召回 + 规则重排。
+    """研报/年报 RAG 检索工具：向量召回 + 词法召回 + 规则重排。
     
     chroma client / collection / embedding function 在首次使用后缓存，
     避免每次检索都重新打开持久化库和重建嵌入客户端。
@@ -121,7 +121,7 @@ class RAGTool:
         self._collection = None
 
     def _get_embedding_function(self):
-        """作品说明：向量函数由 providers 统一解析：本地开源 BGE 为主，DashScope 为可选回退。"""
+        """向量函数由 providers 统一解析：本地开源 BGE 为主，DashScope 为可选回退。"""
         with self._init_lock:
             if self._embedding_fn is None:
                 self._embedding_fn = resolve_embedding_function(purpose="rag_query")
@@ -450,7 +450,7 @@ class RAGTool:
         include: List[str],
         batch_size: int = 5000,
     ) -> Dict[str, List[Any]]:
-        # 作品说明：Chroma 会先取出全部命中 id，再拼成 SQL IN 参数；大集合的无界 get
+        # Chroma 会先取出全部命中 id，再拼成 SQL IN 参数；大集合的无界 get
         # 不仅必然撞上 SQLite 变量上限，还会白白等待一次失败查询。已知是大集合时
         # 直接分页，既保持完整词法召回语义，也显著减少数据库往返次数。
         try:
@@ -503,7 +503,7 @@ class RAGTool:
     ) -> Dict[str, Any]:
         try:
             if validated_scope is not None:
-                # 作品说明：检索排序使用 Agent 已解析的身份，叙述检索不能重选公司或期间。
+                # 检索排序使用 Agent 已解析的身份，叙述检索不能重选公司或期间。
                 scope = dict(validated_scope)
                 if not scope.get('stock_codes') or not scope.get('report_years') or scope.get('report_period') not in {'FY','Q1','HY','Q3'}:
                     return {'status':'error','results':[],'message':'结构化检索缺少有效主体或报告期'}
@@ -598,7 +598,7 @@ class RAGTool:
             if base_where:
                 _try_where(dict(base_where))
 
-            # 作品说明：兜底：不带 where 再查一轮（覆盖 stock_code / report_year 元数据缺失的 chunk）
+            # 兜底：不带 where 再查一轮（覆盖 stock_code / report_year 元数据缺失的 chunk）
             if query_vector:
                 _collect_vector({"query_embeddings": [query_vector], "n_results": n_vec})
 
@@ -628,7 +628,7 @@ class RAGTool:
                 ordered = [item for item in ordered if section_matches(section, str(item['doc'] or ''), item['meta'])]
                 ordered.sort(key=lambda item: (int(item['meta'].get('page_start') or 10**9),
                                                -int(section in str(item['doc'])), -len(str(item['doc']))))
-                # 作品说明：请求摘录时只返回相关来源，不混入无关参考卡片。
+                # 请求摘录时只返回相关来源，不混入无关参考卡片。
                 ordered = ordered[:1]
             results = self._format_rag_results(ordered[:result_limit])
             if results:

@@ -1,4 +1,4 @@
-"""作品说明：OCR JSON 解析器。
+"""OCR JSON 解析器。
 
 将 PaddleOCR 异步返回的 JSON 结果解析为：
 1. 全文文本（用于元数据提取）
@@ -35,7 +35,7 @@ FINANCIAL_TITLE_KEYWORDS = [
 TITLE_LIKE_BLOCK_LABELS = {
     "doc_title",
     "paragraph_title",
-    # 作品说明：忽略财务图示标题，避免母公司图表默默继承合并口径。
+    # 忽略财务图示标题，避免母公司图表默默继承合并口径。
     "figure_title",
 }
 
@@ -88,7 +88,7 @@ def read_ocr_json(json_path: str) -> Any:
 PADDLE_OCR_JSON_SUFFIX = "_by_PaddleOCR-VL-1.5.json"
 PADDLE_OCR_JSON_SUFFIX_V16 = "_by_PaddleOCR-VL-1.6.json"
 
-# 作品说明：1.6 优先（新上传走 1.6），1.5 兜底（存量数据）；同一 PDF 只取一个缓存避免跨模型合并噪声
+# 1.6 优先（新上传走 1.6），1.5 兜底（存量数据）；同一 PDF 只取一个缓存避免跨模型合并噪声
 OCR_JSON_SUFFIXES = [PADDLE_OCR_JSON_SUFFIX_V16, PADDLE_OCR_JSON_SUFFIX]
 
 
@@ -105,7 +105,7 @@ def find_json_cache_for_pdf(pdf_path: str) -> Optional[str]:
 
 
 def parse_ocr_json_to_content_and_chunks(payload: Any) -> Tuple[str, List[Dict[str, Any]]]:
-    """作品说明：把 OCR JSON 转成全文文本和结构化表格 chunks。"""
+    """把 OCR JSON 转成全文文本和结构化表格 chunks。"""
     full_text_parts: List[str] = []
     chunks: List[Dict[str, Any]] = []
     doc_unit = 1.0
@@ -273,7 +273,7 @@ def parse_ocr_json_to_content_and_chunks(payload: Any) -> Tuple[str, List[Dict[s
 
 
 def iter_layout_pages(payload: Any):
-    """作品说明：兼容 JSON 数组 / JSONL 解析结果。"""
+    """兼容 JSON 数组 / JSONL 解析结果。"""
     if isinstance(payload, dict):
         payload = [payload]
 

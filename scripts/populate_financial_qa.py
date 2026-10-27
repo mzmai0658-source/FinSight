@@ -1,4 +1,4 @@
-"""作品说明：将可追溯财务事实写入明确选择的数据库。默认只生成选择计划；--apply --extract-only 运行真实提取并保存审计结果，不修改 MySQL；发布还须指定 --expected-database。"""
+"""将可追溯财务事实写入明确选择的数据库。默认只生成选择计划；--apply --extract-only 运行真实提取并保存审计结果，不修改 MySQL；发布还须指定 --expected-database。"""
 from __future__ import annotations
 
 import argparse
@@ -73,7 +73,7 @@ def load_stock_codes_file(path: Path) -> str:
 
 
 def _is_full_report(row: dict[str, Any]) -> bool:
-    """作品说明：只修正明显的长名称目录误识别。"""
+    """只修正明显的长名称目录误识别。"""
     name = str(row.get("file_name") or "")
     if "摘要" in name:
         return False
@@ -87,7 +87,7 @@ def _is_full_report(row: dict[str, Any]) -> bool:
 
 
 def select_documents(manifest: Iterable[dict[str, Any]]):
-    """作品说明：每家公司、年度和期间选取一份身份无歧义的完整报告。"""
+    """每家公司、年度和期间选取一份身份无歧义的完整报告。"""
     groups: dict[tuple[Any, Any, Any], list[dict[str, Any]]] = defaultdict(list)
     excluded: list[dict[str, Any]] = []
     for row in manifest:
@@ -111,7 +111,7 @@ def select_documents(manifest: Iterable[dict[str, Any]]):
         if not candidates:
             excluded.append({"identity": key, "reason": "no_full_report", "files": [r.get("file_name") for r in rows]})
             continue
-        # 作品说明：不能因 OCR 缓存可用而选择旧修订版；新光 2022 年两份修订 PDF 存在实际 ROE 更正。
+        # 不能因 OCR 缓存可用而选择旧修订版；新光 2022 年两份修订 PDF 存在实际 ROE 更正。
         if len({row.get("sha256") for row in candidates}) > 1:
             excluded.append({"identity": key, "reason": "conflicting_full_versions", "files": [r.get("file_name") for r in candidates]})
             continue
@@ -166,7 +166,7 @@ def _payload(value: Any) -> dict[str, Any]:
 
 
 def audit_extraction(result: dict[str, Any], row: dict[str, Any]) -> dict[str, Any]:
-    """作品说明：发布前核验身份、原件字节与页级证据。"""
+    """发布前核验身份、原件字节与页级证据。"""
     if result.get("status") != "success":
         raise ValueError(result.get("message") or "Extraction failed")
     data = result.get("data") or {}
@@ -211,7 +211,7 @@ def audit_extraction(result: dict[str, Any], row: dict[str, Any]) -> dict[str, A
 
 
 def warning_is_safe_for_partial_publication(warning: str) -> bool:
-    """作品说明：只允许明确描述数据缺失的警告。部分快照可发布已找到字段，缺失保留为空；勾稽失败、不合理数值等异常不能自动发布。"""
+    """只允许明确描述数据缺失的警告。部分快照可发布已找到字段，缺失保留为空；勾稽失败、不合理数值等异常不能自动发布。"""
     return any(pattern.fullmatch(str(warning)) for pattern in _SAFE_PUBLICATION_WARNING_PATTERNS)
 
 
@@ -242,7 +242,7 @@ def publication_decision(
 
 
 def _snapshot_database(engine, database: str, path: Path) -> None:
-    """作品说明：为本轮发布创建持久化的发布前备份。"""
+    """为数据发布创建持久化的发布前备份。"""
     from sqlalchemy import text
     if path.exists():
         existing = json.loads(path.read_text(encoding="utf-8"))
@@ -262,7 +262,7 @@ def _snapshot_database(engine, database: str, path: Path) -> None:
 
 @contextmanager
 def _database_lock(engine, database: str):
-    """作品说明：同一现用数据库禁止并发运行发布脚本。"""
+    """同一现用数据库禁止并发运行发布脚本。"""
     from sqlalchemy import text
     name = ("finsight-financial-qa-" + database)[:64]
     connection = engine.connect()
@@ -305,7 +305,7 @@ def _verify_published(engine, row: dict[str, Any], audit: dict[str, Any]) -> dic
     if (payload.get("document") or {}).get("source_sha256") != row.get("sha256"):
         raise RuntimeError("Published financial snapshot has an unexpected source hash")
     located = [fact for fact in payload.get("facts", []) if fact.get("status") == "source_located"]
-    # 作品说明：母公司净利润、股本等可追溯提取字段未全部进入四张兼容宽表；不能直接以提取字段总数比较存储事实数。
+    # 母公司净利润、股本等可追溯提取字段未全部进入四张兼容宽表；不能直接以提取字段总数比较存储事实数。
     if not located:
         raise RuntimeError("Published snapshot contains no page-located evidence")
     page_count = (payload.get("document") or {}).get("page_count")
@@ -433,9 +433,8 @@ def main() -> None:
     logger.remove()
     logger.add(output / "extraction.log", rotation="20 MB", level="INFO", encoding="utf-8")
     llm = LLMClient()
-    if (llm.provider != "ollama" or llm.model != "qwen3.5:9b-q4_K_M" or llm.reasoning_effort != "low"
-            or urlparse(llm.api_url).hostname not in {"localhost", "127.0.0.1", "::1"}):
-        raise ValueError("Requires local Qwen3.5 with thinking enabled")
+    if not llm.is_configured:
+        raise ValueError("Cloud extraction requires server-side LLM_API_KEY")
 
     journal = output / "extraction.jsonl"
     records = _read_jsonl(journal)
@@ -482,7 +481,7 @@ def main() -> None:
             record = {**{name: row[name] for name in IDENTITY}, "source_sha256": sha, "file": row["source_path"]}
             worker = None
             try:
-                # 作品说明：材料目录已经过身份核验；只在内存中登记本文件公司，使仅提取模式保持数据库只读，成功发布后再更新已导入公司主表。
+                # 材料目录已经过身份核验；只在内存中登记本文件公司，使仅提取模式保持数据库只读，成功发布后再更新已导入公司主表。
                 register_company_for_etl(row["stock_code"], row["company"])
                 pdf = (ROOT / row["source_path"]).resolve()
                 if not pdf.is_relative_to((ROOT / "data_root").resolve()):

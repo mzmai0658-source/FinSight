@@ -1,4 +1,4 @@
-"""作品说明：编译财务条件并用Decimal计算，使准确数值独立于模型撰写的语言。"""
+"""编译财务条件并用Decimal计算，使准确数值独立于模型撰写的语言。"""
 from __future__ import annotations
 
 from collections import defaultdict
@@ -8,6 +8,8 @@ from decimal import Decimal, ROUND_HALF_UP, localcontext
 from .catalog import METRICS
 from .contracts import Fact, GoalResult, Request
 from .repository import identity_digest
+from .calculation_plan import target_periods,support_periods,explicit_pairs,value_order_requested,input_plan_errors,expected_input_pairs
+from .units import fact_output_unit,result_output_unit
 
 PERIOD_LABELS = {'FY': '年报', 'HY': '上半年累计', 'Q1': '一季度累计', 'Q3': '前三季度累计'}
 MONEY_UNITS = {'元': Decimal(1), '万元': Decimal(10000), '亿元': Decimal(100000000)}
@@ -15,6 +17,7 @@ MONEY_UNITS = {'元': Decimal(1), '万元': Decimal(10000), '亿元': Decimal(10
 
 @dataclass
 class ExecutionResult:
+    input_kind: str = 'query'
     selections: dict[str, list[tuple[int, str]]] = field(default_factory=dict)
     time_rule: str = ''
     facts: list[Fact] = field(default_factory=list)
@@ -26,6 +29,7 @@ class ExecutionResult:
     charts: list[dict] = field(default_factory=list)
     goals: list[GoalResult] = field(default_factory=list)
     blocks: list[tuple[Request, 'ExecutionResult']] = field(default_factory=list)
+    value_ordered: bool = False
 
     def for_goal(self, goal_id):
         return next((result for request, result in self.blocks if any(g.id == goal_id for g in request.goals)), self)
@@ -57,7 +61,7 @@ def resolve_periods(request: Request, reports: list[dict]) -> tuple[dict, str]:
     candidates = {code: {(y, p) for y, p in catalog[code] if p in wanted} for code in c.codes}
     if c.time.mode == 'latest_common':
         common = set.intersection(*(candidates[code] for code in c.codes)) if c.codes else set()
-        # 作品说明：报告期不能互换；各类期间分别选择最新数据，共同期为空时明确保留缺失。
+        # 报告期不能互换；各类期间分别选择最新数据，共同期为空时明确保留缺失。
         selected = [(max(y for y, pp in common if pp == p), p) for p in c.time.periods if any(pp == p for _, pp in common)]
         return {code: selected for code in c.codes}, '各公司共同拥有的最新报告期；无共同期时不改为各自最新'
     return {code: [(max(y for y, pp in values if pp == p), p) for p in c.time.periods if any(pp == p for _, pp in values)] for code, values in candidates.items()}, '各公司各自最新报告期；默认查询最新年报'
@@ -82,16 +86,8 @@ def display_value(value: str | Decimal, unit: str, output_unit: str | None, deci
 
 
 def calculation_targets(request, selections):
-    """作品说明：明确相对某年计算同比时，基期只作为输入，不额外要求计算基期自身同比。"""
-    import re
-    c=request.conditions
-    if c.calculation=='yoy' and c.comparison_axis=='years':
-        relations=re.findall(r'(20\d{2})年[^。；]{0,80}?(?:相对|相比|相较|对比|比|较)(20\d{2})年',request.question)
-        valid={(int(current),int(base)) for current,base in relations if int(current)==int(base)+1 and {int(current),int(base)}==set(c.time.years)}
-        if len(valid)==1:
-            current,_=next(iter(valid))
-            return {code:[pair for pair in pairs if pair[0]==current] for code,pairs in selections.items()}
-    return selections
+    """计算期来自类型化角色；问题中先提到基年不会改变目标，也不额外计算基年同比。"""
+    return target_periods(request.conditions,selections)
 
 
 def calculate(request: Request, result: ExecutionResult):
@@ -106,14 +102,16 @@ def calculate(request: Request, result: ExecutionResult):
     if axis == 'none':
         result.notes.append('计算需要明确比较年份还是比较公司。')
         return
-    explicit_cross_period=axis=='years' and c.calculation!='yoy' and len(c.time.pairs or [])==2
+    explicit_cross_period=axis=='years' and c.calculation!='yoy' and (len(c.time.pairs or [])==2 or bool(c.calculation_inputs))
     for f in {f.id:f for f in [*result.support_facts,*result.facts]}.values():
         key = (f.metric, f.scope, None if explicit_cross_period else f.period, f.year if axis == 'companies' else f.stock_code)
         groups[key].append(f)
     with localcontext() as context:
         context.prec = 50
         for values in groups.values():
-            if axis == 'companies':
+            if c.calculation_inputs:
+                pairs=explicit_pairs(c,values)
+            elif axis == 'companies':
                 values.sort(key=lambda f: c.codes.index(f.stock_code))
                 pairs = [(values[0], values[1])] if len(values) == 2 else []
             else:
@@ -136,7 +134,7 @@ def calculate(request: Request, result: ExecutionResult):
                     if base.decimal == 0:
                         result.derived.append(dict(id=identity_digest({'inputs': [a.id, b.id], 'formula': c.calculation}),
                             value=None, unit='%', inputs=[a.id, b.id], formula='(first-second)/abs(second)*100' if axis=='companies' else '(current-base)/abs(base)*100',
-                            label='相对变化率', company=current.company, year=current.year, period=current.period, metric=current.metric,
+                            label='相对变化率', company=current.company if axis=='years' else a.company+'−'+b.company, year=current.year, period=current.period, metric=current.metric,
                             detail='零基期，增长率未定义', status='undefined'))
                         continue
                     value = (current.decimal - base.decimal) / abs(base.decimal) * 100
@@ -148,7 +146,7 @@ def calculate(request: Request, result: ExecutionResult):
                     unit, label = '%', '同比增长率' if c.calculation == 'yoy' else '相对百分比变化'
                     formula = '(first-second)/abs(second)*100' if axis=='companies' else '(current-base)/abs(base)*100'
                 else:
-                    # 作品说明：跨公司差额按提问顺序计算第一家公司减第二家；跨年差额计算本期减基期。
+                    # 跨公司差额按提问顺序计算第一家公司减第二家；跨年差额计算本期减基期。
                     value = a.decimal - b.decimal if axis == 'companies' else b.decimal - a.decimal
                     unit = '百分点' if c.calculation == 'percentage_points' else a.unit
                     label, formula, detail = '百分点变化' if unit == '百分点' else '差额', 'first-second' if axis == 'companies' else 'current-base', ''
@@ -156,7 +154,7 @@ def calculate(request: Request, result: ExecutionResult):
                     detail+='；两个累计期间长度不同，本结果为所请求期间的直接变化，不能称为同比'
                 scope_label='母公司' if b.scope=='parent' else '合并'
                 label=scope_label+METRICS[b.metric].label+' '+label
-                if axis=='years':detail+=f'；比较{b.year} {PERIOD_LABELS[b.period]}与{a.year} {PERIOD_LABELS[a.period]}，后期减基期'
+                if axis=='years':detail+=f'；比较{b.year} {PERIOD_LABELS[b.period]}与{a.year} {PERIOD_LABELS[a.period]}，'+('本期减基期' if c.calculation_inputs else '后期减基期')
                 result.derived.append(dict(id=identity_digest({'inputs': [a.id, b.id], 'formula': formula}),
                     value=format(value, 'f'), unit=unit, inputs=[a.id, b.id], formula=formula,
                     label=label, company=b.company if axis == 'years' else a.company + '−' + b.company,
@@ -187,7 +185,7 @@ def build_calculated_charts(request,result):
         values=[item for item in result.derived if item['metric']==metric]
         if not values:continue
         raw_unit=values[0]['unit']
-        unit=c.presentation.unit or '万元' if raw_unit=='元' else raw_unit
+        unit=result_output_unit(c,raw_unit,metric) or ('万元' if raw_unit=='元' else raw_unit)
         def exact(item):
             if item['value'] is None:return None
             value=Decimal(item['value'])
@@ -230,7 +228,7 @@ def build_calculated_charts(request,result):
         points=[];units=[]
         for key,entries in paired.items():
             if mx not in entries or my not in entries or any(entries[m]['value'] is None for m in (mx,my)):continue
-            pair=[entries[m] for m in (mx,my)];current_units=[c.presentation.unit or '万元' if d['unit']=='元' else d['unit'] for d in pair]
+            pair=[entries[m] for m in (mx,my)];current_units=[result_output_unit(c,d['unit'],d['metric']) or ('万元' if d['unit']=='元' else d['unit']) for d in pair]
             if units and units!=current_units:raise ValueError('Calculated scatter units changed across points')
             units=current_units;exact_values=[format(Decimal(d['value'])/MONEY_UNITS[u] if d['unit']=='元' else Decimal(d['value']),'f') for d,u in zip(pair,units)]
             points.append(dict(name=f'{key[0]} {key[1]} {PERIOD_LABELS[key[2]]}',value=[float(v) for v in exact_values],
@@ -254,7 +252,7 @@ def build_charts(request: Request, result: ExecutionResult):
             return
         mx,my=c.metrics
         lookup={(f.stock_code,f.year,f.period,f.metric):f for f in result.facts}
-        units=[c.presentation.unit or '万元' if METRICS[m].dimension=='money' else METRICS[m].unit for m in (mx,my)]
+        units=[fact_output_unit(c,METRICS[m].unit,m) or ('万元' if METRICS[m].dimension=='money' else METRICS[m].unit) for m in (mx,my)]
         points=[]
         for code,pairs in result.selections.items():
             for year,period in pairs:
@@ -281,7 +279,7 @@ def build_charts(request: Request, result: ExecutionResult):
             result.notes.append('饼图不能表达负值占比；本次未生成饼图。')
             continue
         dimension = METRICS[metric].dimension
-        unit = c.presentation.unit or ('万元' if dimension == 'money' else METRICS[metric].unit)
+        unit = fact_output_unit(c,METRICS[metric].unit,metric) or ('万元' if dimension == 'money' else METRICS[metric].unit)
         if chart_type == 'pie':
             if not any(f.decimal > 0 for f in values):
                 result.notes.append('所有数值为零，无法计算饼图占比。')
@@ -293,7 +291,7 @@ def build_charts(request: Request, result: ExecutionResult):
             result.charts.append(dict(version=3,chart_type='pie',title=METRICS[metric].label,unit=unit,metric=metric,
                 decimals=c.presentation.decimals,x=[p['name'] for p in points],series=[dict(name=METRICS[metric].label,values=points)],source_fact_ids=[f.id for f in values]))
             continue
-        # 作品说明：不同指标分别绘图，不将不可比较的单位放入同一坐标轴。
+        # 不同指标分别绘图，不将不可比较的单位放入同一坐标轴。
         series = []
         for code in c.codes:
             selected = [f for f in values if f.stock_code == code]
@@ -318,11 +316,23 @@ def _execute_selection(request: Request, repository) -> ExecutionResult:
     result = ExecutionResult()
     if request.conditions.restrictions.no_query:
         return result
-    result.selections, result.time_rule = resolve_periods(request, repository.report_catalog(request.conditions.codes))
+    reports=repository.report_catalog(request.conditions.codes)
+    report_identities={(r['stock_code'],r['year'],r['period']) for r in reports}
+    result.selections, result.time_rule = resolve_periods(request, reports)
     c = request.conditions
+    for error in input_plan_errors(c,result.selections):
+        result.missing.append(dict(stock_code=','.join(c.codes),reason=error))
+        result.notes.append('计算输入角色与目标选择不一致；本轮计算未完成，不发布推测的变化量。')
     result.facts = repository.query(c.codes, result.selections, c.metrics, c.scope)
-    if c.calculation=='yoy' and c.comparison_axis=='years':
-        baselines={code:sorted({(year-1,period) for year,period in pairs}) for code,pairs in calculation_targets(request,result.selections).items()}
+    # SQL rows have no implicit order. Keep tables, references and trend points
+    # chronological within each requested company; explicit value ranking below
+    # remains responsible for ascending/descending amounts.
+    code_order={code:i for i,code in enumerate(c.codes)}
+    metric_order={metric:i for i,metric in enumerate(c.metrics)}
+    result.facts.sort(key=lambda f:(code_order[f.stock_code],f.year,
+        {'Q1':1,'HY':2,'Q3':3,'FY':4}[f.period],metric_order[f.metric],f.id))
+    if c.calculation!='none' and (c.calculation_inputs or c.calculation=='yoy' and c.comparison_axis=='years'):
+        baselines=support_periods(c,result.selections)
         requested_ids={fact.id for fact in result.facts}
         result.support_facts=[fact for fact in repository.query(c.codes,baselines,c.metrics,c.scope) if fact.id not in requested_ids]
     identities = {(f.stock_code, f.year, f.period, f.metric, f.scope) for f in result.facts}
@@ -335,15 +345,17 @@ def _execute_selection(request: Request, repository) -> ExecutionResult:
             for metric in c.metrics:
                 if (code, year, period, metric, c.scope) not in identities:
                     result.missing.append(dict(stock_code=code, year=year, period=period,
-                        metric=metric, scope=c.scope, reason='no_verified_fact'))
+                        metric=metric, scope=c.scope, reason='no_verified_fact' if (code,year,period) in report_identities else 'report_not_in_catalog'))
     ranking_valid = True
-    if any(g.kind == 'rank' for g in request.goals):
-        if len(c.metrics) != 1 or any(len(pairs) != 1 for pairs in result.selections.values()):
+    ordering=value_order_requested(request)
+    if ordering:
+        if len(c.metrics) != 1 or len(c.codes)>1 and any(len(pairs) != 1 for pairs in result.selections.values()):
             ranking_valid = False
             result.notes.append('排名需要一个指标和每家公司一个明确报告期。')
         elif c.calculation=='none':
             result.facts.sort(key=lambda f: (f.decimal, f.stock_code), reverse=c.presentation.order == 'desc')
             result.facts = result.facts[:c.presentation.limit] if c.presentation.limit else result.facts
+            result.value_ordered=True
     calculate(request, result)
     if c.calculation=='yoy':
         computed={(d['company'],d['year'],d['period'],d['metric']) for d in result.derived}
@@ -353,7 +365,7 @@ def _execute_selection(request: Request, repository) -> ExecutionResult:
             if (fact.company,fact.year,fact.period,fact.metric) not in computed:
                 result.missing.append(dict(stock_code=fact.stock_code,year=fact.year-1,period=fact.period,metric=fact.metric,
                     scope=fact.scope,reason='no_verified_yoy_base',requested_year=fact.year))
-    if ranking_valid and c.calculation!='none' and any(g.kind=='rank' for g in request.goals):
+    if ranking_valid and c.calculation!='none' and ordering:
         undefined=[item for item in result.derived if item['value'] is None]
         if undefined:
             result.notes.append('零基期等未定义计算结果不参与数值排名：'+'、'.join(item['company'] for item in undefined))
@@ -364,18 +376,24 @@ def _execute_selection(request: Request, repository) -> ExecutionResult:
         if c.presentation.limit:result.derived=result.derived[:c.presentation.limit]
         chosen={id for item in result.derived for id in item['inputs']}
         result.facts=[fact for fact in result.facts if fact.id in chosen]
+        result.value_ordered=True
     compare_values(request,result)
     build_charts(request, result)
     for goal in request.goals:
         if goal.kind in {'concept', 'rules', 'catalog', 'quote', 'cause', 'unsupported'}:
             continue
         completed = bool(result.facts) and not result.missing
-        if goal.kind == 'rank':
-            completed = completed and ranking_valid
+        if ordering:
+            # 缺失值排除并保留说明；只在所需名次数量充足且期间有效时完成有数据公司的排名。
+            available=len(result.derived) if c.calculation!='none' else len(result.facts)
+            desired=c.presentation.limit or available
+            allowed_missing={'no_verified_fact','report_not_in_catalog','no_verified_yoy_base','undefined_ranking_value'}
+            structural_missing=any(item['reason'] not in allowed_missing for item in result.missing)
+            completed=ranking_valid and available>0 and available>=desired and not structural_missing
         if goal.kind == 'chart':
             completed = completed and bool(result.charts)
         if goal.kind=='compare':
-            completed=completed and bool(result.comparisons)
+            completed=completed and (bool(result.comparisons) or result.value_ordered)
         if c.calculation != 'none':
             expected = len(c.metrics) * (len(c.codes) if c.comparison_axis == 'years' else 1) * len(c.time.periods)
             if c.calculation=='yoy' and c.comparison_axis=='years':
@@ -384,8 +402,10 @@ def _execute_selection(request: Request, repository) -> ExecutionResult:
                 expected=len(c.metrics)*len(c.codes)
             elif c.calculation in {'relative_percent', 'percentage_points'} and c.comparison_axis == 'years':
                 expected *= max(1, max((len(pairs) // len(c.time.periods) - 1 for pairs in result.selections.values()), default=1))
-            if goal.kind=='rank' and ranking_valid:expected=min(c.presentation.limit or len(c.codes),len(c.codes))
-            completed = completed and len(result.derived) == expected
+            if c.calculation_inputs:
+                expected=len(c.metrics)*expected_input_pairs(c,result.selections)
+            if ordering and ranking_valid:expected=c.presentation.limit or len(result.derived)
+            completed = completed and expected>0 and len(result.derived) == expected
         result.goals.append(GoalResult(id=goal.id, kind=goal.kind,
             status='completed' if completed else 'partial' if result.facts else 'no_data',
             fact_ids=[f.id for f in result.facts], detail='；'.join(result.notes)))
@@ -393,7 +413,7 @@ def _execute_selection(request: Request, repository) -> ExecutionResult:
 
 
 def execute(request: Request, repository) -> ExecutionResult:
-    """作品说明：相同财务选择只编译一次，同时保存每个目标的实际执行结果。"""
+    """相同财务选择只编译一次，同时保存每个目标的实际执行结果。"""
     import json
     data_kinds = {'lookup', 'compare', 'rank', 'chart', 'quote', 'cause', 'sign'}
     groups = {}
@@ -401,8 +421,8 @@ def execute(request: Request, repository) -> ExecutionResult:
         if goal.kind not in data_kinds:
             continue
         selected = request.for_goal(goal)
-        # 作品说明：排名仅裁剪自己的结果；独立要求的完整查询及来源继续保留，相同只读取数可共享缓存。
-        key = json.dumps({'conditions':selected.conditions.model_dump(mode='json'),'ranking':goal.kind=='rank'}, sort_keys=True, ensure_ascii=False)
+        # 排名仅裁剪自己的结果；独立要求的完整查询及来源继续保留，相同只读取数可共享缓存。
+        key = json.dumps({'conditions':selected.conditions.model_dump(mode='json',exclude={'origins'}),'ranking':goal.kind=='rank'}, sort_keys=True, ensure_ascii=False)
         if key not in groups:
             groups[key] = selected
         else:

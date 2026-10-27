@@ -1,4 +1,4 @@
-"""作品说明：提取和来源核验共用财务单元格身份定义。"""
+"""提取和来源核验共用财务单元格身份定义。"""
 import re
 from src.agent.v3.catalog import METRICS
 from src.utils.disclosed_rates import disclosed_rate_basis
@@ -9,12 +9,12 @@ def compact(value):
 
 
 def row_key(label):
-    text=compact(label).replace('：',':')
+    text=compact(label).replace('：',':').replace('／','/')
     text=re.sub(r'^[一二三四五六七八九十\d]+[、.．]','',text)
     text=re.sub(r'^[（(][一二三四五六七八九十\d]+[）)]','',text)
     text=re.sub(r'^(?:其中|减|加)[:：]','',text)
     text=re.sub(r'[（(](?:亏损|净亏损|亏损总额|损失|收益|净损失|亏损以).*$', '',text)
-    return re.sub(r'[（(](?:元/股|%|元|万元)[）)]$','',text)
+    return re.sub(r'[（(](?:元/股|%|元|千元|万元|百万元|亿元)[）)]$','',text)
 
 
 ROW_METRICS={row_key(label):metric.id for metric in METRICS.values() for label in (metric.label,*metric.aliases)}
@@ -24,6 +24,9 @@ ROW_METRICS.update({
     '所有者权益合计':'total_equity','负债总额':'total_liabilities',
     '归属于母公司所有者的净利润':'attributable_net_profit',
     '归属于母公司股东的净利润':'attributable_net_profit',
+    '归属于本公司股东的净利润':'attributable_net_profit',
+    '归属于本公司股东的扣除非经常性损益的净利润':'deducted_attributable_net_profit',
+    '归属于本公司股东的扣除非经常性损益后的净利润':'deducted_attributable_net_profit',
     '归属于公司普通股股东的净利润':'attributable_net_profit',
     '期初现金及现金等价物余额':'cash_begin','期末现金及现金等价物余额':'cash_end',
     '现金及现金等价物净增加额':'net_cash_change',
@@ -39,7 +42,7 @@ def checked_row_identity(fact):
 
 
 def checked_period_column(fact):
-    """作品说明：报告披露增长率与基础金额属于不同列。"""
+    """报告披露增长率与基础金额属于不同列。"""
     if not fact.source:return False
     heading=compact(fact.source.column)
     if fact.metric.endswith('_reported_yoy'):
@@ -56,13 +59,13 @@ def checked_period_column(fact):
     for period,patterns in {'FY':('年度','全年','12月31日'),'HY':('半年度','上半年','1-6','1—6','6月30日'),
                            'Q1':('第一季度','一季度','1-3','1—3','3月31日'),'Q3':('前三季度','1-9','1—9','年初至报告期末','9月30日')}.items():
         if any(pattern in heading for pattern in patterns):explicit_periods.add(period)
-    # 作品说明：半年度包含年度字样，解析时优先匹配更具体的半年度期间。
+    # 半年度包含年度字样，解析时优先匹配更具体的半年度期间。
     if 'HY' in explicit_periods:explicit_periods.discard('FY')
     return not explicit_periods or explicit_periods=={fact.period}
 
 
 def checked_scope_title(fact,title):
-    """作品说明：来源表题必须明确绑定报表范围。"""
+    """来源表题必须明确绑定报表范围。"""
     text=compact(title)
     if fact.scope=='parent':return '母公司' in text and any(word in text for word in ('报表','利润表','资产负债表','现金流量表','注释','附注'))
     return '合并' in text and any(word in text for word in ('报表','利润表','资产负债表','现金流量表','注释','附注')) or '主要会计数据和财务指标' in text

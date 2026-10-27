@@ -23,7 +23,7 @@ public class ChatMessage {
 
     private String content;
 
-    /** 作品说明：assistant 元数据 JSON：sql / 图表 / 引用 / 执行过程等 */
+    /** assistant 元数据 JSON：sql / 图表 / 引用 / 执行过程等 */
     private String metadata;
 
     private LocalDateTime createdAt;

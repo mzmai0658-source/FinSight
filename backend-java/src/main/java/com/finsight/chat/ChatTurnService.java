@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-/** 作品说明：持久化任务身份及终态归属独立于 SSE 连接。 */
+/** 持久化任务身份及终态归属独立于 SSE 连接。 */
 @Service
 @RequiredArgsConstructor
 public class ChatTurnService {
@@ -97,7 +97,7 @@ public class ChatTurnService {
         return jdbc.update("UPDATE chat_turn SET status='cancelling' WHERE task_id=? AND user_id=? AND status IN ('queued','running')", id, userId) == 1;
     }
 
-    /** 作品说明：消息、保存标记及终态同事务提交；已确认取消阻断迟到的完成结果。 */
+    /** 消息、保存标记及终态同事务提交；已确认取消阻断迟到的完成结果。 */
     @Transactional
     public boolean finish(long userId, String id, ChatSession session, String content, String metadata,
                           JsonNode result, String target) {
@@ -111,7 +111,7 @@ public class ChatTurnService {
         return true;
     }
 
-    /** 作品说明：消息保存回滚后，通过独立事务记录可见的保存失败。 */
+    /** 消息保存回滚后，通过独立事务记录可见的保存失败。 */
     public void saveFailed(long userId, String id, JsonNode result) {
         jdbc.update("UPDATE chat_turn SET status='failed',result=?,saved=0,error_code='persistence_failed' WHERE user_id=? AND task_id=? AND status IN ('queued','running','cancelling')", result.toString(), userId, id);
     }

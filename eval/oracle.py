@@ -1,4 +1,4 @@
-"""作品说明：独立评分器不导入应用核验器。保守语法只评分范围明确的虚构事实，不能证明任意自然语言解释正确。"""
+"""独立评分器不导入应用核验器。保守语法只评分范围明确的虚构事实，不能证明任意自然语言解释正确。"""
 from __future__ import annotations
 import hashlib
 import math
@@ -57,7 +57,7 @@ def expected_values_supported(answer: str, values: Sequence[Mapping[str, Any]]) 
     if any(year not in {str(f["report_year"]) for f in values} for year in re.findall(r"(?<!\d)(20\d{2})年", normalized)):
         return False
     for match, (value, unit) in zip(matches, claims):
-        # 作品说明：金额之前最近的指标须与预期一致，仅在其他位置提及正确指标不足以通过。
+        # 金额之前最近的指标须与预期一致，仅在其他位置提及正确指标不足以通过。
         prefix = re.split(r"[。；;!?！？]", normalized[:match.start()])[-1]
         metric_positions = [(prefix.rfind(alias), field) for field, aliases in ALIASES.items() for alias in aliases if alias in prefix]
         if not metric_positions:

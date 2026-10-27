@@ -1,4 +1,4 @@
-"""作品说明：生成可逐页回查的虚构PDF及坐标事实，不读取真实原件或模型输出。"""
+"""生成可逐页回查的虚构PDF及坐标事实，不读取真实原件或模型输出。"""
 from __future__ import annotations
 import argparse
 import hashlib

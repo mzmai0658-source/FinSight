@@ -1,4 +1,4 @@
-"""作品说明：通过报告标识读取 OCR 快照，不接收浏览器文件路径。"""
+"""通过报告标识读取 OCR 快照，不接收浏览器文件路径。"""
 import json
 from fastapi import HTTPException
 from sqlalchemy import text

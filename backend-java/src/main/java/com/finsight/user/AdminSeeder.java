@@ -11,7 +11,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-/** 作品说明：首次启动播种管理员账号（避免把 BCrypt 哈希硬编码进迁移脚本）。 */
+/** 首次启动播种管理员账号（避免把 BCrypt 哈希硬编码进迁移脚本）。 */
 @Slf4j
 @Component
 @RequiredArgsConstructor

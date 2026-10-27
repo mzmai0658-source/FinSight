@@ -1,4 +1,4 @@
-"""作品说明：根据不可变对话运行记录生成可复核的前后对照报告。"""
+"""根据不可变对话运行记录生成可复核的前后对照报告。"""
 from __future__ import annotations
 
 import argparse

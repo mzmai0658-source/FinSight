@@ -31,7 +31,7 @@ from src.utils.ocr_json_parser import (
     parse_ocr_json_to_content_and_chunks,
     read_ocr_json,
 )
-# 作品说明：ETL 导入侧使用全量公司映射（含 pending 公司），与对话侧（仅 imported）隔离
+# ETL 导入侧使用全量公司映射（含 pending 公司），与对话侧（仅 imported）隔离
 from src.utils.company_registry import (
     get_all_code_to_name as get_code_to_name,
     get_all_name_to_code as get_name_to_code,
@@ -41,13 +41,13 @@ from src.utils.company_registry import resolve_stock_abbr as _resolve_imported_a
 
 
 def resolve_stock_abbr(code: str) -> str:
-    """作品说明：简称优先取全量映射（新公司未入库时也能拿到），找不到回退对话侧。"""
+    """简称优先取全量映射（新公司未入库时也能拿到），找不到回退对话侧。"""
     abbr = get_code_to_name().get(code)
     return abbr if abbr else _resolve_imported_abbr(code)
 
-# 作品说明：全局常量
+# 全局常量
 
-# 作品说明：(正则, 相对于"万元"的乘数)
+# (正则, 相对于"万元"的乘数)
 UNIT_PATTERNS: List[Tuple[str, float]] = [
     (r'单位[：:]\s*亿元', 10000.0),
     (r'单位[：:]\s*百万元', 100.0),
@@ -56,7 +56,7 @@ UNIT_PATTERNS: List[Tuple[str, float]] = [
     (r'单位[：:]\s*元', 0.0001),
 ]
 
-# 作品说明：不需要单位换算的比率/百分比/每股字段
+# 不需要单位换算的比率/百分比/每股字段
 RATIO_FIELDS = {
     'eps', 'roe', 'gross_profit_margin', 'net_profit_margin',
     'asset_liability_ratio', 'net_profit_yoy_growth', 'net_profit_qoq_growth',
@@ -125,7 +125,7 @@ SUSPICIOUS_SMALL_FIELDS = {
     "total_operating_revenue": 1000.0,
     "net_cash_flow": 1000.0,
     "share_capital": 1000000.0,
-    # 作品说明：上市公司财报口径下，净利润小于 1 万元通常是误提到每股/附注/杂项值。
+    # 上市公司财报口径下，净利润小于 1 万元通常是误提到每股/附注/杂项值。
     "net_profit": 1.0,
     "parent_net_profit": 1.0,
     "net_profit_excl_non_recurring": 1.0,
@@ -331,15 +331,15 @@ STORAGE_PRECISION_FIELDS = {
     "share_capital": 4,
 }
 
-# 作品说明：OCR 生成的 HTML 表格匹配
+# OCR 生成的 HTML 表格匹配
 TABLE_RE = re.compile(r'(<table\b[^>]*>.*?</table>)', re.DOTALL | re.IGNORECASE)
 
 
-LLM_MAX_WORKERS = max(1, int(os.getenv('ETL_LLM_MAX_WORKERS','1')))  # 作品说明：支持思考的模型也共享同一推理服务器与资源调度。
+LLM_MAX_WORKERS = max(1, int(os.getenv('ETL_LLM_MAX_WORKERS','1')))  # 支持思考的模型也共享同一推理服务器与资源调度。
 
 
 class ETLWorker(BaseAgent):
-    """作品说明：兼容宽表提取工作线程：读取 OCR，识别元数据，按表格与单位分块，规则优先并可调用模型补充，程序换算并按来源范围合并后入库。规范事实另经原件核验与版本发布，不以该合并结果代替多口径事实。"""
+    """兼容宽表提取工作线程：读取 OCR，识别元数据，按表格与单位分块，规则优先并可调用模型补充，程序换算并按来源范围合并后入库。规范事实另经原件核验与版本发布，不以该合并结果代替多口径事实。"""
 
     def __init__(
         self,
@@ -349,9 +349,9 @@ class ETLWorker(BaseAgent):
         enable_optional_llm_supplement: bool = True,
     ):
         super().__init__("ETLWorker", llm_client)
-        self._db_engine = None  # 作品说明：懒加载，复用连接池
+        self._db_engine = None  # 懒加载，复用连接池
         self.enable_llm_extraction = bool(enable_llm_extraction)
-        # 作品说明：规则识别表格作为提取依据；预览可关闭可选补缺，超时不丢弃规则结果。
+        # 规则识别表格作为提取依据；预览可关闭可选补缺，超时不丢弃规则结果。
         self.enable_optional_llm_supplement = bool(
             enable_optional_llm_supplement and self.enable_llm_extraction
         )
@@ -366,7 +366,7 @@ class ETLWorker(BaseAgent):
             (r'(?:股票代码|A股代码)\s*[:：]?\s*(\d{6})', 1),
         ]
 
-    # 作品说明：入口
+    # 入口
 
     @staticmethod
     def _normalize_stock_code(value: Any) -> Optional[str]:
@@ -408,7 +408,7 @@ class ETLWorker(BaseAgent):
         )
 
         if prebuilt_chunks is not None:
-            # 作品说明：结构化 OCR 保留页级单位与标题，避免重新解析扁平文本引入重复或混合前置章节。
+            # 结构化 OCR 保留页级单位与标题，避免重新解析扁平文本引入重复或混合前置章节。
             chunks = list(prebuilt_chunks) if prebuilt_chunks else self._chunk_markdown(content)
         else:
             chunks = self._chunk_markdown(content)
@@ -416,7 +416,7 @@ class ETLWorker(BaseAgent):
         relevant_chunks = [(i, c) for i, c in enumerate(normalized_chunks) if self._is_relevant_chunk(c)]
         logger.info(f"[ETL] {len(chunks)} chunks, {len(relevant_chunks)} relevant from {os.path.basename(file_path)}")
 
-        # 作品说明：并行 LLM 提取
+        # 并行 LLM 提取
         combined_data: Dict[str, Any] = {}
         unknown_data: Dict[str, Any] = {}
         parent_data: Dict[str, Any] = {}
@@ -445,7 +445,7 @@ class ETLWorker(BaseAgent):
             converted = self._filter_fields_by_table_type(converted, str(chunk.get("table_type") or ""))
             converted = self._annotate_field_sources(converted, chunk, idx, extraction_mode)
             for name, source in converted.get('_field_sources', {}).items():
-                # 作品说明：原始值仅表示页内字面数值；派生值与默认值不能当作逐字引用依据。
+                # 原始值仅表示页内字面数值；派生值与默认值不能当作逐字引用依据。
                 if source.get("value_semantics", "direct") in {"direct", "mapped"}:
                     source['raw_value'] = raw_data.get(name)
                 else:
@@ -463,7 +463,7 @@ class ETLWorker(BaseAgent):
                     extraction_failures.append({'chunk_index': futures[future], 'error': str(e)})
 
         if extraction_failures:
-            # 作品说明：提取失败不能用残缺核心指标覆盖已有完整快照。
+            # 提取失败不能用残缺核心指标覆盖已有完整快照。
             return {
                 'status': 'error', 'file': file_path, 'data': meta,
                 'message': '抽取中断，未写入数据库：' + extraction_failures[0]['error'],
@@ -482,12 +482,12 @@ class ETLWorker(BaseAgent):
 
         cashflow_conflicts = self._cashflow_source_conflicts(chunk_results, normalized_chunks)
         if cashflow_conflicts:
-            # 作品说明：母公司标签可能与合并表邻接，不能依据最后片段消解口径冲突。
+            # 母公司标签可能与合并表邻接，不能依据最后片段消解口径冲突。
             return {"status": "error", "file": file_path,
                     "message": "Conflicting consolidated cash-flow statements; confirm source scope before publishing",
                     "cashflow_source_conflicts": cashflow_conflicts}
 
-        # 作品说明：跨来源合并时，优先级应为：合并报表 > 其他可信块 > 母公司报表。
+        # 跨来源合并时，优先级应为：合并报表 > 其他可信块 > 母公司报表。
         extracted_data: Dict[str, Any] = {}
         for source in [combined_data, unknown_data, parent_data]:
             extracted_data = self._merge_last_wins(extracted_data, source)
@@ -527,10 +527,10 @@ class ETLWorker(BaseAgent):
                     seen[field] = {"value": value, "chunk": index}
         return conflicts
 
-    # 作品说明：文件读取
+    # 文件读取
 
     def _load_source(self, path: str) -> Tuple[str, Optional[List[Dict[str, Any]]]]:
-        """作品说明：优先读取单份 PaddleOCR JSON 缓存；否则回退到普通文本。"""
+        """优先读取单份 PaddleOCR JSON 缓存；否则回退到普通文本。"""
         json_path = self._resolve_ocr_json_path(path)
         if json_path:
             content, chunks = self._load_from_single_ocr_json(json_path)
@@ -582,7 +582,7 @@ class ETLWorker(BaseAgent):
             logger.error(f"Error reading file: {e}")
             return ""
 
-    # 作品说明：元数据提取
+    # 元数据提取
 
     def _extract_metadata(self, content: str, file_path: str) -> Dict[str, Any]:
         meta: Dict[str, Any] = {
@@ -598,7 +598,7 @@ class ETLWorker(BaseAgent):
         summary_fname_tokens = ["报告摘要", "年度报告摘要", "半年度报告摘要", "摘要版"]
         is_summary = any(token in fname for token in summary_fname_tokens)
         if not is_summary:
-            # 作品说明：仅依据首页标题区域判定“摘要”，避免正文/备查文件目录中出现
+            # 仅依据首页标题区域判定“摘要”，避免正文/备查文件目录中出现
             # “半年度报告摘要及全文”等描述时误把正式报告识别成摘要。
             title_lines: List[str] = []
             for raw_line in content[:1200].splitlines():
@@ -615,7 +615,7 @@ class ETLWorker(BaseAgent):
                 is_summary = True
         meta["source_is_summary"] = is_summary
 
-        # 作品说明：先从正文提取。报告首页标题通常最先出现；按 pattern 的固定顺序
+        # 先从正文提取。报告首页标题通常最先出现；按 pattern 的固定顺序
         # 会让季报正文稍后提到的“半年度报告”抢先命中 HY。
         # 因此收集所有报告标题，并采用正文位置最靠前的一项。
         period_matches = []
@@ -628,7 +628,7 @@ class ETLWorker(BaseAgent):
             meta["report_year"] = int(match.group(1))
             meta["report_period"] = period_type
 
-        # 作品说明：从文件名兜底提取年份和报告期
+        # 从文件名兜底提取年份和报告期
         if meta["report_year"] == datetime.now().year:
             for pattern, p_type in self.period_patterns:
                 m = re.search(pattern, fname)
@@ -663,13 +663,13 @@ class ETLWorker(BaseAgent):
                 meta["stock_code"] = m.group(group_idx)
                 break
 
-        # 作品说明：从文件名兜底：6位代码
+        # 从文件名兜底：6位代码
         if not meta["stock_code"]:
             m = re.search(r'(\d{6})', os.path.basename(file_path))
             if m:
                 meta["stock_code"] = m.group(1)
 
-        # 作品说明：优先使用文件名中的公司名精确反查，避免正文前几页出现其他公司名称时误判。
+        # 优先使用文件名中的公司名精确反查，避免正文前几页出现其他公司名称时误判。
         if not meta["stock_code"]:
             company_prefix = ""
             for sep in ("：", ":"):
@@ -682,7 +682,7 @@ class ETLWorker(BaseAgent):
                 if exact_code:
                     meta["stock_code"] = exact_code
 
-        # 作品说明：从文件名/内容兜底：公司名称反查代码
+        # 从文件名/内容兜底：公司名称反查代码
         if not meta["stock_code"]:
             search_text = os.path.basename(file_path) + head[:3000]
             resolved = resolve_stock_code(search_text)
@@ -690,12 +690,12 @@ class ETLWorker(BaseAgent):
                 meta["stock_code"] = resolved
                 logger.info(f"[ETL] Resolved stock_code by company name: {resolved}")
 
-        # 作品说明：LLM 兜底
+        # LLM 兜底
         if not meta["stock_code"]:
             llm_meta = self._extract_metadata_with_llm(content[:6000])
             meta.update({k: v for k, v in llm_meta.items() if v})
 
-        # 作品说明：从动态注册表获取简称
+        # 从动态注册表获取简称
         if meta.get("stock_code"):
             meta["stock_code"] = self._normalize_stock_code(meta["stock_code"])
         if meta.get("stock_code") and not self._is_registry_stock_code(meta["stock_code"]):
@@ -721,7 +721,7 @@ class ETLWorker(BaseAgent):
             "- report_period: one of Q1, HY, Q3, FY or null\n"
             f"Text:\n{text}"
         )
-        response = self.llm.chat([{"role": "user", "content": prompt}], temperature=0.1)
+        response = self.llm.chat([{"role": "user", "content": prompt}], temperature=0,json_mode=True)
         if not response:
             return {}
         try:
@@ -735,10 +735,10 @@ class ETLWorker(BaseAgent):
         except Exception:
             return {}
 
-    # 作品说明：按表格、标题与单位上下文分块。
+    # 按表格、标题与单位上下文分块。
 
     def _chunk_markdown(self, content: str) -> List[Dict[str, Any]]:
-        """作品说明：针对 PaddleOCR 输出的 HTML 表格格式进行分块。
+        """针对 PaddleOCR 输出的 HTML 表格格式进行分块。
         每个 chunk 包含：
         - text: 上下文文本 + HTML 表格
         - unit_multiplier: 换算到\"万元\"的乘数
@@ -746,17 +746,17 @@ class ETLWorker(BaseAgent):
         """
         chunks: List[Dict[str, Any]] = []
         prev_end = 0
-        doc_unit = 1.0  # 作品说明：文档级别的默认单位（随扫描推进更新）
+        doc_unit = 1.0  # 文档级别的默认单位（随扫描推进更新）
 
         for m in TABLE_RE.finditer(content):
             table_html = m.group(1)
             table_start = m.start()
 
-            # 作品说明：取表格前最多 600 字符作为上下文（包含单位声明、标题）
+            # 取表格前最多 600 字符作为上下文（包含单位声明、标题）
             ctx_start = max(prev_end, table_start - 600)
             context_text = content[ctx_start:table_start]
 
-            # 作品说明：更新文档级别单位
+            # 更新文档级别单位
             detected = self._detect_unit_in_text(context_text)
             if detected is not None:
                 doc_unit = detected
@@ -788,7 +788,7 @@ class ETLWorker(BaseAgent):
             })
             prev_end = m.end()
 
-        # 作品说明：如果没有找到任何 HTML 表格，回退到按标题分块（兼容普通 Markdown）
+        # 如果没有找到任何 HTML 表格，回退到按标题分块（兼容普通 Markdown）
         if not chunks:
             for part in re.split(r'\n#{1,6}\s+', content):
                 part = part.strip()
@@ -814,7 +814,7 @@ class ETLWorker(BaseAgent):
         return None
 
     def _classify_table_type(self, table_html: str, context: str) -> Optional[bool]:
-        """作品说明：返回 True=合并报表, False=仅母公司报表, None=不确定
+        """返回 True=合并报表, False=仅母公司报表, None=不确定
         合并报表优先：只要发现\"合并\"字样（且不是母公司专属章节），返回 True
         """
         combined_keywords = ['合并资产负债表', '合并利润表', '合并现金流量表', '合并报表', '合并财务报表']
@@ -827,11 +827,11 @@ class ETLWorker(BaseAgent):
             if kw in context:
                 return False
 
-        # 作品说明：查表格内容头部（前 800 字符包含表头行）
+        # 查表格内容头部（前 800 字符包含表头行）
         table_head = table_html[:800]
         if '合并' in table_head:
             return True
-        # 作品说明：表头出现"母公司"列但无"合并"列 → 母公司专用表
+        # 表头出现"母公司"列但无"合并"列 → 母公司专用表
         if '母公司' in table_head and '合并' not in table_head:
             return False
 
@@ -946,7 +946,7 @@ class ETLWorker(BaseAgent):
             return None
 
         title_context = " ".join(chunk.get("title_context") or [])
-        # 作品说明：保留实际母公司利润表身份，不能将其强制改为合并表。
+        # 保留实际母公司利润表身份，不能将其强制改为合并表。
         if "母公司利润表" in title_context:
             return None
 
@@ -1000,10 +1000,10 @@ class ETLWorker(BaseAgent):
     def _should_accept_chunk(self, chunk: Dict[str, Any]) -> bool:
         text = str(chunk.get('text', ''))
         if '关键审计事项' in text and '审计中的应对' in text:
-            return False  # 作品说明：审计程序叙述不属于财务报表。
-        # 作品说明：现金费用支付不等于利润表费用，其他现金流细项也不能塞入现有字段。
+            return False  # 审计程序叙述不属于财务报表。
+        # 现金费用支付不等于利润表费用，其他现金流细项也不能塞入现有字段。
         compact = re.sub(r'\s+', '', text)
-        # 作品说明：主现金流表也包含这些行，只在明确表外标题时排除片段。
+        # 主现金流表也包含这些行，只在明确表外标题时排除片段。
         outside_tables = TABLE_RE.sub('', text)
         cash_note_context = re.sub(r'\s+', '', outside_tables + ' '.join(
             str(title) for title in (chunk.get('title_context') or [])))
@@ -1011,7 +1011,7 @@ class ETLWorker(BaseAgent):
         if (re.search(cash_note_pattern, cash_note_context)
                 or (chunk.get('table_type') != 'primary_cashflow' and re.search(cash_note_pattern, compact))):
             return False
-        # 作品说明：子集、其他主体及期初调整值不能当作报告总额。
+        # 子集、其他主体及期初调整值不能当作报告总额。
         if any(marker in compact for marker in (
             '受限原因', '所有权或使用权受限', '所有权或使用权受到限制',
             '主要资产受限', '期末外币余额', '应收、应付关联方',
@@ -1022,7 +1022,7 @@ class ETLWorker(BaseAgent):
         if chunk.get('is_combined') is False:
             return False
         table_type = str(chunk.get("table_type") or "")
-        # 作品说明：重述比较表中的旧数、调整数和重述数不是本期值；首个数值解析可能冲突，仅发布已确认主报表数据。
+        # 重述比较表中的旧数、调整数和重述数不是本期值；首个数值解析可能冲突，仅发布已确认主报表数据。
         if (table_type in PRIMARY_TABLE_TYPES
                 and str(chunk.get("table_prototype") or "") == "statement_adjusted_compare"):
             return False
@@ -1055,7 +1055,7 @@ class ETLWorker(BaseAgent):
             ]
         )
 
-    # 作品说明：相关性判断
+    # 相关性判断
 
     def _is_relevant_chunk(self, chunk: Dict[str, Any]) -> bool:
         return self._should_accept_chunk(chunk)
@@ -1131,7 +1131,7 @@ class ETLWorker(BaseAgent):
         retried = dict(data)
         groups = self._expected_required_field_groups(relevant_chunks)
         group_names = {group["name"] for group in groups}
-        # 作品说明：重新计算已检查报表族的警告，同时保留其他警告。
+        # 重新计算已检查报表族的警告，同时保留其他警告。
         completeness_flags = [flag for flag in (retried.get("_completeness_flags") or [])
                               if not any(re.fullmatch(re.escape(name) + r"_(?:incomplete\(\d+/\d+\)|critical_missing)", str(flag))
                                          for name in group_names)]
@@ -1197,13 +1197,13 @@ class ETLWorker(BaseAgent):
             retried["_retry_recovered_fields"] = sorted(recovered_fields)
         return retried
 
-    # 作品说明：LLM 提取
+    # LLM 提取
 
     def _needs_llm_supplement(self, chunk: Dict[str, Any], rule_data: Dict[str, Any]) -> bool:
         if not rule_data:
             return False
         if chunk.get('table_type') != 'primary_income':
-            # 作品说明：核心指标或其他摘要不保证包含营业利润，不能从其他表填补未披露项。
+            # 核心指标或其他摘要不保证包含营业利润，不能从其他表填补未披露项。
             return False
         chunk_text = str(chunk.get("text", ""))
         if "<table" not in chunk_text.lower():
@@ -1236,21 +1236,21 @@ class ETLWorker(BaseAgent):
             return {}, "rejected"
         rule_data = self._extract_with_rules(chunk)
         if not rule_data and chunk.get('table_type') in {'supporting_financial', 'financial_other'}:
-            # 作品说明：未知指标备注留给叙述检索，不能将局部细项冒充总额。
+            # 未知指标备注留给叙述检索，不能将局部细项冒充总额。
             return {}, 'unsupported_note'
         if rule_data:
             needs_supplement = self._needs_llm_supplement(chunk, rule_data)
             if not needs_supplement:
                 return rule_data, "rules"
             if not self.enable_optional_llm_supplement:
-                # 作品说明：规则结果不完整时，保存前保留未解决警告与复核状态。
+                # 规则结果不完整时，保存前保留未解决警告与复核状态。
                 degraded = dict(rule_data)
                 degraded["_optional_llm_missing_fields"] = self._optional_llm_missing_fields(rule_data)
                 degraded["_optional_llm_supplement_status"] = "disabled"
                 return degraded, "rules_supplement_skipped"
 
         if not self.enable_llm_extraction:
-            # 作品说明：仅规则模式没有识别字段时不调用模型兜底，明确记录该状态。
+            # 仅规则模式没有识别字段时不调用模型兜底，明确记录该状态。
             return {
                 "_llm_extraction_skipped_table_types": [str(chunk.get("table_type") or "unknown")],
                 "_llm_extraction_status": "disabled",
@@ -1377,15 +1377,15 @@ class ETLWorker(BaseAgent):
 """
         allowed = self._allowed_fields_for_table_type(table_type)
         if allowed is not None:
-            # 作品说明：描述只保留当前表实际可存储字段。
+            # 描述只保留当前表实际可存储字段。
             prompt = '\n'.join(line for line in prompt.splitlines()
                                if not line.startswith('- ') or line[2:].split(' ', 1)[0] in allowed)
-        response = self.llm.chat([{"role": "user", "content": prompt}], temperature=0.1)
+        response = self.llm.chat([{"role": "user", "content": prompt}], temperature=0,json_mode=True)
         if not response:
             raise RuntimeError('LLM extraction returned no answer (service failure or exhausted generation budget)')
         try:
             clean = re.sub(r'```json|```', '', response).strip()
-            # 作品说明：尝试提取 JSON 对象（防止 LLM 多余文字包裹）
+            # 尝试提取 JSON 对象（防止 LLM 多余文字包裹）
             json_match = re.search(r'\{[\s\S]*\}', clean)
             if json_match:
                 data = json.loads(json_match.group())
@@ -1409,7 +1409,7 @@ class ETLWorker(BaseAgent):
         return data
 
     def _extract_with_rules(self, chunk: Dict[str, Any]) -> Dict[str, Any]:
-        """作品说明：对标准财务指标表优先走规则抽取，减少 LLM 调用。"""
+        """对标准财务指标表优先走规则抽取，减少 LLM 调用。"""
         text = chunk.get("text", "")
         table_type = str(chunk.get("table_type") or "")
         if "<table" not in text:
@@ -1523,7 +1523,7 @@ class ETLWorker(BaseAgent):
         return extracted
 
     def _extract_quarter_summary_table(self, text: str) -> Dict[str, Any]:
-        # 作品说明：季度标题也可能写成一季度或二季度，不一定带第字。
+        # 季度标题也可能写成一季度或二季度，不一定带第字。
         text = re.sub(r'(?<!第)([一二三四])季度', r'第\1季度', text)
         extracted: Dict[str, Any] = {}
         try:
@@ -1911,7 +1911,7 @@ class ETLWorker(BaseAgent):
         return default_idx
 
     def _recover_headers_from_data_rows(self, df: pd.DataFrame, headers: List[str]) -> Tuple[List[str], int]:
-        """作品说明：读取数值型表头时，从顶部数据行查找实际文字标题。"""
+        """读取数值型表头时，从顶部数据行查找实际文字标题。"""
         meaningful_keywords = ["本报告期", "年初至报告期末", "本期", "期末", "上年", "累计"]
         norm_headers = [re.sub(r"\s+", "", h) for h in headers]
         if any(any(kw in h for kw in meaningful_keywords) for h in norm_headers):
@@ -2321,7 +2321,7 @@ class ETLWorker(BaseAgent):
         for row in expanded_rows:
             normalized.append(row + [""] * (max_cols - len(row)))
         if carry:
-            # 作品说明：少见布局兜底保留表格宽度与末尾跨列关系。
+            # 少见布局兜底保留表格宽度与末尾跨列关系。
             max_cols = max(max_cols, max(carry.keys()) + 1)
             normalized = [row + [""] * (max_cols - len(row)) for row in normalized]
         return normalized
@@ -2619,7 +2619,7 @@ class ETLWorker(BaseAgent):
         return value
 
     def _allow_substring_alias_match(self, normalized_row: str, normalized_alias: str, field: str) -> bool:
-        """作品说明：汇总指标别名不能命中小计或明细行。"""
+        """汇总指标别名不能命中小计或明细行。"""
         blocked_row_aliases = {
             ("asset_total_assets", "资产总计"): {"流动资产合计", "非流动资产合计"},
             ("asset_total_assets", "总资产"): {"流动资产总额", "非流动资产总额"},
@@ -2642,9 +2642,9 @@ class ETLWorker(BaseAgent):
     def _match_row_alias(self, row_name: str, row_map: Dict[str, str]) -> Optional[str]:
         normalized_row = self._normalize_label_for_match(row_name)
         if '每股收益' in normalized_row and any(marker in normalized_row for marker in ['扣除非经常', '扣非', '稀释']):
-            return None  # 作品说明：基本每股收益与扣非、稀释口径分别处理。
+            return None  # 基本每股收益与扣非、稀释口径分别处理。
 
-        # 作品说明：先跨别名精确匹配，避免归母股东权益合计被较短的股东权益合计提前命中。
+        # 先跨别名精确匹配，避免归母股东权益合计被较短的股东权益合计提前命中。
         for alias, field in row_map.items():
             normalized_alias = self._normalize_label_for_match(alias)
             if not normalized_alias:
@@ -2653,7 +2653,7 @@ class ETLWorker(BaseAgent):
                 return field
 
         exact_match = None
-        # 作品说明：再按较长别名优先进行近似匹配，并防止总额匹配成流动负债等小计。
+        # 再按较长别名优先进行近似匹配，并防止总额匹配成流动负债等小计。
         alias_items = sorted(
             row_map.items(),
             key=lambda item: len(self._normalize_label_for_match(item[0])),
@@ -2868,7 +2868,7 @@ class ETLWorker(BaseAgent):
         pending_label = ""
         number_pattern = re.compile(r"-?\d[\d,]*\.\d+")
         multi_value_statement = any(len(number_pattern.findall(line)) >= 2 for line in lines)
-        # 作品说明：退化为逐行单元格文本会丢失列位；纯文本的上期到本期顺序可能不同。
+        # 退化为逐行单元格文本会丢失列位；纯文本的上期到本期顺序可能不同。
         if has_html_table and not multi_value_statement:
             return result
 
@@ -2998,7 +2998,7 @@ class ETLWorker(BaseAgent):
         target: Dict[str, Any],
         incoming: Dict[str, Any],
     ) -> None:
-        """作品说明：规则与字段语义按每个已接受字段跨页合并；简单字典覆盖会使旧来源错误地将派生值标成字面值。"""
+        """规则与字段语义按每个已接受字段跨页合并；简单字典覆盖会使旧来源错误地将派生值标成字面值。"""
         accepted_fields: set[str] = set()
         for key, value in incoming.items():
             if key.startswith("_") or value is None or target.get(key) is not None:
@@ -3016,7 +3016,7 @@ class ETLWorker(BaseAgent):
             if merged_semantics:
                 target["_field_semantics"] = merged_semantics
 
-        # 作品说明：私有顶层标量或列表元数据保留首次记录，不视为业务字段。
+        # 私有顶层标量或列表元数据保留首次记录，不视为业务字段。
         for key, value in incoming.items():
             if not key.startswith("_") or key == "_field_semantics":
                 continue
@@ -3079,7 +3079,7 @@ class ETLWorker(BaseAgent):
             return row
         if not self._looks_like_amount_text(row[1]) or not self._looks_like_amount_text(row[2]):
             return row
-        # 作品说明：常见于“附注”列整列缺失：把金额列整体右移一格，对齐到表头。
+        # 常见于“附注”列整列缺失：把金额列整体右移一格，对齐到表头。
         return [row[0], ""] + row[1:-1]
 
     def _infer_broken_income_field(self, rows: List[List[str]], row_idx: int) -> Optional[str]:
@@ -3218,7 +3218,7 @@ class ETLWorker(BaseAgent):
                 return idx
         return None
 
-    # 作品说明：单位换算（代码层）
+    # 单位换算（代码层）
 
     def _round_intermediate(self, value: Optional[float]) -> Optional[float]:
         if value is None:
@@ -3263,7 +3263,7 @@ class ETLWorker(BaseAgent):
         return rounded
 
     def _apply_unit_conversion(self, data: Dict[str, Any], unit_multiplier: float, context_text: str = "") -> Dict[str, Any]:
-        """作品说明：将 LLM 返回的原始数值（按文档单位）统一换算为万元。"""
+        """将 LLM 返回的原始数值（按文档单位）统一换算为万元。"""
         result: Dict[str, Any] = {}
         detected_from_chunk = self._detect_unit_in_text(context_text[:1200]) or unit_multiplier
         for k, v in data.items():
@@ -3278,7 +3278,7 @@ class ETLWorker(BaseAgent):
         return result
 
     def _normalize_field_aliases(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """作品说明：处理 LLM 可能返回的字段别名，映射到数据库实际字段名。"""
+        """处理 LLM 可能返回的字段别名，映射到数据库实际字段名。"""
         alias_map = {
             "total_assets": "asset_total_assets",
             "total_liabilities": "liability_total_liabilities",
@@ -3314,7 +3314,7 @@ class ETLWorker(BaseAgent):
             key = alias_map.get(k, k)
             normalized[key] = self._to_number(v)
 
-        # 作品说明：net_profit 同步写入 net_profit_10k_yuan（核心业绩指标表字段）
+        # net_profit 同步写入 net_profit_10k_yuan（核心业绩指标表字段）
         if "net_profit" in normalized and "net_profit_10k_yuan" not in normalized:
             normalized["net_profit_10k_yuan"] = normalized["net_profit"]
 
@@ -3557,7 +3557,7 @@ class ETLWorker(BaseAgent):
                 score -= 20
         elif field in {"eps", "roe", "net_asset_per_share", "operating_cf_per_share", "net_profit_10k_yuan"}:
             if "主要会计数据" in text or "主要财务指标" in text:
-                # 作品说明：主表每股收益精度更高，附注舍入值不能覆盖主表。
+                # 主表每股收益精度更高，附注舍入值不能覆盖主表。
                 score += 70 if field == 'eps' else 35
             if "净资产收益率及每股收益" in text:
                 score += 50
@@ -3753,7 +3753,7 @@ class ETLWorker(BaseAgent):
             sanitized["liability_total_liabilities"] = None
             liabilities = None
 
-        # 作品说明：对大体量公司的高风险资产明细做额外清洗，避免摘要表/错列小值污染主表。
+        # 对大体量公司的高风险资产明细做额外清洗，避免摘要表/错列小值污染主表。
         large_scale_assets = assets is not None and abs(assets) >= 500000
         for field in ["asset_cash_and_cash_equivalents", "asset_accounts_receivable", "asset_inventory"]:
             value = self._to_number(sanitized.get(field))
@@ -3788,7 +3788,7 @@ class ETLWorker(BaseAgent):
 
         return sanitized
 
-    # 作品说明：合并策略（last-wins，合并报表优先由调用方保证）
+    # 合并策略（last-wins，合并报表优先由调用方保证）
 
     def _merge_last_wins(self, base: Dict[str, Any], incoming: Dict[str, Any]) -> Dict[str, Any]:
         merged = dict(base)
@@ -3955,7 +3955,7 @@ class ETLWorker(BaseAgent):
         if optional_llm_missing:
             reviewed["_optional_llm_missing_fields"] = optional_llm_missing
         else:
-            # 作品说明：后续可信片段补齐字段后，清除过时的补缺警告。
+            # 后续可信片段补齐字段后，清除过时的补缺警告。
             reviewed.pop("_optional_llm_missing_fields", None)
             reviewed.pop("_optional_llm_supplement_status", None)
         review = self._build_pre_save_review(reviewed)
@@ -4016,14 +4016,14 @@ class ETLWorker(BaseAgent):
         report_period = str(scoped.get("report_period") or "")
         quarter_fields = ["operating_revenue_qoq_growth", "net_profit_qoq_growth"]
 
-        # 作品说明：Q1/HY/Q3 报告通常不直接披露可用的“单季度 vs 上一季度”环比结果；
+        # Q1/HY/Q3 报告通常不直接披露可用的“单季度 vs 上一季度”环比结果；
         # 这三类口径统一留给跨文件回填阶段处理。
         if report_period in {"Q1", "HY", "Q3"}:
             for field in quarter_fields:
                 scoped[field] = None
             return scoped
 
-        # 作品说明：FY 仅允许来自“分季度主要财务数据”抽取的季度环比，禁止累计口径/其他表块兜底。
+        # FY 仅允许来自“分季度主要财务数据”抽取的季度环比，禁止累计口径/其他表块兜底。
         if report_period == "FY":
             field_sources = dict(scoped.get("_field_sources") or {})
             for field in quarter_fields:
@@ -4034,7 +4034,7 @@ class ETLWorker(BaseAgent):
 
         return scoped
 
-    # 作品说明：后处理与入库
+    # 后处理与入库
 
     def _post_process(self, data: Dict[str, Any], meta: Dict[str, Any], save_to_db: bool = True) -> Dict[str, Any]:
         final = meta.copy()
@@ -4243,7 +4243,7 @@ class ETLWorker(BaseAgent):
         ncf = self._to_number(derived.get("net_cash_flow"))
         if ncf is not None:
             derived["net_cash_flow"] = self._round_intermediate(ncf * 10000)
-            # 作品说明：存储金额统一为元；提取为万元时，同步换算来源值与来源单位。
+            # 存储金额统一为元；提取为万元时，同步换算来源值与来源单位。
             sources = dict(derived.get("_field_sources") or {})
             if sources.get("net_cash_flow"):
                 source = dict(sources["net_cash_flow"])
@@ -4422,7 +4422,7 @@ class ETLWorker(BaseAgent):
             blockers = ", ".join(data.get("_pre_save_review_blockers") or [])
             return {"ok": False, "message": f"pre_save_review_blocked: {blockers}"}
 
-        # 作品说明：兼容宽表将资产负债恒等式异常保留为警告；规范事实发布仍须另经原件及版本验收。
+        # 兼容宽表将资产负债恒等式异常保留为警告；规范事实发布仍须另经原件及版本验收。
         assets = data.get("asset_total_assets")
         liabilities = data.get("liability_total_liabilities")
         if isinstance(assets, float) and isinstance(liabilities, float):
@@ -4641,9 +4641,9 @@ class ETLWorker(BaseAgent):
             raise RecordNotImportable("No financial fields to commit")
         committed_tables = {}
         from src.etl.provenance_store import metadata as provenance_metadata, persist_snapshot
-        # 作品说明：MySQL DDL 会隐式提交，须在事务开始前执行。
+        # MySQL DDL 会隐式提交，须在事务开始前执行。
         provenance_metadata.create_all(self._db_engine)
-        # 作品说明：整份报告在同一连接的事务中更新；任一表失败均回滚先前替换。
+        # 整份报告在同一连接的事务中更新；任一表失败均回滚先前替换。
         with self._db_engine.begin() as conn:
             if not fill_only:
                 for _, _, table_name in table_ops:

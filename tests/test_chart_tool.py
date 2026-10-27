@@ -28,7 +28,7 @@ def test_chart_tool_returns_echarts_option_while_preserving_png(tmp_path: Path):
 
 
 def test_chart_data_unit_label_matches_axis_when_omitted(tmp_path: Path):
-    """作品说明：y_label 省略时，chart_data 与坐标轴必须给出同一个单位，不能各说一套。"""
+    """y_label 省略时，chart_data 与坐标轴必须给出同一个单位，不能各说一套。"""
     tool = ChartTool(output_dir=str(tmp_path))
 
     result = tool.run(
@@ -44,7 +44,7 @@ def test_chart_data_unit_label_matches_axis_when_omitted(tmp_path: Path):
 
 
 def test_generated_filenames_do_not_collide_within_same_second(tmp_path: Path):
-    """作品说明：并发请求会在同一秒内落图，仅靠秒级时间戳会互相覆盖。"""
+    """并发请求会在同一秒内落图，仅靠秒级时间戳会互相覆盖。"""
     tool = ChartTool(output_dir=str(tmp_path))
 
     paths = set()

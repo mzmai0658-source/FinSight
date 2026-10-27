@@ -1,4 +1,4 @@
-"""作品说明：财报领域常量与 schema 单一事实来源。
+"""财报领域常量与 schema 单一事实来源。
 
 - 表/字段白名单与 schema 描述均从 src/init_db.py 的 SQLAlchemy 模型派生，
 避免手写文案与真实表结构漂移。
@@ -30,14 +30,14 @@ _TABLE_MODELS = {
     "core_performance_indicators_sheet": (CorePerformanceIndicatorsSheet, "核心业绩指标表"),
 }
 
-# 作品说明：不向 LLM 暴露、也不参与指标查询的管理字段
+# 不向 LLM 暴露、也不参与指标查询的管理字段
 _META_FIELDS = {"serial_number", "created_at", "updated_at"}
 _KEY_FIELDS = ("stock_code", "stock_abbr", "report_period", "report_year")
 
 
 @lru_cache(maxsize=1)
 def get_table_fields() -> Dict[str, Dict[str, str]]:
-    """作品说明：table -> {field_name: 中文注释}，含主键字段，不含管理字段。"""
+    """table -> {field_name: 中文注释}，含主键字段，不含管理字段。"""
     result: Dict[str, Dict[str, str]] = {}
     for table, (model, _label) in _TABLE_MODELS.items():
         fields: Dict[str, str] = {}
@@ -51,7 +51,7 @@ def get_table_fields() -> Dict[str, Dict[str, str]]:
 
 @lru_cache(maxsize=1)
 def get_allowed_fields() -> Dict[str, frozenset]:
-    """作品说明：SQL 校验白名单：table -> 全部合法字段（含管理字段，防止误杀）。"""
+    """SQL 校验白名单：table -> 全部合法字段（含管理字段，防止误杀）。"""
     return {
         table: frozenset(column.name for column in model.__table__.columns)
         for table, (model, _label) in _TABLE_MODELS.items()
@@ -62,7 +62,7 @@ ALLOWED_TABLES: frozenset = frozenset(_TABLE_MODELS.keys())
 
 
 def get_schema_description() -> str:
-    """作品说明：生成注入 LLM 提示词的数据库 schema 描述（由模型注释自动生成）。"""
+    """生成注入 LLM 提示词的数据库 schema 描述（由模型注释自动生成）。"""
     lines: List[str] = ["数据库表结构说明（除注释中另有标注外，金额字段单位：万元）：", ""]
     for idx, (table, (_model, label)) in enumerate(_TABLE_MODELS.items(), start=1):
         fields = get_table_fields()[table]
@@ -81,13 +81,13 @@ def get_schema_description() -> str:
     return "\n".join(lines)
 
 
-# 作品说明：公司注册表
+# 公司注册表
 
 COMPANY_CODE_MAP: Dict[str, str] = get_name_to_code()
 CODE_TO_NAME_MAP: Dict[str, str] = get_code_to_name()
 
 
-# 作品说明：指标关键词 → 字段映射（规则兜底与上下文标签使用）
+# 指标关键词 → 字段映射（规则兜底与上下文标签使用）
 
 KEYWORD_FIELD_MAP: Dict[str, str] = {
     '利润总额': 'total_profit', '净利润': 'net_profit', '营业利润': 'operating_profit',
@@ -141,14 +141,14 @@ KEYWORD_FIELD_MAP: Dict[str, str] = {
     '销售净利率': 'net_profit_margin', '净利率': 'net_profit_margin',
 }
 
-# 作品说明：字段 → 默认中文标签（取 KEYWORD_FIELD_MAP 中第一个映射到该字段的关键词）
+# 字段 → 默认中文标签（取 KEYWORD_FIELD_MAP 中第一个映射到该字段的关键词）
 FIELD_LABEL_MAP: Dict[str, str] = {}
 for _keyword, _field in KEYWORD_FIELD_MAP.items():
     FIELD_LABEL_MAP.setdefault(_field, _keyword)
 
 
 def field_table(field: str) -> str:
-    """作品说明：返回包含该字段的优先表（core 指标表优先级最低，作为跨表汇总）。"""
+    """返回包含该字段的优先表（core 指标表优先级最低，作为跨表汇总）。"""
     priority = ["income_sheet", "balance_sheet", "cash_flow_sheet", "core_performance_indicators_sheet"]
     for table in priority:
         if field in get_allowed_fields()[table]:

@@ -1,4 +1,4 @@
-"""作品说明：真实Java取消与完成交界的观测；不把少量时序实测当成所有竞争证明。"""
+"""真实Java取消与完成交界的观测；不把少量时序实测当成所有竞争证明。"""
 import json, sys, time
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))

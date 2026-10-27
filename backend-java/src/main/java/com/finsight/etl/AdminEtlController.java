@@ -6,6 +6,7 @@ import com.finsight.common.ratelimit.RateLimit;
 import com.finsight.common.ratelimit.RateLimitKey;
 import com.finsight.common.security.SecurityUtils;
 import com.finsight.etl.entity.EtlTask;
+import com.finsight.submission.FinancialSubmissionData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 
-/** 作品说明：管理端 ETL：财报/研报上传 + 任务状态机查询（/api/admin/** 已由安全配置限 ADMIN） */
+/** 管理端 ETL：财报/研报上传 + 任务状态机查询（/api/admin/** 已由安全配置限 ADMIN） */
 @Tag(name = "管理端-ETL", description = "报告上传与处理任务")
 @RestController
 @RequestMapping("/api/admin/etl")
@@ -34,9 +35,10 @@ public class AdminEtlController {
                            String createdAt, String startedAt, String finishedAt) {
 
         static TaskView from(EtlTask task) {
-            return new TaskView(task.getId(), task.getTaskUid(), task.getFileName(), task.getFileType(),
-                    task.getStatus(), task.getStockCode(), task.getReportYear(), task.getMessage(),
-                    task.getStepsJson(),
+            boolean financial = "financial".equals(task.getFileType());
+            return new TaskView(task.getId(), task.getTaskUid(), financial ? FinancialSubmissionData.fileName(task.getFileName()) : task.getFileName(), task.getFileType(),
+                    task.getStatus(), task.getStockCode(), task.getReportYear(), financial ? FinancialSubmissionData.text(task.getMessage()) : task.getMessage(),
+                    financial ? FinancialSubmissionData.diagnostics(task.getStepsJson()) : task.getStepsJson(),
                     task.getCreatedAt() == null ? "" : task.getCreatedAt().toString(),
                     task.getStartedAt() == null ? "" : task.getStartedAt().toString(),
                     task.getFinishedAt() == null ? "" : task.getFinishedAt().toString());

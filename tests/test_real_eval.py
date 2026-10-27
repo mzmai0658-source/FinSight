@@ -1,9 +1,10 @@
-"""作品说明：离线验证真实 PDF 评分边界及执行、重放完整性。"""
+"""离线验证真实 PDF 评分边界及执行、重放完整性。"""
 from __future__ import annotations
 
 import copy
 import hashlib
 import json
+import os
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -187,19 +188,85 @@ def test_loader_rejects_silent_dropped_question_ids(tmp_path):
 
 
 @pytest.mark.parametrize("database,host,path,endpoint", [
-    ("financial_report", "localhost", "data/real_eval_chroma_db", "http://127.0.0.1:11434/v1"),
-    ("finsight_real_eval", "remote.example", "data/real_eval_chroma_db", "http://127.0.0.1:11434/v1"),
-    ("finsight_real_eval", "localhost", "data/demo_chroma_db", "http://127.0.0.1:11434/v1"),
-    ("finsight_real_eval", "localhost", "data/real_eval_chroma_db", "https://remote.example/v1"),
+    ("financial_report", "localhost", "data/real_eval_chroma_db", "https://model.example/v1"),
+    ("finsight_real_eval", "remote.example", "data/real_eval_chroma_db", "https://model.example/v1"),
+    ("finsight_real_eval", "localhost", "data/demo_chroma_db", "https://model.example/v1"),
+    ("finsight_real_eval", "localhost", "data/real_eval_chroma_db", "http://model.example/v1"),
+    ("finsight_real_eval", "localhost", "data/real_eval_chroma_db", "https://user:password@model.example/v1"),
+    ("finsight_real_eval", "localhost", "data/real_eval_chroma_db", "https://model.example/v1?key=secret"),
 ])
 def test_isolation_rejects_remote_or_other_dataset(database, host, path, endpoint):
     with pytest.raises(RuntimeError):
         assert_local_isolation(SimpleNamespace(database=database, host=host), path, endpoint)
 
 
-def test_local_isolation_accepts_only_real_fixture():
+def test_cloud_model_keeps_database_and_index_locally_isolated():
     assert_local_isolation(SimpleNamespace(database="finsight_real_eval", host="localhost"),
-                           "data/real_eval_chroma_db", "http://127.0.0.1:11434/v1")
+                           "data/real_eval_chroma_db", "https://model.example/v1")
+
+
+@pytest.mark.parametrize("module_name,class_name", [
+    ("eval.experiment", "RealRuntime"), ("eval.real.runtime", "PDFRuntime"),
+])
+def test_retired_live_runtime_stops_before_model_or_database_access(monkeypatch, module_name, class_name):
+    import importlib
+    module = importlib.import_module(module_name)
+
+    def unexpected_model():
+        pytest.fail("retired runtime constructed a model")
+
+    monkeypatch.setattr(module, "DeterministicLLM", unexpected_model, raising=False)
+    runtime = getattr(module, class_name)
+    arguments = ([], []) if class_name == "PDFRuntime" else ()
+    with pytest.raises(RuntimeError, match="retired.*eval/cloud_focused.py"):
+        runtime(*arguments)
+
+
+@pytest.mark.parametrize("module_name", ["eval.run_eval", "eval.real.run_eval"])
+def test_retired_live_cli_rejects_before_output_mutation(monkeypatch, tmp_path, capsys, module_name):
+    import importlib
+    output = tmp_path / "must-not-be-created"
+    monkeypatch.setattr("sys.argv", [module_name, "--output", str(output)])
+    with pytest.raises(SystemExit) as error:
+        importlib.import_module(module_name).main()
+    assert error.value.code == 2
+    assert "eval/cloud_focused.py" in capsys.readouterr().err
+    assert not output.exists()
+
+
+def test_real_environment_preserves_cloud_selection_and_local_embedding(monkeypatch, tmp_path):
+    from eval.real.runtime import configure_environment
+    monkeypatch.setattr(os, "environ", os.environ.copy())
+    for key in tuple(os.environ):
+        if key.startswith(("LLM_", "DEEPSEEK_", "OLLAMA_")):
+            del os.environ[key]
+    environment = tmp_path / "evaluation.env"
+    environment.write_text("LLM_PROVIDER=openai_compat\nLLM_BASE_URL=https://model.example/v1\n"
+                           "LLM_MODEL=deepseek-flash\n", encoding="utf-8")
+    configure_environment(environment)
+    assert os.environ["LLM_PROVIDER"] == "openai_compat"
+    assert os.environ["LLM_BASE_URL"] == "https://model.example/v1"
+    assert os.environ["LLM_MODEL"] == "deepseek-flash"
+    assert os.environ["EMBEDDING_PROVIDER"] == "bge_local"
+
+
+def test_replay_uses_recorded_model_identity_without_relabelling(tmp_path):
+    from eval.acceptance_scoring import recorded_model
+    (tmp_path / "environment.json").write_text(json.dumps({"model": {"name": "historical-model:9b"}}), encoding="utf-8")
+    records = [{"run": {"task": {"result": {"diagnostics": {"timings": [{"model": "historical-model:9b"}]}}}}}]
+    assert recorded_model(tmp_path, records) == "historical-model:9b"
+    with pytest.raises(ValueError, match="recorded model"):
+        recorded_model(tmp_path, records, "deepseek-flash")
+
+
+def test_replay_rejects_missing_or_conflicting_model_identity(tmp_path):
+    from eval.acceptance_scoring import recorded_model
+    with pytest.raises(ValueError, match="recorded model"):
+        recorded_model(tmp_path, [])
+    records = [{"run": {"task": {"result": {"diagnostics": {"timings": [{"model": name}]}}}}}
+               for name in ("first-recorded-model", "different-recorded-model")]
+    with pytest.raises(ValueError, match="recorded model"):
+        recorded_model(tmp_path, records)
 
 
 def test_runner_passes_only_question_and_stops_on_disconnect_preserving_records(tmp_path):

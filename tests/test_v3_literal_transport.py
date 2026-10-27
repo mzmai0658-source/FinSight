@@ -1,4 +1,4 @@
-"""作品说明：验证本机紧凑传输协议及保留的安全约束。"""
+"""验证本机紧凑传输协议及保留的安全约束。"""
 import asyncio,json,time
 from types import SimpleNamespace
 from jsonschema import Draft202012Validator
@@ -11,13 +11,14 @@ from src.agent.v3.turn_transport import turn_schema,decode_turn
 COMPANIES={'600085':'同仁堂','002082':'万邦德'}
 
 def native(goals,edits=None,**kwargs):
+    edits={k:[{**e,**({'lifetime':'turn' if k in {'restrictions.no_query','restrictions.no_repeat'} else 'task'} if k.startswith(('presentation.','restrictions.')) else {})} for e in items] for k,items in (edits or {}).items()}
     return translate_data(dict(goals=goals,edits=edits or {},continuity='new',assignments=[],clarification=[],**kwargs))
 
 def schema(q,state=None):
     return encode_schema(turn_schema(sampling_schema(TurnPlan.model_json_schema()),dict(question=q,companies=COMPANIES,state=state or {})))
 
 def test_native_protocol_restores_current_provenance_and_registered_identities_in_one_call(monkeypatch):
-    monkeypatch.setattr('src.agent.v3.model.resolve_chat_provider',lambda:SimpleNamespace(provider='ollama',base_url='http://127.0.0.1:11434',model='transport-test'))
+    monkeypatch.setattr('src.agent.v3.model.resolve_chat_provider',lambda:SimpleNamespace(provider='openai_compat',base_url='https://example.test',model='transport-test'))
     q='同仁堂2024年营业收入用元表示'
     class Transport:
         def __init__(self,**kwargs):pass
@@ -46,7 +47,7 @@ def test_budget_reserves_time_for_verification_and_saving():
 
 
 def test_format_repair_has_one_owner_and_keeps_the_original_request(monkeypatch):
-    monkeypatch.setattr('src.agent.v3.model.resolve_chat_provider',lambda:SimpleNamespace(provider='ollama',base_url='http://127.0.0.1:11434',model='transport-test'))
+    monkeypatch.setattr('src.agent.v3.model.resolve_chat_provider',lambda:SimpleNamespace(provider='openai_compat',base_url='https://example.test',model='transport-test'))
     seen=[];q='查财务数字'
     class Transport:
         def __init__(self,**kwargs):pass
@@ -66,7 +67,7 @@ def test_format_repair_has_one_owner_and_keeps_the_original_request(monkeypatch)
 
 @pytest.mark.parametrize('output',['null','{"goals":[null]}','{"edits":{"scope":[null]}}','{"edits":{},"assignments":[null]}','{"edits":{},"edits":{}}'])
 def test_malformed_native_objects_are_model_format_failures(monkeypatch,output):
-    monkeypatch.setattr('src.agent.v3.model.resolve_chat_provider',lambda:SimpleNamespace(provider='ollama',base_url='http://127.0.0.1:11434',model='transport-test'))
+    monkeypatch.setattr('src.agent.v3.model.resolve_chat_provider',lambda:SimpleNamespace(provider='openai_compat',base_url='https://example.test',model='transport-test'))
     class Transport:
         def __init__(self,**kwargs):pass
         def bind(self,**kwargs):return self
@@ -97,7 +98,7 @@ def test_duplicate_replacements_cannot_hide_a_company():
     assert Draft202012Validator(schema('换公司',{'active_goals':[{'id':'old','kind':'lookup'}]})).is_valid(value)
 
 
-def test_explicit_literal_bindings_cannot_be_dropped_or_approximated():
+def test_sparse_fields_are_valid_and_effective_values_are_checked_after_goal_binding():
     q='同仁堂2024年母公司营业收入，用亿元，只给表格，保留两位小数。'
     s=schema(q);value=native([{'kind':'lookup'}],{k:[{'operation':'replace','value':v}] for k,v in [
         ('codes',['600085']),('metrics',['operating_revenue']),('scope','parent'),('time.years',[2024]),
@@ -105,8 +106,19 @@ def test_explicit_literal_bindings_cannot_be_dropped_or_approximated():
     validator=Draft202012Validator(s);assert validator.is_valid(value)
     for field,bad_value in [('scope','consolidated'),('presentation.unit','万元'),('presentation.decimals',3)]:
         bad=json.loads(json.dumps(value));bad['edits'][field][0]['value']=bad_value
-        assert not validator.is_valid(bad)
-    del value['edits']['presentation.unit'];assert not validator.is_valid(value)
+        assert validator.is_valid(bad)
+        from src.agent.v3.state import apply_understanding
+        from src.agent.v3.contracts import DialogueState
+        from tests.test_v3_generalization_boundaries import review
+        proposal=TurnPlan.model_validate(decode_turn(translate_data(bad,decode=True),q))
+        request,_=apply_understanding(q,'t',proposal.compile(q,COMPANIES),DialogueState(),COMPANIES)
+        from tests.request_expectations import mismatches
+        assert mismatches(request,codes=["600085"],scope="parent",unit="亿元",decimals=2)
+    del value['edits']['presentation.unit'];assert validator.is_valid(value)
+    proposal=TurnPlan.model_validate(decode_turn(translate_data(value,decode=True),q))
+    request,_=apply_understanding(q,'missing-unit',proposal.compile(q,COMPANIES),DialogueState(),COMPANIES)
+    from tests.request_expectations import mismatches
+    assert "unit" in mismatches(request,unit="亿元")
 
 
 def test_concept_metric_binding_does_not_create_a_query():
@@ -139,8 +151,15 @@ def test_memory_deletion_cannot_use_old_text_or_internal_number():
     ('同仁堂2024年第四季度单季营收',{'time.single_quarter','time.quarters','time.years','metrics','codes'}),
     ('最新三年营收',{'time.span','metrics'}),
 ])
-def test_sampling_keeps_explicit_quarter_and_report_count(question,fields):
-    assert fields<=set(schema(question)['properties']['edits']['required'])
+def test_sampling_supports_partial_period_edits_and_bound_request_checks_omissions(question,fields):
+    assert fields<=set(schema(question)['properties']['edits']['properties'])
+    from src.agent.v3.contracts import Request,Conditions,Goal
+    from tests.test_v3_generalization_boundaries import review
+    request=Request(turn_id='missing-period',question=question,conditions=Conditions(codes=['600085'],metrics=['operating_revenue']),
+        goals=[Goal(id='g',kind='lookup',text=question)])
+    from tests.request_expectations import mismatches
+    expected={"single_quarter":True} if "single_quarter" in " ".join(fields) else {"span":3}
+    assert mismatches(request,**expected)
 
 
 def test_concept_choices_keep_the_whole_registered_metric_catalog():
@@ -153,6 +172,11 @@ def test_concept_choices_keep_the_whole_registered_metric_catalog():
 def test_explicit_fact_reference_and_no_requery_are_required():
     state={'recent_fact_count':1,'active_goals':[{'id':'g1','kind':'lookup'}]}
     data=schema('这个数是负的？不重新查数，不重复金额',state)
-    assert 'restrictions.no_query' in data['properties']['edits']['required']
-    assert data['properties']['context_references']['minItems']==1
-    assert data['properties']['claimed_sign']['enum']==['negative']
+    assert 'restrictions.no_query' in data['properties']['edits']['properties']
+    from src.agent.v3.contracts import Request,Conditions,Goal
+    from tests.request_expectations import mismatches
+    request=Request(turn_id='missing-restriction',question='这个数是负的？不重新查数，不重复金额',
+        conditions=Conditions(codes=['600085'],metrics=['attributable_net_profit']),goals=[Goal(id='g',kind='sign',text='正负')])
+    assert {'no_query','no_repeat'}<=set(mismatches(request,no_query=True,no_repeat=True))
+    assert not data['properties']['context_references'].get('minItems')
+    assert set(data['properties']['claimed_sign']['enum'])=={'positive','negative','zero','none'}

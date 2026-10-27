@@ -81,13 +81,13 @@ onMounted(async () => {
 
 const shortIndustry = (industry: string) => industry.replace(/^.*-/, "");
 
-/** 作品说明：只有存在两个以上真实行业时，行业分布与行业筛选才有信息量 */
+/** 只有存在两个以上真实行业时，行业分布与行业筛选才有信息量 */
 const industries = computed(() =>
   (summary.value?.industryDistribution ?? []).map((row) => row.industry).filter(Boolean),
 );
 const showIndustryChart = computed(() => industries.value.length >= 2);
 
-/** 作品说明：主数据未登记的列整体隐藏，避免整列空白 */
+/** 主数据未登记的列整体隐藏，避免整列空白 */
 const columns = computed(() => ({
   industry: companies.value.some((c) => c.industry),
   exchange: companies.value.some((c) => c.exchange),
@@ -110,7 +110,7 @@ const yearSpan = computed(() => {
   return min === max ? String(min) : `${min}–${max}`;
 });
 
-/** 作品说明：各年参与合计的公司数不同，跨年比较需要提示 */
+/** 各年参与合计的公司数不同，跨年比较需要提示 */
 const unevenYearCounts = computed(() => {
   const counts = new Set(yearRows.value.map((r) => Number(r.company_count)));
   return counts.size > 1;
@@ -147,7 +147,7 @@ const pagedCompanies = computed(() =>
 );
 
 
-/* 作品说明：图表 */
+/* 图表 */
 
 const industryOption = computed<EChartsOption>(() => {
   const rows = [...(summary.value?.industryDistribution ?? [])].filter((r) => r.industry).reverse();
@@ -311,7 +311,7 @@ function openCompany(code: string) {
     </AppCard>
 
     <template v-else-if="summary">
-      <!-- 作品说明：概览 -->
+      <!-- 概览 -->
       <section class="kpis" aria-label="数据概览">
         <div class="kpi">
           <span class="kpi__label">已结构化入库</span>
@@ -335,7 +335,7 @@ function openCompany(code: string) {
         </div>
       </section>
 
-      <!-- 作品说明：图表 -->
+      <!-- 图表 -->
       <div class="market__charts">
         <AppCard>
           <template #header>
@@ -401,7 +401,7 @@ function openCompany(code: string) {
         </button>
       </section>
 
-      <!-- 作品说明：公司列表 -->
+      <!-- 公司列表 -->
       <AppCard id="company-list" padding="none" class="list">
         <div class="list__head">
           <div class="list__titles">
@@ -500,7 +500,7 @@ function openCompany(code: string) {
   border-radius: var(--r-lg);
 }
 
-/* 作品说明：概览 */
+/* 概览 */
 .kpis {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -563,7 +563,7 @@ function openCompany(code: string) {
   color: var(--c-text-tertiary);
 }
 
-/* 作品说明：近期关注（无行业图时的紧凑形式） */
+/* 近期关注（无行业图时的紧凑形式） */
 .hot-strip {
   display: flex;
   align-items: center;
@@ -619,7 +619,7 @@ function openCompany(code: string) {
   color: var(--c-text-tertiary);
 }
 
-/* 作品说明：图表 */
+/* 图表 */
 .market__charts {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
@@ -648,7 +648,7 @@ function openCompany(code: string) {
   margin-top: 3px;
 }
 
-/* 作品说明：近期关注 */
+/* 近期关注 */
 .hot-list {
   list-style: none;
   margin: 0;
@@ -707,7 +707,7 @@ function openCompany(code: string) {
   color: var(--c-text-secondary);
 }
 
-/* 作品说明：公司列表 */
+/* 公司列表 */
 .list {
   overflow: hidden;
   scroll-margin-top: calc(var(--portal-nav-h) + var(--sp-4));

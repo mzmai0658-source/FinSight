@@ -1,4 +1,4 @@
-"""作品说明：验证新边界的实际行为，不依赖旧字段名称。"""
+"""验证新边界的实际行为，不依赖旧字段名称。"""
 from decimal import Decimal
 import json
 
@@ -33,7 +33,7 @@ def test_accounting_aliases_do_not_merge_non_equivalent_values():
     assert ALIASES['毛利'] != ALIASES['毛利率']
     assert ALIASES['主营业务收入'] != ALIASES['营业收入'] != ALIASES['营业总收入']
     assert ALIASES['合并净利润'] != ALIASES['归母'] != ALIASES['扣非归母']
-    assert '净利润' not in ALIASES  # 作品说明：默认归母口径属于显式请求规则。
+    assert '净利润' not in ALIASES  # 默认归母口径属于显式请求规则。
 
 
 def test_company_correction_and_time_delta_preserve_other_requirements():

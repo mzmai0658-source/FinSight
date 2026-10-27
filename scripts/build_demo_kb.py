@@ -1,4 +1,4 @@
-"""作品说明：从有版本和身份标注的原创合成报告构建隔离演示知识库。"""
+"""从有版本和身份标注的原创合成报告构建隔离演示知识库。"""
 
 from __future__ import annotations
 
@@ -49,7 +49,7 @@ def load_demo_documents(source_dir: Path) -> List[Tuple[Path, str, List[str]]]:
         text = path.read_text(encoding="utf-8").strip()
         title_match = re.search(r"^#\s+(.+)$", text, re.MULTILINE)
         title = title_match.group(1).strip() if title_match else path.stem
-        chunks = [text]  # 作品说明：每个样例文档对应一页有标注的原始来源。
+        chunks = [text]  # 每个样例文档对应一页有标注的原始来源。
         if not chunks:
             raise ValueError(f"演示文档为空：{path}")
         documents.append((path, title, chunks))

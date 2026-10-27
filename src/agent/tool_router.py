@@ -1,4 +1,4 @@
-"""作品说明：财务 Agent 的工具路由模块。"""
+"""财务 Agent 的工具路由模块。"""
 
 from collections.abc import Callable, Mapping
 from typing import Any, Dict, List, Tuple
@@ -11,7 +11,7 @@ EventFactory = Callable[[str, Dict[str, Any]], Any]
 
 
 class ToolRouter:
-    """作品说明：只分派已登记处理器，统一规范失败结果。"""
+    """只分派已登记处理器，统一规范失败结果。"""
 
     def __init__(self, handlers: Mapping[str, ToolHandler], event_factory: EventFactory):
         self._handlers = dict(handlers)

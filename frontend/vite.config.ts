@@ -12,7 +12,7 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      // 作品说明：业务 API → Java 主后端
+      // 业务 API → Java 主后端
       "/api": {
         target: process.env.VITE_API_PROXY_TARGET || "http://localhost:8080",
         changeOrigin: true,

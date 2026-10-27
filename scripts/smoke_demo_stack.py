@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""作品说明：通过 Java 对外接口验收真实财报演示链路。
+"""通过 Java 对外接口验收真实财报演示链路。
 
 默认问题覆盖单值、跨年比较和数据库字段缺失三种情况。脚本只从私有
 env 文件读取账号密码，不打印凭据或 token。
@@ -57,7 +57,7 @@ def load_env_file(path: Path) -> dict[str, str]:
 
 
 def iter_sse(response: requests.Response) -> Iterable[tuple[str, dict[str, Any]]]:
-    """作品说明：兼容标准空行分隔和连续 event 行的 SSE 输出。"""
+    """兼容标准空行分隔和连续 event 行的 SSE 输出。"""
 
     event_name = ""
     data_lines: list[str] = []

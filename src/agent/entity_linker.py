@@ -1,4 +1,4 @@
-"""作品说明：从本轮用户原话构建已登记实体和统一条件框架。"""
+"""从本轮用户原话构建已登记实体和统一条件框架。"""
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
@@ -9,13 +9,13 @@ from .domain import CODE_TO_NAME_MAP
 from .facts import MAIN_FINANCIAL_METRICS, YEAR_SPAN_RE, asks_main_financial_metrics, extract_report_periods, field_specs, metric_mentions, year_span_request
 from .query_plan import explicit_codes, main_metrics, selected_years
 
-# 作品说明：泛称可能对应多个登记指标，需要用户选择具体口径。
+# 泛称可能对应多个登记指标，需要用户选择具体口径。
 AMBIGUOUS_METRIC_TEXT = {
     '现金流': ['operating_cf_net_amount', 'investing_cf_net_amount', 'financing_cf_net_amount', 'net_cash_flow'],
 }
-# 作品说明：“近三年”等区间从明确上下文或最新报告解析，不直接按当前自然年倒推。
+# “近三年”等区间从明确上下文或最新报告解析，不直接按当前自然年倒推。
 _RELATIVE_RANGE = YEAR_SPAN_RE
-# 作品说明：否定图表请求只禁止画图，不能反向启动图表任务。
+# 否定图表请求只禁止画图，不能反向启动图表任务。
 _DRAWING = re.compile(r'画|图|可视化|走势|趋势|折线|柱状')
 _SUFFIXES = ('股份', '集团', '药业', '制药', '公司')
 _ORG_TOKEN = re.compile(r'[\u4e00-\u9fff]{2,12}(?:公司|集团|股份|药业|制药)')
@@ -26,7 +26,7 @@ _COLLECTIVE_N = re.compile(r'(?:这)?([一二三四五六七八九十两\d]+)家
 _SINGLE_QUARTER = re.compile(r'单季|非累计|第四季度|第二季度|(?<![A-Za-z])Q2(?![A-Za-z0-9])|(?<![A-Za-z])Q4(?![A-Za-z0-9])', re.I)
 _SOURCE = re.compile(r'出处|原文')
 _CAUSE = re.compile(r'为啥|原因|为什么|怎么解释|怎么说明')
-# 作品说明：此类句子禁止执行财务查询，即使模型提出查询也须阻断。
+# 此类句子禁止执行财务查询，即使模型提出查询也须阻断。
 _MUTATION = re.compile(r'(?i)(?:delete\s+from|drop\s+table|update\s+\w+\s+set|insert\s+into)|密码|别人的聊天')
 _INVESTMENT_ADVICE = re.compile(r'股价|涨跌|会涨|会跌|荐股|全仓|投资建议|值得投资|买入|卖出|预测.{0,8}(?:股价|涨跌|涨|跌)')
 _FABRICATION = re.compile(r'估个数|编造|编个(?:数|值)|随便造|猜一下|瞎猜')
@@ -39,7 +39,7 @@ _CN_COUNT = {'一': 1, '二': 2, '两': 2, '三': 3, '四': 4, '五': 5, '六': 
 
 @dataclass
 class Mentions:
-    """作品说明：只将登记目录精确命中加入已解析公司，近似名称保持待确认。"""
+    """只将登记目录精确命中加入已解析公司，近似名称保持待确认。"""
     companies: list[dict] = field(default_factory=list)
     excluded_companies: list[str] = field(default_factory=list)
     near_miss_companies: list[dict] = field(default_factory=list)
@@ -56,7 +56,7 @@ class Mentions:
     company_scope: str | None = None
     drawing: bool = False
     evidence: str = 'none'
-    # 作品说明：此字段标记不应执行财务查询的对话主题。
+    # 此字段标记不应执行财务查询的对话主题。
     non_query: str | None = None
 
     def company_codes(self):
@@ -66,7 +66,7 @@ class Mentions:
         return list(dict.fromkeys(m['id'] for m in self.metrics))
 
     def frame_metrics(self):
-        """作品说明：可发布指标来自明确选择或主指标集合，含糊表述不自动猜测。"""
+        """可发布指标来自明确选择或主指标集合，含糊表述不自动猜测。"""
         if self.main_metrics:
             return list(MAIN_FINANCIAL_METRICS)
         return self.metric_ids()
@@ -97,7 +97,7 @@ def _name_variants(name):
 
 
 def exact_company_codes(span: str) -> set[str]:
-    """作品说明：仅绑定登记目录的精确身份；句中唯一简称可命中，拼写错误仍待确认。"""
+    """仅绑定登记目录的精确身份；句中唯一简称可命中，拼写错误仍待确认。"""
     span = ''.join(str(span or '').split())
     if not span:
         return set()
@@ -113,7 +113,7 @@ def exact_company_codes(span: str) -> set[str]:
 
 
 def fuzzy_company_match(span: str) -> tuple[str, float] | None:
-    """作品说明：返回最接近的登记名称供确认，不直接当作已解析公司。"""
+    """返回最接近的登记名称供确认，不直接当作已解析公司。"""
     span = ''.join(str(span or '').split())
     if not 2 <= len(span) <= 12 or not CODE_TO_NAME_MAP:
         return None
@@ -175,7 +175,7 @@ def _span_covered(start: int, end: int, ranges: list[tuple[int, int]]) -> bool:
 
 
 def _non_query_topic(text: str, *, has_concrete_query: bool) -> str | None:
-    """作品说明：判定句子是否禁止财务查询。带公司和指标的概念说明仍可包含查询；编造、数据库写入及询问上次查询过程不进入财务查询。"""
+    """判定句子是否禁止财务查询。带公司和指标的概念说明仍可包含查询；编造、数据库写入及询问上次查询过程不进入财务查询。"""
     if _MUTATION.search(text):
         return 'out_of_scope'
     if _INVESTMENT_ADVICE.search(text) and not re.search(r'投资活动|投资现金流', text):
@@ -190,7 +190,7 @@ def _non_query_topic(text: str, *, has_concrete_query: bool) -> str | None:
 
 
 def link_entities(text: str) -> Mentions:
-    """作品说明：复用现有识别器构建共享条件框架，避免增加第二套语义理解。"""
+    """复用现有识别器构建共享条件框架，避免增加第二套语义理解。"""
     text = str(text or '')
     mentions = Mentions()
     linked = [c for c in explicit_codes(text) if c in CODE_TO_NAME_MAP]
@@ -229,7 +229,7 @@ def link_entities(text: str) -> Mentions:
         if fuzzy:
             code, score = fuzzy
             near_misses.append({'code': code, 'name': CODE_TO_NAME_MAP[code], 'text': span, 'score': round(score, 3)})
-    # 作品说明：每个候选代码保留最高匹配分数及最早出现位置。
+    # 每个候选代码保留最高匹配分数及最早出现位置。
     best: dict[str, dict] = {}
     for item in near_misses:
         prior = best.get(item['code'])
@@ -244,7 +244,7 @@ def link_entities(text: str) -> Mentions:
             mentions.ambiguous_metrics.append({'text': span, 'options': AMBIGUOUS_METRIC_TEXT[span]})
         elif metric in labels:
             mentions.metrics.append({'id': metric, 'label': labels[metric], 'text': span})
-    # 作品说明：「扣非」单独出现时，可能是扣非净利润，也可能是扣非后的收益率。
+    # 「扣非」单独出现时，可能是扣非净利润，也可能是扣非后的收益率。
     if (re.search(r'扣非', text) and not any('扣非' in item['text'] for item in mentions.metrics)
             and not mentions.metric_ids()):
         mentions.ambiguous_metrics.append({
@@ -275,5 +275,5 @@ def link_entities(text: str) -> Mentions:
     return mentions
 
 
-# 作品说明：该名称供规划器与比较流程共同使用。
+# 该名称供规划器与比较流程共同使用。
 build_turn_frame = link_entities

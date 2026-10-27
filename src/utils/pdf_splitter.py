@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""作品说明：PDF 智能分页工具：
+"""PDF 智能分页工具：
 - 解析目录定位财务报表页码
 - pdfplumber 直接提取表格 + 质量检测
 - 按页码范围拆分 PDF 为小文件（bytes）供 OCR 兜底
@@ -12,7 +12,7 @@ from typing import List, Tuple, Optional, Dict, Any
 from loguru import logger
 
 
-# 作品说明：目录关键词 → 需要 OCR 的财务报表章节
+# 目录关键词 → 需要 OCR 的财务报表章节
 
 FINANCIAL_SECTION_KEYWORDS = [
     '财务报告', '财务报表',
@@ -24,7 +24,7 @@ FINANCIAL_TABLE_KEYWORDS = [
     '母公司现金流量表', '资产负债表', '利润表', '现金流量表',
 ]
 
-# 作品说明：目录行：关键词 + 省略号/空格 + 页码
+# 目录行：关键词 + 省略号/空格 + 页码
 TOC_LINE_RE = re.compile(
     r'(' + '|'.join(re.escape(kw) for kw in FINANCIAL_SECTION_KEYWORDS + FINANCIAL_TABLE_KEYWORDS) + r')'
     r'[\s.·…\-_]*(\d{1,3})',
@@ -33,7 +33,7 @@ TOC_LINE_RE = re.compile(
 
 
 def find_financial_pages(pdf_path: str, scan_pages: int = 15) -> Tuple[int, int]:
-    """作品说明：解析 PDF 前 N 页的目录，定位财务报表页码范围。
+    """解析 PDF 前 N 页的目录，定位财务报表页码范围。
     
     Returns:
     (start_page, end_page) — 0-based 页码范围（含首不含尾）。
@@ -44,7 +44,7 @@ def find_financial_pages(pdf_path: str, scan_pages: int = 15) -> Tuple[int, int]
     with pdfplumber.open(pdf_path) as pdf:
         total_pages = len(pdf.pages)
 
-        # 作品说明：从前 scan_pages 页中搜索目录
+        # 从前 scan_pages 页中搜索目录
         toc_entries: Dict[str, int] = {}
         for i in range(min(scan_pages, total_pages)):
             text = pdf.pages[i].extract_text() or ""
@@ -56,36 +56,36 @@ def find_financial_pages(pdf_path: str, scan_pages: int = 15) -> Tuple[int, int]
 
     if not toc_entries:
         logger.warning(f"[Splitter] TOC parsing failed for {os.path.basename(pdf_path)}, using fallback")
-        # 作品说明：兜底：取后 60% 的页面（财务报告通常在后半部分）
+        # 兜底：取后 60% 的页面（财务报告通常在后半部分）
         start = int(total_pages * 0.4)
         return start, total_pages
 
     logger.info(f"[Splitter] TOC entries found: {toc_entries}")
 
-    # 作品说明：找到最小的页码作为起始（"财务报告"章节开始）
+    # 找到最小的页码作为起始（"财务报告"章节开始）
     fin_section_page = None
     for kw in FINANCIAL_SECTION_KEYWORDS:
         if kw in toc_entries:
             fin_section_page = toc_entries[kw]
             break
 
-    # 作品说明：找到具体财务表格的页码
+    # 找到具体财务表格的页码
     table_pages = [v for k, v in toc_entries.items() if k in FINANCIAL_TABLE_KEYWORDS]
 
     if fin_section_page is not None:
-        start = fin_section_page - 1  # 作品说明：转为 0-based
+        start = fin_section_page - 1  # 转为 0-based
     elif table_pages:
         start = min(table_pages) - 1
     else:
         start = int(total_pages * 0.4)
 
-    # 作品说明：结束页：财务表格最大页码 + 30 页缓冲（覆盖附注等），但不超过总页数
+    # 结束页：财务表格最大页码 + 30 页缓冲（覆盖附注等），但不超过总页数
     if table_pages:
         end = min(max(table_pages) + 30, total_pages)
     else:
         end = min(start + 50, total_pages)
 
-    # 作品说明：安全边界
+    # 安全边界
     start = max(0, start)
     end = min(total_pages, end)
 
@@ -94,7 +94,7 @@ def find_financial_pages(pdf_path: str, scan_pages: int = 15) -> Tuple[int, int]
 
 
 def split_pdf_to_bytes(pdf_path: str, start_page: int, end_page: int, batch_size: int = 15) -> List[bytes]:
-    """作品说明：将 PDF 的指定页码范围按 batch_size 拆分为多个小 PDF bytes。
+    """将 PDF 的指定页码范围按 batch_size 拆分为多个小 PDF bytes。
     使用 pypdf 做页面拆分。
     
     Args:
@@ -134,7 +134,7 @@ def extract_text_pages(
     pdf_path: str,
     exclude_range: Optional[Tuple[int, int]] = None,
 ) -> str:
-    """作品说明：用 pdfplumber 直接提取纯文字（跳过已由 OCR 处理的页面范围）。
+    """用 pdfplumber 直接提取纯文字（跳过已由 OCR 处理的页面范围）。
     适合提取管理层讨论、业务概要等叙述性内容给 RAG。
     
     Args:
@@ -149,7 +149,7 @@ def extract_text_pages(
     parts: List[str] = []
     with pdfplumber.open(pdf_path) as pdf:
         for i, page in enumerate(pdf.pages):
-            # 作品说明：跳过已由 OCR 处理的财务表格页
+            # 跳过已由 OCR 处理的财务表格页
             if exclude_range and exclude_range[0] <= i < exclude_range[1]:
                 continue
             text = page.extract_text() or ""
@@ -159,9 +159,9 @@ def extract_text_pages(
     return "\n\n".join(parts)
 
 
-# 作品说明：pdfplumber 表格提取 + 质量检测
+# pdfplumber 表格提取 + 质量检测
 
-# 作品说明：关键字段：存在其中任意若干个即认为提取质量合格
+# 关键字段：存在其中任意若干个即认为提取质量合格
 QUALITY_KEYWORDS = [
     '资产总计', '负债合计', '负债和所有者权益总计', '所有者权益合计',
     '营业总收入', '营业收入', '净利润', '营业总成本', '营业利润',
@@ -171,9 +171,9 @@ QUALITY_KEYWORDS = [
     '基本每股收益', '每股收益',
 ]
 
-# 作品说明：页面级关键词（至少匹配 2 个才算有效财务表格页）
+# 页面级关键词（至少匹配 2 个才算有效财务表格页）
 PAGE_MIN_KEYWORDS = 2
-# 作品说明：全部财务页至少匹配到的关键字段数
+# 全部财务页至少匹配到的关键字段数
 GLOBAL_MIN_KEYWORDS = 8
 
 
@@ -182,7 +182,7 @@ def extract_tables_with_pdfplumber(
     start_page: int,
     end_page: int,
 ) -> Tuple[str, List[int]]:
-    """作品说明：用 pdfplumber 直接提取财务页面的表格数据，转换为 Markdown 文本。
+    """用 pdfplumber 直接提取财务页面的表格数据，转换为 Markdown 文本。
     同时进行质量检测，返回提取失败的页码列表。
     
     Args:
@@ -210,11 +210,11 @@ def extract_tables_with_pdfplumber(
                 all_md_parts.append(page_md)
                 total_keywords_found.update(kw_found)
             elif page_md and kw_found:
-                # 作品说明：有一些内容但关键词不足，也保留但标记为可能需要复核
+                # 有一些内容但关键词不足，也保留但标记为可能需要复核
                 all_md_parts.append(page_md)
                 total_keywords_found.update(kw_found)
             else:
-                # 作品说明：无表格或完全无关键词 → 标记为失败
+                # 无表格或完全无关键词 → 标记为失败
                 failed_pages.append(page_idx)
 
     merged_md = "\n\n".join(all_md_parts)
@@ -226,7 +226,7 @@ def extract_tables_with_pdfplumber(
         f"{kw_count} keywords matched: {sorted(total_keywords_found)[:10]}"
     )
 
-    # 作品说明：全局质量判断：如果总关键词匹配过少，说明 pdfplumber 整体不可靠
+    # 全局质量判断：如果总关键词匹配过少，说明 pdfplumber 整体不可靠
     if kw_count < GLOBAL_MIN_KEYWORDS:
         logger.warning(
             f"[Splitter] Global quality too low ({kw_count}/{GLOBAL_MIN_KEYWORDS}), "
@@ -238,7 +238,7 @@ def extract_tables_with_pdfplumber(
 
 
 def _extract_page_tables(page, page_idx: int) -> Tuple[str, set]:
-    """作品说明：从单页提取所有表格，转为 Markdown 文本。
+    """从单页提取所有表格，转为 Markdown 文本。
     
     Returns:
     (markdown_text, keywords_found)
@@ -248,7 +248,7 @@ def _extract_page_tables(page, page_idx: int) -> Tuple[str, set]:
     kw_found: set = set()
 
     if not tables:
-        # 作品说明：无表格但有文字（可能是标题或附注）
+        # 无表格但有文字（可能是标题或附注）
         for kw in QUALITY_KEYWORDS:
             if kw in text:
                 kw_found.add(kw)
@@ -258,7 +258,7 @@ def _extract_page_tables(page, page_idx: int) -> Tuple[str, set]:
 
     parts: List[str] = []
 
-    # 作品说明：提取页面标题（表格前的文字可能包含"合并资产负债表"等标题）
+    # 提取页面标题（表格前的文字可能包含"合并资产负债表"等标题）
     page_header = ""
     for line in text.split("\n")[:5]:
         line = line.strip()
@@ -284,7 +284,7 @@ def _extract_page_tables(page, page_idx: int) -> Tuple[str, set]:
 
 
 def _table_to_markdown(table: List[List]) -> str:
-    """作品说明：将 pdfplumber 提取的表格（二维列表）转为 HTML table 格式
+    """将 pdfplumber 提取的表格（二维列表）转为 HTML table 格式
     （与 OCR 输出格式一致，方便下游 etl_worker 统一处理）。
     """
     if not table or not any(table):
@@ -312,7 +312,7 @@ def split_failed_pages_to_bytes(
     failed_pages: List[int],
     batch_size: int = 15,
 ) -> List[bytes]:
-    """作品说明：将指定的离散页码列表拆分为 PDF bytes 批次（仅包含失败页）。"""
+    """将指定的离散页码列表拆分为 PDF bytes 批次（仅包含失败页）。"""
     if not failed_pages:
         return []
 
@@ -344,7 +344,7 @@ def split_failed_pages_to_bytes(
 
 
 def get_pdf_info(pdf_path: str) -> Dict[str, Any]:
-    """作品说明：获取 PDF 基本信息。"""
+    """获取 PDF 基本信息。"""
     import pdfplumber
 
     size_mb = os.path.getsize(pdf_path) / 1024 / 1024

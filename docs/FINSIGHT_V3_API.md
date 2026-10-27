@@ -1,6 +1,8 @@
-# v3 请求、任务与本机运行
+> 历史版本资料：当前安装、模型和数据以 [INSTALL_CURRENT.md](INSTALL_CURRENT.md) 为准；本文旧期间/旧成绩不代表本次交付。
 
-生产入口为 `src/api/main.py` → `src/agent/v3/agent.py`，LangGraph 顺序是单次紧凑理解、程序条件检查、确定性执行、复杂解释证据审核、分项核验、发布。旧语义实现只供历史实验，不是理解失败后的回退。本文描述当前实现，不代表全部验收已经通过。
+# v3 请求、任务与云端生成
+
+生产入口为 `src/api/main.py` → `src/agent/v3/agent.py`，LangGraph 顺序是单次紧凑理解、程序条件检查、确定性执行、复杂解释证据审核、分项核验、发布。旧语义实现只供历史实验，不是理解失败后的回退。所有生成任务使用统一的 DeepSeek 云端配置，本机 BGE、真实 117 份原件、规范事实和既有索引继续沿用。本文描述当前实现，不代表云端问答验收已经通过。
 
 ## 契约
 
@@ -10,9 +12,9 @@
 
 `context_references` 保存本轮原话中的公司、事实或财务任务引用及单复数；多个候选不能被单数代词任意选中。`Goal.clarification` 只阻塞该目标，已经明确的其他目标可以完成，结果仍按分项状态判断。规划上下文只使用版本化状态，不用取消或失败的旧用户问题给新问题添加任务。
 
-`Request.continuity`明确记录new、continue、resume、clear。生产Planner仅调用一次TurnPlan：任务目标、本轮逐叶编辑、上下文引用、局部例外和真实澄清一起提出，编译到公开v3请求。原生Ollama传输把编辑表示为字段到操作数组的映射，程序登记本轮原话和目标编号。各任务类型始终可选，不按关键词删除任务分支；公司、指标、单位与显式值受登记目录和JSON合同限制。重复JSON键、同字段重复最终替换均拒绝；集合的多次添加/删除允许顺序执行。普通查询不调用同模型布尔审核；程序检查目录、显式条件、引用、修改与执行结果，无法证明所有自由语义。复杂经营解释才审核证据与结论。结构或编译失败共用最多一次修正机会，正常明确查询目标为一次模型调用，整轮仍受六次调用、单次60秒与总时限限制。不存在旧语义回退。
+`Request.continuity`明确记录new、continue、resume、clear。生产Planner仅调用一次TurnPlan：任务目标、本轮逐叶编辑、上下文引用、局部例外和真实澄清一起提出，编译到公开v3请求。云端紧凑 JSON 传输把编辑表示为字段到操作数组的映射，程序登记本轮原话和目标编号。各任务类型始终可选，不按关键词删除任务分支；公司、指标、单位与显式值经过登记目录、JSON 合同和客户端类型检查。重复JSON键、同字段重复最终替换均拒绝；集合的多次添加/删除允许顺序执行。普通查询不调用同模型布尔审核；程序检查目录、显式条件、引用、修改与执行结果，无法证明所有自由语义。复杂经营解释才审核证据与结论。结构或编译失败共用最多一次修正机会，正常明确查询目标为一次模型调用，整轮仍受六次调用、单次60秒与总时限限制。不存在旧语义回退。
 
-年份在模型采样和程序类型校验中均限制2000—2100；“24年”必须输出2024，不能把24当作合法财务年份。季度报告的“比上年末变化”独立保存为reported_change_vs_year_end，不能以reported_yoy发布。失败诊断仅保存普通JSON类型，不调用异常对象的str/repr，校验错误不能使失败终态无法保存。
+年份由合同说明与程序类型校验限制为 2000—2100，不能把云端 JSON 输出模式当作服务端已经执行完整 Schema 约束的证明；“24年”必须输出2024，不能把24当作合法财务年份。季度报告的“比上年末变化”独立保存为reported_change_vs_year_end，不能以reported_yoy发布。失败诊断仅保存普通JSON类型，不调用异常对象的str/repr，校验错误不能使失败终态无法保存。
 
 事实的 `value` 与 `value_exact` 为十进制字符串。单位是元、百分比或元/股；仅展示时换算与舍入。图表的浮点数组用于 ECharts，`values_exact`/`value_exact` 和事实引用保留准确值。一个任务固定使用一个已验收的事实与索引版本。
 
@@ -26,7 +28,7 @@
 
 失败诊断保存调用数量、耗时、经过类型校验的规划提案及程序纠错反馈；格式错误仅保存不含输入值的类型错误位置。整轮最多一次格式修正，仍计入六次调用预算，不改变原话，也不转成用户澄清。不保存驱动异常文本、连接设置或模型原始输出。诊断仍是定位问题的记录，不能当作审核通过或执行完成证据。
 
-原生传输枚举与正式v3类型一一对应。紧凑目标只有一个wire形状，kind确定适用的concept_mode、quote_mode或catalog_target；解码只丢弃不适用的附带模式，不丢弃目标或财务条件。生产使用紧凑TurnPlan传输，历史实验实现已移出交付目录。程序条件检查保存audit_mode=program，前端显示“程序条件与来源检查通过”，不能称独立模型认证了整轮语义。diagnostics记录每次实际响应model、step、tokens、耗时、model_calls和结构修正原因，实际执行完成与证据支持仍分别判断。
+紧凑 JSON 传输枚举与正式 v3 类型一一对应。紧凑目标只有一个wire形状，kind确定适用的concept_mode、quote_mode或catalog_target；解码只丢弃不适用的附带模式，不丢弃目标或财务条件。生产使用紧凑TurnPlan传输，历史实验实现已移出交付目录。程序条件检查保存audit_mode=program，前端显示“程序条件与来源检查通过”，不能称独立模型认证了整轮语义。diagnostics记录每次实际响应model、step、tokens、耗时、model_calls和结构修正原因，实际执行完成与证据支持仍分别判断。
 
 取消与完成竞争时，Java保存Python已经取得的真实终态。Python已完成的任务不能因随后收到取消请求而被Java改标为取消；完成、失败及取消各自完整保存后才释放会话锁。
 
@@ -59,30 +61,24 @@ Python 内部任务接口使用 `/internal/tasks/{id}`、`/internal/tasks/recove
 ## 预算和恢复
 
 - 整轮 270 秒；Python 最多 240 秒，同时为保存预留时间。
-- 模型最多六次调用，单次六十秒且受剩余总时限约束；预留十秒核验与保存，没有无限重试或旧规则回退。
+- 模型最多六次调用，单次最多六十秒且受剩余总时限约束；预留十秒核验与保存。传输默认自动重试为 0；合同校验允许的最多一次结构修正是新的生成调用，计入同一预算，不是网络失败重试。没有本地模型或旧规则回退。
 - 应用模型资源同时执行一个调用，最多八个等待者，排队三十秒。同步 ETL、异步问答和后台标题共用调度入口。
 - 本机 Python 服务采用单 worker；多 worker 或多服务实例需另行共享调度，不能声称进程内锁保证全局限制。
 - Python 重启明确终结无法恢复的活动调用；Java 从持久记录找回状态，不永久占会话锁。Java 与 Python 暂时失联时继续恢复任务状态。
 
-## 本机公开演示启动（PowerShell 7）
+## 真实数据运行（PowerShell 7）
 
-保留本机 MySQL 和 Ollama。Redis、RabbitMQ 使用真实本机服务，预检执行 Redis AUTH/PING 与 AMQP 握手及建队列。RabbitMQ 的 AMQP 端口以环境配置为准，不能把管理页面端口当作就绪证据。
-
-```powershell
-pwsh -File scripts/start-native-dependencies.ps1 -EnvFile .env.demo
-.venv/Scripts/python.exe -X utf8 scripts/preflight.py --env .env.demo
-pwsh -File scripts/start-finsight.ps1 -EnvFile .env.demo
-```
-
-`.local_runtime` 保存服务日志与进程编号。使用隐藏窗口启动，启动入口需要先通过协议预检。不同端口可用 AgentPort、JavaPort、FrontendPort 参数。`FINSIGHT_TASK_DB` 可指定工作区内独立任务库，适用于隔离的故障实验；不得与另一运行实例共享。
-
-公开初始化运行 `scripts/demo-seed.ps1 -EnvFile .env.demo`，同时生成PDF、事实、索引并验收发布。下述原件审计仅供具有合法私有语料的本机真实库维护使用，不是公开安装前置条件。新版本先在独立目录与集合中准备；审核失败或发布事务失败保留旧指针。未核实的单元格保留在报告核对清单，不补零。索引仅在文档位置、内容、元数据与 embedding 配置一致时复用已验收向量。
+保留当前真实原件、规范事实、发布指针和 BGE 索引；仅按[部署配置](DEPLOYMENT.md)填写私有云端凭据。MySQL、Redis 和 RabbitMQ 仍为真实服务；无需 Ollama。云端模型检查需要网络，依赖预检不代表完整问答已经通过。
 
 ```powershell
-.venv/Scripts/python.exe -X utf8 scripts/audit_canonical_facts.py --output data/runtime/v3/audit-new
-.venv/Scripts/python.exe -X utf8 scripts/build_canonical_index.py --audit data/runtime/v3/audit-new
-.venv/Scripts/python.exe -X utf8 scripts/accept_canonical_release.py --audit data/runtime/v3/audit-new --publish
+.\.venv\Scripts\python.exe -X utf8 scripts\runtime_env.py --env-file .env
+.\.venv\Scripts\python.exe -X utf8 scripts\preflight.py --env .env
+pwsh -NoProfile -File scripts\start-finsight.ps1 -EnvFile .env
 ```
+
+`.local_runtime` 保存服务日志与进程身份，统一启动使用隐藏窗口并先执行协议预检。不同端口使用 AgentPort、JavaPort、FrontendPort 参数；`FINSIGHT_TASK_DB` 指向本副本独立任务库，不与另一个实例共享。当前生成模型迁移无需重新导入财报或构建向量；首次准备真实资料按[安装说明](REAL_DATA_INSTALL.md)，不运行合成 `demo-seed`。
+
+新数据版本先在独立目录与集合准备；来源检查、索引或发布失败均保留旧指针。未核实单元格排除、不补零；只有文本、位置、元数据和 BGE 指纹一致时才复用已有向量。
 
 旧消息保持可读；旧状态只迁移明确公司身份，未知报表范围重新确认。旧回答数字与旧核验徽标不能升级为 v3 事实或完整核验。
 
@@ -92,21 +88,15 @@ Source.scope_proof 保存原件标题矩形、报表家族及行和值矩形的�
 
 comparisons 保存程序生成的比较对象和结论；query_trace 保存实际执行的参数化SELECT、参数、用途、行数、状态和耗时，禁止用固定SQL模板冒充实际执行记录。Python API、Java保存和前端恢复均保留这些字段。它们与数字正文一样以实际执行为依据，不包含连接配置或凭据。
 
-`eval/v3_native_gpu_cancel.py` 同时观察真实GPU负载、任务终态、模型槽及后续查询。显存保留已加载模型不视为仍在推理；取消终态不会因后续任务或迟到事件重新完成。实验记录含采样和任务身份，不保存认证信息。
+评测入口与边界见[评测说明](../eval/README.md)。本地 GPU/Ollama 取消实验、旧合成 20 轮、历史 153/200/300 轮及其分数只描述旧环境，不能证明云端取消行为或当前准确率。云端取消需验证本机任务终态、资源释放和迟到结果不发布；不从 HTTP 取消推断服务商内部计算或计费已经停止。当前计划的 28 轮批次尚待用户运行，本文不宣称通过。
 
-本机 `eval/regression_v3` 保存 153 轮内部历史回归问题、上下文与预期，该目录及其清单不随公开包发布；包含原件摘录的修复前记录同样只留本机。公开验收使用 `eval/delivery_cases.json` 和 `docs/evidence/final20` 的虚构演示问题与实测记录。`eval/run_v3_regressions.py` 对真实 Java、Python 和本地模型运行；`eval/v3_native_faults.py` 进行真实取消、归属、幂等、输入限制和 MySQL 保存失败实验。结果需独立断言与人工复核，不能按模型自报通过判成功。
+云端结构化请求使用 JSON 输出模式、同源字段说明和独立的客户端 Schema/类型校验。解析、重复键、类型或编译失败按现有预算处理；服务端接受请求或返回可解析 JSON 不等于规划正确、来源可靠或财务答案通过审核。
 
-尚未封存并通过两次新盲测时，不得宣称全面修复完成。结构化输出使用原生JSON Schema约束及同源紧凑字段说明，再次执行严格类型校验；本机Ollama 0.33.3的数组前缀约束实际实验失败记录保留，不能只凭schema合法判采样约束生效。基础机制参照 [Ollama 官方说明](https://docs.ollama.com/capabilities/structured-outputs)。
+## 统一模型配置
 
-## 模型配置
+所有生成入口共用 `LLM_PROVIDER=openai_compat`、`LLM_BASE_URL=https://api.deepseek.com`、`LLM_MODEL=deepseek-flash` 及私有 `LLM_API_KEY`；`LLM_TIMEOUT_SECONDS=60`、`LLM_MAX_RETRIES=0`、`LLM_MAX_TOKENS=3072`。请求固定 `temperature=0` 与 `thinking={"type":"disabled"}`。只有对应 `LLM_*` 缺失才兼容旧 `DEEPSEEK_*`，不按密钥存在与否自动切到本地模型。参数和故障提示详见[部署说明](DEPLOYMENT.md)。
 
-启动脚本的Model仅覆盖当前进程；当前默认Qwen，实测问题使用隔离会话。当前公开Qwen成绩见[交付验收](DELIVERY_ACCEPTANCE.md)。Fin-R1只属前期研究，不纳入本轮成绩。
-
-```powershell
-pwsh -File scripts/start-agent.ps1 -EnvFile .env.demo -OverrideEnv -Port 18000 -Model qwen3.5:9b-q4_K_M
-# 停止对应Python实例后，可使用相同服务端口运行Fin-R1
-pwsh -File scripts/start-agent.ps1 -EnvFile .env.demo -OverrideEnv -Port 18000 -Model fin-r1:7b-q4
-```
+后台标题、解释、审核与规划使用相同云端模型与请求策略。传输、鉴权、余额、限流或响应错误明确返回失败；本地只读查询、Decimal 计算、来源检查和 BGE embedding 不由云端模型替代。
 
 图形、排序和数量使用同源文字约束；公司纠正检查保留集合。显式删除会在任务提交时清理持久化上下文，包括all_companies，模型失败或取消不能恢复已删除公司。概念定义的指标集合独立于挂起的财务条件。
 

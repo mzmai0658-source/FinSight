@@ -173,7 +173,7 @@ function formatEntity(report: ResearchReportItem) {
       <div v-else-if="!records.length" class="reports__empty">{{ keyword || reportType ? '没有匹配的机构研报，请调整筛选条件。' : '当前环境尚未收录机构研报。已导入的公司年报、半年报请在“公司财报”中查看。' }}</div>
 
       <template v-else>
-        <!-- 作品说明：卡片视图 -->
+        <!-- 卡片视图 -->
         <div v-if="viewMode === 'card'" class="reports__grid">
           <article
             v-for="report in records"
@@ -234,7 +234,7 @@ function formatEntity(report: ResearchReportItem) {
           </article>
         </div>
 
-        <!-- 作品说明：表格视图 -->
+        <!-- 表格视图 -->
         <div v-else class="table-wrap">
           <table class="report-table">
             <thead>
@@ -416,7 +416,7 @@ function formatEntity(report: ResearchReportItem) {
   border-radius: var(--r-lg);
 }
 
-/* 作品说明：卡片视图 */
+/* 卡片视图 */
 .reports__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -563,7 +563,7 @@ function formatEntity(report: ResearchReportItem) {
   text-decoration: none;
 }
 
-/* 作品说明：表格视图 */
+/* 表格视图 */
 .table-wrap {
   width: 100%;
   overflow-x: auto;
@@ -673,7 +673,7 @@ function formatEntity(report: ResearchReportItem) {
 .col-metrics { width: 140px; }
 .col-action { width: 70px; }
 
-/* 作品说明：分页 */
+/* 分页 */
 .reports__pager {
   display: flex;
   align-items: center;

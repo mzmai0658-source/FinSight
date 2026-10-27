@@ -7,7 +7,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/** 作品说明：对话审计日志 */
+/** 对话审计日志 */
 @Data
 @TableName("chat_log")
 public class ChatLog {
@@ -23,7 +23,7 @@ public class ChatLog {
 
     private String question;
 
-    /** 作品说明：审计状态区分正常、错误与中断。 */
+    /** 审计状态区分正常、错误与中断。 */
     private String status;
 
     private Integer durationMs;

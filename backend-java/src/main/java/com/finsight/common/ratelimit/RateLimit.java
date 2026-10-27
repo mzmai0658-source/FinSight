@@ -5,18 +5,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/** 作品说明：滑动窗口限流（按当前登录用户维度）。 */
+/** 滑动窗口限流（按当前登录用户维度）。 */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RateLimit {
 
-    /** 作品说明：业务名，组成 Redis key 的一部分 */
+    /** 业务名，组成 Redis key 的一部分 */
     String name();
 
-    /** 作品说明：窗口时长（秒） */
+    /** 窗口时长（秒） */
     int windowSeconds() default 60;
 
-    /** 作品说明：窗口内最大请求数 */
+    /** 窗口内最大请求数 */
     int limit() default 10;
 
     RateLimitKey keyBy() default RateLimitKey.USER;

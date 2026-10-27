@@ -1,0 +1,913 @@
+{
+  "schema_version": 1,
+  "title": "FinSight演示财务数值原件证据核验",
+  "team_id": "AIC-2026-96123955",
+  "review_date": "2026-10-26",
+  "review_scope": "D02、D03、D04、D05、D06、D09营业收入演示；D05另核验未入选的三一重工。",
+  "overall_status": "financial_values_match_frozen_originals_with_disclosed_presentation_issue_and_period_basis",
+  "summary": {
+    "unique_original_pdfs": 9,
+    "unique_value_checks": 9,
+    "complete_pdf_pages_visually_reviewed": 14,
+    "answer_artifacts_checked": 6,
+    "screenshots_visually_checked": 5,
+    "numeric_mismatches": 0,
+    "presentation_issues": 1
+  },
+  "assertion_boundary": "这是演示数值与指定冻结原件之间的证据核验，不是对全部财务数据或发行人财务报表出具人工审计、鉴证或投资结论。",
+  "method": [
+    "重新读取实际PDF字节，计算SHA-256并与冻结事实、报告登记及传输清单同时比对。",
+    "使用Poppler将完整相关物理页渲染为PNG并逐页视觉检查；另使用pypdf直接读取原件文本交叉验证。",
+    "按原表行名、本期列、单位和合并口径核验；明确保留未选择的比较列金额以防错列。",
+    "从视觉读出的原始金额用Decimal独立换算到亿元或万元，保留两位小数后比较冻结答案。",
+    "重建D05三家公司完整排名及D06图表精确值、显示值、单位和年度顺序。",
+    "逐张查看已有截图；仅对可见内容下结论，未以截图代替原PDF核验。"
+  ],
+  "rows": [
+    {
+      "audit_id": "D02",
+      "demo_questions": [
+        "D02"
+      ],
+      "issuer": "美的集团",
+      "stock_code": "000333",
+      "report_year": 2024,
+      "report_period": "FY",
+      "metric": "营业收入",
+      "scope": "合并",
+      "source_id": "S01",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2025-03-29/1222951181.PDF",
+      "pdf_sha256": "b17a9b9b84bca1d2a4e4a3cadc5dd5ba5c85e3f1fd2d758acd3315b5b040ecd9",
+      "physical_page": 158,
+      "printed_page_label": "157",
+      "table": "2024年度合并及公司利润表",
+      "row": "其中：营业收入",
+      "selected_column": "2024年度 / 合并",
+      "period_basis": "该报告的本期列；长江电力时间序列按各年度原报告本期值取数。",
+      "scope_evidence": "2024年度合并及公司利润表，明确选择2024年度合并列。",
+      "supporting_physical_pages": [],
+      "raw_value_as_seen": "407,149,600",
+      "raw_unit": "千元",
+      "yuan_per_raw_unit": "1000",
+      "base_value_yuan_exact": "407149600000",
+      "display_unit": "亿元",
+      "yuan_per_display_unit": "100000000",
+      "conversion_formula": "407149600 * 1000 / 100000000",
+      "display_value_exact": "4071.496",
+      "display_value_2dp": "4071.50",
+      "rounding": "Decimal, 50-digit working precision, ROUND_HALF_UP to 0.01; no binary float used for conversion.",
+      "comparative_column_not_selected": {
+        "column": "2023年度 / 合并（经重列）",
+        "raw_value_as_seen": "372,037,280",
+        "raw_unit": "千元"
+      },
+      "checks": {
+        "actual_pdf_sha256_matches_frozen_fact_report_and_transport": true,
+        "actual_pdf_page_count_matches_registry": true,
+        "complete_relevant_pages_rendered_with_poppler_and_visually_reviewed": true,
+        "independent_pypdf_text_contains_raw_and_comparative_amounts": true,
+        "current_period_column_confirmed": true,
+        "consolidated_scope_confirmed": true,
+        "raw_unit_confirmed": true,
+        "decimal_conversion_matches_expected": true
+      },
+      "answer_comparison": [
+        {
+          "question": "D02",
+          "status": "pass",
+          "check": "答案显示值及底层元值与独立Decimal换算一致。"
+        }
+      ],
+      "status": "pass",
+      "notes": [
+        "营业收入407,149,600千元与营业总收入409,084,266千元不同。2024年度公司列946,607千元未被选用。"
+      ]
+    },
+    {
+      "audit_id": "D03-D04",
+      "demo_questions": [
+        "D03",
+        "D04"
+      ],
+      "issuer": "比亚迪",
+      "stock_code": "002594",
+      "report_year": 2024,
+      "report_period": "FY",
+      "metric": "营业收入",
+      "scope": "合并",
+      "source_id": "S02",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2025-03-25/1222881496.PDF",
+      "pdf_sha256": "e9c2d7fdd088e151ccb6c8ad3d95587b2b014b10f2c9731508d23ce07fde4de3",
+      "physical_page": 10,
+      "printed_page_label": "10",
+      "table": "主要会计数据和财务指标",
+      "row": "营业收入（元）",
+      "selected_column": "2024年",
+      "period_basis": "该报告的本期列；长江电力时间序列按各年度原报告本期值取数。",
+      "scope_evidence": "第10页主要会计数据；另以第145页合并利润表2024年营业收入777,102,455千元互证，第142页规定报表单位为千元。",
+      "supporting_physical_pages": [
+        142,
+        145
+      ],
+      "raw_value_as_seen": "777,102,455,000.00",
+      "raw_unit": "元",
+      "yuan_per_raw_unit": "1",
+      "base_value_yuan_exact": "777102455000.00",
+      "display_unit": "亿元",
+      "yuan_per_display_unit": "100000000",
+      "conversion_formula": "777102455000.00 * 1 / 100000000",
+      "display_value_exact": "7771.02455",
+      "display_value_2dp": "7771.02",
+      "rounding": "Decimal, 50-digit working precision, ROUND_HALF_UP to 0.01; no binary float used for conversion.",
+      "comparative_column_not_selected": {
+        "column": "2023年",
+        "raw_value_as_seen": "602,315,354,000.00",
+        "raw_unit": "元"
+      },
+      "checks": {
+        "actual_pdf_sha256_matches_frozen_fact_report_and_transport": true,
+        "actual_pdf_page_count_matches_registry": true,
+        "complete_relevant_pages_rendered_with_poppler_and_visually_reviewed": true,
+        "independent_pypdf_text_contains_raw_and_comparative_amounts": true,
+        "current_period_column_confirmed": true,
+        "consolidated_scope_confirmed": true,
+        "raw_unit_confirmed": true,
+        "decimal_conversion_matches_expected": true
+      },
+      "answer_comparison": [
+        {
+          "question": "D03",
+          "status": "pass",
+          "check": "答案显示值及底层元值与独立Decimal换算一致。"
+        },
+        {
+          "question": "D04",
+          "status": "pass",
+          "check": "物理第10页、行名和全部4个数值单元格顺序匹配；摘录归一化了排版空白，并非原页面版式复制。"
+        }
+      ],
+      "status": "pass",
+      "notes": [
+        "第10页该行后续单元格为2023年602,315,354,000.00元、同比29.02%、2022年424,060,635,000.00元。"
+      ]
+    },
+    {
+      "audit_id": "D05-CATL",
+      "demo_questions": [
+        "D05"
+      ],
+      "issuer": "宁德时代",
+      "stock_code": "300750",
+      "report_year": 2024,
+      "report_period": "FY",
+      "metric": "营业收入",
+      "scope": "合并",
+      "source_id": "S03",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2025-03-15/1222806982.PDF",
+      "pdf_sha256": "b4f1713d7b821eb076c102711d177fe942ccc2bc8dd171ae5d7a95799a65b0ad",
+      "physical_page": 119,
+      "printed_page_label": "119",
+      "table": "合并利润表",
+      "row": "其中：营业收入",
+      "selected_column": "2024年度",
+      "period_basis": "该报告的本期列；长江电力时间序列按各年度原报告本期值取数。",
+      "scope_evidence": "3、合并利润表。",
+      "supporting_physical_pages": [],
+      "raw_value_as_seen": "362,012,554",
+      "raw_unit": "千元",
+      "yuan_per_raw_unit": "1000",
+      "base_value_yuan_exact": "362012554000",
+      "display_unit": "万元",
+      "yuan_per_display_unit": "10000",
+      "conversion_formula": "362012554 * 1000 / 10000",
+      "display_value_exact": "36201255.4",
+      "display_value_2dp": "36201255.40",
+      "rounding": "Decimal, 50-digit working precision, ROUND_HALF_UP to 0.01; no binary float used for conversion.",
+      "comparative_column_not_selected": {
+        "column": "2023年度",
+        "raw_value_as_seen": "400,917,045",
+        "raw_unit": "千元"
+      },
+      "checks": {
+        "actual_pdf_sha256_matches_frozen_fact_report_and_transport": true,
+        "actual_pdf_page_count_matches_registry": true,
+        "complete_relevant_pages_rendered_with_poppler_and_visually_reviewed": true,
+        "independent_pypdf_text_contains_raw_and_comparative_amounts": true,
+        "current_period_column_confirmed": true,
+        "consolidated_scope_confirmed": true,
+        "raw_unit_confirmed": true,
+        "decimal_conversion_matches_expected": true
+      },
+      "answer_comparison": [
+        {
+          "question": "D05",
+          "status": "pass",
+          "check": "答案显示值及底层元值与独立Decimal换算一致。"
+        }
+      ],
+      "status": "pass",
+      "notes": []
+    },
+    {
+      "audit_id": "D05-Shenhua",
+      "demo_questions": [
+        "D05"
+      ],
+      "issuer": "中国神华",
+      "stock_code": "601088",
+      "report_year": 2024,
+      "report_period": "FY",
+      "metric": "营业收入",
+      "scope": "合并",
+      "source_id": "S04",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2025-03-22/1222870380.PDF",
+      "pdf_sha256": "4b3a8db26ae2fb07083966fadea0f92535cfbe6d0791c3318c6511113b138e8f",
+      "physical_page": 142,
+      "printed_page_label": "142",
+      "table": "合并利润表",
+      "row": "一、营业收入",
+      "selected_column": "2024年度",
+      "period_basis": "该报告的本期列；长江电力时间序列按各年度原报告本期值取数。",
+      "scope_evidence": "中国神华能源股份有限公司合并利润表；金额单位人民币百万元。",
+      "supporting_physical_pages": [],
+      "raw_value_as_seen": "338,375",
+      "raw_unit": "百万元",
+      "yuan_per_raw_unit": "1000000",
+      "base_value_yuan_exact": "338375000000",
+      "display_unit": "万元",
+      "yuan_per_display_unit": "10000",
+      "conversion_formula": "338375 * 1000000 / 10000",
+      "display_value_exact": "33837500",
+      "display_value_2dp": "33837500.00",
+      "rounding": "Decimal, 50-digit working precision, ROUND_HALF_UP to 0.01; no binary float used for conversion.",
+      "comparative_column_not_selected": {
+        "column": "2023年度",
+        "raw_value_as_seen": "343,074",
+        "raw_unit": "百万元"
+      },
+      "checks": {
+        "actual_pdf_sha256_matches_frozen_fact_report_and_transport": true,
+        "actual_pdf_page_count_matches_registry": true,
+        "complete_relevant_pages_rendered_with_poppler_and_visually_reviewed": true,
+        "independent_pypdf_text_contains_raw_and_comparative_amounts": true,
+        "current_period_column_confirmed": true,
+        "consolidated_scope_confirmed": true,
+        "raw_unit_confirmed": true,
+        "decimal_conversion_matches_expected": true
+      },
+      "answer_comparison": [
+        {
+          "question": "D05",
+          "status": "pass",
+          "check": "答案显示值及底层元值与独立Decimal换算一致。"
+        }
+      ],
+      "status": "pass",
+      "notes": []
+    },
+    {
+      "audit_id": "D05-Sany",
+      "demo_questions": [
+        "D05"
+      ],
+      "issuer": "三一重工",
+      "stock_code": "600031",
+      "report_year": 2024,
+      "report_period": "FY",
+      "metric": "营业收入",
+      "scope": "合并",
+      "source_id": "S05",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-18/1223129214.PDF",
+      "pdf_sha256": "09b21df2cef24fd85b4efa625579138241ae1de4fa7ad4f2c9fcef0c694a0d1a",
+      "physical_page": 94,
+      "printed_page_label": "94 / 255",
+      "table": "合并利润表",
+      "row": "其中：营业收入",
+      "selected_column": "2024年度",
+      "period_basis": "该报告的本期列；长江电力时间序列按各年度原报告本期值取数。",
+      "scope_evidence": "合并利润表，期间为2024年1-12月。",
+      "supporting_physical_pages": [],
+      "raw_value_as_seen": "77,773,391",
+      "raw_unit": "千元",
+      "yuan_per_raw_unit": "1000",
+      "base_value_yuan_exact": "77773391000",
+      "display_unit": "万元",
+      "yuan_per_display_unit": "10000",
+      "conversion_formula": "77773391 * 1000 / 10000",
+      "display_value_exact": "7777339.1",
+      "display_value_2dp": "7777339.10",
+      "rounding": "Decimal, 50-digit working precision, ROUND_HALF_UP to 0.01; no binary float used for conversion.",
+      "comparative_column_not_selected": {
+        "column": "2023年度",
+        "raw_value_as_seen": "73,221,725",
+        "raw_unit": "千元"
+      },
+      "checks": {
+        "actual_pdf_sha256_matches_frozen_fact_report_and_transport": true,
+        "actual_pdf_page_count_matches_registry": true,
+        "complete_relevant_pages_rendered_with_poppler_and_visually_reviewed": true,
+        "independent_pypdf_text_contains_raw_and_comparative_amounts": true,
+        "current_period_column_confirmed": true,
+        "consolidated_scope_confirmed": true,
+        "raw_unit_confirmed": true,
+        "decimal_conversion_matches_expected": true
+      },
+      "answer_comparison": [
+        {
+          "question": "D05",
+          "status": "pass",
+          "check": "第三名被排除在前两名答案之外；原件已独立纳入三家公司完整排名复核。"
+        }
+      ],
+      "status": "pass",
+      "notes": [
+        "第三名，核对后确认应排除在前两名结果之外。营业总收入78,383,379千元不作为营业收入。"
+      ]
+    },
+    {
+      "audit_id": "D06-2023",
+      "demo_questions": [
+        "D06"
+      ],
+      "issuer": "长江电力",
+      "stock_code": "600900",
+      "report_year": 2023,
+      "report_period": "FY",
+      "metric": "营业收入",
+      "scope": "合并",
+      "source_id": "S06",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-30/1219922588.PDF",
+      "pdf_sha256": "a32aa92211f533bef9bd426a29158060d6bed4a31fca6c9f6805fd8659c90d38",
+      "physical_page": 92,
+      "printed_page_label": "92 / 265",
+      "table": "合并利润表",
+      "row": "其中：营业收入",
+      "selected_column": "2023年度",
+      "period_basis": "该报告的本期列；长江电力时间序列按各年度原报告本期值取数。",
+      "scope_evidence": "2023年报告合并利润表，期间为2023年1-12月。",
+      "supporting_physical_pages": [],
+      "raw_value_as_seen": "78,111,573,265.75",
+      "raw_unit": "元",
+      "yuan_per_raw_unit": "1",
+      "base_value_yuan_exact": "78111573265.75",
+      "display_unit": "亿元",
+      "yuan_per_display_unit": "100000000",
+      "conversion_formula": "78111573265.75 * 1 / 100000000",
+      "display_value_exact": "781.1157326575",
+      "display_value_2dp": "781.12",
+      "rounding": "Decimal, 50-digit working precision, ROUND_HALF_UP to 0.01; no binary float used for conversion.",
+      "comparative_column_not_selected": {
+        "column": "2022年度",
+        "raw_value_as_seen": "68,863,128,424.25",
+        "raw_unit": "元"
+      },
+      "checks": {
+        "actual_pdf_sha256_matches_frozen_fact_report_and_transport": true,
+        "actual_pdf_page_count_matches_registry": true,
+        "complete_relevant_pages_rendered_with_poppler_and_visually_reviewed": true,
+        "independent_pypdf_text_contains_raw_and_comparative_amounts": true,
+        "current_period_column_confirmed": true,
+        "consolidated_scope_confirmed": true,
+        "raw_unit_confirmed": true,
+        "decimal_conversion_matches_expected": true
+      },
+      "answer_comparison": [
+        {
+          "question": "D06",
+          "status": "pass",
+          "check": "答案显示值及底层元值与独立Decimal换算一致。"
+        }
+      ],
+      "status": "pass_value_with_period_basis_note",
+      "notes": [
+        "使用2023年原报告本期数；2024年报告随后将2023比较数追溯调整为78,143,535,736.10元。"
+      ]
+    },
+    {
+      "audit_id": "D06-2024",
+      "demo_questions": [
+        "D06"
+      ],
+      "issuer": "长江电力",
+      "stock_code": "600900",
+      "report_year": 2024,
+      "report_period": "FY",
+      "metric": "营业收入",
+      "scope": "合并",
+      "source_id": "S07",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-30/1223421172.PDF",
+      "pdf_sha256": "556767ca1f7c06bb679c827aa6522ff9927d2a63dc2ab64b57194fdc57192048",
+      "physical_page": 92,
+      "printed_page_label": "92 / 262",
+      "table": "合并利润表",
+      "row": "其中：营业收入",
+      "selected_column": "2024年度",
+      "period_basis": "该报告的本期列；长江电力时间序列按各年度原报告本期值取数。",
+      "scope_evidence": "2024年报告合并利润表，期间为2024年1-12月。",
+      "supporting_physical_pages": [
+        5,
+        6
+      ],
+      "raw_value_as_seen": "84,491,870,566.52",
+      "raw_unit": "元",
+      "yuan_per_raw_unit": "1",
+      "base_value_yuan_exact": "84491870566.52",
+      "display_unit": "亿元",
+      "yuan_per_display_unit": "100000000",
+      "conversion_formula": "84491870566.52 * 1 / 100000000",
+      "display_value_exact": "844.9187056652",
+      "display_value_2dp": "844.92",
+      "rounding": "Decimal, 50-digit working precision, ROUND_HALF_UP to 0.01; no binary float used for conversion.",
+      "comparative_column_not_selected": {
+        "column": "2023年度（本报告比较数已追溯调整，见第5-6页）",
+        "raw_value_as_seen": "78,143,535,736.10",
+        "raw_unit": "元"
+      },
+      "checks": {
+        "actual_pdf_sha256_matches_frozen_fact_report_and_transport": true,
+        "actual_pdf_page_count_matches_registry": true,
+        "complete_relevant_pages_rendered_with_poppler_and_visually_reviewed": true,
+        "independent_pypdf_text_contains_raw_and_comparative_amounts": true,
+        "current_period_column_confirmed": true,
+        "consolidated_scope_confirmed": true,
+        "raw_unit_confirmed": true,
+        "decimal_conversion_matches_expected": true
+      },
+      "answer_comparison": [
+        {
+          "question": "D06",
+          "status": "pass",
+          "check": "答案显示值及底层元值与独立Decimal换算一致。"
+        }
+      ],
+      "status": "pass_value_with_period_basis_note",
+      "notes": [
+        "本期2024数匹配；本报告2023比较列未被冒充为2024本期值，也未覆盖演示的2023原报值。"
+      ]
+    },
+    {
+      "audit_id": "D06-2025",
+      "demo_questions": [
+        "D06"
+      ],
+      "issuer": "长江电力",
+      "stock_code": "600900",
+      "report_year": 2025,
+      "report_period": "FY",
+      "metric": "营业收入",
+      "scope": "合并",
+      "source_id": "S08",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225262036.PDF",
+      "pdf_sha256": "aa0cdb92e3aad81b1e6454594a64cacbcfeb9013b10dd31f47a93a94e7a70f91",
+      "physical_page": 84,
+      "printed_page_label": "84 / 259",
+      "table": "合并利润表",
+      "row": "其中：营业收入",
+      "selected_column": "2025年度",
+      "period_basis": "该报告的本期列；长江电力时间序列按各年度原报告本期值取数。",
+      "scope_evidence": "2025年报告合并利润表，期间为2025年1-12月。",
+      "supporting_physical_pages": [],
+      "raw_value_as_seen": "86,241,940,222.20",
+      "raw_unit": "元",
+      "yuan_per_raw_unit": "1",
+      "base_value_yuan_exact": "86241940222.20",
+      "display_unit": "亿元",
+      "yuan_per_display_unit": "100000000",
+      "conversion_formula": "86241940222.20 * 1 / 100000000",
+      "display_value_exact": "862.419402222",
+      "display_value_2dp": "862.42",
+      "rounding": "Decimal, 50-digit working precision, ROUND_HALF_UP to 0.01; no binary float used for conversion.",
+      "comparative_column_not_selected": {
+        "column": "2024年度",
+        "raw_value_as_seen": "84,491,870,566.52",
+        "raw_unit": "元"
+      },
+      "checks": {
+        "actual_pdf_sha256_matches_frozen_fact_report_and_transport": true,
+        "actual_pdf_page_count_matches_registry": true,
+        "complete_relevant_pages_rendered_with_poppler_and_visually_reviewed": true,
+        "independent_pypdf_text_contains_raw_and_comparative_amounts": true,
+        "current_period_column_confirmed": true,
+        "consolidated_scope_confirmed": true,
+        "raw_unit_confirmed": true,
+        "decimal_conversion_matches_expected": true
+      },
+      "answer_comparison": [
+        {
+          "question": "D06",
+          "status": "pass",
+          "check": "答案显示值及底层元值与独立Decimal换算一致。"
+        }
+      ],
+      "status": "pass_value_with_period_basis_note",
+      "notes": []
+    },
+    {
+      "audit_id": "D09",
+      "demo_questions": [
+        "D09"
+      ],
+      "issuer": "立讯精密",
+      "stock_code": "002475",
+      "report_year": 2024,
+      "report_period": "Q1",
+      "metric": "营业收入",
+      "scope": "合并",
+      "source_id": "S09",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-25/1219799518.PDF",
+      "pdf_sha256": "4f398f064179ccdd4323a22aa70f90d5c75f4e1946fec52fd80858be6a9549a7",
+      "physical_page": 8,
+      "printed_page_label": "8",
+      "table": "合并利润表",
+      "row": "其中：营业收入",
+      "selected_column": "本期发生额",
+      "period_basis": "该报告的本期列；长江电力时间序列按各年度原报告本期值取数。",
+      "scope_evidence": "2、合并利润表；第1页及第8页页眉确认2024年第一季度报告。",
+      "supporting_physical_pages": [
+        1
+      ],
+      "raw_value_as_seen": "52,406,775,584.57",
+      "raw_unit": "元",
+      "yuan_per_raw_unit": "1",
+      "base_value_yuan_exact": "52406775584.57",
+      "display_unit": "亿元",
+      "yuan_per_display_unit": "100000000",
+      "conversion_formula": "52406775584.57 * 1 / 100000000",
+      "display_value_exact": "524.0677558457",
+      "display_value_2dp": "524.07",
+      "rounding": "Decimal, 50-digit working precision, ROUND_HALF_UP to 0.01; no binary float used for conversion.",
+      "comparative_column_not_selected": {
+        "column": "上期发生额",
+        "raw_value_as_seen": "49,942,325,179.17",
+        "raw_unit": "元"
+      },
+      "checks": {
+        "actual_pdf_sha256_matches_frozen_fact_report_and_transport": true,
+        "actual_pdf_page_count_matches_registry": true,
+        "complete_relevant_pages_rendered_with_poppler_and_visually_reviewed": true,
+        "independent_pypdf_text_contains_raw_and_comparative_amounts": true,
+        "current_period_column_confirmed": true,
+        "consolidated_scope_confirmed": true,
+        "raw_unit_confirmed": true,
+        "decimal_conversion_matches_expected": true
+      },
+      "answer_comparison": [
+        {
+          "question": "D09",
+          "status": "pass",
+          "check": "答案显示值及底层元值与独立Decimal换算一致。"
+        }
+      ],
+      "status": "pass",
+      "notes": [
+        "第一季度累计值；报告第1页勾选第一季度报告未经审计。这里的证据核验不等同于对财务报告出具审计意见。"
+      ]
+    }
+  ],
+  "d05_ranking_check": {
+    "status": "pass",
+    "scope": "仅本次选择的中国神华、三一重工、宁德时代三家2024全年合并营业收入。",
+    "full_ranking": [
+      {
+        "rank": 1,
+        "issuer": "宁德时代",
+        "amount_wan_yuan": "36201255.40",
+        "included_in_top_two_answer": true
+      },
+      {
+        "rank": 2,
+        "issuer": "中国神华",
+        "amount_wan_yuan": "33837500.00",
+        "included_in_top_two_answer": true
+      },
+      {
+        "rank": 3,
+        "issuer": "三一重工",
+        "amount_wan_yuan": "7777339.10",
+        "included_in_top_two_answer": false
+      }
+    ]
+  },
+  "d06_chart_check": {
+    "status": "pass",
+    "years": [
+      2023,
+      2024,
+      2025
+    ],
+    "unit": "亿元",
+    "exact_values": [
+      "781.1157326575",
+      "844.9187056652",
+      "862.419402222"
+    ],
+    "display_values": [
+      "781.12",
+      "844.92",
+      "862.42"
+    ],
+    "basis": "各年度原报告本期数；不是全部按后续重述统一后的可比序列。"
+  },
+  "findings": [
+    {
+      "finding_id": "F01",
+      "kind": "presentation_issue",
+      "question": "D06",
+      "status": "observed_in_frozen_demo_artifacts",
+      "description": "冻结答案表格的行序为2023、2025、2024，与题目从早到晚要求不一致；图表横轴与数据点顺序正确，金额无误。",
+      "artifact_id": "answer-D06",
+      "field": "$.task.result.answer.content",
+      "supporting_field": "$.task.result.facts",
+      "observed_table_year_order": [
+        2023,
+        2025,
+        2024
+      ],
+      "expected_year_order": [
+        2023,
+        2024,
+        2025
+      ],
+      "screenshot_artifact_id": "screen-chart-desktop",
+      "remediation_status": "本报告记录已检查的冻结基线；本次证据核验未更改代码、数值、答案或截图。任何后续修复应由新的运行结果另行验证。"
+    },
+    {
+      "finding_id": "N01",
+      "kind": "period_basis_note",
+      "question": "D06",
+      "status": "confirmed_from_original_pdf",
+      "description": "长江电力2024年报告第5页将2023年营业收入分为调整前和调整后，第6页说明因同一控制下企业合并追溯调整。演示2023值来自2023年报告本期列，未改用2024年报告比较列。",
+      "source_id": "S07",
+      "physical_pages": [
+        5,
+        6,
+        92
+      ],
+      "original_2023_yuan": "78111573265.75",
+      "restated_2023_yuan_in_2024_report": "78143535736.10",
+      "difference_yuan": "31962470.35",
+      "original_2023_yi_yuan_2dp": "781.12",
+      "restated_2023_yi_yuan_2dp": "781.44",
+      "claim_limit": "可以说明各年原报告本期营业收入及图表取数正确；不能将该序列称为已统一后续重述口径的可比增长分析。"
+    }
+  ],
+  "source_register": [
+    {
+      "source_id": "S01",
+      "issuer": "美的集团",
+      "stock_code": "000333",
+      "report_year": 2024,
+      "report_period": "FY",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2025-03-29/1222951181.PDF",
+      "pdf_sha256": "b17a9b9b84bca1d2a4e4a3cadc5dd5ba5c85e3f1fd2d758acd3315b5b040ecd9",
+      "pdf_page_count": 295,
+      "physical_pages_visually_reviewed": [
+        158
+      ],
+      "url_basis": "冻结来源登记；本次未重新下载在线版本。"
+    },
+    {
+      "source_id": "S02",
+      "issuer": "比亚迪",
+      "stock_code": "002594",
+      "report_year": 2024,
+      "report_period": "FY",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2025-03-25/1222881496.PDF",
+      "pdf_sha256": "e9c2d7fdd088e151ccb6c8ad3d95587b2b014b10f2c9731508d23ce07fde4de3",
+      "pdf_page_count": 290,
+      "physical_pages_visually_reviewed": [
+        10,
+        142,
+        145
+      ],
+      "url_basis": "冻结来源登记；本次未重新下载在线版本。"
+    },
+    {
+      "source_id": "S03",
+      "issuer": "宁德时代",
+      "stock_code": "300750",
+      "report_year": 2024,
+      "report_period": "FY",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2025-03-15/1222806982.PDF",
+      "pdf_sha256": "b4f1713d7b821eb076c102711d177fe942ccc2bc8dd171ae5d7a95799a65b0ad",
+      "pdf_page_count": 229,
+      "physical_pages_visually_reviewed": [
+        119
+      ],
+      "url_basis": "冻结来源登记；本次未重新下载在线版本。"
+    },
+    {
+      "source_id": "S04",
+      "issuer": "中国神华",
+      "stock_code": "601088",
+      "report_year": 2024,
+      "report_period": "FY",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2025-03-22/1222870380.PDF",
+      "pdf_sha256": "4b3a8db26ae2fb07083966fadea0f92535cfbe6d0791c3318c6511113b138e8f",
+      "pdf_page_count": 291,
+      "physical_pages_visually_reviewed": [
+        142
+      ],
+      "url_basis": "冻结来源登记；本次未重新下载在线版本。"
+    },
+    {
+      "source_id": "S05",
+      "issuer": "三一重工",
+      "stock_code": "600031",
+      "report_year": 2024,
+      "report_period": "FY",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-18/1223129214.PDF",
+      "pdf_sha256": "09b21df2cef24fd85b4efa625579138241ae1de4fa7ad4f2c9fcef0c694a0d1a",
+      "pdf_page_count": 255,
+      "physical_pages_visually_reviewed": [
+        94
+      ],
+      "url_basis": "冻结来源登记；本次未重新下载在线版本。"
+    },
+    {
+      "source_id": "S06",
+      "issuer": "长江电力",
+      "stock_code": "600900",
+      "report_year": 2023,
+      "report_period": "FY",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-30/1219922588.PDF",
+      "pdf_sha256": "a32aa92211f533bef9bd426a29158060d6bed4a31fca6c9f6805fd8659c90d38",
+      "pdf_page_count": 265,
+      "physical_pages_visually_reviewed": [
+        92
+      ],
+      "url_basis": "冻结来源登记；本次未重新下载在线版本。"
+    },
+    {
+      "source_id": "S07",
+      "issuer": "长江电力",
+      "stock_code": "600900",
+      "report_year": 2024,
+      "report_period": "FY",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-30/1223421172.PDF",
+      "pdf_sha256": "556767ca1f7c06bb679c827aa6522ff9927d2a63dc2ab64b57194fdc57192048",
+      "pdf_page_count": 262,
+      "physical_pages_visually_reviewed": [
+        5,
+        6,
+        92
+      ],
+      "url_basis": "冻结来源登记；本次未重新下载在线版本。"
+    },
+    {
+      "source_id": "S08",
+      "issuer": "长江电力",
+      "stock_code": "600900",
+      "report_year": 2025,
+      "report_period": "FY",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225262036.PDF",
+      "pdf_sha256": "aa0cdb92e3aad81b1e6454594a64cacbcfeb9013b10dd31f47a93a94e7a70f91",
+      "pdf_page_count": 259,
+      "physical_pages_visually_reviewed": [
+        84
+      ],
+      "url_basis": "冻结来源登记；本次未重新下载在线版本。"
+    },
+    {
+      "source_id": "S09",
+      "issuer": "立讯精密",
+      "stock_code": "002475",
+      "report_year": 2024,
+      "report_period": "Q1",
+      "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-25/1219799518.PDF",
+      "pdf_sha256": "4f398f064179ccdd4323a22aa70f90d5c75f4e1946fec52fd80858be6a9549a7",
+      "pdf_page_count": 12,
+      "physical_pages_visually_reviewed": [
+        1,
+        8
+      ],
+      "url_basis": "冻结来源登记；本次未重新下载在线版本。"
+    }
+  ],
+  "answer_artifacts": [
+    {
+      "artifact_id": "answer-D02",
+      "set": "rehearsal-final-zip",
+      "sha256": "865328849a142b2016d29b0b7a2d78e862fb365453a91adef5b6011ad3c9731f",
+      "fields_reviewed": [
+        "$.task.result.answer.content",
+        "$.task.result.facts"
+      ]
+    },
+    {
+      "artifact_id": "answer-D03",
+      "set": "rehearsal-final-zip",
+      "sha256": "fb6b0713d709189810f5f76b4972fef759e4c34a06459acff177c1babcb9a8d2",
+      "fields_reviewed": [
+        "$.task.result.answer.content",
+        "$.task.result.facts"
+      ]
+    },
+    {
+      "artifact_id": "answer-D04",
+      "set": "rehearsal-final-zip",
+      "sha256": "eeed7c02d2e85418b5bd0e9ee14e223f8ec772fc4368034bc5523dca99fe2884",
+      "fields_reviewed": [
+        "$.task.result.answer.content",
+        "$.task.result.facts"
+      ]
+    },
+    {
+      "artifact_id": "answer-D05",
+      "set": "rehearsal-final-zip",
+      "sha256": "5a916da1ed0184c24f92123a9783b351b2ab313d58dc4941a423ff0d5b708ebb",
+      "fields_reviewed": [
+        "$.task.result.answer.content",
+        "$.task.result.facts"
+      ]
+    },
+    {
+      "artifact_id": "answer-D06",
+      "set": "rehearsal-final-zip",
+      "sha256": "dd49c866d9f23ea22737670e123ea88a301470a135dfa420505f09ec0fc28a34",
+      "fields_reviewed": [
+        "$.task.result.answer.content",
+        "$.task.result.facts",
+        "$.task.result.chart_data.x_data",
+        "$.task.result.chart_data.series[0].values_exact",
+        "$.task.result.chart_data.series[0].values_formatted",
+        "$.task.result.chart_data.option.series[0].data"
+      ]
+    },
+    {
+      "artifact_id": "answer-D09",
+      "set": "approved-original-demo",
+      "sha256": "4e97040c2d365c6baeefeb9020efdbcfbf316a9e9c9bea57da7e017077105c5c",
+      "fields_reviewed": [
+        "$.task.result.answer.content",
+        "$.task.result.facts"
+      ]
+    }
+  ],
+  "screenshot_comparisons": [
+    {
+      "artifact_id": "screen-query-desktop",
+      "set": "browser-final-zip-verified",
+      "artifact_label": "query-desktop.png",
+      "sha256": "839e7f9f0d50bbef44f2ca2668b262928608310bf73baf6954e6d3ee1ff731fa",
+      "demo_questions": [
+        "D03",
+        "D04"
+      ],
+      "status": "partial_match",
+      "visible_content_observation": "可见比亚迪7,771.02亿元、物理第10页与整行数值；主答案行右侧被容器裁切，引用摘要保留数值。"
+    },
+    {
+      "artifact_id": "screen-chart-desktop",
+      "set": "browser-final-zip-verified",
+      "artifact_label": "chart-desktop.png",
+      "sha256": "59b833a71b631c0e35d6f40799d3cd5b56382a665b38a7f44a304142e5ad3ca1",
+      "demo_questions": [
+        "D06"
+      ],
+      "status": "value_match_with_table_order_issue",
+      "visible_content_observation": "表格显示781.12、862.42、844.92亿元且行序为2023、2025、2024；折线图横轴为2023、2024、2025，趋势一致。截图无逐点标签，精确图点由JSON另行核验。"
+    },
+    {
+      "artifact_id": "screen-evidence-desktop",
+      "set": "browser-final-zip-verified",
+      "artifact_label": "evidence-desktop.png",
+      "sha256": "ad661efdadbc2ddbab17cd0b34a1bab35f7569f5be71be809a95f859541f3265",
+      "demo_questions": [
+        "D04"
+      ],
+      "status": "partial_match",
+      "visible_content_observation": "可见第10页和比亚迪金额；查看原文处显示正在加载，不能据此宣称PDF原件已在截图中打开。"
+    },
+    {
+      "artifact_id": "screen-query-mobile",
+      "set": "browser-final-zip-verified",
+      "artifact_label": "query-mobile.png",
+      "sha256": "ec987283af88fd1904259cc86ef300c94bf9521f7e123939ea292421428ae4a9",
+      "demo_questions": [
+        "D03",
+        "D04"
+      ],
+      "status": "limited_visibility",
+      "visible_content_observation": "可见第10页和原行开头，但完整金额、完整原行右侧不在视口内；不将该截图判为完整数值证据。"
+    },
+    {
+      "artifact_id": "screen-approved-evidence",
+      "set": "browser-approved-pdf-check",
+      "artifact_label": "evidence-desktop.png",
+      "sha256": "87449c10efbc461866dab2ee62f02c9d27bbd944c6d43e3e4fa154080fa04d7d",
+      "demo_questions": [
+        "D09"
+      ],
+      "status": "match",
+      "visible_content_observation": "立讯精密524.07亿元、物理第8页、其中营业收入行、本期发生额、52,406,775,584.57元均可见且匹配。"
+    }
+  ],
+  "limitations": [
+    "只覆盖上述9个营业收入数值及6道演示题；未审核其他财务科目、全部公司、全部问答或真实业务账簿。",
+    "本次核验冻结原件；来源URL取自冻结登记，未重新下载在线版本，也未检索所有后续修订公告。",
+    "D02、D05无本次逐张查看的专用金额截图；其原PDF和冻结JSON答案已核验。D04移动端及部分桌面截图存在裁切，截图证据范围据实限定。",
+    "后续代码修复、重新拍摄或重新生成答案不自动继承本报告结论，应使用新的产物做针对性复核。",
+    "公开输出只包含汇总金额、必要行列说明、官方来源链接、摘要哈希和检查结论；不含原PDF、页面渲染、OCR档案、私有本地路径或用户会话标识。"
+  ]
+}

@@ -1,4 +1,4 @@
-"""作品说明：通过本机样例与内存库测试导入管线，不依赖 OCR、模型或向量服务。"""
+"""通过本机样例与内存库测试导入管线，不依赖 OCR、模型或向量服务。"""
 import sys
 from pathlib import Path
 
@@ -20,7 +20,7 @@ from src.utils.ocr_json_parser import (
 )
 
 
-# 作品说明：OCR 缓存解析
+# OCR 缓存解析
 
 class TestOcrCacheResolution:
     def test_v16_preferred_over_v15(self, tmp_path):
@@ -63,7 +63,7 @@ class TestOcrCacheResolution:
             ensure_ocr_json(pdf)
 
 
-# 作品说明：公司级同比重算
+# 公司级同比重算
 
 def _make_engine():
     engine = create_engine("sqlite://")
@@ -122,7 +122,7 @@ class TestRecomputeCompanyDerived:
                 "SELECT net_profit_yoy_growth, operating_revenue_yoy_growth FROM income_sheet "
                 "WHERE report_year = 2024"
             )).fetchone()
-        # 作品说明：财报披露值保留，缺失字段才回填
+        # 财报披露值保留，缺失字段才回填
         assert row[0] == pytest.approx(42.42)
         assert row[1] == pytest.approx(10.0)
 
@@ -159,7 +159,7 @@ class TestRecomputeCompanyDerived:
         }
 
 
-# 作品说明：研报元数据索引
+# 研报元数据索引
 
 class TestResearchMetadata:
     def _index(self):
@@ -188,7 +188,7 @@ class TestResearchMetadata:
         assert lookup_research_meta(self._index(), "不存在的研报.pdf") is None
 
 
-# 作品说明：单文件管线编排（全部打桩）
+# 单文件管线编排（全部打桩）
 
 class TestSingleFilePipeline:
     def _run(self, tmp_path, monkeypatch, *, extract_status="success", save_raises=False):

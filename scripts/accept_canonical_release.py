@@ -1,4 +1,4 @@
-"""作品说明：验收规范事实后准备候选版本，并原子发布事实、索引和兼容投影。未解决项保持原状态；不能将未见或被拒绝指标认定为已披露，也不能升级旧核验标记。"""
+"""验收规范事实后准备候选版本，并原子发布事实、索引和兼容投影。未解决项保持原状态；不能将未见或被拒绝指标认定为已披露，也不能升级旧核验标记。"""
 from __future__ import annotations
 import argparse, hashlib, json, sys
 from decimal import Decimal, localcontext, ROUND_HALF_UP
@@ -17,7 +17,7 @@ def validate(folder):
     manifest=json.loads((folder/'manifest.json').read_text(encoding='utf-8'))
     reports=json.loads((folder/'reports.json').read_text(encoding='utf-8'))
     facts=[Fact.model_validate(f) for f in json.loads((folder/'facts.json').read_text(encoding='utf-8'))]
-    original_pages={(r['document_version'],r['page']):r['text'] for r in
+    original_pages={(r['document_version'],r['page']):r.get('original_text',r['text']) for r in
         (json.loads(line) for line in (folder/'narratives.jsonl').read_text(encoding='utf-8').splitlines())}
     index=json.loads((folder/'index_coverage.json').read_text(encoding='utf-8'))
     profile=check_report_coverage(manifest,reports)
@@ -56,7 +56,7 @@ def validate(folder):
                 assert original_row_matches(original_pages[(f.source.document_version,f.source.page)],row,['']*len(row)), 'Original cell order mismatch'
                 if '_reported_' in f.metric:
                     assert '%' in f.source.raw_value or '%' in f.source.column, 'Reported rate has no percent identity'
-                    # 作品说明：年报核心表可能把前两年比较数放在增长率列之后。只接受原件明确显示年份的这种布局，避免强制取末列丢弃合法增长率。
+                    # 年报核心表可能把前两年比较数放在增长率列之后。只接受原件明确显示年份的这种布局，避免强制取末列丢弃合法增长率。
                     if f.source.column_index!=len(row)-1:
                         assert f.period=='FY' and f.source.column_index==len(row)-2, 'Ambiguous reported rate column'
                         text=original_pages[(f.source.document_version,f.source.page)]
@@ -74,7 +74,7 @@ def validate(folder):
                 ctx.prec=50
                 expected=a.decimal-b.decimal if f.metric=='gross_profit' else a.decimal/b.decimal*100
             assert f.decimal==expected, f.id
-    # 作品说明：采用独立核对的原始 PDF 单元格作为财务验收样例。
+    # 采用独立核对的原始 PDF 单元格作为财务验收样例。
     golden={('operating_revenue','parent'):'4896408337.09',('net_profit','parent'):'1393314467.63',
         ('net_profit','consolidated'):'2280337512.47',('attributable_net_profit','consolidated'):'1526274925.98',
         ('operating_revenue','consolidated'):'18597281604.93'}

@@ -1,4 +1,4 @@
-"""作品说明：真实 PDF 评分器独立于生产核验器和数据库。机器标注仍是候选；文本和数字匹配不能判断自由解释的真伪，此类结论需要针对回答的人工审查。"""
+"""真实 PDF 评分器独立于生产核验器和数据库。机器标注仍是候选；文本和数字匹配不能判断自由解释的真伪，此类结论需要针对回答的人工审查。"""
 from __future__ import annotations
 
 import hashlib
@@ -53,14 +53,14 @@ def amount_equal(actual: float, unit: str, expected: Mapping[str, Any]) -> bool:
         if unit not in amount_units or target_unit not in amount_units:
             return False
         actual *= amount_units[unit] / amount_units[target_unit]
-    # 作品说明：容差始终使用标注单位，单位换算后也须同步处理。
+    # 容差始终使用标注单位，单位换算后也须同步处理。
     return abs(actual - target) <= float(expected.get("tolerance", .01)) + 1e-10
 
 
 def period_mentions(value: str) -> list[tuple[int, str]]:
     found = [(m.start(), m.end(), period) for period, pattern in PERIOD_PATTERNS.items()
              for m in re.finditer(pattern, value, re.I)]
-    # 作品说明：半年度不能再次被识别成全年年度。
+    # 半年度不能再次被识别成全年年度。
     return sorted((start, period) for start, end, period in found
                   if not any(a <= start and b >= end and b-a > end-start for a, b, _ in found))
 
@@ -71,8 +71,8 @@ def _aliases(fact: Mapping[str, Any]) -> tuple[str, ...]:
 
 
 def expected_values_supported(answer: str, values: Sequence[Mapping[str, Any]]) -> bool:
-    """作品说明：保守匹配明确陈述，并绑定公司、年度和期间。复杂表格及共享表头可能需要人工复查，不调用另一模型评分。"""
-    # 作品说明：报告披露日期不等于会计期间；只忽略明确标注为发布或披露的完整日期，普通年度与数值身份检查保持生效。
+    """保守匹配明确陈述，并绑定公司、年度和期间。复杂表格及共享表头可能需要人工复查，不调用另一模型评分。"""
+    # 报告披露日期不等于会计期间；只忽略明确标注为发布或披露的完整日期，普通年度与数值身份检查保持生效。
     financial_text = re.sub(r"(?<!\d)20\d{2}年\d{1,2}月\d{1,2}日(?=(?:发布|披露|公告))", "", answer)
     content = normalize(financial_text)
     if not values or not content or re.search(r"不是|并非|不为|实际为|应为", content):
@@ -95,7 +95,7 @@ def expected_values_supported(answer: str, values: Sequence[Mapping[str, Any]]) 
         coded = sorted((prefix.rfind(c), c) for c in codes if c in prefix)
         metrics = [(m.start(), m.end()-m.start(), str(f["field"])) for f in values for alias in _aliases(f)
                    for m in re.finditer(re.escape(alias), clause)]
-        # 作品说明：先选最长的完整指标名称，再判断最近指标，避免子串误匹配。
+        # 先选最长的完整指标名称，再判断最近指标，避免子串误匹配。
         metrics = [m for m in metrics if not any(o[0] <= m[0] and o[0]+o[1] >= m[0]+m[1] and o[1] > m[1] for o in metrics)]
         if not periods or not years or not (named or coded) or not metrics:
             return False
@@ -124,7 +124,7 @@ def chart_values_supported(result: Mapping[str, Any], values: Sequence[Mapping[s
     source = chart.get("data_source") or {}
     if any(source.get(k) and str(source[k]) != str(first[f]) for k, f in (("y_field", "field"), ("stock_code", "stock_code"))):
         return False
-    # 作品说明：此版本仅评分单公司、单指标图表。
+    # 此版本仅评分单公司、单指标图表。
     if any(f["stock_code"] != first["stock_code"] or f["field"] != first["field"] for f in values):
         return False
     xs, ys = chart.get("x_data") or [], chart.get("y_data") or []
@@ -185,7 +185,7 @@ def validate_source(source: Mapping[str, Any], allowed_root: Path) -> str:
     page = int(source["page"])
     if not 1 <= page <= len(reader.pages):
         raise ValueError(f"PDF page is out of range: {page}")
-    # 作品说明：候选摘录由原 PDF 空间布局模式生成，普通文本提取可能打乱换行行名。必须从原件重算指定模式，不能把保存的候选文字当作来源证明。
+    # 候选摘录由原 PDF 空间布局模式生成，普通文本提取可能打乱换行行名。必须从原件重算指定模式，不能把保存的候选文字当作来源证明。
     mode = 'layout' if str(source.get('annotation_method', '')).startswith('original_pdf_') else 'plain'
     page_text = _pdf_page(str(path), stat.st_size, stat.st_mtime_ns, page, mode)
     excerpt = normalize(source.get("excerpt"))
@@ -255,7 +255,7 @@ def score_record(case: Mapping[str, Any], record: Mapping[str, Any], allowed_roo
     elif category == "chart" and mode != "bare" and labelled:
         scores["numeric_accuracy"] = completed and chart_values_supported(result, expected["values"])
     if expected.get("tools") and mode != "bare":
-        # 作品说明：早期标注使用已停用名称；只规范名称，保留原始标注与实际执行记录。
+        # 早期标注使用已停用名称；只规范名称，保留原始标注与实际执行记录。
         aliases = {'search_knowledge': 'search_documents'}
         scores["tool_routing"] = completed and {aliases.get(t, t) for t in expected["tools"]}.issubset(
             {aliases.get(t, t) for t in record.get("tools") or []})

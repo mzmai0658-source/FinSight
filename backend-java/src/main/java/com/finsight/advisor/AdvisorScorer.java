@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 作品说明：规则评分引擎：四维度各 25 分（成长性 / 盈利质量 / 偿债能力 / 现金流）。
+ * 规则评分引擎：四维度各 25 分（成长性 / 盈利质量 / 偿债能力 / 现金流）。
  * 纯函数、无外部依赖，便于单测；数据缺口按维度给保底分并标注。
  */
 public final class AdvisorScorer {
@@ -21,7 +21,7 @@ public final class AdvisorScorer {
     }
 
     /**
-     * 作品说明：参数及返回值说明。
+     * 参数及返回值说明。
      * @param latest 最新年报核心指标行（FinanceMapper.coreSeries 末行）
      * @param latestBalance 最新年报资产负债行（可空）
      * @param latestCashflow 最新年报现金流行（可空）
@@ -51,7 +51,7 @@ public final class AdvisorScorer {
         return new Dimension("成长性", score, 25, comment);
     }
 
-    /** 作品说明：单项 0~12.5 → 取整后两项合计最高 25 */
+    /** 单项 0~12.5 → 取整后两项合计最高 25 */
     private static int scaleGrowth(Double yoy) {
         if (yoy == null) {
             return 5;

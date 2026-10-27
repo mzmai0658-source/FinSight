@@ -1,4 +1,4 @@
-"""作品说明：研报 PDF 转 JSON（OCR，4 线程并发，带锁与缓存）。
+"""研报 PDF 转 JSON（OCR，4 线程并发，带锁与缓存）。
 
 用法（项目根目录执行）：
 .venv\\Scripts\\python.exe scripts\\convert_research_reports.py [--force] [--workers 4] [--clear-locks]
@@ -22,7 +22,7 @@ from src.utils.ocr_async_json import (
 
 
 def convert_research_reports(max_workers: int = 4, force: bool = False):
-    """作品说明：转换研报 PDF 为 JSON。"""
+    """转换研报 PDF 为 JSON。"""
     research_dirs = find_research_dirs()
 
     if not research_dirs:

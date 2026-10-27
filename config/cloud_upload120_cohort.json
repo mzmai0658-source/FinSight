@@ -1,0 +1,2793 @@
+{
+  "schema_version": 1,
+  "cohort_id": "new_a_share_cloud_upload120_20261021",
+  "collection_as_of": "2026-10-21",
+  "expected_reports": 120,
+  "language": "zh-CN",
+  "share_class": "A",
+  "report_kind": "full",
+  "existing_ocr_cache_reuse_allowed": false,
+  "companies": [
+    {
+      "stock_code": "000333",
+      "company": "美的集团",
+      "legal_name": "美的集团股份有限公司",
+      "org_id": "9900005965",
+      "exchange": "szse",
+      "split": "development"
+    },
+    {
+      "stock_code": "002594",
+      "company": "比亚迪",
+      "legal_name": "比亚迪股份有限公司",
+      "org_id": "gshk0001211",
+      "exchange": "szse",
+      "split": "development"
+    },
+    {
+      "stock_code": "600519",
+      "company": "贵州茅台",
+      "legal_name": "贵州茅台酒股份有限公司",
+      "org_id": "gssh0600519",
+      "exchange": "sse",
+      "split": "development"
+    },
+    {
+      "stock_code": "600900",
+      "company": "长江电力",
+      "legal_name": "中国长江电力股份有限公司",
+      "org_id": "gssh0600900",
+      "exchange": "sse",
+      "split": "development"
+    },
+    {
+      "stock_code": "601668",
+      "company": "中国建筑",
+      "legal_name": "中国建筑股份有限公司",
+      "org_id": "9900005970",
+      "exchange": "sse",
+      "split": "development"
+    },
+    {
+      "stock_code": "002475",
+      "company": "立讯精密",
+      "legal_name": "立讯精密工业股份有限公司",
+      "org_id": "9900014448",
+      "exchange": "szse",
+      "split": "development"
+    },
+    {
+      "stock_code": "300750",
+      "company": "宁德时代",
+      "legal_name": "宁德时代新能源科技股份有限公司",
+      "org_id": "GD165627",
+      "exchange": "szse",
+      "split": "holdout"
+    },
+    {
+      "stock_code": "600887",
+      "company": "伊利股份",
+      "legal_name": "内蒙古伊利实业集团股份有限公司",
+      "org_id": "gssh0600887",
+      "exchange": "sse",
+      "split": "holdout"
+    },
+    {
+      "stock_code": "601088",
+      "company": "中国神华",
+      "legal_name": "中国神华能源股份有限公司",
+      "org_id": "9900003701",
+      "exchange": "sse",
+      "split": "holdout"
+    },
+    {
+      "stock_code": "600031",
+      "company": "三一重工",
+      "legal_name": "三一重工股份有限公司",
+      "org_id": "gssh0600031",
+      "exchange": "sse",
+      "split": "holdout"
+    }
+  ],
+  "reports": [
+    {
+      "report_id": "000333_2023_FY",
+      "stock_code": "000333",
+      "company": "美的集团",
+      "legal_name": "美的集团股份有限公司",
+      "year": 2023,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-03-28/1219429374.PDF",
+          "title": "2023年年度报告",
+          "announcement_id": "1219429374",
+          "published_at": "2024-03-27T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": [
+            "1219429374"
+          ]
+        }
+      ]
+    },
+    {
+      "report_id": "000333_2023_HY",
+      "stock_code": "000333",
+      "company": "美的集团",
+      "legal_name": "美的集团股份有限公司",
+      "year": 2023,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-08-31/1217718574.PDF",
+          "title": "2023年半年度报告",
+          "announcement_id": "1217718574",
+          "published_at": "2023-08-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": [
+            "1217718574"
+          ]
+        }
+      ]
+    },
+    {
+      "report_id": "000333_2023_Q1",
+      "stock_code": "000333",
+      "company": "美的集团",
+      "legal_name": "美的集团股份有限公司",
+      "year": 2023,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-04-29/1216695016.PDF",
+          "title": "2023年一季度报告",
+          "announcement_id": "1216695016",
+          "published_at": "2023-04-28T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": [
+            "1216695016"
+          ]
+        }
+      ]
+    },
+    {
+      "report_id": "000333_2023_Q3",
+      "stock_code": "000333",
+      "company": "美的集团",
+      "legal_name": "美的集团股份有限公司",
+      "year": 2023,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-10-31/1218202543.PDF",
+          "title": "2023年三季度报告",
+          "announcement_id": "1218202543",
+          "published_at": "2023-10-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": [
+            "1218202543"
+          ]
+        }
+      ]
+    },
+    {
+      "report_id": "000333_2024_FY",
+      "stock_code": "000333",
+      "company": "美的集团",
+      "legal_name": "美的集团股份有限公司",
+      "year": 2024,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-03-29/1222951181.PDF",
+          "title": "2024年年度报告",
+          "announcement_id": "1222951181",
+          "published_at": "2025-03-28T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": [
+            "1222951181"
+          ]
+        }
+      ]
+    },
+    {
+      "report_id": "000333_2024_HY",
+      "stock_code": "000333",
+      "company": "美的集团",
+      "legal_name": "美的集团股份有限公司",
+      "year": 2024,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-08-20/1220909926.PDF",
+          "title": "2024年半年度报告",
+          "announcement_id": "1220909926",
+          "published_at": "2024-08-19T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": [
+            "1220909926"
+          ]
+        }
+      ]
+    },
+    {
+      "report_id": "000333_2024_Q1",
+      "stock_code": "000333",
+      "company": "美的集团",
+      "legal_name": "美的集团股份有限公司",
+      "year": 2024,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-30/1219910111.PDF",
+          "title": "2024年一季度报告",
+          "announcement_id": "1219910111",
+          "published_at": "2024-04-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": [
+            "1219910111"
+          ]
+        }
+      ]
+    },
+    {
+      "report_id": "000333_2024_Q3",
+      "stock_code": "000333",
+      "company": "美的集团",
+      "legal_name": "美的集团股份有限公司",
+      "year": 2024,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-10-31/1221570980.PDF",
+          "title": "2024年三季度报告",
+          "announcement_id": "1221570980",
+          "published_at": "2024-10-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": [
+            "1221570980"
+          ]
+        }
+      ]
+    },
+    {
+      "report_id": "000333_2025_FY",
+      "stock_code": "000333",
+      "company": "美的集团",
+      "legal_name": "美的集团股份有限公司",
+      "year": 2025,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-31/1225065145.PDF",
+          "title": "2025年年度报告",
+          "announcement_id": "1225065145",
+          "published_at": "2026-03-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": [
+            "1225065145"
+          ]
+        }
+      ]
+    },
+    {
+      "report_id": "000333_2025_HY",
+      "stock_code": "000333",
+      "company": "美的集团",
+      "legal_name": "美的集团股份有限公司",
+      "year": 2025,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-08-30/1224626720.PDF",
+          "title": "2025年半年度报告",
+          "announcement_id": "1224626720",
+          "published_at": "2025-08-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": [
+            "1224626720"
+          ]
+        }
+      ]
+    },
+    {
+      "report_id": "000333_2025_Q1",
+      "stock_code": "000333",
+      "company": "美的集团",
+      "legal_name": "美的集团股份有限公司",
+      "year": 2025,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-30/1223412432.PDF",
+          "title": "2025年一季度报告",
+          "announcement_id": "1223412432",
+          "published_at": "2025-04-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": [
+            "1223412432"
+          ]
+        }
+      ]
+    },
+    {
+      "report_id": "000333_2025_Q3",
+      "stock_code": "000333",
+      "company": "美的集团",
+      "legal_name": "美的集团股份有限公司",
+      "year": 2025,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-10-30/1224767336.PDF",
+          "title": "2025年三季度报告",
+          "announcement_id": "1224767336",
+          "published_at": "2025-10-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": [
+            "1224767336"
+          ]
+        }
+      ]
+    },
+    {
+      "report_id": "002594_2023_FY",
+      "stock_code": "002594",
+      "company": "比亚迪",
+      "legal_name": "比亚迪股份有限公司",
+      "year": 2023,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-03-27/1219412018.PDF",
+          "title": "2023年年度报告",
+          "announcement_id": "1219412018",
+          "published_at": "2024-03-26T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002594_2023_HY",
+      "stock_code": "002594",
+      "company": "比亚迪",
+      "legal_name": "比亚迪股份有限公司",
+      "year": 2023,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-08-29/1217680503.PDF",
+          "title": "2023年半年度报告",
+          "announcement_id": "1217680503",
+          "published_at": "2023-08-28T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002594_2023_Q1",
+      "stock_code": "002594",
+      "company": "比亚迪",
+      "legal_name": "比亚迪股份有限公司",
+      "year": 2023,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-04-28/1216651767.PDF",
+          "title": "2023年一季度报告",
+          "announcement_id": "1216651767",
+          "published_at": "2023-04-27T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002594_2023_Q3",
+      "stock_code": "002594",
+      "company": "比亚迪",
+      "legal_name": "比亚迪股份有限公司",
+      "year": 2023,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-10-31/1218200103.PDF",
+          "title": "2023年三季度报告",
+          "announcement_id": "1218200103",
+          "published_at": "2023-10-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002594_2024_FY",
+      "stock_code": "002594",
+      "company": "比亚迪",
+      "legal_name": "比亚迪股份有限公司",
+      "year": 2024,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-03-25/1222881496.PDF",
+          "title": "2024年年度报告",
+          "announcement_id": "1222881496",
+          "published_at": "2025-03-24T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002594_2024_HY",
+      "stock_code": "002594",
+      "company": "比亚迪",
+      "legal_name": "比亚迪股份有限公司",
+      "year": 2024,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-08-29/1221030552.PDF",
+          "title": "2024年半年度报告",
+          "announcement_id": "1221030552",
+          "published_at": "2024-08-28T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002594_2024_Q1",
+      "stock_code": "002594",
+      "company": "比亚迪",
+      "legal_name": "比亚迪股份有限公司",
+      "year": 2024,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-30/1219909910.PDF",
+          "title": "2024年一季度报告",
+          "announcement_id": "1219909910",
+          "published_at": "2024-04-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002594_2024_Q3",
+      "stock_code": "002594",
+      "company": "比亚迪",
+      "legal_name": "比亚迪股份有限公司",
+      "year": 2024,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-10-31/1221574602.PDF",
+          "title": "2024年三季度报告",
+          "announcement_id": "1221574602",
+          "published_at": "2024-10-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002594_2025_FY",
+      "stock_code": "002594",
+      "company": "比亚迪",
+      "legal_name": "比亚迪股份有限公司",
+      "year": 2025,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-28/1225045351.PDF",
+          "title": "2025年年度报告",
+          "announcement_id": "1225045351",
+          "published_at": "2026-03-27T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        },
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-27/1225046995.PDF",
+          "title": "2025年年度报告",
+          "version": "original",
+          "source_basis": "official_pdf_seed_unverified_bytes"
+        }
+      ]
+    },
+    {
+      "report_id": "002594_2025_HY",
+      "stock_code": "002594",
+      "company": "比亚迪",
+      "legal_name": "比亚迪股份有限公司",
+      "year": 2025,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-08-30/1224626653.PDF",
+          "title": "2025年半年度报告",
+          "announcement_id": "1224626653",
+          "published_at": "2025-08-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002594_2025_Q1",
+      "stock_code": "002594",
+      "company": "比亚迪",
+      "legal_name": "比亚迪股份有限公司",
+      "year": 2025,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-26/1223309368.PDF",
+          "title": "2025年一季度报告",
+          "announcement_id": "1223309368",
+          "published_at": "2025-04-25T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002594_2025_Q3",
+      "stock_code": "002594",
+      "company": "比亚迪",
+      "legal_name": "比亚迪股份有限公司",
+      "year": 2025,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-10-31/1224776127.PDF",
+          "title": "2025年三季度报告",
+          "announcement_id": "1224776127",
+          "published_at": "2025-10-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600519_2023_FY",
+      "stock_code": "600519",
+      "company": "贵州茅台",
+      "legal_name": "贵州茅台酒股份有限公司",
+      "year": 2023,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-03/1219506510.PDF",
+          "title": "贵州茅台2023年年度报告",
+          "announcement_id": "1219506510",
+          "published_at": "2024-04-02T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600519_2023_HY",
+      "stock_code": "600519",
+      "company": "贵州茅台",
+      "legal_name": "贵州茅台酒股份有限公司",
+      "year": 2023,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-08-03/1217453695.PDF",
+          "title": "贵州茅台2023年半年度报告",
+          "announcement_id": "1217453695",
+          "published_at": "2023-08-02T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600519_2023_Q1",
+      "stock_code": "600519",
+      "company": "贵州茅台",
+      "legal_name": "贵州茅台酒股份有限公司",
+      "year": 2023,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-04-26/1216595064.PDF",
+          "title": "贵州茅台2023年第一季度报告",
+          "announcement_id": "1216595064",
+          "published_at": "2023-04-25T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600519_2023_Q3",
+      "stock_code": "600519",
+      "company": "贵州茅台",
+      "legal_name": "贵州茅台酒股份有限公司",
+      "year": 2023,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-10-21/1218110141.PDF",
+          "title": "贵州茅台2023年第三季度报告",
+          "announcement_id": "1218110141",
+          "published_at": "2023-10-20T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600519_2024_FY",
+      "stock_code": "600519",
+      "company": "贵州茅台",
+      "legal_name": "贵州茅台酒股份有限公司",
+      "year": 2024,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-03/1222993920.PDF",
+          "title": "贵州茅台2024年年度报告",
+          "announcement_id": "1222993920",
+          "published_at": "2025-04-02T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600519_2024_HY",
+      "stock_code": "600519",
+      "company": "贵州茅台",
+      "legal_name": "贵州茅台酒股份有限公司",
+      "year": 2024,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-08-09/1220825189.PDF",
+          "title": "贵州茅台2024年半年度报告",
+          "announcement_id": "1220825189",
+          "published_at": "2024-08-08T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600519_2024_Q1",
+      "stock_code": "600519",
+      "company": "贵州茅台",
+      "legal_name": "贵州茅台酒股份有限公司",
+      "year": 2024,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-27/1219875828.PDF",
+          "title": "贵州茅台2024年第一季度报告",
+          "announcement_id": "1219875828",
+          "published_at": "2024-04-26T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600519_2024_Q3",
+      "stock_code": "600519",
+      "company": "贵州茅台",
+      "legal_name": "贵州茅台酒股份有限公司",
+      "year": 2024,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-10-26/1221523519.PDF",
+          "title": "贵州茅台2024年第三季度报告",
+          "announcement_id": "1221523519",
+          "published_at": "2024-10-25T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600519_2025_FY",
+      "stock_code": "600519",
+      "company": "贵州茅台",
+      "legal_name": "贵州茅台酒股份有限公司",
+      "year": 2025,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-17/1225114741.PDF",
+          "title": "贵州茅台2025年年度报告",
+          "announcement_id": "1225114741",
+          "published_at": "2026-04-16T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        },
+        {
+          "source_url": "https://big5.sse.com.cn/site/cht/www.sse.com.cn/disclosure/listedinfo/announcement/c/new/2026-04-17/600519_20260417_9QS4.pdf",
+          "title": "2025年年度报告",
+          "version": "original",
+          "source_basis": "official_pdf_seed_unverified_bytes"
+        }
+      ]
+    },
+    {
+      "report_id": "600519_2025_HY",
+      "stock_code": "600519",
+      "company": "贵州茅台",
+      "legal_name": "贵州茅台酒股份有限公司",
+      "year": 2025,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-08-13/1224462930.PDF",
+          "title": "贵州茅台2025年半年度报告",
+          "announcement_id": "1224462930",
+          "published_at": "2025-08-12T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600519_2025_Q1",
+      "stock_code": "600519",
+      "company": "贵州茅台",
+      "legal_name": "贵州茅台酒股份有限公司",
+      "year": 2025,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-30/1223413786.PDF",
+          "title": "贵州茅台2025年第一季度报告",
+          "announcement_id": "1223413786",
+          "published_at": "2025-04-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600519_2025_Q3",
+      "stock_code": "600519",
+      "company": "贵州茅台",
+      "legal_name": "贵州茅台酒股份有限公司",
+      "year": 2025,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-10-30/1224764517.PDF",
+          "title": "贵州茅台2025年第三季度报告",
+          "announcement_id": "1224764517",
+          "published_at": "2025-10-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600900_2023_FY",
+      "stock_code": "600900",
+      "company": "长江电力",
+      "legal_name": "中国长江电力股份有限公司",
+      "year": 2023,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-30/1219922588.PDF",
+          "title": "长江电力2023年年度报告",
+          "announcement_id": "1219922588",
+          "published_at": "2024-04-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600900_2023_HY",
+      "stock_code": "600900",
+      "company": "长江电力",
+      "legal_name": "中国长江电力股份有限公司",
+      "year": 2023,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-08-31/1217717242.PDF",
+          "title": "长江电力2023年半年度报告",
+          "announcement_id": "1217717242",
+          "published_at": "2023-08-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600900_2023_Q1",
+      "stock_code": "600900",
+      "company": "长江电力",
+      "legal_name": "中国长江电力股份有限公司",
+      "year": 2023,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-04-28/1216664112.PDF",
+          "title": "长江电力2023年第一季度报告",
+          "announcement_id": "1216664112",
+          "published_at": "2023-04-27T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600900_2023_Q3",
+      "stock_code": "600900",
+      "company": "长江电力",
+      "legal_name": "中国长江电力股份有限公司",
+      "year": 2023,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-10-31/1218205888.PDF",
+          "title": "长江电力2023年第三季度报告",
+          "announcement_id": "1218205888",
+          "published_at": "2023-10-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600900_2024_FY",
+      "stock_code": "600900",
+      "company": "长江电力",
+      "legal_name": "中国长江电力股份有限公司",
+      "year": 2024,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-30/1223421172.PDF",
+          "title": "长江电力2024年年度报告",
+          "announcement_id": "1223421172",
+          "published_at": "2025-04-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600900_2024_HY",
+      "stock_code": "600900",
+      "company": "长江电力",
+      "legal_name": "中国长江电力股份有限公司",
+      "year": 2024,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-08-31/1221085411.PDF",
+          "title": "长江电力2024年半年度报告",
+          "announcement_id": "1221085411",
+          "published_at": "2024-08-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600900_2024_Q1",
+      "stock_code": "600900",
+      "company": "长江电力",
+      "legal_name": "中国长江电力股份有限公司",
+      "year": 2024,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-30/1219922595.PDF",
+          "title": "长江电力2024年第一季度报告",
+          "announcement_id": "1219922595",
+          "published_at": "2024-04-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600900_2024_Q3",
+      "stock_code": "600900",
+      "company": "长江电力",
+      "legal_name": "中国长江电力股份有限公司",
+      "year": 2024,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-10-31/1221572470.PDF",
+          "title": "长江电力2024年第三季度报告",
+          "announcement_id": "1221572470",
+          "published_at": "2024-10-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600900_2025_FY",
+      "stock_code": "600900",
+      "company": "长江电力",
+      "legal_name": "中国长江电力股份有限公司",
+      "year": 2025,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225262036.PDF",
+          "title": "长江电力2025年年度报告",
+          "announcement_id": "1225262036",
+          "published_at": "2026-04-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        },
+        {
+          "source_url": "https://www.cypc.com.cn/cypc/attachDir/2026/05/2026051815345898336.pdf",
+          "title": "2025年年度报告",
+          "version": "original",
+          "source_basis": "official_pdf_seed_unverified_bytes"
+        }
+      ]
+    },
+    {
+      "report_id": "600900_2025_HY",
+      "stock_code": "600900",
+      "company": "长江电力",
+      "legal_name": "中国长江电力股份有限公司",
+      "year": 2025,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-08-30/1224627986.PDF",
+          "title": "长江电力2025年半年度报告",
+          "announcement_id": "1224627986",
+          "published_at": "2025-08-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600900_2025_Q1",
+      "stock_code": "600900",
+      "company": "长江电力",
+      "legal_name": "中国长江电力股份有限公司",
+      "year": 2025,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-30/1223421165.PDF",
+          "title": "长江电力2025年一季度报告",
+          "announcement_id": "1223421165",
+          "published_at": "2025-04-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600900_2025_Q3",
+      "stock_code": "600900",
+      "company": "长江电力",
+      "legal_name": "中国长江电力股份有限公司",
+      "year": 2025,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-10-31/1224776945.PDF",
+          "title": "长江电力2025年第三季度报告",
+          "announcement_id": "1224776945",
+          "published_at": "2025-10-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601668_2023_FY",
+      "stock_code": "601668",
+      "company": "中国建筑",
+      "legal_name": "中国建筑股份有限公司",
+      "year": 2023,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-19/1219674825.PDF",
+          "title": "中国建筑股份有限公司2023年年度报告",
+          "announcement_id": "1219674825",
+          "published_at": "2024-04-18T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601668_2023_HY",
+      "stock_code": "601668",
+      "company": "中国建筑",
+      "legal_name": "中国建筑股份有限公司",
+      "year": 2023,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-08-30/1217701166.PDF",
+          "title": "中国建筑股份有限公司2023年半年度报告",
+          "announcement_id": "1217701166",
+          "published_at": "2023-08-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601668_2023_Q1",
+      "stock_code": "601668",
+      "company": "中国建筑",
+      "legal_name": "中国建筑股份有限公司",
+      "year": 2023,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-04-28/1216664991.PDF",
+          "title": "中国建筑2023年第一季度报告",
+          "announcement_id": "1216664991",
+          "published_at": "2023-04-27T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601668_2023_Q3",
+      "stock_code": "601668",
+      "company": "中国建筑",
+      "legal_name": "中国建筑股份有限公司",
+      "year": 2023,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-10-27/1218169877.PDF",
+          "title": "中国建筑2023年第三季度报告",
+          "announcement_id": "1218169877",
+          "published_at": "2023-10-26T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601668_2024_FY",
+      "stock_code": "601668",
+      "company": "中国建筑",
+      "legal_name": "中国建筑股份有限公司",
+      "year": 2024,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-16/1223102350.PDF",
+          "title": "中国建筑股份有限公司2024年年度报告",
+          "announcement_id": "1223102350",
+          "published_at": "2025-04-15T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601668_2024_HY",
+      "stock_code": "601668",
+      "company": "中国建筑",
+      "legal_name": "中国建筑股份有限公司",
+      "year": 2024,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-08-30/1221058985.PDF",
+          "title": "中国建筑2024年半年度报告",
+          "announcement_id": "1221058985",
+          "published_at": "2024-08-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601668_2024_Q1",
+      "stock_code": "601668",
+      "company": "中国建筑",
+      "legal_name": "中国建筑股份有限公司",
+      "year": 2024,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-30/1219922919.PDF",
+          "title": "中国建筑股份有限公司2024年第一季度报告",
+          "announcement_id": "1219922919",
+          "published_at": "2024-04-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601668_2024_Q3",
+      "stock_code": "601668",
+      "company": "中国建筑",
+      "legal_name": "中国建筑股份有限公司",
+      "year": 2024,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-10-26/1221524494.PDF",
+          "title": "中国建筑2024年第三季度报告",
+          "announcement_id": "1221524494",
+          "published_at": "2024-10-25T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601668_2025_FY",
+      "stock_code": "601668",
+      "company": "中国建筑",
+      "legal_name": "中国建筑股份有限公司",
+      "year": 2025,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-18/1225123321.PDF",
+          "title": "中国建筑股份有限公司2025年年度报告",
+          "announcement_id": "1225123321",
+          "published_at": "2026-04-17T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ],
+      "official_source_pages": [
+        "https://www.cscec.com/zgjz_new/tzzgxnew/dqbg_new/202604/3940000.html"
+      ]
+    },
+    {
+      "report_id": "601668_2025_HY",
+      "stock_code": "601668",
+      "company": "中国建筑",
+      "legal_name": "中国建筑股份有限公司",
+      "year": 2025,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-08-29/1224610866.PDF",
+          "title": "中国建筑股份有限公司2025年半年度报告",
+          "announcement_id": "1224610866",
+          "published_at": "2025-08-28T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601668_2025_Q1",
+      "stock_code": "601668",
+      "company": "中国建筑",
+      "legal_name": "中国建筑股份有限公司",
+      "year": 2025,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-29/1223364547.PDF",
+          "title": "中国建筑股份有限公司2025年第一季度报告",
+          "announcement_id": "1223364547",
+          "published_at": "2025-04-28T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601668_2025_Q3",
+      "stock_code": "601668",
+      "company": "中国建筑",
+      "legal_name": "中国建筑股份有限公司",
+      "year": 2025,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-10-31/1224776735.PDF",
+          "title": "中国建筑2025年第三季度报告",
+          "announcement_id": "1224776735",
+          "published_at": "2025-10-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002475_2023_FY",
+      "stock_code": "002475",
+      "company": "立讯精密",
+      "legal_name": "立讯精密工业股份有限公司",
+      "year": 2023,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-25/1219799516.PDF",
+          "title": "2023年年度报告",
+          "announcement_id": "1219799516",
+          "published_at": "2024-04-24T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002475_2023_HY",
+      "stock_code": "002475",
+      "company": "立讯精密",
+      "legal_name": "立讯精密工业股份有限公司",
+      "year": 2023,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-08-29/1217674543.PDF",
+          "title": "2023年半年度报告",
+          "announcement_id": "1217674543",
+          "published_at": "2023-08-28T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002475_2023_Q1",
+      "stock_code": "002475",
+      "company": "立讯精密",
+      "legal_name": "立讯精密工业股份有限公司",
+      "year": 2023,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-04-28/1216646548.PDF",
+          "title": "2023年一季度报告",
+          "announcement_id": "1216646548",
+          "published_at": "2023-04-27T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002475_2023_Q3",
+      "stock_code": "002475",
+      "company": "立讯精密",
+      "legal_name": "立讯精密工业股份有限公司",
+      "year": 2023,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-10-21/1218107512.PDF",
+          "title": "2023年三季度报告",
+          "announcement_id": "1218107512",
+          "published_at": "2023-10-20T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002475_2024_FY",
+      "stock_code": "002475",
+      "company": "立讯精密",
+      "legal_name": "立讯精密工业股份有限公司",
+      "year": 2024,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-26/1223326862.PDF",
+          "title": "2024年年度报告",
+          "announcement_id": "1223326862",
+          "published_at": "2025-04-25T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002475_2024_HY",
+      "stock_code": "002475",
+      "company": "立讯精密",
+      "legal_name": "立讯精密工业股份有限公司",
+      "year": 2024,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-08-24/1220960528.PDF",
+          "title": "2024年半年度报告",
+          "announcement_id": "1220960528",
+          "published_at": "2024-08-23T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002475_2024_Q1",
+      "stock_code": "002475",
+      "company": "立讯精密",
+      "legal_name": "立讯精密工业股份有限公司",
+      "year": 2024,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-25/1219799518.PDF",
+          "title": "2024年一季度报告",
+          "announcement_id": "1219799518",
+          "published_at": "2024-04-24T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002475_2024_Q3",
+      "stock_code": "002475",
+      "company": "立讯精密",
+      "legal_name": "立讯精密工业股份有限公司",
+      "year": 2024,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-10-26/1221522020.PDF",
+          "title": "2024年三季度报告",
+          "announcement_id": "1221522020",
+          "published_at": "2024-10-25T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002475_2025_FY",
+      "stock_code": "002475",
+      "company": "立讯精密",
+      "legal_name": "立讯精密工业股份有限公司",
+      "year": 2025,
+      "period": "FY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-15/1225104908.PDF",
+          "title": "2025年年度报告",
+          "announcement_id": "1225104908",
+          "published_at": "2026-04-14T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002475_2025_HY",
+      "stock_code": "002475",
+      "company": "立讯精密",
+      "legal_name": "立讯精密工业股份有限公司",
+      "year": 2025,
+      "period": "HY",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-08-26/1224571100.PDF",
+          "title": "2025年半年度报告",
+          "announcement_id": "1224571100",
+          "published_at": "2025-08-25T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002475_2025_Q1",
+      "stock_code": "002475",
+      "company": "立讯精密",
+      "legal_name": "立讯精密工业股份有限公司",
+      "year": 2025,
+      "period": "Q1",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-26/1223326799.PDF",
+          "title": "2025年一季度报告",
+          "announcement_id": "1223326799",
+          "published_at": "2025-04-25T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "002475_2025_Q3",
+      "stock_code": "002475",
+      "company": "立讯精密",
+      "legal_name": "立讯精密工业股份有限公司",
+      "year": 2025,
+      "period": "Q3",
+      "split": "development",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-10-31/1224777620.PDF",
+          "title": "2025年三季度报告",
+          "announcement_id": "1224777620",
+          "published_at": "2025-10-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "300750_2023_FY",
+      "stock_code": "300750",
+      "company": "宁德时代",
+      "legal_name": "宁德时代新能源科技股份有限公司",
+      "year": 2023,
+      "period": "FY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-03-16/1219313047.PDF",
+          "title": "2023年年度报告",
+          "announcement_id": "1219313047",
+          "published_at": "2024-03-15T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "300750_2023_HY",
+      "stock_code": "300750",
+      "company": "宁德时代",
+      "legal_name": "宁德时代新能源科技股份有限公司",
+      "year": 2023,
+      "period": "HY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-07-26/1217386504.PDF",
+          "title": "2023年半年度报告",
+          "announcement_id": "1217386504",
+          "published_at": "2023-07-25T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "300750_2023_Q1",
+      "stock_code": "300750",
+      "company": "宁德时代",
+      "legal_name": "宁德时代新能源科技股份有限公司",
+      "year": 2023,
+      "period": "Q1",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-04-21/1216489857.PDF",
+          "title": "2023年一季度报告",
+          "announcement_id": "1216489857",
+          "published_at": "2023-04-20T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "300750_2023_Q3",
+      "stock_code": "300750",
+      "company": "宁德时代",
+      "legal_name": "宁德时代新能源科技股份有限公司",
+      "year": 2023,
+      "period": "Q3",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-10-20/1218095874.PDF",
+          "title": "2023年三季度报告",
+          "announcement_id": "1218095874",
+          "published_at": "2023-10-19T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "300750_2024_FY",
+      "stock_code": "300750",
+      "company": "宁德时代",
+      "legal_name": "宁德时代新能源科技股份有限公司",
+      "year": 2024,
+      "period": "FY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-03-15/1222806982.PDF",
+          "title": "2024年年度报告",
+          "announcement_id": "1222806982",
+          "published_at": "2025-03-14T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "300750_2024_HY",
+      "stock_code": "300750",
+      "company": "宁德时代",
+      "legal_name": "宁德时代新能源科技股份有限公司",
+      "year": 2024,
+      "period": "HY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-07-27/1220740372.PDF",
+          "title": "2024年半年度报告",
+          "announcement_id": "1220740372",
+          "published_at": "2024-07-26T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "300750_2024_Q1",
+      "stock_code": "300750",
+      "company": "宁德时代",
+      "legal_name": "宁德时代新能源科技股份有限公司",
+      "year": 2024,
+      "period": "Q1",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-16/1219619642.PDF",
+          "title": "2024年一季度报告",
+          "announcement_id": "1219619642",
+          "published_at": "2024-04-15T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "300750_2024_Q3",
+      "stock_code": "300750",
+      "company": "宁德时代",
+      "legal_name": "宁德时代新能源科技股份有限公司",
+      "year": 2024,
+      "period": "Q3",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-10-19/1221432744.PDF",
+          "title": "2024年三季度报告",
+          "announcement_id": "1221432744",
+          "published_at": "2024-10-18T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "300750_2025_FY",
+      "stock_code": "300750",
+      "company": "宁德时代",
+      "legal_name": "宁德时代新能源科技股份有限公司",
+      "year": 2025,
+      "period": "FY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-10/1225002214.PDF",
+          "title": "2025年年度报告",
+          "announcement_id": "1225002214",
+          "published_at": "2026-03-09T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "300750_2025_HY",
+      "stock_code": "300750",
+      "company": "宁德时代",
+      "legal_name": "宁德时代新能源科技股份有限公司",
+      "year": 2025,
+      "period": "HY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-07-31/1224342874.PDF",
+          "title": "2025年半年度报告",
+          "announcement_id": "1224342874",
+          "published_at": "2025-07-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "300750_2025_Q1",
+      "stock_code": "300750",
+      "company": "宁德时代",
+      "legal_name": "宁德时代新能源科技股份有限公司",
+      "year": 2025,
+      "period": "Q1",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-15/1223094849.PDF",
+          "title": "2025年一季度报告",
+          "announcement_id": "1223094849",
+          "published_at": "2025-04-14T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "300750_2025_Q3",
+      "stock_code": "300750",
+      "company": "宁德时代",
+      "legal_name": "宁德时代新能源科技股份有限公司",
+      "year": 2025,
+      "period": "Q3",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-10-21/1224721971.PDF",
+          "title": "2025年三季度报告",
+          "announcement_id": "1224721971",
+          "published_at": "2025-10-20T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600887_2023_FY",
+      "stock_code": "600887",
+      "company": "伊利股份",
+      "legal_name": "内蒙古伊利实业集团股份有限公司",
+      "year": 2023,
+      "period": "FY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-30/1219916433.PDF",
+          "title": "内蒙古伊利实业集团股份有限公司2023年年度报告",
+          "announcement_id": "1219916433",
+          "published_at": "2024-04-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600887_2023_HY",
+      "stock_code": "600887",
+      "company": "伊利股份",
+      "legal_name": "内蒙古伊利实业集团股份有限公司",
+      "year": 2023,
+      "period": "HY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-08-29/1217676084.PDF",
+          "title": "内蒙古伊利实业集团股份有限公司2023年半年度报告",
+          "announcement_id": "1217676084",
+          "published_at": "2023-08-28T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600887_2023_Q1",
+      "stock_code": "600887",
+      "company": "伊利股份",
+      "legal_name": "内蒙古伊利实业集团股份有限公司",
+      "year": 2023,
+      "period": "Q1",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-04-28/1216664076.PDF",
+          "title": "内蒙古伊利实业集团股份有限公司2023年第一季度报告",
+          "announcement_id": "1216664076",
+          "published_at": "2023-04-27T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600887_2023_Q3",
+      "stock_code": "600887",
+      "company": "伊利股份",
+      "legal_name": "内蒙古伊利实业集团股份有限公司",
+      "year": 2023,
+      "period": "Q3",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-10-31/1218201536.PDF",
+          "title": "内蒙古伊利实业集团股份有限公司2023年第三季度报告",
+          "announcement_id": "1218201536",
+          "published_at": "2023-10-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600887_2024_FY",
+      "stock_code": "600887",
+      "company": "伊利股份",
+      "legal_name": "内蒙古伊利实业集团股份有限公司",
+      "year": 2024,
+      "period": "FY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-30/1223421123.PDF",
+          "title": "内蒙古伊利实业集团股份有限公司2024年年度报告",
+          "announcement_id": "1223421123",
+          "published_at": "2025-04-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600887_2024_HY",
+      "stock_code": "600887",
+      "company": "伊利股份",
+      "legal_name": "内蒙古伊利实业集团股份有限公司",
+      "year": 2024,
+      "period": "HY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-08-30/1221051333.PDF",
+          "title": "内蒙古伊利实业集团股份有限公司2024年半年度报告",
+          "announcement_id": "1221051333",
+          "published_at": "2024-08-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600887_2024_Q1",
+      "stock_code": "600887",
+      "company": "伊利股份",
+      "legal_name": "内蒙古伊利实业集团股份有限公司",
+      "year": 2024,
+      "period": "Q1",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-30/1219916451.PDF",
+          "title": "内蒙古伊利实业集团股份有限公司2024年第一季度报告",
+          "announcement_id": "1219916451",
+          "published_at": "2024-04-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600887_2024_Q3",
+      "stock_code": "600887",
+      "company": "伊利股份",
+      "legal_name": "内蒙古伊利实业集团股份有限公司",
+      "year": 2024,
+      "period": "Q3",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-10-31/1221571075.PDF",
+          "title": "内蒙古伊利实业集团股份有限公司2024年第三季度报告",
+          "announcement_id": "1221571075",
+          "published_at": "2024-10-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600887_2025_FY",
+      "stock_code": "600887",
+      "company": "伊利股份",
+      "legal_name": "内蒙古伊利实业集团股份有限公司",
+      "year": 2025,
+      "period": "FY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2026-04-30/1225259562.PDF",
+          "title": "内蒙古伊利实业集团股份有限公司2025年年度报告",
+          "announcement_id": "1225259562",
+          "published_at": "2026-04-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600887_2025_HY",
+      "stock_code": "600887",
+      "company": "伊利股份",
+      "legal_name": "内蒙古伊利实业集团股份有限公司",
+      "year": 2025,
+      "period": "HY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-08-29/1224611750.pdf",
+          "title": "内蒙古伊利实业集团股份有限公司2025年半年度报告",
+          "announcement_id": "1224611750",
+          "published_at": "2025-08-28T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600887_2025_Q1",
+      "stock_code": "600887",
+      "company": "伊利股份",
+      "legal_name": "内蒙古伊利实业集团股份有限公司",
+      "year": 2025,
+      "period": "Q1",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-30/1223421150.PDF",
+          "title": "内蒙古伊利实业集团股份有限公司2025年第一季度报告",
+          "announcement_id": "1223421150",
+          "published_at": "2025-04-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600887_2025_Q3",
+      "stock_code": "600887",
+      "company": "伊利股份",
+      "legal_name": "内蒙古伊利实业集团股份有限公司",
+      "year": 2025,
+      "period": "Q3",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-10-31/1224774251.PDF",
+          "title": "内蒙古伊利实业集团股份有限公司2025年第三季度报告",
+          "announcement_id": "1224774251",
+          "published_at": "2025-10-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601088_2023_FY",
+      "stock_code": "601088",
+      "company": "中国神华",
+      "legal_name": "中国神华能源股份有限公司",
+      "year": 2023,
+      "period": "FY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-03-23/1219390021.PDF",
+          "title": "中国神华2023年度报告",
+          "announcement_id": "1219390021",
+          "published_at": "2024-03-22T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        },
+        {
+          "source_url": "https://www.sse.com.cn/disclosure/listedinfo/announcement/c/new/2024-03-23/601088_20240323_SVO8.pdf",
+          "title": "2023年年度报告",
+          "version": "original",
+          "source_basis": "official_pdf_seed_unverified_bytes"
+        }
+      ]
+    },
+    {
+      "report_id": "601088_2023_HY",
+      "stock_code": "601088",
+      "company": "中国神华",
+      "legal_name": "中国神华能源股份有限公司",
+      "year": 2023,
+      "period": "HY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-08-26/1217655503.PDF",
+          "title": "中国神华2023年半年度报告",
+          "announcement_id": "1217655503",
+          "published_at": "2023-08-25T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601088_2023_Q1",
+      "stock_code": "601088",
+      "company": "中国神华",
+      "legal_name": "中国神华能源股份有限公司",
+      "year": 2023,
+      "period": "Q1",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-04-29/1216706766.PDF",
+          "title": "中国神华2023年第一季度报告",
+          "announcement_id": "1216706766",
+          "published_at": "2023-04-28T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601088_2023_Q3",
+      "stock_code": "601088",
+      "company": "中国神华",
+      "legal_name": "中国神华能源股份有限公司",
+      "year": 2023,
+      "period": "Q3",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-10-28/1218191527.PDF",
+          "title": "中国神华2023年第三季度报告",
+          "announcement_id": "1218191527",
+          "published_at": "2023-10-27T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601088_2024_FY",
+      "stock_code": "601088",
+      "company": "中国神华",
+      "legal_name": "中国神华能源股份有限公司",
+      "year": 2024,
+      "period": "FY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-03-22/1222870380.PDF",
+          "title": "中国神华2024年度报告",
+          "announcement_id": "1222870380",
+          "published_at": "2025-03-21T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601088_2024_HY",
+      "stock_code": "601088",
+      "company": "中国神华",
+      "legal_name": "中国神华能源股份有限公司",
+      "year": 2024,
+      "period": "HY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-08-31/1221091658.PDF",
+          "title": "中国神华2024年半年度报告",
+          "announcement_id": "1221091658",
+          "published_at": "2024-08-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601088_2024_Q1",
+      "stock_code": "601088",
+      "company": "中国神华",
+      "legal_name": "中国神华能源股份有限公司",
+      "year": 2024,
+      "period": "Q1",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-27/1219877796.PDF",
+          "title": "中国神华2024年第一季度报告",
+          "announcement_id": "1219877796",
+          "published_at": "2024-04-26T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601088_2024_Q3",
+      "stock_code": "601088",
+      "company": "中国神华",
+      "legal_name": "中国神华能源股份有限公司",
+      "year": 2024,
+      "period": "Q3",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-10-26/1221523211.PDF",
+          "title": "中国神华2024年第三季度报告",
+          "announcement_id": "1221523211",
+          "published_at": "2024-10-25T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601088_2025_FY",
+      "stock_code": "601088",
+      "company": "中国神华",
+      "legal_name": "中国神华能源股份有限公司",
+      "year": 2025,
+      "period": "FY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-31/1225064293.PDF",
+          "title": "中国神华2025年度报告",
+          "announcement_id": "1225064293",
+          "published_at": "2026-03-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601088_2025_HY",
+      "stock_code": "601088",
+      "company": "中国神华",
+      "legal_name": "中国神华能源股份有限公司",
+      "year": 2025,
+      "period": "HY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-08-30/1224627413.PDF",
+          "title": "中国神华2025年半年度报告",
+          "announcement_id": "1224627413",
+          "published_at": "2025-08-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601088_2025_Q1",
+      "stock_code": "601088",
+      "company": "中国神华",
+      "legal_name": "中国神华能源股份有限公司",
+      "year": 2025,
+      "period": "Q1",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-26/1223307016.PDF",
+          "title": "中国神华2025年第一季度报告",
+          "announcement_id": "1223307016",
+          "published_at": "2025-04-25T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "601088_2025_Q3",
+      "stock_code": "601088",
+      "company": "中国神华",
+      "legal_name": "中国神华能源股份有限公司",
+      "year": 2025,
+      "period": "Q3",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-10-25/1224736591.PDF",
+          "title": "中国神华2025年第三季度报告",
+          "announcement_id": "1224736591",
+          "published_at": "2025-10-24T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600031_2023_FY",
+      "stock_code": "600031",
+      "company": "三一重工",
+      "legal_name": "三一重工股份有限公司",
+      "year": 2023,
+      "period": "FY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-29/1219890100.PDF",
+          "title": "三一重工股份有限公司2023年年度报告",
+          "announcement_id": "1219890100",
+          "published_at": "2024-04-28T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600031_2023_HY",
+      "stock_code": "600031",
+      "company": "三一重工",
+      "legal_name": "三一重工股份有限公司",
+      "year": 2023,
+      "period": "HY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-08-31/1217719259.PDF",
+          "title": "三一重工股份有限公司2023年半年度报告",
+          "announcement_id": "1217719259",
+          "published_at": "2023-08-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600031_2023_Q1",
+      "stock_code": "600031",
+      "company": "三一重工",
+      "legal_name": "三一重工股份有限公司",
+      "year": 2023,
+      "period": "Q1",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-04-26/1216594752.PDF",
+          "title": "三一重工股份有限公司2023年第一季度报告",
+          "announcement_id": "1216594752",
+          "published_at": "2023-04-25T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600031_2023_Q3",
+      "stock_code": "600031",
+      "company": "三一重工",
+      "legal_name": "三一重工股份有限公司",
+      "year": 2023,
+      "period": "Q3",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2023-10-31/1218205796.PDF",
+          "title": "三一重工股份有限公司2023年第三季度报告",
+          "announcement_id": "1218205796",
+          "published_at": "2023-10-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600031_2024_FY",
+      "stock_code": "600031",
+      "company": "三一重工",
+      "legal_name": "三一重工股份有限公司",
+      "year": 2024,
+      "period": "FY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-18/1223129214.PDF",
+          "title": "三一重工股份有限公司2024年年度报告",
+          "announcement_id": "1223129214",
+          "published_at": "2025-04-17T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        },
+        {
+          "source_url": "https://dataclouds.cninfo.com.cn/shgonggao/2025/2025-04-18/cab9911e1b8611f08c84fa163e957f7a.pdf",
+          "title": "2024年年度报告",
+          "version": "original",
+          "source_basis": "official_pdf_seed_unverified_bytes"
+        }
+      ]
+    },
+    {
+      "report_id": "600031_2024_HY",
+      "stock_code": "600031",
+      "company": "三一重工",
+      "legal_name": "三一重工股份有限公司",
+      "year": 2024,
+      "period": "HY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-08-30/1221054988.PDF",
+          "title": "三一重工股份有限公司2024年半年度报告",
+          "announcement_id": "1221054988",
+          "published_at": "2024-08-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600031_2024_Q1",
+      "stock_code": "600031",
+      "company": "三一重工",
+      "legal_name": "三一重工股份有限公司",
+      "year": 2024,
+      "period": "Q1",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-04-29/1219890320.PDF",
+          "title": "三一重工股份有限公司2024年第一季度报告",
+          "announcement_id": "1219890320",
+          "published_at": "2024-04-28T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600031_2024_Q3",
+      "stock_code": "600031",
+      "company": "三一重工",
+      "legal_name": "三一重工股份有限公司",
+      "year": 2024,
+      "period": "Q3",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2024-10-31/1221572403.PDF",
+          "title": "三一重工股份有限公司2024年第三季度报告",
+          "announcement_id": "1221572403",
+          "published_at": "2024-10-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600031_2025_FY",
+      "stock_code": "600031",
+      "company": "三一重工",
+      "legal_name": "三一重工股份有限公司",
+      "year": 2025,
+      "period": "FY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2026-03-31/1225061378.PDF",
+          "title": "三一重工股份有限公司2025年年度报告",
+          "announcement_id": "1225061378",
+          "published_at": "2026-03-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600031_2025_HY",
+      "stock_code": "600031",
+      "company": "三一重工",
+      "legal_name": "三一重工股份有限公司",
+      "year": 2025,
+      "period": "HY",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-08-22/1224536360.PDF",
+          "title": "三一重工股份有限公司2025年半年度报告",
+          "announcement_id": "1224536360",
+          "published_at": "2025-08-21T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600031_2025_Q1",
+      "stock_code": "600031",
+      "company": "三一重工",
+      "legal_name": "三一重工股份有限公司",
+      "year": 2025,
+      "period": "Q1",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-04-30/1223406397.PDF",
+          "title": "三一重工股份有限公司2025年第一季度报告",
+          "announcement_id": "1223406397",
+          "published_at": "2025-04-29T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    },
+    {
+      "report_id": "600031_2025_Q3",
+      "stock_code": "600031",
+      "company": "三一重工",
+      "legal_name": "三一重工股份有限公司",
+      "year": 2025,
+      "period": "Q3",
+      "split": "holdout",
+      "sources": [
+        {
+          "source_url": "https://static.cninfo.com.cn/finalpage/2025-10-31/1224770559.PDF",
+          "title": "三一重工股份有限公司2025年第三季度报告",
+          "announcement_id": "1224770559",
+          "published_at": "2025-10-30T16:00:00+00:00",
+          "version": "original",
+          "version_basis": "latest_eligible_official_announcement",
+          "source_basis": "cninfo_metadata",
+          "metadata_url": "https://www.cninfo.com.cn/new/hisAnnouncement/query",
+          "superseded_announcement_ids": []
+        }
+      ]
+    }
+  ],
+  "official_metadata_discovered_reports": 120,
+  "source_metadata_observed_at": "2026-10-20T17:36:00+00:00"
+}

@@ -26,7 +26,7 @@ class InternalHistoryItem(BaseModel):
 
 
 class InternalChatRequest(BaseModel):
-    """作品说明：内部无状态对话请求：会话状态由 Java 主后端持有，这里只接收本轮所需上下文。"""
+    """内部无状态对话请求：会话状态由 Java 主后端持有，仅接收当前请求所需上下文。"""
 
     question: str = Field(..., min_length=1, max_length=2000)
     history: List[InternalHistoryItem] = Field(default_factory=list)
@@ -45,7 +45,7 @@ class InternalChatRequest(BaseModel):
 
 
 class InternalTitleRequest(BaseModel):
-    """作品说明：会话标题概括请求（Java MQ 消费者调用）。"""
+    """会话标题概括请求（Java MQ 消费者调用）。"""
 
     question: str = Field(..., min_length=1)
     answer: str = ""
@@ -56,7 +56,7 @@ class InternalTitleResponse(BaseModel):
 
 
 class InternalEtlRequest(BaseModel):
-    """作品说明：单文件 ETL 管线请求（Java etl_task 消费者调用）。"""
+    """单文件 ETL 管线请求（Java etl_task 消费者调用）。"""
 
     file_path: str = Field(..., min_length=1)
     file_type: str = Field(default="financial", description="financial=财报 research=研报")
@@ -64,7 +64,7 @@ class InternalEtlRequest(BaseModel):
 
 
 class InternalAdvisorRequest(BaseModel):
-    """作品说明：AI 诊股报告生成请求（Java advisor 消费者调用）。"""
+    """AI 诊股报告生成请求（Java advisor 消费者调用）。"""
 
     stock_code: str = Field(..., min_length=1)
     stock_name: str = ""

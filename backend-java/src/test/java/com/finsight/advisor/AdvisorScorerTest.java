@@ -8,7 +8,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** 作品说明：规则评分引擎单测：覆盖满数据、数据缺口保底、亏损公司、评级分档。 */
+/** 规则评分引擎单测：覆盖满数据、数据缺口保底、亏损公司、评级分档。 */
 class AdvisorScorerTest {
 
     private Map<String, Object> indicators(double revenueYoy, double profitYoy,
@@ -35,7 +35,7 @@ class AdvisorScorerTest {
         assertThat(result.dimensions()).hasSize(4);
         assertThat(result.total()).isGreaterThanOrEqualTo(80);
         assertThat(result.rating()).isEqualTo("优秀");
-        // 作品说明：四个维度均拿到接近满分
+        // 四个维度均拿到接近满分
         assertThat(result.dimensions()).allSatisfy(d -> assertThat(d.score()).isGreaterThanOrEqualTo(20));
     }
 
@@ -74,7 +74,7 @@ class AdvisorScorerTest {
         int weakScore = AdvisorScorer.score(latest, null, weakCf).dimensions().stream()
                 .filter(d -> d.name().equals("现金流")).findFirst().orElseThrow().score();
 
-        assertThat(goodScore).isEqualTo(25); // 作品说明：净现比 1.3 ≥ 1.2
+        assertThat(goodScore).isEqualTo(25); // 净现比 1.3 ≥ 1.2
         assertThat(weakScore).isLessThan(goodScore);
     }
 

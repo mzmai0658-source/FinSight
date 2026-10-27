@@ -29,12 +29,12 @@ public class WebClientConfig {
                 .baseUrl(agentProperties.getBaseUrl())
                 .defaultHeader("X-Internal-Token", agentProperties.getInternalApiToken())
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
-                // 作品说明：SSE 长回答可能较大，放宽内存上限
+                // SSE 长回答可能较大，放宽内存上限
                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(8 * 1024 * 1024))
                 .build();
     }
 
-    /** 作品说明：OCR 与本地模型提取共享可配置的单文件请求截止时间。 */
+    /** OCR 与云端抽取共享可配置的单文件请求截止时间。 */
     @Bean
     public WebClient etlWebClient() {
         requireInternalToken();
@@ -46,6 +46,8 @@ public class WebClientConfig {
                 .baseUrl(agentProperties.getBaseUrl())
                 .defaultHeader("X-Internal-Token", agentProperties.getInternalApiToken())
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
+                // Candidate evidence contains every verified fact and may exceed a chat-sized response.
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(32 * 1024 * 1024))
                 .build();
     }
 

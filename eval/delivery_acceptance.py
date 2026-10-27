@@ -1,10 +1,8 @@
-"""作品说明：通过真实登录后的 Java/SSE 入口开展有界双模型对照，使用实际保存的对话状态。标准数值来自独立验收的原始单元格，不采用模型输出；失败回答不重试、不注入历史、不由模型评分。"""
-import argparse,hashlib,json,re,statistics,sys,time,math
-from decimal import Decimal,ROUND_HALF_UP
+"""通过真实登录后的 Java/SSE 入口开展有界双模型对照，使用实际保存的对话状态。标准数值来自独立验收的原始单元格，不采用模型输出；失败回答不重试、不注入历史、不由模型评分。"""
+import argparse,hashlib,json,statistics,sys,math
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 from eval.v3_native_client import NativeClient
-from src.agent.v3.contracts import Request
 
 
 def hashes():
@@ -12,7 +10,7 @@ def hashes():
     return {str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
 
 
-from eval.local_model_evaluation import score as common_score
+from eval.acceptance_scoring import score as common_score
 
 
 def score(case,run,gold,selected):
@@ -43,7 +41,7 @@ def main():
     gold={(f['stock_code'],f['year'],f['period'],f['metric'],f['scope']):f for f in gold_rows}
     baseline=hashes();(out/'source_hashes.json').write_text(json.dumps(baseline,indent=2),encoding='utf-8')
     (out/'cases.json').write_text(json.dumps(cases,ensure_ascii=False,indent=2),encoding='utf-8')
-    (out/'environment.json').write_text(json.dumps(dict(model=args.model,data_version=manifest['version'],cases_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),limits=dict(context=16384,temperature=0,num_predict=3072),scope='Real Java/SSE/Python/Ollama/MySQL; independently accepted PDF cells; actual saved dialogue'),indent=2),encoding='utf-8')
+    (out/'environment.json').write_text(json.dumps(dict(model=args.model,data_version=manifest['version'],cases_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),limits=dict(temperature=0,max_tokens=3072),scope='Real Java/SSE/Python/cloud model/MySQL; independently accepted PDF cells; actual saved dialogue'),indent=2),encoding='utf-8')
     client=NativeClient(args.base,ROOT/'.local_runtime/delivery/qa_credentials.json')
     groups={};records=[]
     for case in cases:

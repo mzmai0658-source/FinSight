@@ -25,7 +25,7 @@ import java.util.List;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/** 作品说明：只允许读取当前用户已保存回答引用的登记资产。 */
+/** 只允许读取当前用户已保存回答引用的登记资产。 */
 @RestController
 @RequiredArgsConstructor
 public class AssetController {
@@ -60,12 +60,12 @@ public class AssetController {
                 .doOnNext(DataBufferUtils::release)
                 .doOnDiscard(DataBuffer.class, DataBufferUtils::release)
                 .blockLast(Duration.ofMinutes(2));
+        // 浏览器以鉴权 Blob 请求读取原件；与财报原件接口保持一致，不附加下载处置头。
         var builder = ResponseEntity.ok()
                 .contentType(type == null ? MediaType.APPLICATION_OCTET_STREAM : type)
                 .header(HttpHeaders.CACHE_CONTROL, "private, no-store")
                 .header("X-Content-Type-Options", "nosniff")
-                .header("Content-Security-Policy", "default-src 'none'; sandbox")
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline");
+                .header("Content-Security-Policy", "default-src 'none'; sandbox");
         if (upstream.getHeaders().getContentLength() >= 0) builder.contentLength(upstream.getHeaders().getContentLength());
         return builder.body(stream);
     }
@@ -78,7 +78,7 @@ public class AssetController {
             try {
                 if (containsReference(objectMapper.readTree(metadata), assetId)) return;
             } catch (Exception ignored) {
-                // 作品说明：格式损坏的旧消息元数据不能赋予资产访问权限。
+                // 格式损坏的旧消息元数据不能赋予资产访问权限。
             }
         }
         throw new BizException(ErrorCode.NOT_FOUND);
@@ -115,7 +115,23 @@ public class AssetController {
 
     private static boolean hasFactSource(JsonNode facts, String assetId) {
         for (JsonNode fact : facts) {
-            if (hasAsset(fact.path("source"), assetId)) return true;
+            // Only saved structured fact sources can authorize legacy URLs.
+            // Match the frontend's first registered identity, never arbitrary
+            // text, external URLs, or a conflicting older document version.
+            JsonNode source = fact.path("source");
+            for (String field : List.of("asset_id", "asset_url", "source_url")) {
+                String value = source.path(field).asText("");
+                String registered = "";
+                if (value.matches("[A-Za-z0-9_-]{16,128}")) registered = value;
+                else {
+                    var match = java.util.regex.Pattern.compile("/api/assets/([A-Za-z0-9_-]{16,128})(?:#page=\\d+)?").matcher(value);
+                    if (match.matches()) registered = match.group(1);
+                }
+                if (!registered.isEmpty()) {
+                    if (assetId.equals(registered)) return true;
+                    break;
+                }
+            }
         }
         return false;
     }

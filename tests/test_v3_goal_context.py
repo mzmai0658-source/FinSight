@@ -55,7 +55,7 @@ def test_concept_aside_keeps_bindings_but_clear_discards_them():
         request,state=apply_understanding(q,'aside',u,old,COMPANIES)
         assert request.conditions.restrictions.no_query
         assert state.goal_conditions==({} if continuity=='clear' else old.goal_conditions)
-    with pytest.raises(ValueError,match='explicit current-input instruction'):
+    with pytest.raises(ValueError,match='explicit memory edit'):
         proposal('毛利率是什么意思',[dict(id='definition',kind='concept',concept_mode='definition')],continuity='clear')
 
 

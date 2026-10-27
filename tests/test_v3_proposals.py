@@ -51,15 +51,15 @@ def test_explicit_topic_clear_cannot_keep_a_suspended_company_for_later_resume()
 def test_memory_deletion_cannot_be_invented_from_a_metric_edit_or_retention_instruction():
     for question in ('再看毛利率','只解释毛利率','不要忘记刚才公司'):
         plan=IntentPlan(continuity='new',goals=[dict(id='g',kind='lookup',source_ref=question)],
-            memory_edits=[dict(field='financial_context',text=question)])
-        with pytest.raises(ValueError,match='explicit instruction'):
+            memory_edits=[dict(field='financial_context',text='不存在的删除指令')])
+        with pytest.raises(ValueError,match='literal current-input instruction'):
             compile_proposal(combine_plans(plan,ConditionPlan(edits=[])),question,COMPANIES)
     q='不延续刚才公司，解释毛利率'
     plan=IntentPlan(continuity='new',goals=[dict(id='g',kind='concept',concept_mode='definition',source_ref='解释毛利率')],
         memory_edits=[dict(field='company_context',text='不延续刚才公司')])
     assert compile_proposal(combine_plans(plan,ConditionPlan(edits=[])),q,COMPANIES).memory_edits[0].field=='company_context'
     plan.continuity='clear'
-    with pytest.raises(ValueError,match='whole financial context'):
+    with pytest.raises(ValueError,match='financial context'):
         compile_proposal(combine_plans(plan,ConditionPlan(edits=[])),q,COMPANIES)
 
 

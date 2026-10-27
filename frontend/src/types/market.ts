@@ -1,4 +1,4 @@
-/** 作品说明：行情门户相关类型（对应 Java /api/market/**） */
+/** 行情门户相关类型（对应 Java /api/market/**） */
 
 export interface CompanyItem {
   stockCode: string;
@@ -14,7 +14,7 @@ export interface CompanyItem {
   lastYear: number | null;
 }
 
-/** 作品说明：年度指标行：键为 SQL 别名（year/revenue/net_profit/roe...），值为数字或 null */
+/** 年度指标行：键为 SQL 别名（year/revenue/net_profit/roe...），值为数字或 null */
 export type YearRow = Record<string, number | string | null>;
 
 export interface CompanyDetail {

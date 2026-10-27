@@ -28,7 +28,7 @@ async function copySql() {
     copied.value = true;
     setTimeout(() => (copied.value = false), 1500);
   } catch {
-    /* 作品说明：剪贴板不可用时静默 */
+    /* 剪贴板不可用时静默 */
   }
 }
 </script>

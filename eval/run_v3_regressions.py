@@ -1,4 +1,4 @@
-"""作品说明：通过真实服务重放历史问题，禁止悄悄改走旧执行链路。"""
+"""通过真实服务重放历史问题，禁止悄悄改走旧执行链路。"""
 from __future__ import annotations
 import argparse,hashlib,json,os,sys,time
 from pathlib import Path
@@ -7,7 +7,7 @@ from eval.v3_native_client import NativeClient
 
 
 def production_hashes(root=ROOT):
-    """作品说明：固定生产层代码与实际联调配置，仅记录摘要，不将环境值或凭据写入回归记录。"""
+    """固定生产层代码与实际联调配置，仅记录摘要，不将环境值或凭据写入回归记录。"""
     paths=set()
     for folder,extensions in (('src',('.py',)),('config',('.py',)),('backend-java/src',('.java','.yml','.yaml','.properties')),
                               ('frontend/src',('.vue','.ts','.js','.css','.json'))):
@@ -57,7 +57,7 @@ def main():
             print('Paused at a turn boundary; completed records retained.',flush=True)
             break
         case=row['case'];group=row['batch']+'/'+case.get('group',row['id'])
-        # 作品说明：通过新链路重建历史追问的用户条件，旧回答中的数值不能直接当作可信事实。
+        # 通过新链路重建历史追问的用户条件，旧回答中的数值不能直接当作可信事实。
         if group not in groups and row['history']:
             for prior in row['history']:
                 if prior.get('role')=='user':

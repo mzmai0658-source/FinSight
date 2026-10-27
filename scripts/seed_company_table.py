@@ -1,4 +1,4 @@
-"""作品说明：公司主数据种子脚本：registry xlsx → MySQL company 表。
+"""公司主数据种子脚本：registry xlsx → MySQL company 表。
 
 - 两份注册表（医药/中药）合并导入，dataset_tag 区分来源
 - data_status 按财务表实际入库情况标记（imported/pending），并记录年份覆盖
@@ -29,7 +29,7 @@ def normalize_code(raw: object) -> str | None:
 
 
 def derive_exchange(code: str) -> str:
-    """作品说明：6 开头上交所（含 688 科创板），0/3 开头深交所。"""
+    """6 开头上交所（含 688 科创板），0/3 开头深交所。"""
     return "上交所" if code.startswith("6") else "深交所"
 
 
@@ -78,7 +78,7 @@ def main() -> None:
                            password=cfg.password, database=cfg.database, charset="utf8mb4")
     try:
         with conn.cursor() as cur:
-            # 作品说明：财务数据实际覆盖：决定 data_status 与年份范围
+            # 财务数据实际覆盖：决定 data_status 与年份范围
             cur.execute("""
                 SELECT stock_code, MIN(report_year), MAX(report_year)
                 FROM core_performance_indicators_sheet GROUP BY stock_code
@@ -108,7 +108,7 @@ def main() -> None:
                     row["reg_capital"], row["employees"], row["dataset_tag"], status,
                     lo_hi[0] if lo_hi else None, lo_hi[1] if lo_hi else None,
                 ))
-            # 作品说明：库里有数据但注册表没有的公司也补一条（防数据先于注册表到位）
+            # 库里有数据但注册表没有的公司也补一条（防数据先于注册表到位）
             for code, (lo, hi) in sorted(coverage.items()):
                 if code in companies:
                     continue

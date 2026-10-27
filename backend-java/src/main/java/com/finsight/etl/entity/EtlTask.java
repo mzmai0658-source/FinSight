@@ -8,7 +8,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * 作品说明：ETL 任务状态机：PENDING → RUNNING → SUCCESS / PARTIAL / FAILED。
+ * ETL 任务状态机：PENDING → RUNNING → SUCCESS / PARTIAL / FAILED。
  * 管理端上传后入队，MQ 消费者串行调用 Python 单文件管线并回写状态。
  */
 @Data
@@ -24,15 +24,15 @@ public class EtlTask {
 
     private String filePath;
 
-    /** 作品说明：任务材料类别区分财报与研报。 */
+    /** 任务材料类别区分财报与研报。 */
     private String fileType;
 
     private String status;
 
-    /** 作品说明：通过执行代际令牌阻止旧工作线程结束新一轮重试。 */
+    /** 通过执行代际令牌阻止旧工作线程结束新一轮重试。 */
     private String runToken;
 
-    /** 作品说明：基础设施故障由监听器按规则重试，业务失败须显式重试。 */
+    /** 基础设施故障由监听器按规则重试，业务失败须显式重试。 */
     private Boolean retryable;
 
     private Integer attemptCount;
@@ -41,9 +41,25 @@ public class EtlTask {
 
     private Integer reportYear;
 
+    /** Processing and approval are separate: SUCCESS never implies publication. */
+    private String reviewStatus;
+
+    private String candidateId;
+
+    private String sourceSha256;
+
+    private String company;
+
+    private String reportPeriod;
+
+    private String publishedVersion;
+
+    /** Exact selected candidate set and receipt support safe publication replay. */
+    private String publicationReceiptJson;
+
     private String message;
 
-    /** 作品说明：Python 管线步骤明细 JSON */
+    /** Python 管线步骤明细 JSON */
     private String stepsJson;
 
     private Long createdBy;

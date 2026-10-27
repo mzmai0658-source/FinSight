@@ -5,7 +5,7 @@ import uvicorn
 from loguru import logger
 
 
-# 作品说明：支持从项目根目录通过 python -m 启动。
+# 支持从项目根目录通过 python -m 启动。
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 

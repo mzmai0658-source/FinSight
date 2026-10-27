@@ -1,4 +1,4 @@
-"""作品说明：提示词与工具 schema 定义。
+"""提示词与工具 schema 定义。
 
 系统提示词注入：数据库 schema、公司注册表、能力边界、澄清准则、引用规范。
 工具 schema 为 OpenAI function calling 格式。

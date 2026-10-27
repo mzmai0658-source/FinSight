@@ -1,4 +1,4 @@
-"""作品说明：物理坐标标注补充 OCR 的身份依据，不能借此修改原始数字。"""
+"""物理坐标标注补充 OCR 的身份依据，不能借此修改原始数字。"""
 from functools import lru_cache
 import hashlib,json
 from pathlib import Path

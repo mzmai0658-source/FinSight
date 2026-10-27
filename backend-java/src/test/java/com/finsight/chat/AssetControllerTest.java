@@ -13,6 +13,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -39,6 +41,7 @@ class AssetControllerTest {
         assertEquals("%PDFtest", response.getContentAsString());
         assertEquals("8", response.getHeader("Content-Length"));
         assertEquals("default-src 'none'; sandbox", response.getHeader("Content-Security-Policy"));
+        assertNull(response.getHeader("Content-Disposition"), "Authenticated blob requests must not carry a download disposition");
         SecurityContextHolder.clearContext();
         assertThrows(BizException.class, () -> subject.download(ID, new MockHttpServletResponse()));
     }
@@ -46,6 +49,28 @@ class AssetControllerTest {
         when(mapper.findAssetMetadata(7, ID)).thenReturn(List.of("{\"references\":[{\"asset_id\":\"" + ID + "\"}]}"));
         assertDoesNotThrow(() -> controller.requireAccess(7, ID));
         verify(mapper).findAssetMetadata(7, ID);
+    }
+    @Test void transfersAnOwnedOriginalLargerThanTheNormalWebClientBuffer() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+            new LoginUser(7, "reader", "USER", "test"), null, List.of()));
+        when(mapper.findAssetMetadata(7, ID)).thenReturn(List.of("{\"facts\":[{\"source\":{\"asset_id\":\"" + ID + "\"}}]}"));
+        byte[] pdf = new byte[10 * 1024 * 1024];
+        byte[] signature = "%PDF-1.7\n".getBytes(java.nio.charset.StandardCharsets.US_ASCII);
+        System.arraycopy(signature, 0, pdf, 0, signature.length);
+        pdf[pdf.length - 1] = 'X';
+        var client = WebClient.builder().codecs(config -> config.defaultCodecs().maxInMemorySize(8 * 1024 * 1024))
+            .exchangeFunction(r -> Mono.just(ClientResponse.create(HttpStatus.OK)
+                .header("Content-Type", "application/pdf").header("Content-Length", String.valueOf(pdf.length))
+                .body(Flux.just(new DefaultDataBufferFactory().wrap(pdf))).build())).build();
+        var response = new MockHttpServletResponse();
+        new AssetController(mapper, json, client).download(ID, response);
+        assertArrayEquals(pdf, response.getContentAsByteArray());
+        assertEquals(String.valueOf(pdf.length), response.getHeader("Content-Length"));
+        assertEquals("application/pdf", response.getContentType());
+        assertEquals("private, no-store", response.getHeader("Cache-Control"));
+        assertEquals("nosniff", response.getHeader("X-Content-Type-Options"));
+        assertEquals("default-src 'none'; sandbox", response.getHeader("Content-Security-Policy"));
+        assertNull(response.getHeader("Content-Disposition"));
     }
     @Test void deniesAnAssetReferencedOnlyByAnotherUser() {
         when(mapper.findAssetMetadata(8, ID)).thenReturn(List.of());
@@ -62,5 +87,27 @@ class AssetControllerTest {
     @Test void structuredFactSourcesGrantAccessWithoutTrustingArbitraryRows() throws Exception {
         var metadata = json.readTree("{\"evidence\":[{\"type\":\"sql\",\"facts\":[{\"field\":\"revenue\",\"source\":{\"asset_id\":\"" + ID + "\"}}]}]}");
         assertTrue(AssetController.containsReference(metadata, ID));
+    }
+    @Test void ownedLegacyFactUrlsUseTheSameRegisteredIdentityAsTheFrontend() {
+        for (String field : List.of("source_url", "asset_url")) {
+            for (String suffix : List.of("", "#page=8")) {
+                when(mapper.findAssetMetadata(7, ID)).thenReturn(List.of(
+                    "{\"facts\":[{\"source\":{\"" + field + "\":\"/api/assets/" + ID + suffix + "\"}}]}"));
+                assertDoesNotThrow(() -> controller.requireAccess(7, ID));
+            }
+        }
+        when(mapper.findAssetMetadata(8, ID)).thenReturn(List.of());
+        assertThrows(BizException.class, () -> controller.requireAccess(8, ID));
+    }
+    @Test void legacyFactUrlsCannotAuthorizeOtherPathsTextOrAConflictingVersion() throws Exception {
+        for (String url : List.of("https://example.org/api/assets/" + ID, "/api/assets/" + ID + "?download=1",
+                "/api/assets/" + ID + "/extra", "/other/" + ID)) {
+            assertFalse(AssetController.containsReference(json.readTree(
+                "{\"facts\":[{\"source\":{\"source_url\":\"" + url + "\"}}]}"), ID));
+        }
+        assertFalse(AssetController.containsReference(json.readTree(
+            "{\"content\":\"/api/assets/" + ID + "\",\"evidence\":[{\"type\":\"sql\",\"rows\":[{\"source_url\":\"/api/assets/" + ID + "\"}]}]}"), ID));
+        assertFalse(AssetController.containsReference(json.readTree(
+            "{\"facts\":[{\"source\":{\"asset_id\":\"different_version_1234\",\"source_url\":\"/api/assets/" + ID + "\"}}]}"), ID));
     }
 }

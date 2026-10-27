@@ -12,7 +12,7 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-/** 作品说明：异步调用 Python 生成会话标题，失败按监听器规则重试并进入死信；会话保留截断问题作为兜底标题。 */
+/** 异步调用 Python 生成会话标题，失败按监听器规则重试并进入死信；会话保留截断问题作为兜底标题。 */
 @Slf4j
 @Component
 @RequiredArgsConstructor

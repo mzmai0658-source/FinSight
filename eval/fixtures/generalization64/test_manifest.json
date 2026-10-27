@@ -1,0 +1,148 @@
+{
+  "schema": 1,
+  "suite": "cloud-generalization64-20261024",
+  "frozen_at_utc": "2026-10-24T16:00:05.058420+00:00",
+  "suite_file_sha256": "a33ded0c62f57247194e40352815d27f380c342f585022ba9d7902386cd389e6",
+  "questions_sha256": "55eee60371dc59c6bd8f0f871bde8f6a19e20bd4f133d0ec061a8a9cf7b840f4",
+  "old_questions_file_sha256": "df5d895933b3160bf555b6584995679622463838fc607f4d90caf19de1a2ae0d",
+  "old_questions_sha256": "a858576d2b62cfb90465c66b5701117986d02189bdf4460c2acdbf6f35382851",
+  "case_count": 64,
+  "cohort_counts": {
+    "seen48": 48,
+    "new16": 16
+  },
+  "cohort_question_sha256": {
+    "seen48": "8bfdbffb6e3db8bff15a1e640e009772c30d3aa69936e080f0ea946d3b30dc5d",
+    "new16": "e6e79de36f588097ebc371cc29f324df4a2c9c76ada138905cfc111c6ac789ed"
+  },
+  "seen_ids": [
+    "U01S01",
+    "U01S08",
+    "U02S02",
+    "U02S09",
+    "U02S10",
+    "U03S03",
+    "U03S07",
+    "U03S12",
+    "U04S04",
+    "U04S11",
+    "U05S08",
+    "U05S12",
+    "U06S04",
+    "U06S09",
+    "U07S07",
+    "U07S10",
+    "U08S08",
+    "U08S11",
+    "U09S04",
+    "U09S10",
+    "U09S12",
+    "U10S07",
+    "U10S09",
+    "U10S11",
+    "U01AT1",
+    "U01AT2",
+    "U01AT3",
+    "U01AT4",
+    "U02BT1",
+    "U02BT2",
+    "U02BT3",
+    "U02BT4",
+    "U04BT1",
+    "U04BT2",
+    "U04BT3",
+    "U04BT4",
+    "U07AT1",
+    "U07AT2",
+    "U07AT3",
+    "U07AT4",
+    "U08BT1",
+    "U08BT2",
+    "U08BT3",
+    "U08BT4",
+    "U09BT1",
+    "U09BT2",
+    "U09BT3",
+    "U09BT4"
+  ],
+  "new_ids": [
+    "N01S01",
+    "N02S01",
+    "N03S01",
+    "N04S01",
+    "N05S01",
+    "N06S01",
+    "N07S01",
+    "N08S01",
+    "N01AT1",
+    "N01AT2",
+    "N01AT3",
+    "N01AT4",
+    "N02AT1",
+    "N02AT2",
+    "N02AT3",
+    "N02AT4"
+  ],
+  "seen_single_families": {
+    "basic": [
+      "U01S01",
+      "U02S02",
+      "U03S03"
+    ],
+    "scope": [
+      "U04S04",
+      "U06S04",
+      "U09S04"
+    ],
+    "negative_q3": [
+      "U03S07",
+      "U07S07",
+      "U10S07"
+    ],
+    "yoy": [
+      "U01S08",
+      "U05S08",
+      "U08S08"
+    ],
+    "mixed_eps_units": [
+      "U02S09",
+      "U06S09",
+      "U10S09"
+    ],
+    "rank": [
+      "U02S10",
+      "U07S10",
+      "U09S10"
+    ],
+    "chart": [
+      "U04S11",
+      "U08S11",
+      "U10S11"
+    ],
+    "cause_quote": [
+      "U03S12",
+      "U05S12",
+      "U09S12"
+    ]
+  },
+  "seen_groups": [
+    "U01A",
+    "U02B",
+    "U04B",
+    "U07A",
+    "U08B",
+    "U09B"
+  ],
+  "new_groups": [
+    "N01A",
+    "N02A"
+  ],
+  "company_partition_counts": {
+    "development": 35,
+    "holdout": 29
+  },
+  "no_cloud_request_made": true,
+  "source_freeze_status": "pending_final_parent_declaration",
+  "new_questions_reserved_for_evaluation": true,
+  "prompt_tuning_policy": "Do not read or use new question text as prompt examples; use only the topic inventory."
+}

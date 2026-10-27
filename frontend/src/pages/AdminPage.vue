@@ -38,7 +38,7 @@ const tabs = [
   { key: "logs", label: "对话审计" },
 ] as const;
 
-/* 作品说明：看板 */
+/* 看板 */
 
 const overview = ref<AdminOverview | null>(null);
 const overviewLoading = ref(true);
@@ -113,7 +113,7 @@ function formatCount(value: number): string {
   return new Intl.NumberFormat("zh-CN").format(value);
 }
 
-/* 作品说明：ETL 任务 */
+/* ETL 任务 */
 
 const tasks = ref<EtlTaskItem[]>([]);
 const taskTotal = ref(0);
@@ -189,7 +189,7 @@ async function retryTask(task: EtlTaskItem) {
   finally { retryingTask.value = null; }
 }
 
-/* 作品说明：用户 */
+/* 用户 */
 
 const users = ref<AdminUserItem[]>([]);
 const userTotal = ref(0);
@@ -211,7 +211,7 @@ async function toggleUser(user: AdminUserItem) {
   user.status = user.status === 1 ? 0 : 1;
 }
 
-/* 作品说明：审计日志 */
+/* 审计日志 */
 
 const logs = ref<ChatLogItem[]>([]);
 const logTotal = ref(0);
@@ -223,7 +223,7 @@ async function loadLogs() {
   logTotal.value = result.total;
 }
 
-/* 作品说明：tab 切换加载 */
+/* tab 切换加载 */
 
 const loaders: Record<Tab, () => Promise<void>> = {
   overview: loadOverview,
@@ -275,7 +275,7 @@ const badgeVariant = (status: string) => {
           <h1>运营与数据管理</h1>
           <p>查看平台使用情况，管理报告导入、用户和对话审计。</p>
         </div>
-        <span class="admin__identity">管理员工作区</span>
+        <router-link to="/admin/financial-submissions" class="admin__identity">财报审核与发布 →</router-link>
       </header>
 
       <nav class="admin__tabs">
@@ -291,7 +291,7 @@ const badgeVariant = (status: string) => {
         </button>
       </nav>
 
-      <!-- 作品说明：运营看板 -->
+      <!-- 运营看板 -->
       <section v-if="tab === 'overview'" class="admin__section admin__section--overview">
         <div class="overview__head">
           <div>
@@ -403,20 +403,20 @@ const badgeVariant = (status: string) => {
         </template>
       </section>
 
-      <!-- 作品说明：数据管线 -->
+      <!-- 数据管线 -->
       <section v-else-if="tab === 'etl'" class="admin__section">
         <AppCard padding="lg">
           <template #header>
-            <AppSection title="上传报告 PDF" description="财报 / 研报 PDF 入队后由 Python 管线异步处理" dense />
+            <AppSection title="上传报告 PDF" description="财报进入候选审核；研报沿用知识库处理流程" dense />
           </template>
           <p class="admin__hint">
-            上传后任务入队（RabbitMQ），Python 管线串行执行：OCR 缓存 → 结构化抽取 → 入库 → 公司级同比重算 → 主数据回写。
+            上传后任务入队处理。财报识别完成只生成候选，需在财报审核与发布中逐份核对、批准并选定发布。
             {{ ocrCapability }}。研报支持纯文本直读。
           </p>
           <div class="admin__upload-row">
             <div class="admin__filetype">
               <label :class="{ active: fileType === 'financial' }">
-                <input v-model="fileType" type="radio" value="financial" />财报（入库+指标）
+                <input v-model="fileType" type="radio" value="financial" />财报（候选审核）
               </label>
               <label :class="{ active: fileType === 'research' }">
                 <input v-model="fileType" type="radio" value="research" />研报（RAG 知识库）
@@ -479,7 +479,7 @@ const badgeVariant = (status: string) => {
         </AppCard>
       </section>
 
-      <!-- 作品说明：用户管理 -->
+      <!-- 用户管理 -->
       <section v-else-if="tab === 'users'" class="admin__section">
         <AppCard padding="lg">
           <template #header>
@@ -533,7 +533,7 @@ const badgeVariant = (status: string) => {
         </AppCard>
       </section>
 
-      <!-- 作品说明：对话审计 -->
+      <!-- 对话审计 -->
       <section v-else class="admin__section">
         <AppCard padding="lg">
           <template #header>

@@ -1,4 +1,4 @@
-"""作品说明：从一份完整运行和独立复核结果生成验收附件，不拼接不同版本的成功回答。"""
+"""从一份完整运行和独立复核结果生成验收附件，不拼接不同版本的成功回答。"""
 from __future__ import annotations
 import argparse,hashlib,json,statistics,sys
 from collections import Counter

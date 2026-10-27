@@ -1,0 +1,19 @@
+{
+  "version": 3,
+  "builder": "eval/common300_cases.py",
+  "count": 300,
+  "single_turns": 180,
+  "single_families": 60,
+  "variants_per_family": 3,
+  "dialogue_groups": 30,
+  "turns_per_dialogue": 4,
+  "development_turns": 240,
+  "sealed_turns": 60,
+  "split": "Whole families and whole dialogue groups; stratified by approved categories",
+  "data_kind": "real PDFs only",
+  "accuracy_threshold": null,
+  "max_adjustment_rounds": 2,
+  "max_real_turns_per_adjustment": 60,
+  "question_storage": "Generate immutable local cases/oracles with the builder; do not expose sealed questions during development",
+  "final_score": "All300 rerun at one frozen source/data/index version; report failures and limitations without a percentage gate"
+}

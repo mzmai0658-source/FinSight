@@ -12,7 +12,7 @@ import java.util.Map;
 @Mapper
 public interface WatchlistMapper extends BaseMapper<Watchlist> {
 
-    /** 作品说明：自选列表联表公司主数据 + 最新年报核心指标 */
+    /** 自选列表联表公司主数据 + 最新年报核心指标 */
     @Select("""
             SELECT w.stock_code                      AS stockCode,
                    c.abbr                            AS abbr,

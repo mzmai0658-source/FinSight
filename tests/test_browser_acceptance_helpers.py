@@ -1,4 +1,4 @@
-"""作品说明：浏览器验收必须核对本次创建的准确 Java 会话。"""
+"""浏览器验收必须核对本次创建的准确 Java 会话。"""
 
 from eval.browser_acceptance import (
     Browser,

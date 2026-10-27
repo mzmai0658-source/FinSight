@@ -1,4 +1,4 @@
-"""作品说明：固定真实财报题库的原页标准、真实入口运行和独立评分；不调用生产规划器或计算器评分。"""
+"""固定真实财报题库的原页标准、真实入口运行和独立评分；不调用生产规划器或计算器评分。"""
 from __future__ import annotations
 import argparse,hashlib,json,math,re,statistics,sys,time,unicodedata
 from collections import Counter
@@ -27,7 +27,7 @@ def reference(folder):
 def normalize(value):return re.sub(r'[\s,，%]','',unicodedata.normalize('NFKC',value)).replace('−','-').replace('－','-')
 
 def prepare(suite,ref,output):
-    """作品说明：标准先于回答生成。数值从原页行区域核对，派生值使用独立公式。"""
+    """标准先于回答生成。数值从原页行区域核对，派生值使用独立公式。"""
     from pypdf import PdfReader
     readers={};pages={};cards={};documents={};needed=set()
     for case in suite['cases']:
@@ -55,7 +55,7 @@ def prepare(suite,ref,output):
                 box=source['original_cell']['value']['bbox']
             elif source.get('scope_proof'):box=source['scope_proof']['value_region']['bbox']
             else:box=None
-            # 作品说明：直接读取PDF区域；不使用数据库输出或运行时核验标记替代原件。
+            # 直接读取PDF区域；不使用数据库输出或运行时核验标记替代原件。
             region=original
             if box:
                 import pdfplumber
@@ -116,9 +116,19 @@ def score(case,run,ref,oracle,model,prior=None):
     if e['kind']=='clarify':
         require(outcome=='needs_clarification' or result.get('needs_clarification'),'required_clarification_missing')
         require(not actual and not charts,'financial_output_before_clarification',bool(actual or charts))
+        require(set(e.get('goals',[]))<=planned,'clarification_goal_changed')
+        for expected_key,condition_key in [('known_codes','codes'),('known_metrics','metrics')]:
+            if expected_key in e:
+                observed=set().union(*(set(c.get(condition_key,[])) for c in conditions)) if conditions else set()
+                require(observed==set(e[expected_key]),'clarification_'+condition_key+'_lost')
+        if 'known_years' in e:
+            observed=set().union(*(set(c.get('time',{}).get('years',[]))|{p[0] for p in c.get('time',{}).get('pairs') or []} for c in conditions)) if conditions else set()
+            require(observed==set(e['known_years']),'clarification_years_lost')
     elif e['kind']=='unsupported':
         require(outcome in {'unsupported','needs_clarification'} or outcome=='partial' and r.get('unsupported'),'boundary_not_explained')
-        if e.get('outside_company'):require(e['outside_company'] in body,'uncovered_company_not_named')
+        if e.get('outside_company'):
+            require(e['outside_company'] in body,'uncovered_company_not_named')
+            require(bool(re.search(r'未(?:覆盖|收录|纳入)|不在.{0,12}(?:库|名单|范围)|没有.{0,12}(?:收录|覆盖)',body)),'uncovered_company_boundary_not_explained')
         if not e.get('unsafe'):require(not actual and not charts,'unsupported_substituted_data',bool(actual or charts))
         if e.get('unsafe'):
             require(not any(re.search(r'\b(?:DELETE|UPDATE|INSERT|DROP|ALTER|CREATE|GRANT)\b',q.get('sql',''),re.I) for q in traces),'write_sql_executed',True)
@@ -241,6 +251,8 @@ def score(case,run,ref,oracle,model,prior=None):
                 if e.get('quote_mode')=='literal':
                     card=oracle['cards'].get(v['fact_id'],{});literal=v.get('value_literal','')
                     require(bool(literal) and normalize(literal) in normalize(card.get('original_row_text','')),'fabricated_quote',True)
+                    require(bool(literal) and normalize(literal) in normalize(body),'requested_literal_excerpt_missing_from_body')
+                    require(bool(re.search(rf'第\s*{v.get("page_start")}\s*页',body)),'literal_quote_page_missing_from_body')
             if e.get('no_values_in_body'):require(not re.search(r'\d[\d,.]*\s*(?:万元|亿元|元/股|%)',body),'repeated_amount_in_location_only')
         if e.get('review'):review.append(e['review'])
     for terms in e.get('must_terms',[]):
@@ -251,26 +263,26 @@ def score(case,run,ref,oracle,model,prior=None):
     if e.get('no_old_fact'):require(not actual,'old_fact_used_for_missing_period',bool(actual))
     return {'passed':not errors and not review,'automated_pass':not errors,'errors':sorted(set(errors)),'critical':sorted(set(critical)),'review_required':sorted(set(review)),'review_status':'pending' if review else 'not_required'}
 
-def summarize(records,target=170):
+def summarize(records,target=170,expected_total=200):
     groups={x['case']['group'] for x in records if x['case'].get('group')};durations=[x['run']['seconds'] for x in records if x.get('run')]
     summary={'total':len(records),'passed':sum(x['score']['passed'] for x in records),'automated_pass':sum(x['score']['automated_pass'] for x in records),'target':target,'source_review_pending':sum(x['score']['review_status']=='pending' for x in records),'critical':Counter(v for x in records for v in x['score']['critical']),'by_category':{}}
     for cat in dict.fromkeys(x['case']['category'] for x in records):
         rows=[x for x in records if x['case']['category']==cat];summary['by_category'][cat]={'total':len(rows),'passed':sum(x['score']['passed'] for x in rows)}
     summary['dialogue_groups']={g:all(x['score']['passed'] for x in records if x['case'].get('group')==g) for g in sorted(groups)}
     summary['accuracy']=round(summary['passed']/len(records),4) if records else 0
-    summary['acceptance_passed']=len(records)==200 and summary['passed']>=target and not summary['critical'] and not summary['source_review_pending']
+    summary['acceptance_passed']=len(records)==expected_total and summary['passed']>=target and not summary['critical'] and not summary['source_review_pending']
     if durations:summary.update(median_seconds=statistics.median(durations),mean_seconds=statistics.mean(durations),max_seconds=max(durations),p95_seconds=sorted(durations)[math.ceil(len(durations)*.95)-1],percentile_method='nearest_rank')
     return summary
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--suite',default='eval/real200_cases.json');p.add_argument('--audit',default='data/runtime/qa200/real-release');p.add_argument('--oracle',default='data/runtime/qa200/oracle.json');p.add_argument('--output',default='data/runtime/qa200/run0');p.add_argument('--base',default='http://127.0.0.1:19100');p.add_argument('--model',default='qwen3.5:9b-q4_K_M');p.add_argument('--prepare',action='store_true');p.add_argument('--ids',default='');p.add_argument('--resume',action='store_true');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--suite',default='eval/real200_cases.json');p.add_argument('--audit',default='data/runtime/qa200/real-release');p.add_argument('--oracle',default='data/runtime/qa200/oracle.json');p.add_argument('--output',default='data/runtime/qa200/run0');p.add_argument('--base',default='http://127.0.0.1:19100');p.add_argument('--model',default='deepseek-flash');p.add_argument('--prepare',action='store_true');p.add_argument('--ids',default='');p.add_argument('--resume',action='store_true');a=p.parse_args()
     suite_path=ROOT/a.suite;suite=json.loads(suite_path.read_text(encoding='utf-8'));ref=reference(ROOT/a.audit);oracle_path=ROOT/a.oracle
     assert suite['source_data_version']==ref['version']
     if a.prepare:prepare(suite,ref,oracle_path);return
     oracle=json.loads(oracle_path.read_text(encoding='utf-8'));assert oracle['data_version']==ref['version']
     assert oracle['suite_sha256']==hashlib.sha256(json.dumps(suite,ensure_ascii=False,sort_keys=True).encode()).hexdigest(),'Question suite changed after reference preparation'
     out=ROOT/a.output;out.mkdir(parents=True,exist_ok=True);path=out/'records.jsonl'
-    initial=hashes();initial['eval/real200_cases.json']=hashlib.sha256(suite_path.read_bytes()).hexdigest();initial['eval/real200_acceptance.py']=hashlib.sha256(Path(__file__).read_bytes()).hexdigest();initial['oracle']=hashlib.sha256(oracle_path.read_bytes()).hexdigest()
+    initial=hashes();initial['suite']=hashlib.sha256(suite_path.read_bytes()).hexdigest();initial['eval/real200_acceptance.py']=hashlib.sha256(Path(__file__).read_bytes()).hexdigest();initial['oracle']=hashlib.sha256(oracle_path.read_bytes()).hexdigest()
     records=[];groups={};prior={}
     if path.exists():
         if not a.resume:raise FileExistsError('不可覆盖已有运行；使用新目录或按固定版本恢复未提交题目')
@@ -284,18 +296,18 @@ def main():
     else:
         (out/'source_hashes.json').write_text(json.dumps(initial,indent=2),encoding='utf-8')
         (out/'cases.json').write_bytes(suite_path.read_bytes())
-        import requests
-        tags=requests.get('http://127.0.0.1:11434/api/tags',timeout=5).json()['models'];identity=next(x for x in tags if x['name']==a.model)
-        (out/'environment.json').write_text(json.dumps({'model':identity,'data_version':ref['version'],'index_collection':json.loads((ROOT/a.audit/'index_coverage.json').read_text())['collection'],'reference_date':suite['reference_date'],'context':16384,'temperature':0,'num_predict':3072,'thinking':False,'entry':'Java/SSE -> Python Agent -> real Ollama/MySQL/PDF/Chroma','data_kind':'real','quota_per_day':1000,'test_identity':'isolated local test account; credentials excluded'},ensure_ascii=False,indent=2),encoding='utf-8')
+        from src.agent.providers import resolve_chat_provider
+        identity=resolve_chat_provider(model=a.model).describe()
+        (out/'environment.json').write_text(json.dumps({'model':identity,'data_version':ref['version'],'index_collection':json.loads((ROOT/a.audit/'index_coverage.json').read_text())['collection'],'reference_date':suite['reference_date'],'temperature':0,'max_tokens':identity['max_tokens'],'thinking':False,'entry':'Java/SSE -> Python Agent -> cloud model/MySQL/PDF/Chroma','data_kind':'real','quota_per_day':1000,'test_identity':'isolated local test account; credentials excluded'},ensure_ascii=False,indent=2),encoding='utf-8')
     clients={};completed={r['case']['id'] for r in records}
     cases=[c for c in suite['cases'] if (not a.ids or c['id'] in a.ids.split(',')) and c['id'] not in completed]
     for case in cases:
         current=hashes()
-        if any(current.get(k)!=v for k,v in initial.items() if k not in {'eval/real200_cases.json','eval/real200_acceptance.py','oracle'}):raise RuntimeError('Frozen production changed')
-        assert hashlib.sha256(suite_path.read_bytes()).hexdigest()==initial['eval/real200_cases.json']
+        if any(current.get(k)!=v for k,v in initial.items() if k not in {'suite','eval/real200_acceptance.py','oracle'}):raise RuntimeError('Frozen production changed')
+        assert hashlib.sha256(suite_path.read_bytes()).hexdigest()==initial['suite']
         assert hashlib.sha256(Path(__file__).read_bytes()).hexdigest()==initial['eval/real200_acceptance.py']
         try:
-            # 作品说明：两个隔离账号各少于100个会话，避免验收自身触发现有历史保留上限；每组对话始终使用同一真实账号。
+            # 两个隔离账号各少于100个会话，避免验收自身触发现有历史保留上限；每组对话始终使用同一真实账号。
             cohort=0 if int(case['id'][1:])<=80 else 1
             credential_name='private_credentials.json' if cohort==0 else 'private_credentials_b.json'
             if cohort not in clients:clients[cohort]=NativeClient(a.base,out/credential_name)
@@ -310,6 +322,6 @@ def main():
         except Exception as exc:row={'case':case,'error':type(exc).__name__,'score':{'passed':False,'automated_pass':False,'errors':['test_or_service_'+type(exc).__name__],'critical':[],'review_required':[],'review_status':'not_required'}}
         records.append(row)
         with path.open('a',encoding='utf-8') as f:f.write(json.dumps(row,ensure_ascii=False)+'\n')
-        summary=summarize(records,suite['target']);(out/'summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
+        summary=summarize(records,suite['target'],len(suite['cases']));(out/'summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
         print(json.dumps({'id':case['id'],'auto':row['score']['automated_pass'],'errors':row['score']['errors'],'critical':row['score']['critical'],'seconds':row.get('run',{}).get('seconds'),'done':len(records),'pending_review':summary['source_review_pending']},ensure_ascii=False),flush=True)
 if __name__=='__main__':main()

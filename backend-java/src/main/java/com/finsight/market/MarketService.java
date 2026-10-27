@@ -34,7 +34,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 /**
- * 作品说明：行情/公司模块，Redis 缓存专项：
+ * 行情/公司模块，Redis 缓存专项：
  * - Cache-Aside + TTL 随机抖动（防雪崩）
  * - 未知公司缓存空值短 TTL（防穿透）
  * - 大屏聚合用 setnx 互斥重建（防击穿）
@@ -63,7 +63,7 @@ public class MarketService {
     private final ObjectMapper objectMapper;
     private final ObservabilityService observabilityService;
 
-    /* 作品说明：公司列表 */
+    /* 公司列表 */
 
     public List<CompanyItem> listCompanies(String keyword, String industry, String status) {
         List<CompanyItem> all = cached(KEY_COMPANIES, Duration.ofMinutes(10),
@@ -85,7 +85,7 @@ public class MarketService {
                 .stream().map(MarketService::toItem).toList();
     }
 
-    /* 作品说明：公司详情 */
+    /* 公司详情 */
 
     public CompanyDetail companyDetail(String stockCode) {
         String key = KEY_DETAIL + stockCode;
@@ -103,7 +103,7 @@ public class MarketService {
         Company company = companyMapper.selectOne(
                 new LambdaQueryWrapper<Company>().eq(Company::getStockCode, stockCode));
         if (company == null) {
-            // 作品说明：防穿透：未知代码缓存空哨兵 60s
+            // 防穿透：未知代码缓存空哨兵 60s
             redis.opsForValue().set(key, NULL_SENTINEL, Duration.ofSeconds(60));
             throw new BizException(ErrorCode.NOT_FOUND, "未收录该公司");
         }
@@ -122,7 +122,7 @@ public class MarketService {
         return detail;
     }
 
-    /* 作品说明：图表序列 */
+    /* 图表序列 */
 
     public CompanySeries companySeries(String stockCode) {
         return cached(KEY_SERIES + stockCode, Duration.ofMinutes(30),
@@ -135,7 +135,7 @@ public class MarketService {
                         financeMapper.cashflowSeries(stockCode)));
     }
 
-    /* 作品说明：门户大屏聚合 */
+    /* 门户大屏聚合 */
 
     public MarketSummary summary() {
         String raw = redis.opsForValue().get(KEY_SUMMARY);
@@ -145,7 +145,7 @@ public class MarketService {
             });
         }
         observabilityService.recordMarketCacheMiss(cacheLabel(KEY_SUMMARY));
-        // 作品说明：防击穿：互斥重建，抢锁失败时直接回源（本查询成本可控，避免自旋等待）
+        // 防击穿：互斥重建，抢锁失败时直接回源（本查询成本可控，避免自旋等待）
         Boolean locked = redis.opsForValue().setIfAbsent(KEY_SUMMARY_LOCK, "1", Duration.ofSeconds(10));
         MarketSummary summary = buildSummary();
         if (Boolean.TRUE.equals(locked)) {
@@ -180,7 +180,7 @@ public class MarketService {
     private List<Map<String, Object>> industryDistribution() {
         Map<String, long[]> grouped = new LinkedHashMap<>();
         for (CompanyItem item : listCompanies(null, null, null)) {
-            // 作品说明：行业保留完整分类名称，避免过度合并后丢失细分信息。
+            // 行业保留完整分类名称，避免过度合并后丢失细分信息。
             long[] counter = grouped.computeIfAbsent(item.industry(), k -> new long[2]);
             counter[0]++;
             if ("imported".equals(item.dataStatus())) {
@@ -200,7 +200,7 @@ public class MarketService {
         return result;
     }
 
-    /* 作品说明：热度榜 + UV */
+    /* 热度榜 + UV */
 
     public void recordView(String stockCode, String visitorKey) {
         try {
@@ -244,14 +244,14 @@ public class MarketService {
         return result;
     }
 
-    /** 作品说明：今日访客 UV（HyperLogLog 近似计数，管理端看板用） */
+    /** 今日访客 UV（HyperLogLog 近似计数，管理端看板用） */
     public long todayUv() {
         Long count = redis.opsForHyperLogLog()
                 .size(KEY_UV_PREFIX + LocalDate.now().format(DAY_FMT));
         return count == null ? 0 : count;
     }
 
-    /* 作品说明：缓存工具 */
+    /* 缓存工具 */
 
     private <T> T cached(String key, Duration ttl, TypeReference<T> type, Supplier<T> loader) {
         String raw = redis.opsForValue().get(key);
@@ -265,7 +265,7 @@ public class MarketService {
         return value;
     }
 
-    /** 作品说明：TTL 抖动 ±20%：错峰过期防雪崩 */
+    /** TTL 抖动 ±20%：错峰过期防雪崩 */
     private static String cacheLabel(String key) {
         if (key == null) {
             return "unknown";

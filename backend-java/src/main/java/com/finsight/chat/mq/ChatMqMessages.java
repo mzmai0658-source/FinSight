@@ -5,7 +5,7 @@ public final class ChatMqMessages {
     private ChatMqMessages() {
     }
 
-    /** 作品说明：对话审计消息 */
+    /** 对话审计消息 */
     public record ChatLogMessage(
             long userId,
             String sessionUid,
@@ -15,7 +15,7 @@ public final class ChatMqMessages {
             int durationMs) {
     }
 
-    /** 作品说明：会话标题生成任务 */
+    /** 会话标题生成任务 */
     public record TitleGenMessage(
             long sessionId,
             String sessionUid,

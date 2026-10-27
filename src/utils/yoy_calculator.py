@@ -1,4 +1,4 @@
-"""作品说明：同比/环比增长率自动计算模块
+"""同比/环比增长率自动计算模块
 在全量 ETL 入库后运行，批量计算并回填增长率字段
 公式：同比 = (本期 - 上期同期) / abs(上期同期) * 100
 """
@@ -13,9 +13,9 @@ from config.db_config import get_db_config
 
 PERIOD_ORDER = {"Q1": 1, "HY": 2, "Q3": 3, "FY": 4}
 
-# 作品说明：(表名, 增长率字段, 基础数值字段, 计算类型)
+# (表名, 增长率字段, 基础数值字段, 计算类型)
 YOY_RULES = [
-    # 作品说明：核心财务指标兼容表。
+    # 核心财务指标兼容表。
     ("core_performance_indicators_sheet", "net_profit_excl_non_recurring_yoy", "net_profit_excl_non_recurring", "yoy"),
 ]
 
@@ -77,7 +77,7 @@ def calculate_yoy_growth(engine=None):
 
 
 def calculate_qoq_growth(engine=None):
-    """作品说明：qoq 现已在 ETL 全量批处理中优先由“年报分季度主要财务数据”回填。
+    """qoq 现已在 ETL 全量批处理中优先由“年报分季度主要财务数据”回填。
     这里不再用累计值逆推单季度做数据库层补算，避免和财报原始披露口径混淆。
     """
     logger.info("[QOQ] skip database-level cumulative backfill; handled in ETL batch pipeline")

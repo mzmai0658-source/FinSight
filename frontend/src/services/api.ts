@@ -30,11 +30,17 @@ import type {
   ResearchReportItem,
   WatchlistItem,
 } from "@/types/platform";
+import type {
+  FinancialCandidate,
+  FinancialPublication,
+  FinancialReviewRequest,
+  FinancialSubmission,
+} from "@/types/financialSubmissions";
 
-/** 作品说明：所有浏览器 API 和登记资产均经 Java 鉴权，开发态由 Vite 代理 /api。 */
+/** 所有浏览器 API 和登记资产均经 Java 鉴权，开发态由 Vite 代理 /api。 */
 const API_BASE_URL = String(import.meta.env.VITE_API_BASE_URL ?? "").trim().replace(/\/$/, "");
 
-/* 作品说明：token 存储 */
+/* token 存储 */
 
 const TOKEN_KEY = "finsight-auth";
 
@@ -64,14 +70,14 @@ export function saveStoredAuth(auth: StoredAuth | null): void {
   }
 }
 
-/** 作品说明：认证失效（刷新也失败）时的回调，由 auth store 注册为登出跳转 */
+/** 认证失效（刷新也失败）时的回调，由 auth store 注册为登出跳转 */
 let onAuthExpired: (() => void) | null = null;
 
 export function setAuthExpiredHandler(handler: () => void): void {
   onAuthExpired = handler;
 }
 
-/* 作品说明：刷新单飞 */
+/* 刷新单飞 */
 
 let refreshing: Promise<string | null> | null = null;
 
@@ -103,7 +109,7 @@ function handleAuthExpired(): void {
   onAuthExpired?.();
 }
 
-/* 作品说明：axios 实例 */
+/* axios 实例 */
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -131,8 +137,13 @@ api.interceptors.response.use(
       }
       handleAuthExpired();
     }
-    // 作品说明：服务端业务错误（HTTP 4xx/5xx + 统一响应体）→ 还原成携带业务信息的错误
-    const envelope = error.response?.data as ApiEnvelope<unknown> | undefined;
+    // 服务端业务错误（HTTP 4xx/5xx + 统一响应体）→ 还原成携带业务信息的错误
+    let responseData = error.response?.data;
+    // PDF 请求使用 blob，但错误仍是统一 JSON 响应；先解码才能保留业务提示。
+    if (responseData instanceof Blob && responseData.size <= 1024 * 1024 && /\bjson\b/i.test(responseData.type)) {
+      try { responseData = JSON.parse(await responseData.text()); } catch { /* 非 JSON 保留原始网络错误。 */ }
+    }
+    const envelope = responseData as ApiEnvelope<unknown> | undefined;
     if (envelope && typeof envelope.code === "number" && envelope.message) {
       const bizError = new Error(envelope.message);
       (bizError as Error & { code?: number }).code = envelope.code;
@@ -142,7 +153,7 @@ api.interceptors.response.use(
   },
 );
 
-/** 作品说明：解包统一响应；业务码非 0 抛出携带 message 的错误 */
+/** 解包统一响应；业务码非 0 抛出携带 message 的错误 */
 function unwrap<T>(envelope: ApiEnvelope<T>): T {
   if (envelope.code !== 0) {
     const err = new Error(envelope.message || "请求失败");
@@ -152,7 +163,7 @@ function unwrap<T>(envelope: ApiEnvelope<T>): T {
   return envelope.data;
 }
 
-/* 作品说明：认证接口 */
+/* 认证接口 */
 
 export async function register(payload: {
   username: string;
@@ -182,7 +193,7 @@ export async function logout(): Promise<void> {
   try {
     await api.post("/api/auth/logout", { refreshToken: stored?.refreshToken ?? "" });
   } catch {
-    // 作品说明：服务端撤销失败不阻塞本地登出
+    // 服务端撤销失败不阻塞本地登出
   }
   saveStoredAuth(null);
 }
@@ -192,7 +203,7 @@ export async function fetchMe(): Promise<AuthUser> {
   return unwrap(data);
 }
 
-/* 作品说明：元信息 */
+/* 元信息 */
 
 export async function fetchHealth(): Promise<HealthResponse> {
   const { data } = await api.get<ApiEnvelope<HealthResponse>>("/api/meta/health");
@@ -219,7 +230,7 @@ export async function fetchExamples(): Promise<ExamplesResponse> {
   return unwrap(data);
 }
 
-/* 作品说明：多会话 */
+/* 多会话 */
 
 export async function createSession(): Promise<{ sessionUid: string; title: string }> {
   const { data } = await api.post<ApiEnvelope<{ sessionUid: string; title: string }>>("/api/chat/sessions");
@@ -261,7 +272,7 @@ export async function cancelTask(taskId: string): Promise<TaskView> {
   return response.data.data;
 }
 
-/* 作品说明：行情门户（公开只读） */
+/* 行情门户（公开只读） */
 
 export async function fetchMarketSummary(): Promise<MarketSummary> {
   const { data } = await api.get<ApiEnvelope<MarketSummary>>("/api/market/summary");
@@ -296,7 +307,7 @@ export async function fetchHotCompanies(limit = 10): Promise<HotCompany[]> {
   return unwrap(data);
 }
 
-/* 作品说明：AI 诊股 */
+/* AI 诊股 */
 
 export async function fetchDiagnosis(stockCode: string): Promise<AdvisorDiagnosis> {
   const { data } = await api.get<ApiEnvelope<AdvisorDiagnosis>>(`/api/advisor/${stockCode}`);
@@ -315,7 +326,7 @@ export async function fetchAdvisorReport(reportId: number): Promise<AdvisorRepor
   return unwrap(data);
 }
 
-/* 作品说明：研报库（公开只读） */
+/* 研报库（公开只读） */
 
 export interface FinancialMaterial {
   materialId?: number;
@@ -396,7 +407,7 @@ export async function fetchFinancialPage(id: number, page = 1): Promise<Research
   return unwrap(data);
 }
 
-/* 作品说明：自选股 */
+/* 自选股 */
 
 export async function fetchWatchlist(): Promise<WatchlistItem[]> {
   const { data } = await api.get<ApiEnvelope<WatchlistItem[]>>("/api/watchlist");
@@ -418,7 +429,7 @@ export async function removeWatch(stockCode: string): Promise<void> {
   unwrap(data);
 }
 
-/* 作品说明：站内信 */
+/* 站内信 */
 
 export async function fetchNotifications(page = 1, size = 10): Promise<PagedResult<NotificationItem>> {
   const { data } = await api.get<ApiEnvelope<PagedResult<NotificationItem>>>("/api/notifications", {
@@ -442,7 +453,7 @@ export async function markAllNotificationsRead(): Promise<void> {
   unwrap(data);
 }
 
-/* 作品说明：个人资料 */
+/* 个人资料 */
 
 export async function updateProfile(payload: {
   nickname?: string;
@@ -457,7 +468,7 @@ export async function updateProfile(payload: {
   return user;
 }
 
-/* 作品说明：管理端 */
+/* 管理端 */
 
 export async function fetchAdminOverview(): Promise<AdminOverview> {
   const { data } = await api.get<ApiEnvelope<AdminOverview>>("/api/admin/overview");
@@ -512,10 +523,84 @@ export async function retryEtlTask(taskId: number): Promise<EtlTaskItem> {
   return unwrap(data);
 }
 
-/* 作品说明：SSE 流式问答 */
+/* 财报提交、逐份审核及选定发布均经 Java 鉴权；处理完成不会自动发布。 */
+
+export async function submitFinancialSubmission(file: File): Promise<FinancialSubmission> {
+  const form = new FormData();
+  form.append("file", file);
+  const { data } = await api.post<ApiEnvelope<FinancialSubmission>>("/api/financial-submissions", form, { timeout: 120000 });
+  return unwrap(data);
+}
+
+export async function fetchFinancialSubmissions(params: { page?: number; size?: number }): Promise<PagedResult<FinancialSubmission>> {
+  const { data } = await api.get<ApiEnvelope<PagedResult<FinancialSubmission>>>("/api/financial-submissions", { params });
+  return unwrap(data);
+}
+
+export async function fetchFinancialSubmission(id: number): Promise<FinancialSubmission> {
+  const { data } = await api.get<ApiEnvelope<FinancialSubmission>>(`/api/financial-submissions/${id}`);
+  return unwrap(data);
+}
+
+export async function retryFinancialSubmission(id: number): Promise<FinancialSubmission> {
+  const { data } = await api.post<ApiEnvelope<FinancialSubmission>>(`/api/financial-submissions/${id}/retry`);
+  return unwrap(data);
+}
+
+export async function fetchFinancialSubmissionOriginal(id: number): Promise<Blob> {
+  try {
+    const { data } = await api.get<Blob>(`/api/financial-submissions/${id}/original`, { responseType: "blob", timeout: 60000 });
+    if (data.type.split(";")[0] === "application/pdf") return data;
+    throw await financialOriginalError(data) || new Error("服务器未返回 PDF 原件，请重新登录或稍后重试。");
+  } catch (cause) {
+    const blob = (cause as AxiosError<Blob>).response?.data;
+    if (blob instanceof Blob) {
+      const businessError = await financialOriginalError(blob);
+      if (businessError) throw businessError;
+    }
+    throw cause;
+  }
+}
+
+async function financialOriginalError(blob: Blob): Promise<Error | null> {
+  if (!blob.type.includes("json")) return null;
+  try {
+    const raw = typeof blob.text === "function" ? await blob.text() : await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = () => reject(reader.error);
+      reader.readAsText(blob);
+    });
+    const envelope = JSON.parse(raw) as ApiEnvelope<unknown>;
+    if (typeof envelope.code === "number" && envelope.code !== 0 && envelope.message) return Object.assign(new Error(envelope.message), { code: envelope.code });
+  } catch { /* 无法解析的错误体交由原始请求错误处理。 */ }
+  return null;
+}
+
+export async function fetchAdminFinancialSubmissions(params: { page?: number; size?: number; reviewStatus?: string }): Promise<PagedResult<FinancialSubmission>> {
+  const { data } = await api.get<ApiEnvelope<PagedResult<FinancialSubmission>>>("/api/admin/financial-submissions", { params });
+  return unwrap(data);
+}
+
+export async function fetchFinancialSubmissionCandidate(id: number): Promise<FinancialCandidate> {
+  const { data } = await api.get<ApiEnvelope<FinancialCandidate>>(`/api/admin/financial-submissions/${id}/candidate`);
+  return unwrap(data);
+}
+
+export async function reviewFinancialSubmission(id: number, review: FinancialReviewRequest): Promise<FinancialSubmission> {
+  const { data } = await api.post<ApiEnvelope<FinancialSubmission>>(`/api/admin/financial-submissions/${id}/review`, review);
+  return unwrap(data);
+}
+
+export async function publishFinancialSubmissions(ids: number[]): Promise<FinancialPublication> {
+  const { data } = await api.post<ApiEnvelope<FinancialPublication>>("/api/admin/financial-submissions/publish", { ids }, { timeout: 120000 });
+  return unwrap(data);
+}
+
+/* SSE 流式问答 */
 
 /**
- * 作品说明：fetch + ReadableStream 解析 text/event-stream。
+ * fetch + ReadableStream 解析 text/event-stream。
  * 401 时自动刷新 token 重试一次；事件分发给 handlers。
  */
 export class StreamRejectedError extends Error {}
@@ -551,7 +636,7 @@ export async function streamChat(
     }
     response = await doFetch(token);
   }
-  // 作品说明：非 SSE 响应（会话忙 409 / 限流 429 / 配额 429 / 5xx）→ 解析统一响应体抛业务错误
+  // 非 SSE 响应（会话忙 409 / 限流 429 / 配额 429 / 5xx）→ 解析统一响应体抛业务错误
   const contentType = response.headers.get("content-type") ?? "";
   if (!response.ok || !contentType.includes("text/event-stream")) {
     const text = await response.text();
@@ -559,7 +644,7 @@ export async function streamChat(
     try {
       message = (JSON.parse(text) as { message?: string }).message ?? message;
     } catch {
-      // 作品说明：非 JSON 响应时使用默认提示
+      // 非 JSON 响应时使用默认提示
     }
     throw new StreamRejectedError(message);
   }

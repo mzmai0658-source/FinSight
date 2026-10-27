@@ -15,6 +15,8 @@ def scoped(monkeypatch,tmp_path):
         raw_precision=0,literal='营业收入 | 100',extraction='ocr',verification='literal_checked',scope_proof=proof)
     monkeypatch.setattr('src.utils.statement_scope.scope_rectangle_texts',lambda *args:('合并利润表','营业收入','100'))
     monkeypatch.setattr('src.utils.statement_scope.physical_titles',lambda *args:(dict(page=1,top=10,scope='consolidated',family='利润表'),))
+    # 本组仅隔离验证报表范围；真实PDF编制单位校验由test_statement_owner_identity覆盖。
+    monkeypatch.setattr('src.utils.statement_scope.statement_company_status',lambda *args:'not_declared')
     return f,path
 
 

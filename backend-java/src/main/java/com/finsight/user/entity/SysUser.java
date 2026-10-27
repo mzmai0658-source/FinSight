@@ -26,10 +26,10 @@ public class SysUser {
 
     private String role;
 
-    /** 作品说明：风险偏好: conservative / balanced / aggressive */
+    /** 风险偏好: conservative / balanced / aggressive */
     private String riskProfile;
 
-    /** 作品说明：1 正常 0 禁用 */
+    /** 1 正常 0 禁用 */
     private Integer status;
 
     @TableLogic

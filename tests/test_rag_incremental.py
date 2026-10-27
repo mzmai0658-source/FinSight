@@ -1,4 +1,4 @@
-"""作品说明：通过内存向量库和确定性向量替身测试索引，不访问网络。"""
+"""通过内存向量库和确定性向量替身测试索引，不访问网络。"""
 import hashlib
 import sys
 from pathlib import Path
@@ -19,7 +19,7 @@ from src.etl.research_metadata import ResearchMeta, normalize_title
 
 
 class FakeEmbedder:
-    """作品说明：确定性向量：hash 前 8 字节展开，无网络依赖。"""
+    """确定性向量：hash 前 8 字节展开，无网络依赖。"""
 
     def name(self):
         return "fake"
@@ -37,7 +37,7 @@ def collection():
     chromadb = pytest.importorskip("chromadb")
     import uuid
 
-    # 作品说明：EphemeralClient 在同进程内共享存储，集合名需唯一避免跨用例冲突
+    # EphemeralClient 在同进程内共享存储，集合名需唯一避免跨用例冲突
     client = chromadb.EphemeralClient()
     return client.create_collection(f"test_kb_{uuid.uuid4().hex[:8]}", embedding_function=FakeEmbedder())
 

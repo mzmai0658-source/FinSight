@@ -1,4 +1,4 @@
-"""作品说明：运行真实 Windows 启动器，检查环境配置优先级。"""
+"""运行真实 Windows 启动器，检查环境配置优先级。"""
 import base64
 import os
 from pathlib import Path

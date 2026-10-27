@@ -17,7 +17,7 @@ public class ResearchReport {
 
     private String title;
 
-    /** 作品说明：研报类别区分个股与行业。 */
+    /** 研报类别区分个股与行业。 */
     private String reportType;
 
     private String stockCode;
@@ -46,7 +46,7 @@ public class ResearchReport {
 
     private String datasetTag;
 
-    /** 作品说明：本地是否有研报 PDF 原文 */
+    /** 本地是否有研报 PDF 原文 */
     private Integer pdfPresent;
 
     private LocalDateTime createdAt;

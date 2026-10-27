@@ -1,4 +1,4 @@
-"""作品说明：通过真实登录页面只读检查 Vue 渲染、图表按需加载和原始 PDF。"""
+"""通过真实登录页面只读检查 Vue 渲染、图表按需加载和原始 PDF。"""
 import base64,json,sys,time
 import requests,websocket
 from pathlib import Path
@@ -78,7 +78,7 @@ def main():
         record('pdf_click_target_is_visible_button',hit['isButton'],hit=hit)
         b.call('Input.dispatchMouseEvent',dict(type='mousePressed',button='left',clickCount=1,**point))
         b.call('Input.dispatchMouseEvent',dict(type='mouseReleased',button='left',clickCount=1,**point))
-        # 作品说明：原件按钮在独立弹窗的 iframe 中打开 PDF，聊天页中的按钮本身没有改成链接。
+        # 原件按钮在独立弹窗的 iframe 中打开 PDF，聊天页中的按钮本身没有改成链接。
         child_info=None
         for _ in range(30):
             child_info=next((t for t in b.call('Target.getTargets')['targetInfos'] if t['targetId'] not in before_targets and t['type']=='page'),None)

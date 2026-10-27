@@ -26,6 +26,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.doAnswer;
 
 @ExtendWith(MockitoExtension.class)
 class EtlTaskConsumerTest {
@@ -147,6 +148,31 @@ class EtlTaskConsumerTest {
         consumer.onTask(new EtlTaskMessage(13L), channel, amqpMessage);
         verify(agentClient).runEtl(task.getFilePath(), task.getFileType(), false);
         verify(channel).basicAck(123L, false);
+    }
+
+    @Test
+    void financialCandidatePreparationDoesNotInvalidatePublishedMarketData() {
+        EtlTask task = task(14L, EtlTaskService.STATUS_PENDING);
+        when(taskService.getById(14L)).thenReturn(task);
+        when(taskService.markRunning(task)).thenReturn(true);
+        Map<String,Object> report = Map.of("status", "success", "review_status", "WAITING");
+        when(agentClient.runEtl(task.getFilePath(), task.getFileType(), false)).thenReturn(report);
+        doAnswer(call -> {task.setStatus("SUCCESS");task.setReviewStatus("WAITING");return null;})
+                .when(taskService).complete(task, report);
+        consumer.onTask(new EtlTaskMessage(14L), channel, amqpMessage);
+        verifyNoInteractions(redis);
+    }
+
+    @Test
+    void researchSuccessKeepsExistingCacheInvalidationBehavior() {
+        EtlTask task = task(15L, EtlTaskService.STATUS_PENDING); task.setFileType("research");
+        when(taskService.getById(15L)).thenReturn(task);
+        when(taskService.markRunning(task)).thenReturn(true);
+        Map<String,Object> report = Map.of("status", "success");
+        when(agentClient.runEtl(task.getFilePath(), task.getFileType(), false)).thenReturn(report);
+        doAnswer(call -> {task.setStatus("SUCCESS");return null;}).when(taskService).complete(task, report);
+        consumer.onTask(new EtlTaskMessage(15L), channel, amqpMessage);
+        verify(redis).delete("market:summary");
     }
 
     private static EtlTask task(long id, String status) {

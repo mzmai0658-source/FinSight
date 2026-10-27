@@ -45,8 +45,8 @@ public class MqOutboxService {
             throw new IllegalStateException("Outbox message was not persisted");
         }
 
-        // 作品说明：任务事务提交后，调度器才能读取对应发件箱消息。
-        // 作品说明：避免在任务未提交时发送消息，使快速消费者确认尚不可见的任务。
+        // 任务事务提交后，调度器才能读取对应发件箱消息。
+        // 避免在任务未提交时发送消息，使快速消费者确认尚不可见的任务。
         if (TransactionSynchronizationManager.isActualTransactionActive()) {
             return;
         }

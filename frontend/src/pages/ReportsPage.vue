@@ -17,7 +17,7 @@ const router = useRouter();
 function initialTab(): Tab {
   const query = route.query.tab;
   if (query === "financial" || query === "institution") return query;
-  // 作品说明：财报原件需要登录才能查看；未登录时先展示公开的机构研报
+  // 财报原件需要登录才能查看；未登录时先展示公开的机构研报
   return loadStoredAuth() ? "financial" : "institution";
 }
 

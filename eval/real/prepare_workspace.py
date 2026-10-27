@@ -1,4 +1,4 @@
-"""作品说明：固定前瞻公司划分，并准备独立本机验证数据库。"""
+"""固定前瞻公司划分，并准备独立本机验证数据库。"""
 from __future__ import annotations
 import hashlib
 import json
@@ -20,6 +20,8 @@ def main():
     from sqlalchemy import create_engine,text
     from config.db_config import get_db_config, DatabaseConfig
     load_dotenv(ROOT/'.env',override=True)
+    from src.agent.providers import resolve_chat_provider
+    cloud=resolve_chat_provider()
     admin=get_db_config()
     if admin.host not in {'localhost','127.0.0.1','::1'}:raise RuntimeError('Local DB only')
     engine=create_engine(admin.connection_string)
@@ -53,7 +55,7 @@ def main():
     from src.etl.provenance_store import metadata
     Base.metadata.create_all(real); metadata.create_all(real)
     with real.begin() as conn:
-        # 作品说明：只复制表结构，不复制原始报告数据。
+        # 只复制表结构，不复制原始报告数据。
         if not admin.database.replace('_','').isalnum():raise ValueError('Invalid source schema')
         conn.execute(text(f'CREATE TABLE IF NOT EXISTS company LIKE `{admin.database}`.company'))
         for code in CODES:
@@ -73,9 +75,9 @@ def main():
         settings={'DB_HOST':admin.host,'DB_PORT':str(admin.port),'DB_USER':admin.user,'DB_PASSWORD':admin.password,'DB_NAME':database,
                   'SQL_DB_USER':user,'SQL_DB_PASSWORD':password,'SQL_DB_NAME':database,
                   'MYSQL_HOST':admin.host,'MYSQL_PORT':str(admin.port),'MYSQL_USER':admin.user,'MYSQL_PASSWORD':admin.password,'MYSQL_DATABASE':database,
-                  'LLM_PROVIDER':'ollama','LLM_MODEL':'qwen3.5:9b-q4_K_M','OLLAMA_MODEL':'qwen3.5:9b-q4_K_M','OLLAMA_REASONING_EFFORT':'low',
-                  'LLM_BASE_URL':'http://127.0.0.1:11434/v1','OLLAMA_BASE_URL':'http://127.0.0.1:11434/v1','OLLAMA_CONTEXT_LENGTH':'16384',
-                  'LLM_MAX_TOKENS':'4096','LLM_TIMEOUT_SECONDS':'300','LLM_MAX_RETRIES':'2','ETL_LLM_MAX_WORKERS':'1',
+                  'LLM_PROVIDER':cloud.provider,'LLM_MODEL':cloud.model,
+                  'LLM_BASE_URL':cloud.base_url,'LLM_API_KEY':cloud.api_key,
+                  'LLM_MAX_TOKENS':str(cloud.max_tokens),'LLM_TIMEOUT_SECONDS':str(cloud.timeout_seconds),'LLM_MAX_RETRIES':str(cloud.max_retries),'ETL_LLM_MAX_WORKERS':'1',
                   'EMBEDDING_PROVIDER':'bge_local','EMBEDDING_MODEL':'BAAI/bge-small-zh-v1.5','EMBEDDING_DEVICE':'cpu','HF_HUB_OFFLINE':'1',
                   'CHROMA_DB_PATH':'data/real_eval_chroma_db','FINANCIAL_FACTS_MANIFEST':'','ETL_INGEST_RAG':'true'}
         for key,value in settings.items():set_key(str(env),key,value)

@@ -1,4 +1,4 @@
-"""作品说明：真实浏览器登录与保存结果渲染，证据不包含登录凭据。"""
+"""真实浏览器登录与保存结果渲染，证据不包含登录凭据。"""
 from __future__ import annotations
 import argparse
 import base64
@@ -50,10 +50,10 @@ def run(args):
         data=browser.call('Page.captureScreenshot',dict(format='png',clip=dict(x=494,y=448,width=670,height=410,scale=1)))['data']
         (out/'report-chart.png').write_bytes(base64.b64decode(data))
         checks['session_switch']=browser.evaluate('document.body.innerText.includes("柱状图") || document.querySelectorAll("canvas").length>0')
-        # 作品说明：点击真实原页按钮，网络与 PDF 打开结果另由对应资源请求核对。
+        # 点击真实原页按钮，网络与 PDF 打开结果另由对应资源请求核对。
         buttons=browser.evaluate("[...document.querySelectorAll('button')].filter(b=>b.innerText.includes('打开') && b.innerText.includes('页')).length")
         checks['original_page_button_present']=buttons>0
-        # 作品说明：真实点击后检查新窗口中的原页 PDF iframe，而非仅检查按钮存在。
+        # 真实点击后检查新窗口中的原页 PDF iframe，而非仅检查按钮存在。
         original={t['id'] for t in requests.get(args.debugger+'/json/list',timeout=10).json()}
         browser.call('Runtime.evaluate',dict(expression="[...document.querySelectorAll('button')].find(b=>b.innerText.includes('打开') && b.innerText.includes('页')).click()",userGesture=True))
         pdf_frame='';popup_id=None

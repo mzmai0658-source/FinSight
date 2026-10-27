@@ -1,4 +1,4 @@
-"""作品说明：提供当前发布财务快照，不允许访问任意文件。"""
+"""提供当前发布财务快照，不允许访问任意文件。"""
 from pathlib import Path
 import hashlib
 from sqlalchemy import inspect, select, func, or_, text
@@ -49,7 +49,7 @@ def _published_catalogue(engine, page=1, size=12, keyword=''):
 def catalogue(engine, page=1, size=12, keyword=''):
     if not inspect(engine).has_table('financial_report_material'):
         return _published_catalogue(engine, page, size, keyword)
-    # 作品说明：列表只返回轻量元数据，不加载大规模页内容。
+    # 列表只返回轻量元数据，不加载大规模页内容。
     with engine.connect() as conn:
         rows=conn.execute(text('SELECT id,stock_code,company,report_year,report_period,report_kind,identity_status,'
                                'file_name,sha256,page_count,text_page_count,content_source,content_state,notes '
@@ -73,7 +73,7 @@ def catalogue(engine, page=1, size=12, keyword=''):
                         'qualityStatus':matching.get('qualityStatus','unknown') if matching else 'not_structured',
                         'qualityWarnings':matching.get('qualityWarnings',[]) if matching else [],
                         'missingFields':matching.get('missingFields',[]) if matching else []})
-    # 作品说明：新发布上传在批处理前即可出现在列表中。
+    # 新发布上传在批处理前即可出现在列表中。
     records.extend({**row,'structured':True} for row in published if row['sha256'] not in seen)
     stats={'total':len(records),'structured':sum(r.get('structured',False) for r in records),
            'readable':sum(r.get('textPageCount',0)>0 for r in records)}

@@ -1,4 +1,4 @@
-"""作品说明：PDF 字段来源与财务快照在同一事务中版本化保存。"""
+"""PDF 字段来源与财务快照在同一事务中版本化保存。"""
 from __future__ import annotations
 import hashlib
 import json
@@ -30,7 +30,7 @@ def identity_clause(data: dict):
 
 
 def persist_snapshot(conn, data: dict, tables: dict, fill_only: bool = False) -> None:
-    """作品说明：不自行执行 DDL 或提交，与调用方财务行使用同一事务。"""
+    """不自行执行 DDL 或提交，与调用方财务行使用同一事务。"""
     identity={k:data[k] for k in ('stock_code','report_year','report_period')}
     old=conn.execute(select(current.c.payload).where(identity_clause(identity))).scalar_one_or_none()
     payload=old if fill_only and old else {**identity,'document':data.get('_source_document'),'facts':[]}
@@ -81,7 +81,7 @@ def persist_snapshot(conn, data: dict, tables: dict, fill_only: bool = False) ->
                 fact.update(status='source_located',location_precision='table_page',human_verified=False)
             by_key[table,name]=fact
     payload['facts']=list(by_key.values())
-    # 作品说明：完整来源快照生成稳定版本，便于审计及重试。
+    # 完整来源快照生成稳定版本，便于审计及重试。
     payload=json.loads(json.dumps(payload,ensure_ascii=False,default=str))
     digest=hashlib.sha256(json.dumps(payload,sort_keys=True,ensure_ascii=False).encode()).hexdigest()
     if conn.execute(select(versions.c.version_id).where(versions.c.version_id==digest)).first() is None:

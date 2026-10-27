@@ -8,7 +8,7 @@ public final class MarketDtos {
     private MarketDtos() {
     }
 
-    /** 作品说明：公司列表项 */
+    /** 公司列表项 */
     public record CompanyItem(
             String stockCode,
             String abbr,
@@ -23,7 +23,7 @@ public final class MarketDtos {
             Integer lastYear) {
     }
 
-    /** 作品说明：公司详情：档案 + 最新年报核心指标 + 数据覆盖 */
+    /** 公司详情：档案 + 最新年报核心指标 + 数据覆盖 */
     public record CompanyDetail(
             CompanyItem profile,
             String enName,
@@ -33,7 +33,7 @@ public final class MarketDtos {
             List<Map<String, Object>> coverage) {
     }
 
-    /** 作品说明：图表序列：core/balance/cashflow 三组年度数据 */
+    /** 图表序列：core/balance/cashflow 三组年度数据 */
     public record CompanySeries(
             String stockCode,
             List<Map<String, Object>> core,
@@ -41,11 +41,11 @@ public final class MarketDtos {
             List<Map<String, Object>> cashflow) {
     }
 
-    /** 作品说明：热度榜条目 */
+    /** 热度榜条目 */
     public record HotCompany(String stockCode, String abbr, String industry, long views) {
     }
 
-    /** 作品说明：门户大屏聚合 */
+    /** 门户大屏聚合 */
     public record MarketSummary(
             long importedCompanies,
             long pendingCompanies,

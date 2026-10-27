@@ -1,0 +1,2838 @@
+{
+  "schema": 1,
+  "name": "cloud-generalization64-20261024",
+  "old_freeze_sha256": "df5d895933b3160bf555b6584995679622463838fc607f4d90caf19de1a2ae0d",
+  "old_questions_sha256": "a858576d2b62cfb90465c66b5701117986d02189bdf4460c2acdbf6f35382851",
+  "cohorts": {
+    "U01S01": "seen48",
+    "U01S08": "seen48",
+    "U02S02": "seen48",
+    "U02S09": "seen48",
+    "U02S10": "seen48",
+    "U03S03": "seen48",
+    "U03S07": "seen48",
+    "U03S12": "seen48",
+    "U04S04": "seen48",
+    "U04S11": "seen48",
+    "U05S08": "seen48",
+    "U05S12": "seen48",
+    "U06S04": "seen48",
+    "U06S09": "seen48",
+    "U07S07": "seen48",
+    "U07S10": "seen48",
+    "U08S08": "seen48",
+    "U08S11": "seen48",
+    "U09S04": "seen48",
+    "U09S10": "seen48",
+    "U09S12": "seen48",
+    "U10S07": "seen48",
+    "U10S09": "seen48",
+    "U10S11": "seen48",
+    "U01AT1": "seen48",
+    "U01AT2": "seen48",
+    "U01AT3": "seen48",
+    "U01AT4": "seen48",
+    "U02BT1": "seen48",
+    "U02BT2": "seen48",
+    "U02BT3": "seen48",
+    "U02BT4": "seen48",
+    "U04BT1": "seen48",
+    "U04BT2": "seen48",
+    "U04BT3": "seen48",
+    "U04BT4": "seen48",
+    "U07AT1": "seen48",
+    "U07AT2": "seen48",
+    "U07AT3": "seen48",
+    "U07AT4": "seen48",
+    "U08BT1": "seen48",
+    "U08BT2": "seen48",
+    "U08BT3": "seen48",
+    "U08BT4": "seen48",
+    "U09BT1": "seen48",
+    "U09BT2": "seen48",
+    "U09BT3": "seen48",
+    "U09BT4": "seen48",
+    "N01S01": "new16",
+    "N02S01": "new16",
+    "N03S01": "new16",
+    "N04S01": "new16",
+    "N05S01": "new16",
+    "N06S01": "new16",
+    "N07S01": "new16",
+    "N08S01": "new16",
+    "N01AT1": "new16",
+    "N01AT2": "new16",
+    "N01AT3": "new16",
+    "N01AT4": "new16",
+    "N02AT1": "new16",
+    "N02AT2": "new16",
+    "N02AT3": "new16",
+    "N02AT4": "new16"
+  },
+  "seen_single_families": {
+    "basic": [
+      "U01S01",
+      "U02S02",
+      "U03S03"
+    ],
+    "scope": [
+      "U04S04",
+      "U06S04",
+      "U09S04"
+    ],
+    "negative_q3": [
+      "U03S07",
+      "U07S07",
+      "U10S07"
+    ],
+    "yoy": [
+      "U01S08",
+      "U05S08",
+      "U08S08"
+    ],
+    "mixed_eps_units": [
+      "U02S09",
+      "U06S09",
+      "U10S09"
+    ],
+    "rank": [
+      "U02S10",
+      "U07S10",
+      "U09S10"
+    ],
+    "chart": [
+      "U04S11",
+      "U08S11",
+      "U10S11"
+    ],
+    "cause_quote": [
+      "U03S12",
+      "U05S12",
+      "U09S12"
+    ]
+  },
+  "seen_groups": [
+    "U01A",
+    "U02B",
+    "U04B",
+    "U07A",
+    "U08B",
+    "U09B"
+  ],
+  "new_groups": [
+    "N01A",
+    "N02A"
+  ],
+  "cases": [
+    {
+      "id": "U01S01",
+      "company_code": "000333",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "查数",
+      "question": "请列出美的集团2023、2024、2025年全年合并营业收入，用亿元保留两位小数，表格即可。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "000333"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "亿元",
+            "decimals": 2,
+            "format": "table"
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U01S08",
+      "company_code": "000333",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "计算比较",
+      "question": "根据美的集团2023年和2024年全年合并营业收入，算2024年比2023年的同比增长率。先列两年金额，金额用万元两位小数，增长率用百分比保留两位。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "compare",
+            "codes": [
+              "000333"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2023,
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2,
+            "calculation": "yoy",
+            "axis": "years"
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U02S02",
+      "company_code": "002594",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "查数",
+      "question": "比亚迪2023年至2025年，每年归属于上市公司股东的净利润分别是多少？用万元，保留两位，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "002594"
+            ],
+            "metrics": [
+              "attributable_net_profit"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U02S09",
+      "company_code": "002594",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "每股百分比",
+      "question": "请给比亚迪2023、2024、2025年全年的基本每股收益和加权平均净资产收益率。每股收益用元/股，收益率用%，各保留两位小数，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "002594"
+            ],
+            "metrics": [
+              "eps_basic"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "元/股",
+            "decimals": 2
+          },
+          {
+            "kind": "lookup",
+            "codes": [
+              "002594"
+            ],
+            "metrics": [
+              "roe_weighted"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "%",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U02S10",
+      "company_code": "002594",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "公司排名",
+      "question": "只比较比亚迪、贵州茅台、长江电力2024年全年合并营业收入，按从高到低列前两家，万元两位小数，用表格，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "rank",
+            "codes": [
+              "002594",
+              "600519",
+              "600900"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2,
+            "format": "table",
+            "order": "desc",
+            "limit": 2,
+            "axis": "companies"
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U03S03",
+      "company_code": "600519",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "查数",
+      "question": "查贵州茅台2023、2024和2025年的全年扣非归母净利润，单位元，保留两位小数。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "600519"
+            ],
+            "metrics": [
+              "deducted_attributable_net_profit"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U03S07",
+      "company_code": "600519",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "累计报告期",
+      "question": "贵州茅台2023、2024和2025年各年前三季度累计的营业收入和合并净利润合计各是多少？不要只取第三季度单季；用亿元、两位小数，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "600519"
+            ],
+            "metrics": [
+              "operating_revenue",
+              "net_profit"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "Q3"
+            ],
+            "scope": "consolidated",
+            "unit": "亿元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U03S12",
+      "company_code": "600519",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "原因与原文",
+      "question": "贵州茅台2025年全年归母净利润相较2024年为什么变化？请只根据年报经营分析解释，给出原件页码；另把2025年归母净利润所在原文行逐字摘出并标页码，金额用万元两位小数，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "cause",
+            "codes": [
+              "600519"
+            ],
+            "metrics": [
+              "attributable_net_profit"
+            ],
+            "years": [
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          },
+          {
+            "kind": "quote",
+            "codes": [
+              "600519"
+            ],
+            "metrics": [
+              "attributable_net_profit"
+            ],
+            "years": [
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2,
+            "quote_mode": "literal"
+          }
+        ],
+        "no_chart": true,
+        "manual_review": [
+          "cause_claims_against_original",
+          "literal_row_complete"
+        ]
+      }
+    },
+    {
+      "id": "U04S04",
+      "company_code": "600900",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "范围口径",
+      "question": "分别列出长江电力2023、2024、2025年合并利润表的净利润合计，以及母公司单体利润表的净利润。两种口径分开，用万元两位小数，不要拿归母替代。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "600900"
+            ],
+            "metrics": [
+              "net_profit"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          },
+          {
+            "kind": "lookup",
+            "codes": [
+              "600900"
+            ],
+            "metrics": [
+              "net_profit"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "parent",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U04S11",
+      "company_code": "600900",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "图表",
+      "question": "把长江电力2023年至2025年全年合并营业收入画成折线图，按年份从早到晚，纵轴单位亿元，保留两位小数。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "chart",
+            "codes": [
+              "600900"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "亿元",
+            "decimals": 2,
+            "chart": "line"
+          }
+        ]
+      }
+    },
+    {
+      "id": "U05S08",
+      "company_code": "601668",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "计算比较",
+      "question": "根据中国建筑2023年和2024年全年合并营业收入，算2024年比2023年的同比增长率。先列两年金额，金额用万元两位小数，增长率用百分比保留两位。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "compare",
+            "codes": [
+              "601668"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2023,
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2,
+            "calculation": "yoy",
+            "axis": "years"
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U05S12",
+      "company_code": "601668",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "原因与原文",
+      "question": "中国建筑2025年全年归母净利润相较2024年为什么变化？请只根据年报经营分析解释，给出原件页码；另把2025年归母净利润所在原文行逐字摘出并标页码，金额用万元两位小数，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "cause",
+            "codes": [
+              "601668"
+            ],
+            "metrics": [
+              "attributable_net_profit"
+            ],
+            "years": [
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          },
+          {
+            "kind": "quote",
+            "codes": [
+              "601668"
+            ],
+            "metrics": [
+              "attributable_net_profit"
+            ],
+            "years": [
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2,
+            "quote_mode": "literal"
+          }
+        ],
+        "no_chart": true,
+        "manual_review": [
+          "cause_claims_against_original",
+          "literal_row_complete"
+        ]
+      }
+    },
+    {
+      "id": "U06S04",
+      "company_code": "002475",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "范围口径",
+      "question": "分别列出立讯精密2023、2024、2025年合并利润表的净利润合计，以及母公司单体利润表的净利润。两种口径分开，用万元两位小数，不要拿归母替代。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "002475"
+            ],
+            "metrics": [
+              "net_profit"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          },
+          {
+            "kind": "lookup",
+            "codes": [
+              "002475"
+            ],
+            "metrics": [
+              "net_profit"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "parent",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U06S09",
+      "company_code": "002475",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "每股百分比",
+      "question": "请给立讯精密2023、2024、2025年全年的基本每股收益和加权平均净资产收益率。每股收益用元/股，收益率用%，各保留两位小数，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "002475"
+            ],
+            "metrics": [
+              "eps_basic"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "元/股",
+            "decimals": 2
+          },
+          {
+            "kind": "lookup",
+            "codes": [
+              "002475"
+            ],
+            "metrics": [
+              "roe_weighted"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "%",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U07S07",
+      "company_code": "300750",
+      "partition": "holdout",
+      "group": null,
+      "turn": 1,
+      "category": "累计报告期",
+      "question": "宁德时代2023、2024和2025年各年前三季度累计的营业收入和合并净利润合计各是多少？不要只取第三季度单季；用亿元、两位小数，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "300750"
+            ],
+            "metrics": [
+              "operating_revenue",
+              "net_profit"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "Q3"
+            ],
+            "scope": "consolidated",
+            "unit": "亿元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U07S10",
+      "company_code": "300750",
+      "partition": "holdout",
+      "group": null,
+      "turn": 1,
+      "category": "公司排名",
+      "question": "只比较宁德时代、伊利股份、中国神华2024年全年合并营业收入，按从高到低列前两家，万元两位小数，用表格，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "rank",
+            "codes": [
+              "300750",
+              "600887",
+              "601088"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2,
+            "format": "table",
+            "order": "desc",
+            "limit": 2,
+            "axis": "companies"
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U08S08",
+      "company_code": "600887",
+      "partition": "holdout",
+      "group": null,
+      "turn": 1,
+      "category": "计算比较",
+      "question": "根据伊利股份2023年和2024年全年合并营业收入，算2024年比2023年的同比增长率。先列两年金额，金额用万元两位小数，增长率用百分比保留两位。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "compare",
+            "codes": [
+              "600887"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2023,
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2,
+            "calculation": "yoy",
+            "axis": "years"
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U08S11",
+      "company_code": "600887",
+      "partition": "holdout",
+      "group": null,
+      "turn": 1,
+      "category": "图表",
+      "question": "把伊利股份2023年至2025年全年合并营业收入画成折线图，按年份从早到晚，纵轴单位亿元，保留两位小数。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "chart",
+            "codes": [
+              "600887"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "亿元",
+            "decimals": 2,
+            "chart": "line"
+          }
+        ]
+      }
+    },
+    {
+      "id": "U09S04",
+      "company_code": "601088",
+      "partition": "holdout",
+      "group": null,
+      "turn": 1,
+      "category": "范围口径",
+      "question": "分别列出中国神华2023、2024、2025年合并利润表的净利润合计，以及母公司单体利润表的净利润。两种口径分开，用万元两位小数，不要拿归母替代。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "601088"
+            ],
+            "metrics": [
+              "net_profit"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          },
+          {
+            "kind": "lookup",
+            "codes": [
+              "601088"
+            ],
+            "metrics": [
+              "net_profit"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "parent",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U09S10",
+      "company_code": "601088",
+      "partition": "holdout",
+      "group": null,
+      "turn": 1,
+      "category": "公司排名",
+      "question": "只比较中国神华、三一重工、宁德时代2024年全年合并营业收入，按从高到低列前两家，万元两位小数，用表格，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "rank",
+            "codes": [
+              "601088",
+              "600031",
+              "300750"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2,
+            "format": "table",
+            "order": "desc",
+            "limit": 2,
+            "axis": "companies"
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U09S12",
+      "company_code": "601088",
+      "partition": "holdout",
+      "group": null,
+      "turn": 1,
+      "category": "原因与原文",
+      "question": "中国神华2025年全年归母净利润相较2024年为什么变化？请只根据年报经营分析解释，给出原件页码；另把2025年归母净利润所在原文行逐字摘出并标页码，金额用万元两位小数，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "cause",
+            "codes": [
+              "601088"
+            ],
+            "metrics": [
+              "attributable_net_profit"
+            ],
+            "years": [
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          },
+          {
+            "kind": "quote",
+            "codes": [
+              "601088"
+            ],
+            "metrics": [
+              "attributable_net_profit"
+            ],
+            "years": [
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2,
+            "quote_mode": "literal"
+          }
+        ],
+        "no_chart": true,
+        "manual_review": [
+          "cause_claims_against_original",
+          "literal_row_complete"
+        ]
+      }
+    },
+    {
+      "id": "U10S07",
+      "company_code": "600031",
+      "partition": "holdout",
+      "group": null,
+      "turn": 1,
+      "category": "累计报告期",
+      "question": "三一重工2023、2024和2025年各年前三季度累计的营业收入和合并净利润合计各是多少？不要只取第三季度单季；用亿元、两位小数，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "600031"
+            ],
+            "metrics": [
+              "operating_revenue",
+              "net_profit"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "Q3"
+            ],
+            "scope": "consolidated",
+            "unit": "亿元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U10S09",
+      "company_code": "600031",
+      "partition": "holdout",
+      "group": null,
+      "turn": 1,
+      "category": "每股百分比",
+      "question": "请给三一重工2023、2024、2025年全年的基本每股收益和加权平均净资产收益率。每股收益用元/股，收益率用%，各保留两位小数，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "600031"
+            ],
+            "metrics": [
+              "eps_basic"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "元/股",
+            "decimals": 2
+          },
+          {
+            "kind": "lookup",
+            "codes": [
+              "600031"
+            ],
+            "metrics": [
+              "roe_weighted"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "%",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "U10S11",
+      "company_code": "600031",
+      "partition": "holdout",
+      "group": null,
+      "turn": 1,
+      "category": "图表",
+      "question": "把三一重工2023年至2025年全年合并营业收入画成折线图，按年份从早到晚，纵轴单位亿元，保留两位小数。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "chart",
+            "codes": [
+              "600031"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2023,
+              2024,
+              2025
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "亿元",
+            "decimals": 2,
+            "chart": "line"
+          }
+        ]
+      }
+    },
+    {
+      "id": "U01AT1",
+      "company_code": "000333",
+      "partition": "development",
+      "group": "U01A",
+      "turn": 1,
+      "category": "会话修改",
+      "question": "先看美的集团2024年全年合并营业收入。后面金额都用万元、保留两位小数；不要画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "000333"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "session_preferences": {
+          "presentation.unit": "万元",
+          "presentation.decimals": 2
+        }
+      },
+      "expected_state": {
+        "codes": [
+          "000333"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U01AT2",
+      "company_code": "000333",
+      "partition": "development",
+      "group": "U01A",
+      "turn": 2,
+      "category": "临时单位",
+      "question": "改看归母净利润，年份和报告期不变。这一次临时用亿元，保留三位小数，之后恢复前面的单位和精度。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "000333"
+            ],
+            "metrics": [
+              "attributable_net_profit"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "亿元",
+            "decimals": 3
+          }
+        ],
+        "no_chart": true,
+        "session_preferences": {
+          "presentation.unit": "万元",
+          "presentation.decimals": 2
+        }
+      },
+      "expected_state": {
+        "codes": [
+          "000333"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U01AT3",
+      "company_code": "000333",
+      "partition": "development",
+      "group": "U01A",
+      "turn": 3,
+      "category": "原文指代",
+      "question": "不要重新查询数字，也不要画图。就刚才那项归母净利润，给我原件PDF页码和未经改写的原文行。",
+      "expect": {
+        "kind": "reference",
+        "goal_expectations": [
+          {
+            "kind": "quote",
+            "codes": [
+              "000333"
+            ],
+            "metrics": [
+              "attributable_net_profit"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2,
+            "quote_mode": "literal"
+          }
+        ],
+        "no_query": true,
+        "no_chart": true
+      },
+      "expected_state": {
+        "codes": [
+          "000333"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U01AT4",
+      "company_code": "000333",
+      "partition": "development",
+      "group": "U01A",
+      "turn": 4,
+      "category": "查询恢复",
+      "question": "现在重新查询美的集团2025年前三季度累计扣非归母净利润，继续用之前约定的金额单位和精度，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "000333"
+            ],
+            "metrics": [
+              "deducted_attributable_net_profit"
+            ],
+            "years": [
+              2025
+            ],
+            "periods": [
+              "Q3"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "query_required": true
+      },
+      "expected_state": {
+        "codes": [
+          "000333"
+        ],
+        "metrics": [
+          "deducted_attributable_net_profit"
+        ],
+        "years": [
+          2025
+        ],
+        "periods": [
+          "Q3"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U02BT1",
+      "company_code": "002594",
+      "partition": "development",
+      "group": "U02B",
+      "turn": 1,
+      "category": "缺少公司",
+      "question": "2024年全年合并营业收入是多少？请用万元两位小数，不画图。",
+      "expect": {
+        "kind": "clarify",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "known_years": [
+          2024
+        ],
+        "known_metrics": [
+          "operating_revenue"
+        ],
+        "missing_fields": [
+          "codes"
+        ]
+      }
+    },
+    {
+      "id": "U02BT2",
+      "company_code": "002594",
+      "partition": "development",
+      "group": "U02B",
+      "turn": 2,
+      "category": "补充条件",
+      "question": "公司是比亚迪。就查这家，其他要求照旧。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "002594"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true
+      },
+      "expected_state": {
+        "codes": [
+          "002594"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U02BT3",
+      "company_code": "002594",
+      "partition": "development",
+      "group": "U02B",
+      "turn": 3,
+      "category": "寒暄保留状态",
+      "question": "谢谢，辛苦了。",
+      "expect": {
+        "kind": "greeting",
+        "goal_expectations": [],
+        "no_query": true,
+        "no_chart": true,
+        "forbidden_facts": true
+      },
+      "expected_state": {
+        "codes": [
+          "002594"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U02BT4",
+      "company_code": "002594",
+      "partition": "development",
+      "group": "U02B",
+      "turn": 4,
+      "category": "寒暄后修改",
+      "question": "把年份改成2025年，报告期改为第一季度累计，指标换成合并营业收入，金额仍用万元两位小数，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "002594"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2025
+            ],
+            "periods": [
+              "Q1"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "query_required": true
+      },
+      "expected_state": {
+        "codes": [
+          "002594"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2025
+        ],
+        "periods": [
+          "Q1"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U04BT1",
+      "company_code": "600900",
+      "partition": "development",
+      "group": "U04B",
+      "turn": 1,
+      "category": "概念与取数",
+      "question": "先解释归母净利润与合并净利润合计的区别，再查长江电力2023年上半年累计归母净利润。金额用万元两位小数，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "concept",
+            "codes": [
+              "600900"
+            ],
+            "metrics": [
+              "attributable_net_profit",
+              "net_profit"
+            ],
+            "years": [],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated"
+          },
+          {
+            "kind": "lookup",
+            "codes": [
+              "600900"
+            ],
+            "metrics": [
+              "attributable_net_profit"
+            ],
+            "years": [
+              2023
+            ],
+            "periods": [
+              "HY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "manual_review": [
+          "concept_definition_and_scope"
+        ]
+      },
+      "expected_state": {
+        "codes": [
+          "600900"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023
+        ],
+        "periods": [
+          "HY"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U04BT2",
+      "company_code": "600900",
+      "partition": "development",
+      "group": "U04B",
+      "turn": 2,
+      "category": "时间增加",
+      "question": "加上2024年同样的上半年累计数据，比较两年的归母净利润并计算同比增长率。金额还是万元两位小数，增长率用百分比两位小数，只要表格。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "compare",
+            "codes": [
+              "600900"
+            ],
+            "metrics": [
+              "attributable_net_profit"
+            ],
+            "years": [
+              2023,
+              2024
+            ],
+            "periods": [
+              "HY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2,
+            "format": "table",
+            "calculation": "yoy",
+            "axis": "years"
+          }
+        ],
+        "no_chart": true
+      },
+      "expected_state": {
+        "codes": [
+          "600900"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023,
+          2024
+        ],
+        "periods": [
+          "HY"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2,
+        "format": "table"
+      }
+    },
+    {
+      "id": "U04BT3",
+      "company_code": "600900",
+      "partition": "development",
+      "group": "U04B",
+      "turn": 3,
+      "category": "寒暄保留状态",
+      "question": "谢谢，辛苦了。",
+      "expect": {
+        "kind": "greeting",
+        "goal_expectations": [],
+        "no_query": true,
+        "no_chart": true,
+        "forbidden_facts": true
+      },
+      "expected_state": {
+        "codes": [
+          "600900"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2023,
+          2024
+        ],
+        "periods": [
+          "HY"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2,
+        "format": "table"
+      }
+    },
+    {
+      "id": "U04BT4",
+      "company_code": "600900",
+      "partition": "development",
+      "group": "U04B",
+      "turn": 4,
+      "category": "寒暄后修改",
+      "question": "把年份改成2025年，报告期改为第一季度累计，指标换成合并营业收入，金额仍用万元两位小数，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "600900"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2025
+            ],
+            "periods": [
+              "Q1"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "query_required": true
+      },
+      "expected_state": {
+        "codes": [
+          "600900"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2025
+        ],
+        "periods": [
+          "Q1"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U07AT1",
+      "company_code": "300750",
+      "partition": "holdout",
+      "group": "U07A",
+      "turn": 1,
+      "category": "会话修改",
+      "question": "先看宁德时代2024年全年合并营业收入。后面金额都用万元、保留两位小数；不要画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "300750"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "session_preferences": {
+          "presentation.unit": "万元",
+          "presentation.decimals": 2
+        }
+      },
+      "expected_state": {
+        "codes": [
+          "300750"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U07AT2",
+      "company_code": "300750",
+      "partition": "holdout",
+      "group": "U07A",
+      "turn": 2,
+      "category": "临时单位",
+      "question": "改看归母净利润，年份和报告期不变。这一次临时用亿元，保留三位小数，之后恢复前面的单位和精度。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "300750"
+            ],
+            "metrics": [
+              "attributable_net_profit"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "亿元",
+            "decimals": 3
+          }
+        ],
+        "no_chart": true,
+        "session_preferences": {
+          "presentation.unit": "万元",
+          "presentation.decimals": 2
+        }
+      },
+      "expected_state": {
+        "codes": [
+          "300750"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U07AT3",
+      "company_code": "300750",
+      "partition": "holdout",
+      "group": "U07A",
+      "turn": 3,
+      "category": "原文指代",
+      "question": "不要重新查询数字，也不要画图。就刚才那项归母净利润，给我原件PDF页码和未经改写的原文行。",
+      "expect": {
+        "kind": "reference",
+        "goal_expectations": [
+          {
+            "kind": "quote",
+            "codes": [
+              "300750"
+            ],
+            "metrics": [
+              "attributable_net_profit"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2,
+            "quote_mode": "literal"
+          }
+        ],
+        "no_query": true,
+        "no_chart": true
+      },
+      "expected_state": {
+        "codes": [
+          "300750"
+        ],
+        "metrics": [
+          "attributable_net_profit"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U07AT4",
+      "company_code": "300750",
+      "partition": "holdout",
+      "group": "U07A",
+      "turn": 4,
+      "category": "查询恢复",
+      "question": "现在重新查询宁德时代2025年前三季度累计扣非归母净利润，继续用之前约定的金额单位和精度，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "300750"
+            ],
+            "metrics": [
+              "deducted_attributable_net_profit"
+            ],
+            "years": [
+              2025
+            ],
+            "periods": [
+              "Q3"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "query_required": true
+      },
+      "expected_state": {
+        "codes": [
+          "300750"
+        ],
+        "metrics": [
+          "deducted_attributable_net_profit"
+        ],
+        "years": [
+          2025
+        ],
+        "periods": [
+          "Q3"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U08BT1",
+      "company_code": "600887",
+      "partition": "holdout",
+      "group": "U08B",
+      "turn": 1,
+      "category": "缺少公司",
+      "question": "2024年全年合并营业收入是多少？请用万元两位小数，不画图。",
+      "expect": {
+        "kind": "clarify",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "known_years": [
+          2024
+        ],
+        "known_metrics": [
+          "operating_revenue"
+        ],
+        "missing_fields": [
+          "codes"
+        ]
+      }
+    },
+    {
+      "id": "U08BT2",
+      "company_code": "600887",
+      "partition": "holdout",
+      "group": "U08B",
+      "turn": 2,
+      "category": "补充条件",
+      "question": "公司是伊利股份。就查这家，其他要求照旧。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "600887"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true
+      },
+      "expected_state": {
+        "codes": [
+          "600887"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U08BT3",
+      "company_code": "600887",
+      "partition": "holdout",
+      "group": "U08B",
+      "turn": 3,
+      "category": "寒暄保留状态",
+      "question": "谢谢，辛苦了。",
+      "expect": {
+        "kind": "greeting",
+        "goal_expectations": [],
+        "no_query": true,
+        "no_chart": true,
+        "forbidden_facts": true
+      },
+      "expected_state": {
+        "codes": [
+          "600887"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U08BT4",
+      "company_code": "600887",
+      "partition": "holdout",
+      "group": "U08B",
+      "turn": 4,
+      "category": "寒暄后修改",
+      "question": "把年份改成2025年，报告期改为第一季度累计，指标换成合并营业收入，金额仍用万元两位小数，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "600887"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2025
+            ],
+            "periods": [
+              "Q1"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "query_required": true
+      },
+      "expected_state": {
+        "codes": [
+          "600887"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2025
+        ],
+        "periods": [
+          "Q1"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U09BT1",
+      "company_code": "601088",
+      "partition": "holdout",
+      "group": "U09B",
+      "turn": 1,
+      "category": "真实不支持",
+      "question": "你能预测中国神华2026年全年营业收入并给出确定数值吗？不要用历史收入充当预测。",
+      "expect": {
+        "kind": "unsupported",
+        "goal_expectations": [],
+        "no_chart": true,
+        "no_query": true,
+        "forbidden_facts": true,
+        "manual_review": [
+          "forecast_boundary_explanation"
+        ]
+      }
+    },
+    {
+      "id": "U09BT2",
+      "company_code": "601088",
+      "partition": "holdout",
+      "group": "U09B",
+      "turn": 2,
+      "category": "转回已披露",
+      "question": "那就只查已披露的中国神华2024年全年合并营业收入，万元两位小数，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "601088"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "query_required": true
+      },
+      "expected_state": {
+        "codes": [
+          "601088"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U09BT3",
+      "company_code": "601088",
+      "partition": "holdout",
+      "group": "U09B",
+      "turn": 3,
+      "category": "寒暄保留状态",
+      "question": "谢谢，辛苦了。",
+      "expect": {
+        "kind": "greeting",
+        "goal_expectations": [],
+        "no_query": true,
+        "no_chart": true,
+        "forbidden_facts": true
+      },
+      "expected_state": {
+        "codes": [
+          "601088"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2024
+        ],
+        "periods": [
+          "FY"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "U09BT4",
+      "company_code": "601088",
+      "partition": "holdout",
+      "group": "U09B",
+      "turn": 4,
+      "category": "寒暄后修改",
+      "question": "把年份改成2025年，报告期改为第一季度累计，指标换成合并营业收入，金额仍用万元两位小数，不画图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "601088"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2025
+            ],
+            "periods": [
+              "Q1"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "query_required": true
+      },
+      "expected_state": {
+        "codes": [
+          "601088"
+        ],
+        "metrics": [
+          "operating_revenue"
+        ],
+        "years": [
+          2025
+        ],
+        "periods": [
+          "Q1"
+        ],
+        "scope": "consolidated",
+        "unit": "万元",
+        "decimals": 2
+      }
+    },
+    {
+      "id": "N01S01",
+      "company_code": "002594",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "自然表达",
+      "question": "表格里放一下二〇二四年比亚迪合并口径的全年营收，按亿元写，两位小数就行。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "002594"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "亿元",
+            "decimals": 2,
+            "format": "table"
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "N02S01",
+      "company_code": "300750",
+      "partition": "holdout",
+      "group": null,
+      "turn": 1,
+      "category": "排序与数量",
+      "question": "宁德时代、伊利和中国神华这三家，按2024年全年合并营收从小往大排，只留下最前面一家；金额万元两位，用表格。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "rank",
+            "codes": [
+              "300750",
+              "600887",
+              "601088"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2,
+            "format": "table",
+            "order": "asc",
+            "limit": 1,
+            "axis": "companies"
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "N03S01",
+      "company_code": "600031",
+      "partition": "holdout",
+      "group": null,
+      "turn": 1,
+      "category": "混合单位",
+      "question": "三一重工2024年全年合并营收和基本每股收益放在一起看：营收换成亿元两位，每股收益仍按元/股留三位，不需要图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "600031"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "亿元",
+            "decimals": 2
+          },
+          {
+            "kind": "lookup",
+            "codes": [
+              "600031"
+            ],
+            "metrics": [
+              "eps_basic"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "元/股",
+            "decimals": 3
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "N04S01",
+      "company_code": "600900",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "空历史指代",
+      "question": "接着刚刚那家，把那一年的归母净利润换成万元、两位小数给我，不用画图。",
+      "expect": {
+        "kind": "clarify",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [],
+            "metrics": [
+              "attributable_net_profit"
+            ],
+            "years": [],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "known_metrics": [
+          "attributable_net_profit"
+        ],
+        "missing_fields": [
+          "codes",
+          "years"
+        ]
+      }
+    },
+    {
+      "id": "N05S01",
+      "company_code": "600519",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "寒暄与能力",
+      "question": "你好，先说说你能帮我怎样查财报，能不能找到对应的原文？暂时不用查数字。",
+      "expect": {
+        "kind": "greeting",
+        "goal_expectations": [],
+        "no_query": true,
+        "no_chart": true,
+        "forbidden_facts": true,
+        "manual_review": [
+          "capability_boundary"
+        ]
+      }
+    },
+    {
+      "id": "N06S01",
+      "company_code": "601668",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "预测边界",
+      "question": "想提前知道中国建筑2026年全年营业收入会是多少，请直接给一个确定的预测金额。",
+      "expect": {
+        "kind": "unsupported",
+        "goal_expectations": [],
+        "no_query": true,
+        "no_chart": true,
+        "forbidden_facts": true,
+        "manual_review": [
+          "forecast_boundary_explanation"
+        ]
+      }
+    },
+    {
+      "id": "N07S01",
+      "company_code": "600887",
+      "partition": "holdout",
+      "group": null,
+      "turn": 1,
+      "category": "累计时间表达",
+      "question": "伊利2024年一月到九月累计的合并营收、归母净利润是多少？请按亿元写到两位小数，只列数字不要图。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "600887"
+            ],
+            "metrics": [
+              "operating_revenue",
+              "attributable_net_profit"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "Q3"
+            ],
+            "scope": "consolidated",
+            "unit": "亿元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "N08S01",
+      "company_code": "002475",
+      "partition": "development",
+      "group": null,
+      "turn": 1,
+      "category": "范围与词序",
+      "question": "我关心的是2024年立讯精密母公司单体的净利润，万元两位即可，请单列这一口径。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "002475"
+            ],
+            "metrics": [
+              "net_profit"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "parent",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "N01AT1",
+      "company_code": "000333",
+      "partition": "development",
+      "group": "N01A",
+      "turn": 1,
+      "category": "会话起点",
+      "question": "先列美的2024年全年合并营收。接下来金额统一用万元，留两位小数，图就免了。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "000333"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "session_preferences": {
+          "presentation.unit": "万元",
+          "presentation.decimals": 2
+        }
+      }
+    },
+    {
+      "id": "N01AT2",
+      "company_code": "000333",
+      "partition": "development",
+      "group": "N01A",
+      "turn": 2,
+      "category": "仅切换公司",
+      "question": "换一家，看比亚迪，其余条件接着用。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "002594"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "query_required": true
+      }
+    },
+    {
+      "id": "N01AT3",
+      "company_code": "000333",
+      "partition": "development",
+      "group": "N01A",
+      "turn": 3,
+      "category": "原件追问",
+      "question": "这项收入在原件的哪一页？把原文那一行照抄给我，别再取一次数。",
+      "expect": {
+        "kind": "reference",
+        "goal_expectations": [
+          {
+            "kind": "quote",
+            "codes": [
+              "002594"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2,
+            "quote_mode": "literal"
+          }
+        ],
+        "no_query": true,
+        "no_chart": true,
+        "manual_review": [
+          "literal_row_complete"
+        ]
+      }
+    },
+    {
+      "id": "N01AT4",
+      "company_code": "000333",
+      "partition": "development",
+      "group": "N01A",
+      "turn": 4,
+      "category": "原文后回到取数",
+      "question": "再往前看一年，2023年的也查一下，还是这家、这个指标和单位。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "002594"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2023
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "万元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "query_required": true
+      }
+    },
+    {
+      "id": "N02AT1",
+      "company_code": "300750",
+      "partition": "holdout",
+      "group": "N02A",
+      "turn": 1,
+      "category": "缺公司上下文",
+      "question": "把2024年全年合并营收用亿元列出来，两位小数，不用图。",
+      "expect": {
+        "kind": "clarify",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "亿元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "known_years": [
+          2024
+        ],
+        "known_metrics": [
+          "operating_revenue"
+        ],
+        "missing_fields": [
+          "codes"
+        ]
+      }
+    },
+    {
+      "id": "N02AT2",
+      "company_code": "300750",
+      "partition": "holdout",
+      "group": "N02A",
+      "turn": 2,
+      "category": "自然补充",
+      "question": "就是宁德时代，沿用刚才的时间和显示方式。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "300750"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "FY"
+            ],
+            "scope": "consolidated",
+            "unit": "亿元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true
+      }
+    },
+    {
+      "id": "N02AT3",
+      "company_code": "300750",
+      "partition": "holdout",
+      "group": "N02A",
+      "turn": 3,
+      "category": "寒暄保留上下文",
+      "question": "明白了，谢谢，先歇一下。",
+      "expect": {
+        "kind": "greeting",
+        "goal_expectations": [],
+        "no_query": true,
+        "no_chart": true,
+        "forbidden_facts": true
+      }
+    },
+    {
+      "id": "N02AT4",
+      "company_code": "300750",
+      "partition": "holdout",
+      "group": "N02A",
+      "turn": 4,
+      "category": "寒暄后切换公司与期间",
+      "question": "接着改成中国神华，只把期间换为2024年前三季累计，其他照前面。",
+      "expect": {
+        "kind": "financial",
+        "goal_expectations": [
+          {
+            "kind": "lookup",
+            "codes": [
+              "601088"
+            ],
+            "metrics": [
+              "operating_revenue"
+            ],
+            "years": [
+              2024
+            ],
+            "periods": [
+              "Q3"
+            ],
+            "scope": "consolidated",
+            "unit": "亿元",
+            "decimals": 2
+          }
+        ],
+        "no_chart": true,
+        "query_required": true
+      }
+    }
+  ]
+}

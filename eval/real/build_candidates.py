@@ -1,4 +1,4 @@
-"""作品说明：先固定真实报告问题，再仅从原始 PDF 文本生成标注候选。不读取数据库、提取结果、OCR、模型或索引；机器候选不等于人工标准答案或正式质量得分。"""
+"""先固定真实报告问题，再仅从原始 PDF 文本生成标注候选。不读取数据库、提取结果、OCR、模型或索引；机器候选不等于人工标准答案或正式质量得分。"""
 from __future__ import annotations
 
 import argparse
@@ -145,7 +145,7 @@ def numeric_candidate(document: dict, pages: list[dict], field: str) -> tuple[di
             if not row_label.startswith({"total_operating_revenue": "营业", "eps": "基本每股",
                                          "operating_cf_net_amount": "经营活动产生", "roe": "加权平均"}[field]):
                 continue
-            # 作品说明：只拼接最左侧行名列的文本；数值列保留空白边界，避免把本期与上期金额拼为同一数字。
+            # 只拼接最左侧行名列的文本；数值列保留空白边界，避免把本期与上期金额拼为同一数字。
             row_lines = [line]
             for following in lines[position + 1:position + 3]:
                 if not following.strip() or NUMBER.search(following):
@@ -170,7 +170,7 @@ def numeric_candidate(document: dict, pages: list[dict], field: str) -> tuple[di
             if major_lines and any(marker in compact(major_lines[-1]) for marker in ("季度", "母公司")):
                 continue
             raw = first_number.group(0).rstrip("%％").replace("，", ",").replace("−", "-").replace("－", "-")
-            # 作品说明：该行之前必须存在明确的本期标题。
+            # 该行之前必须存在明确的本期标题。
             current_heading = str(document["report_year"]) + "年" in scope or "本报告期" in scope or "本期" in scope
             if not current_heading:
                 continue

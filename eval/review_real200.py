@@ -1,4 +1,4 @@
-"""作品说明：独立叙述复核绑定实际回答及原件身份，不以问答模型自评替代验收。"""
+"""独立叙述复核绑定实际回答及原件身份，不以问答模型自评替代验收。"""
 from __future__ import annotations
 import argparse,hashlib,json,sys
 from pathlib import Path
@@ -35,7 +35,7 @@ def apply(rows,decisions):
     reviewed=[]
     for row in rows:
         row=json.loads(json.dumps(row));decision=decisions.get(row['case']['id'])
-        if row['score'].get('review_required') and decision:
+        if decision:
             assert decision['answer_evidence_sha256']==answer_hash(row),'Review does not bind this actual answer'
             assert decision['reviewer']=='assistant-independent-review' and decision.get('reason')
             row['narrative_review']=decision;s=row['score'];s['review_status']='pass' if decision['passed'] else 'fail'

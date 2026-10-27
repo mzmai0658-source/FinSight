@@ -72,7 +72,7 @@ const activeTitle = computed(
   () => sessionStore.sessions.find((item) => item.sessionUid === sessionStore.activeUid)?.title || "新对话",
 );
 
-/** 作品说明：证据栏聚焦的消息视图：流式优先，其次用户选中的，最后取最新一条助手消息 */
+/** 证据栏聚焦的消息视图：流式优先，其次用户选中的，最后取最新一条助手消息 */
 const focusedView = computed<MessageView | null>(() => {
   if (streamingViews.value) return streamingViews.value.assistant;
   if (ui.focusedMessageIndex >= 0 && ui.focusedMessageIndex < messageViews.value.length) {
@@ -229,7 +229,7 @@ function retryMessage(messageIndex: number) {
       </button>
     </header>
 
-    <!-- 作品说明：左侧：会话为主体 -->
+    <!-- 左侧：会话为主体 -->
     <ResponsivePanel :overlay="compact" :open="sidebarOpen" side="left" label="会话与导航" @close="sidebarOpen = false">
       <aside class="ws__left" aria-label="会话与导航">
       <div class="ws__sidebar-head">
@@ -307,7 +307,7 @@ function retryMessage(messageIndex: number) {
       </aside>
     </ResponsivePanel>
 
-    <!-- 作品说明：中央对话区 -->
+    <!-- 中央对话区 -->
     <main class="ws__center">
       <header class="ws__bar">
         <h1 class="ws__bar-title" :title="activeTitle">{{ hasConversation ? activeTitle : "新对话" }}</h1>
@@ -325,7 +325,7 @@ function retryMessage(messageIndex: number) {
       <div ref="scrollEl" class="ws__scroll" @scroll.passive="onScroll">
         <p v-if="bootstrapping || sessionStore.loadingMessages || changingSession" class="ws__loading" role="status">正在打开会话…</p>
         <div class="ws__thread">
-          <!-- 作品说明：空状态 -->
+          <!-- 空状态 -->
           <div v-if="!hasConversation && !bootstrapping && !changingSession" class="ws__welcome">
             <div class="ws__welcome-mark"><IconSpark :size="22" /></div>
             <h2>问一个财报问题</h2>
@@ -361,7 +361,7 @@ function retryMessage(messageIndex: number) {
             </div>
           </div>
 
-          <!-- 作品说明：历史消息 -->
+          <!-- 历史消息 -->
           <ChatMessage
             v-for="view in messageViews"
             :key="`${view.messageIndex}-${view.role}`"
@@ -372,7 +372,7 @@ function retryMessage(messageIndex: number) {
             @select-clarify="send"
           />
 
-          <!-- 作品说明：流式进行中 -->
+          <!-- 流式进行中 -->
           <template v-if="streamingViews">
             <ChatMessage :view="streamingViews.user" />
             <ChatMessage
@@ -385,7 +385,7 @@ function retryMessage(messageIndex: number) {
         </div>
       </div>
 
-      <!-- 作品说明：输入区 -->
+      <!-- 输入区 -->
       <div class="ws__composer">
         <button v-if="hasConversation && !autoFollow" type="button" class="ws__latest" @click="autoFollow = true; scrollToBottom(true)">回到最新消息 ↓</button>
         <div v-if="ui.error" class="ws__error" role="alert">{{ ui.error }}</div>
@@ -395,7 +395,7 @@ function retryMessage(messageIndex: number) {
       </div>
     </main>
 
-    <!-- 作品说明：右侧证据栏（常驻可展开） -->
+    <!-- 右侧证据栏（常驻可展开） -->
     <EvidenceRail :view="focusedView" />
   </div>
 </template>
@@ -419,7 +419,7 @@ function retryMessage(messageIndex: number) {
 .ws__loading { padding: var(--sp-4); text-align: center; color: var(--c-text-secondary); }
 .ws__latest { align-self: center; border: 1px solid var(--c-primary-border); background: var(--c-surface); color: var(--c-primary); border-radius: var(--r-full); padding: 6px 14px; cursor: pointer; }
 
-/* 作品说明：左侧 */
+/* 左侧 */
 .ws__left {
   width: var(--rail-left-w);
   display: flex;
@@ -470,7 +470,7 @@ function retryMessage(messageIndex: number) {
   color: #fff;
 }
 
-/* 作品说明：底部页面入口 */
+/* 底部页面入口 */
 .ws__links {
   flex: 0 0 auto;
   display: grid;
@@ -682,7 +682,7 @@ function retryMessage(messageIndex: number) {
   background: var(--c-surface);
 }
 
-/* 作品说明：中央标题栏 */
+/* 中央标题栏 */
 .ws__bar {
   flex: 0 0 auto;
   display: flex;
@@ -732,7 +732,7 @@ function retryMessage(messageIndex: number) {
   color: var(--c-primary);
 }
 
-/* 作品说明：中央 */
+/* 中央 */
 .ws__center {
   flex: 1;
   display: flex;
@@ -873,7 +873,7 @@ function retryMessage(messageIndex: number) {
   white-space: nowrap;
 }
 
-/* 作品说明：输入区 */
+/* 输入区 */
 .ws__composer {
   flex: 0 0 auto;
   max-width: var(--chat-max-w);

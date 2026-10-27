@@ -1,0 +1,35 @@
+{
+  "release": "FinSight-cloud-20261026",
+  "date": "2026-10-26",
+  "selected_agent_build_sha256": "058fc786dc58e82cf9a954bf037a75f2d23173e02e90738860f36a2042326763",
+  "release_cleanup": "comments/documentation/installation tools only; model prompts and executable Agent AST preserved",
+  "data_version": "caaa851bfac89f33498e0c8c4569582214a048b45c05dc49a173090889202b6a",
+  "reports": 119,
+  "companies": 10,
+  "facts": 7607,
+  "statuses": {
+    "verified": 5554,
+    "unverified": 1400,
+    "derived": 653
+  },
+  "chunks": 21437,
+  "models": {
+    "generation": "deepseek-flash",
+    "ocr": "PaddleOCR-VL-1.6",
+    "embedding": "text-embedding-v4",
+    "dimensions": 1024
+  },
+  "scores": {
+    "regression64": "46/64",
+    "variants24": "18/24",
+    "combined": "64/88",
+    "third_party_blind": false
+  },
+  "preserved_data_acceptance": true,
+  "prompt_changed_for_demo": false,
+  "github_updated": false,
+  "delivery_tool_fixes": [
+    "restore rejects vectors outside declared transport",
+    "offline evaluation reads identical public question-only freeze when historical local files are absent"
+  ]
+}

@@ -1,4 +1,4 @@
-"""作品说明：导入本机财务 PDF 目录与现有文本，不提取财务事实。要求显式环境文件，先预览再用 --apply 发布；逐文档文件控制内存并支持恢复。"""
+"""导入本机财务 PDF 目录与现有文本，不提取财务事实。要求显式环境文件，先预览再用 --apply 发布；逐文档文件控制内存并支持恢复。"""
 import argparse
 from collections import Counter
 import gzip
@@ -30,7 +30,7 @@ def title_is_summary(text, title):
         return False
     if title.group('summary'):
         return True
-    # 作品说明：部分交易所摘要 PDF 的标题省略摘要字样，可通过标题紧邻的标准说明确认摘要身份。
+    # 部分交易所摘要 PDF 的标题省略摘要字样，可通过标题紧邻的标准说明确认摘要身份。
     title_region = text[title.start():title.end() + 400]
     return bool(re.search(r'本(?:半年度|年度|季度)报告摘要来自(?:半年度|年度|季度)?报告全文', title_region))
 
@@ -52,7 +52,7 @@ def company_index():
 
 
 def identify(filename, cover, codes, names):
-    """作品说明：报告年度来自报告标题，不能由披露日期推断。"""
+    """报告年度来自报告标题，不能由披露日期推断。"""
     compact = lambda s: re.sub(r'\s+', '', unicodedata.normalize('NFKC', s))
     fname, head = compact(filename), compact(re.sub(r'<[^>]+>', ' ', cover[:64000]))
     prefix = compact(re.split(r'[:：]', filename)[0])
@@ -70,7 +70,7 @@ def identify(filename, cover, codes, names):
     if match:
         year = int(match.group(1))
         period = {'半年度报告':'HY','中期报告':'HY','第一季度报告':'Q1','第三季度报告':'Q3','年度报告':'FY','年报':'FY'}[match.group(2)]
-    # 作品说明：只有与实际报告标题绑定的摘要标记有效；正文目录或备查文件中的摘要及全文表述不能使完整报告误判为摘要。
+    # 只有与实际报告标题绑定的摘要标记有效；正文目录或备查文件中的摘要及全文表述不能使完整报告误判为摘要。
     summary = title_is_summary(fname, filename_title) or title_is_summary(head, cover_title)
     source_name = prefix if re.fullmatch(r'[\u4e00-\u9fffA-Za-z*]{2,30}', prefix) else ''
     return {'stock_code':code, 'company':codes.get(code, source_name or code or '公司待确认'),
@@ -128,13 +128,13 @@ def publish(engine, prepared):
         columns=','.join(values)
         params=','.join(':'+key for key in values)
         updates=','.join(f'{key}=VALUES({key})' for key in values if key!='source_key')
-        # 作品说明：每份完整文档原子发布，失败批次支持安全恢复。
+        # 每份完整文档原子发布，失败批次支持安全恢复。
         with engine.begin() as conn:
             conn.execute(text(f'INSERT INTO financial_report_material ({columns}) VALUES ({params}) ON DUPLICATE KEY UPDATE {updates}'),values)
 
 
 def publish_metadata(engine, records):
-    """作品说明：只更新目录身份元数据，不插入或修改事实及页内容。"""
+    """只更新目录身份元数据，不插入或修改事实及页内容。"""
     from sqlalchemy import bindparam, text
     source_keys = [record['source_key'] for record in records]
     with engine.connect() as conn:

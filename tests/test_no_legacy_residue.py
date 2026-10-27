@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""作品说明：遗留模块检查：在线服务应走通用 Agent 编排，而不是旧的任务脚本或废弃依赖。"""
+"""遗留模块检查：在线服务应走通用 Agent 编排，而不是旧的任务脚本或废弃依赖。"""
 
 import re
 import ast
@@ -13,7 +13,7 @@ AGENT_DIR = ROOT_DIR / "src" / "agent"
 API_DIR = ROOT_DIR / "src" / "api"
 FRONTEND_SRC = ROOT_DIR / "frontend" / "src"
 
-# 作品说明：用转义保存敏感词，避免源码里直接出现这些字面量。
+# 用转义保存敏感词，避免源码里直接出现这些字面量。
 _FORBIDDEN_TERMS = [
     "\u6bd4\u8d5b",
     "\u7ade\u8d5b",
@@ -66,7 +66,7 @@ class TestBackendResidue:
             assert (ROOT_DIR / "src" / "etl" / name).exists(), f"src/etl/{name} 缺失"
 
     def test_agent_dependencies_respect_explicit_library_boundary(self):
-        allowed = {'langchain_ollama', 'langgraph'}
+        allowed = {'langgraph'}
         violations = []
         for path in iter_py_files(AGENT_DIR, API_DIR):
             tree = ast.parse(path.read_text(encoding="utf-8"))
@@ -80,7 +80,7 @@ class TestBackendResidue:
 
     def test_production_entry_cannot_import_historical_planners(self):
         production = [*iter_py_files(AGENT_DIR / 'v3'), API_DIR / 'main.py']
-        forbidden = {'orchestrator','semantic_planner','financial_query','fallback','entity_linker','query_plan'}
+        forbidden = {'orchestrator','semantic_planner','financial_query','fallback','entity_linker','query_plan','semantic_planner_legacy','answer_composer'}
         for path in production:
             tree = ast.parse(path.read_text(encoding='utf-8'))
             for node in ast.walk(tree):
@@ -88,7 +88,7 @@ class TestBackendResidue:
                     assert (node.module or '').split('.')[-1] not in forbidden, f'{path} imports a historical planner'
 
     def test_no_hardcoded_company_answer_logic(self):
-        """作品说明：不允许把特定公司名写死在 agent 决策逻辑里（公司表应来自注册表）。"""
+        """不允许把特定公司名写死在 agent 决策逻辑里（公司表应来自注册表）。"""
         hardcoded_patterns = [
             r"_answer_insurance_catalog",
             r"insurance_catalog",
@@ -100,7 +100,7 @@ class TestBackendResidue:
                 assert not re.search(pattern, text), f"{path.relative_to(ROOT_DIR)} 包含硬编码答案逻辑: {pattern}"
 
     def test_new_core_modules_exist(self):
-        for name in ("orchestrator.py", "prompts.py", "sql_guard.py", "fallback.py", "domain.py"):
+        for name in ("v3/agent.py", "v3/cloud_chat.py", "providers.py", "cloud_protocol.py", "sql_guard.py", "domain.py"):
             assert (AGENT_DIR / name).exists(), f"src/agent/{name} 缺失"
 
 

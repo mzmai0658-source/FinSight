@@ -18,7 +18,7 @@ onMounted(async () => {
   try {
     unread.value = await fetchUnreadCount();
   } catch {
-    // 作品说明：关注列表加载失败时保留当前导航，避免阻断页面。
+    // 关注列表加载失败时保留当前导航，避免阻断页面。
   }
 });
 
@@ -28,6 +28,7 @@ const navItems = [
 ];
 
 const workspaceItem = { to: "/workspace", label: "AI 工作台" };
+const submissionItem = { to: "/financial-submissions", label: "财报提交" };
 const adminItem = { to: "/admin", label: "管理端" };
 </script>
 
@@ -53,6 +54,7 @@ const adminItem = { to: "/admin", label: "管理端" };
         >
           {{ item.label }}
         </router-link>
+        <router-link v-if="auth.isAuthenticated" :to="submissionItem.to" class="pnav__link" active-class="pnav__link--active">{{ submissionItem.label }}</router-link>
         <router-link
           v-if="auth.user?.role === 'ADMIN'"
           :to="adminItem.to"
@@ -87,10 +89,10 @@ const adminItem = { to: "/admin", label: "管理端" };
       </div>
     </div>
 
-    <!-- 作品说明：移动端抽屉 -->
+    <!-- 移动端抽屉 -->
     <div v-if="mobileOpen" class="pnav__drawer" @click="mobileOpen = false">
       <router-link
-        v-for="item in [...navItems, workspaceItem, ...(auth.user?.role === 'ADMIN' ? [adminItem] : [])]"
+        v-for="item in [...navItems, workspaceItem, ...(auth.isAuthenticated ? [submissionItem] : []), ...(auth.user?.role === 'ADMIN' ? [adminItem] : [])]"
         :key="item.to"
         :to="item.to"
         class="pnav__drawer-link"

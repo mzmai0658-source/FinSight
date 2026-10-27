@@ -9,7 +9,7 @@ from .base import BaseAgent
 from .etl_worker import ETLWorker
 from src.agent.llm_client import LLMClient
 from config.db_config import get_db_config
-# 作品说明：批量导入侧使用全量公司映射（含 pending 公司）
+# 批量导入侧使用全量公司映射（含 pending 公司）
 from src.utils.company_registry import (
     get_all_code_to_name as get_code_to_name,
     get_all_name_to_code as get_name_to_code,
@@ -19,11 +19,11 @@ from src.utils.report_file_selector import select_preferred_report_files
 
 
 class BossAgent(BaseAgent):
-    """作品说明：Boss Agent：ETL 调度入口。
+    """Boss Agent：ETL 调度入口。
     并发扫描目录下所有 PDF，分配给多个独立 ETLWorker 解析入库。
     """
 
-    # 作品说明：并发 ETL 线程数（避免超过 LLM API QPS 限制）
+    # 并发 ETL 线程数（避免超过 LLM API QPS 限制）
     ETL_MAX_WORKERS = 3
     REPORT_PERIOD_PATTERNS: Tuple[Tuple[str, str], ...] = (
         (r"(20\d{2})年(?:第)?一季度报告", "Q1"),
@@ -45,7 +45,7 @@ class BossAgent(BaseAgent):
         logger.warning(f"[Boss] Unknown command: {command}")
         return None
 
-    # 作品说明：ETL 调度（并发）
+    # ETL 调度（并发）
 
     @staticmethod
     def _normalize_company_token(token: str) -> str:
@@ -230,7 +230,7 @@ class BossAgent(BaseAgent):
             )
             company_results: List[Dict[str, Any]] = []
 
-            # 作品说明：每家公司内部并发处理，完成后立刻按公司回填并写库
+            # 每家公司内部并发处理，完成后立刻按公司回填并写库
             with ThreadPoolExecutor(max_workers=min(self.ETL_MAX_WORKERS, max(1, len(company_pdf_files)))) as executor:
                 future_to_pdf = {
                     executor.submit(
@@ -312,7 +312,7 @@ class BossAgent(BaseAgent):
         return results
 
     def _process_single_pdf(self, pdf_path: Path, index: int, total: int) -> Dict[str, Any]:
-        """作品说明：每个线程独立创建 ETLWorker，避免共享状态竞争。"""
+        """每个线程独立创建 ETLWorker，避免共享状态竞争。"""
         logger.info(f"[Boss] [{index}/{total}] Start: {pdf_path.name}")
         worker = ETLWorker(self.llm)
         return worker.run(str(pdf_path), save_to_db=False)

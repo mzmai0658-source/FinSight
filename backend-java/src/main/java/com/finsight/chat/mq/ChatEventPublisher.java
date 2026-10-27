@@ -11,7 +11,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
 /**
- * 作品说明：对话事件发布：主链路只负责 publish，落库/标题生成由消费者异步处理。
+ * 对话事件发布：主链路只负责 publish，落库/标题生成由消费者异步处理。
  * MQ 不可用时降级：审计直写 DB，标题保留截断兜底值。
  */
 @Slf4j
@@ -35,7 +35,7 @@ public class ChatEventPublisher {
         try {
             rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE, RabbitConfig.CHAT_TITLE_RK, message);
         } catch (Exception e) {
-            // 作品说明：标题任务失败时保留截断问题标题，不影响财务回答保存。
+            // 标题任务失败时保留截断问题标题，不影响财务回答保存。
             log.warn("[mq] 标题任务发布失败（保留兜底标题）: {}", e.toString());
         }
     }

@@ -1,4 +1,4 @@
-"""作品说明：财报回答的确定性验证与统一证据构建。
+"""财报回答的确定性验证与统一证据构建。
 
 本模块只处理本轮已经产生的 SQL 行、RAG 命中和图表数据，不访问网络、数据库
 或模型，便于离线单测与评测框架复用。
@@ -48,7 +48,7 @@ def _close(actual: float, expected: float, *, percent: bool = False, tolerance: 
 
 
 def extract_numeric_claims(answer_text: str) -> List[Dict[str, Any]]:
-    """作品说明：提取带金额或百分比单位的财务数字；年份、序号和股票代码不会误入。"""
+    """提取带金额或百分比单位的财务数字；年份、序号和股票代码不会误入。"""
     claims: List[Dict[str, Any]] = []
     for match in _NUMBER_WITH_UNIT_RE.finditer(str(answer_text or "")):
         raw_value = float(match.group("value").replace(",", ""))
@@ -66,7 +66,7 @@ def extract_numeric_claims(answer_text: str) -> List[Dict[str, Any]]:
             kind = "amount"
             normalized_unit = "万元"
         else:
-            # 作品说明：数据库大额字段以万元计，但 EPS 等字段本身以元计；两种尺度都核对。
+            # 数据库大额字段以万元计，但 EPS 等字段本身以元计；两种尺度都核对。
             normalized_values = [raw_value, raw_value / 10000.0]
             kind = "amount"
             normalized_unit = "元/万元"
@@ -92,7 +92,7 @@ def _is_percent_key(key: str) -> bool:
 
 
 def _derived_yoy(facts):
-    """作品说明：同比基期核验要求完整身份及相同报告期间。"""
+    """同比基期核验要求完整身份及相同报告期间。"""
     index = defaultdict(list)
     for fact in facts:
         if not all(fact.get(key) for key in ("stock_code", "report_year", "report_period")):
@@ -116,7 +116,7 @@ def _derived_yoy(facts):
 
 
 def _claim_context(answer, match, question, rows):
-    # 作品说明：句子边界核验保留逗号前的身份上下文。
+    # 句子边界核验保留逗号前的身份上下文。
     start = max([answer.rfind(delimiter, 0, match.start()) for delimiter in ("。", "；", ";", "\n", "！", "？")]) + 1
     prefix = answer[start:match.start()]
     mentions = metric_mentions(prefix)
@@ -192,7 +192,7 @@ def verify_numbers(answer_text: str, sql_rows: Sequence[Mapping[str, Any]], *, q
             if unit in {"%", "％"}:
                 compatible = fact["unit"] == "%"
             elif unit == "个百分点":
-                # 作品说明：百分点变化属于明确差额事实，不能当作增长率。
+                # 百分点变化属于明确差额事实，不能当作增长率。
                 compatible = fact.get("calculation") == "percentage_point_difference"
             elif unit in {"亿元", "亿", "万元", "万", "元"} and fact["unit"] in {"元", "万元"}:
                 yuan = value * ({"亿元": 1e8, "亿": 1e8, "万元": 1e4, "万": 1e4, "元": 1}[unit])
@@ -242,7 +242,7 @@ def _normalize_label(value: Any) -> str:
 
 
 def bind_chart_source(chart: Mapping[str, Any], sql_rows: Sequence[Mapping[str, Any]]) -> Dict[str, Any]:
-    """作品说明：每个图表点须唯一对应字段、查询和数据行。"""
+    """每个图表点须唯一对应字段、查询和数据行。"""
     source = dict(chart.get("data_source") or {})
     if source.get("kind") != "sql_result":
         return source
@@ -335,7 +335,7 @@ def verify_turn(
     needs_clarification: bool = False,
     question: str = "",
 ) -> Dict[str, Any]:
-    """作品说明：执行三类核验并汇总为稳定的 pass/warn/fail 契约。"""
+    """执行三类核验并汇总为稳定的 pass/warn/fail 契约。"""
     reference_check = verify_references(references, rag_results)
     quote_count, quote_errors = 0, []
     def bound_quote(match):
@@ -419,7 +419,7 @@ def build_evidence(
     references: Sequence[Mapping[str, Any]],
     charts: Sequence[Mapping[str, Any]],
 ) -> List[Dict[str, Any]]:
-    """作品说明：把三类既有结果整理为同一列表；旧展示字段仍由调用方保留。"""
+    """把三类既有结果整理为同一列表；旧展示字段仍由调用方保留。"""
     evidence: List[Dict[str, Any]] = []
     for index, event in enumerate(sql_events, start=1):
         evidence.append({

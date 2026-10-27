@@ -1,4 +1,4 @@
-"""作品说明：模型一次提出请求，再编译为统一v3合同。"""
+"""模型一次提出请求，再编译为统一v3合同。"""
 from __future__ import annotations
 from datetime import date
 import hashlib
@@ -68,10 +68,10 @@ class SemanticReview(Strict):
 
 
 def planner_state(state: DialogueState):
-    """作品说明：规划上下文只包含确认过的结构化记忆，减少重复原问题和财务正文的干扰。"""
+    """规划上下文只包含确认过的结构化记忆，减少重复原问题和财务正文的干扰。"""
     def conditions(value):
         if value is None: return None
-        raw=value.model_dump(mode='json')
+        raw=value.model_dump(mode='json',exclude_defaults=True)
         raw['origins']={key:{'kind':origin.kind} for key,origin in value.origins.items()}
         return raw
     def execution(value):
@@ -80,11 +80,12 @@ def planner_state(state: DialogueState):
             resolved_periods=value.resolved_periods,conditions=conditions(value.conditions),
             verified_fact_count=len(value.fact_refs),goal_conditions={key:conditions(c) for key,c in value.goal_conditions.items()})
     def goals(values):
-        # 作品说明：待澄清内容放入pending.clarification；旧目标阻塞信息不作为本轮新要求输入。
+        # 待澄清内容放入pending.clarification；旧目标阻塞信息不作为本轮新要求输入。
         return [{key:value for key,value in g.model_dump(mode='json').items()
                  if key in {'id','kind','catalog_target','quote_mode','concept_mode','execution_ref'}} for g in values]
     from .state import financial_context_conditions
     return dict(version=3,topic=state.topic,legacy_scope_unknown=state.legacy_scope_unknown,
+        state_revision=state.state_revision,session_preferences=[edit.model_dump(mode='json') for edit in state.session_preferences],
         conditions=conditions(state.conditions),active_goals=goals(state.active_goals),suspended=conditions(state.suspended),
         goal_conditions={key:conditions(value) for key,value in financial_context_conditions(state).items()},
         pending={'question':state.pending.question,'clarification':state.pending.clarification,
@@ -102,7 +103,7 @@ from .prompts import TURN
 
 
 def confirmed_task_view(state: DialogueState, companies: dict[str,str]):
-    """作品说明：从类型化条件生成可读的当前任务投影，不解析旧回答恢复条件。"""
+    """从类型化条件生成可读的当前任务投影，不解析旧回答恢复条件。"""
     from .catalog import METRICS
     from .state import financial_context_conditions
     def view(c):
@@ -128,19 +129,26 @@ class Planner:
         from .prompts import TURN
         from .proposals import TurnPlan
         from .catalog import METRICS
-        from .explicit_conditions import explicit_conditions,bind_explicit
+        from .company_identity import company_directory
+        from .condition_updates import mentioned_years
         if feedback:budget.artifacts.setdefault('correction_feedback',[]).append(list(feedback))
         payload=dict(question=question,state=planner_state(state),today=date.today().isoformat(),
             companies=self.companies,
-            metrics={id:dict(name=m.label,unit=m.unit,scopes=m.scopes,aliases=m.aliases) for id,m in METRICS.items()},
-            literal_bindings=explicit_conditions(question),correction_feedback=list(feedback))
+            metrics={id:dict(name=m.label,unit=m.unit,scopes=m.scopes) for id,m in METRICS.items()},
+            input_grounding=dict(company_mentions=[dict(text=m.text,codes=list(m.codes),ambiguous=len(m.codes)>1)
+                for m in company_directory(self.companies).matches(question)],explicit_years=sorted(mentioned_years(question))),
+            correction_feedback=list(feedback))
         plan=await self.model.structured(TurnPlan,TURN,payload,budget)
-        plan,bound=bind_explicit(plan,question,self.companies)
-        if bound:budget.artifacts.setdefault('literal_bindings',[]).append(bound)
+        from .turn_transport import encode_turn_proposal
+        budget.artifacts['last_turn_wire_proposal']=encode_turn_proposal(plan)
         try:
             return plan.compile(question,self.companies)
         except ValueError as exc:
             from .state import InvalidUnderstanding
             invalid=InvalidUnderstanding(str(exc));invalid.request=plan.model_dump(mode='json')
+            invalid.repair_goals=getattr(exc,'repair_goals',False)
+            invalid.rejected_goal_kinds=getattr(exc,'rejected_goal_kinds',())
+            invalid.required_goal_kinds=getattr(exc,'required_goal_kinds',())
+            invalid.minimum_goal_count=getattr(exc,'minimum_goal_count',1)
             raise invalid from exc
 

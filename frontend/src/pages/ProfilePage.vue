@@ -24,7 +24,7 @@ import type { NotificationItem, WatchlistItem } from "@/types/platform";
 const auth = useAuthStore();
 const router = useRouter();
 
-/* 作品说明：资料编辑 */
+/* 资料编辑 */
 
 const nickname = ref(auth.user?.nickname ?? "");
 const riskProfile = ref(auth.user?.riskProfile ?? "balanced");
@@ -52,7 +52,7 @@ async function saveProfile() {
   }
 }
 
-/* 作品说明：自选股 */
+/* 自选股 */
 
 const watchlist = ref<WatchlistItem[]>([]);
 const watchlistLoading = ref(true);
@@ -85,7 +85,7 @@ async function unwatch(code: string) {
   }
 }
 
-/* 作品说明：站内信 */
+/* 站内信 */
 
 const notifications = ref<NotificationItem[]>([]);
 const notifyTotal = ref(0);
@@ -154,12 +154,13 @@ async function onLogout() {
   <PortalShell>
     <PageHeader title="个人中心" :description="`${auth.user?.nickname || auth.user?.username || ''}，在这里管理资料、关注的公司和站内通知。`">
       <template #actions>
+        <router-link to="/financial-submissions">我的财报提交</router-link>
         <AppButton variant="outline" size="sm" @click="onLogout">退出登录</AppButton>
       </template>
     </PageHeader>
 
       <div class="profile__grid">
-        <!-- 作品说明：资料 + 风险偏好 -->
+        <!-- 资料 + 风险偏好 -->
         <AppCard padding="lg">
           <template #header>
             <AppSection title="基本资料" dense />
@@ -196,7 +197,7 @@ async function onLogout() {
           </div>
         </AppCard>
 
-        <!-- 作品说明：站内信 -->
+        <!-- 站内信 -->
         <AppCard padding="lg">
           <template #header>
             <div class="panel__title-row">
@@ -242,7 +243,7 @@ async function onLogout() {
         </AppCard>
       </div>
 
-      <!-- 作品说明：自选股 -->
+      <!-- 自选股 -->
       <AppCard padding="lg">
         <template #header>
           <AppSection title="关注的公司" :description="`${watchlist.length} 家 · 指标取最新已入库年报`" dense />
@@ -395,7 +396,7 @@ async function onLogout() {
   color: var(--c-success);
 }
 
-/* 作品说明：站内信 */
+/* 站内信 */
 .notify__list {
   list-style: none;
   margin: 0;
@@ -446,7 +447,7 @@ async function onLogout() {
   color: var(--c-text-secondary);
 }
 
-/* 作品说明：自选表格 */
+/* 自选表格 */
 .watch__table-wrap {
   overflow-x: auto;
 }

@@ -2,7 +2,7 @@
 
 此目录将真实 PDF、问题、候选答案、模型推理和独立评分分开。模型只收到题目 id、question、category、split；gold.jsonl 和 PDF 原页标注只供评分及人工审核。
 
-默认使用本机 Ollama 的 `qwen3.5:9b-q4_K_M`，`reasoning_effort=low`，BGE 使用本地缓存并在 CPU 运行。运行器会拒绝远程模型端点、远程数据库、原项目数据库和合成演示库；只接受 `finsight_real_eval` 与 `data/real_eval_chroma_db`。
+本目录保留历史实验的独立评分、PDF来源核验和记录重放；旧实时消融执行入口已停用。现行生成统一使用云端，真实问答入口见[当前评测说明](../README.md)。BGE和既有索引不变，数据准备仍检查隔离数据库与索引位置。
 
 ## 数据文件与边界
 
@@ -18,23 +18,11 @@
 
 `prospective_holdout` 仅表示此次冻结后的保留组。历史调试曝光未知，不能声称过去从未使用过。请在开发组完成通用修复后冻结代码，再运行保留组；不得按保留组答案调规则。
 
-## 运行
+## 历史记录重放
 
-先完成对应报告的真实 ETL 和索引导入，配置 `.env.real-eval` 的独立只读 SQL 账号。运行器在推理前检查所选分组的每一份 PDF 都有 SQL 报告身份及携带原件哈希的索引块；库中允许存在清单内的其他分组。缺失报告会写入预检失败记录，不能静默略过。
+以下旧实时执行步骤仅描述历史方法，不作为当前云端启动说明。`run_eval.py`只接受`--rescore`重放，不能用它新建问答实验；新问答使用`eval/cloud_focused.py`。问题、gold和原件证据的分离规则继续有效。
 
-```powershell
-$env:PYTHONIOENCODING='utf-8'
-& .venv/Scripts/python.exe eval/real/run_eval.py --split development --modes agent --output eval/runs/real-development-agent-v1
-```
-
-五模式使用相同本地模型、数据和 0 温度；只变动运行链路。模式在相邻题之间交替顺序，避免始终让同一模式先跑。默认输出预算、上下文和重试次数来自 `.env.real-eval` 并进入运行快照；模型和索引预热不计入逐题耗时。
-
-```powershell
-& .venv/Scripts/python.exe eval/real/run_eval.py --split development --modes bare tool_baseline agent no_verifier no_rerank --output eval/runs/real-development-five-modes-v1
-& .venv/Scripts/python.exe eval/real/run_eval.py --split prospective_holdout --modes agent --output eval/runs/real-prospective-holdout-agent-v1
-```
-
-使用新输出目录，不覆盖旧记录。传输断连、超时或流式连接中断会立即保存已完成题、故障题和已经发出的工具证据，然后终止整个批次；恢复服务后另开运行目录。HTTP 500 等服务器响应另保留状态和错误体，避免规则兜底把模型接口故障掩盖成正常模型表现。
+历史实验的模型身份、数据、参数和逐题结果只从对应快照解释，不改写为当前DeepSeek版本。本目录不再提供旧实时启动命令；保留下面的只读复评分入口。现行28题的启动、续跑与真实Java/SSE检查见[云端定向测试](../../docs/CLOUD_FOCUSED_TEST.md)。
 
 ## 复评分与材料
 

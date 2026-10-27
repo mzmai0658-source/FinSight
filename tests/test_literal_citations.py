@@ -32,7 +32,7 @@ def test_exact_quote_is_checked_against_source_not_misclassified_as_calculation(
     result = verify_turn(answer, [], [ref], [ref], [], question='金花股份6000802023年全年请摘引原文')
     assert next(c for c in result['checks'] if c['name'] == 'literal_quotes')['status'] == 'pass'
     assert next(c for c in result['checks'] if c['name'] == 'numbers_grounded')['status'] == 'pass'
-    assert result['status'] == 'warn'  # 作品说明：经营解释仍需人工审阅。
+    assert result['status'] == 'warn'  # 经营解释仍需人工审阅。
 
 
 @pytest.mark.parametrize('before,after', [('100', '999'), ('第 9 页', '第 10 页'), ('2023年', '2022年'), ('【1】', '【2】')])

@@ -1,10 +1,9 @@
-"""作品说明：本机评估真实财务 PDF，保留独立标注与完整重放记录。"""
+"""重放真实财务 PDF 的已保存评测，保留独立标注与完整重放记录。"""
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
-import os
 import statistics
 import sys
 import time
@@ -16,9 +15,9 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from eval.experiment import MODES, build_manifest, fingerprint
+from eval.experiment import MODES, fingerprint
 from eval.real.oracle import METRICS, VERSION, score_record, validate_source
-from eval.real.runtime import HTTPAudit, ModelDisconnected, PDFRuntime, configure_environment
+from eval.real.runtime import ModelDisconnected
 
 DATA_ROOT = ROOT / "data/runtime/real_validation"
 CATEGORIES = ("numeric", "chart", "citation", "security", "out_of_scope")
@@ -50,7 +49,7 @@ def utc_now() -> str:
 
 
 def public_case(case: Mapping[str, Any]) -> dict:
-    """作品说明：即使使用自定义运行环境，也只将指定字段送入推理边界。"""
+    """即使使用自定义运行环境，也只将指定字段送入推理边界。"""
     return {key: case[key] for key in PUBLIC_FIELDS}
 
 
@@ -251,7 +250,7 @@ def replay(args) -> int:
         valid = {}
         for review in reviews:
             if not review.get("reviewer") or not isinstance(review.get("supported"), bool):
-                continue  # 作品说明：待填写的标注模板保持未审查状态。
+                continue  # 待填写的标注模板保持未审查状态。
             key = review["case_id"], review["mode"]
             if review.get("answer_sha256") != hashlib.sha256(str(known[key].get("answer") or "").encode("utf-8")).hexdigest():
                 raise ValueError("Manual review answer hash differs from recorded answer")
@@ -288,75 +287,10 @@ def main() -> int:
     parser.add_argument("--manual-reviews", type=Path)
     parser.add_argument("--require-human-labels", action="store_true", help="Fail before inference unless every selected label has recorded human review")
     args = parser.parse_args()
-    if args.rescore:
-        return replay(args)
-    if args.manual_reviews:
-        parser.error("--manual-reviews requires --rescore")
-    if len(set(args.modes)) != len(args.modes):
-        parser.error("Duplicate modes are not permitted")
-    if (args.output / "report.jsonl").exists() or (args.output / "run_status.json").exists():
-        raise FileExistsError("Output already contains a run; choose a new directory")
-    args.output.mkdir(parents=True, exist_ok=True)
-    manifest = {"modes": args.modes, "selected_case_ids": [], "fingerprint": "preflight_pending"}
-    cases = []
-    try:
-        question_rows = read_jsonl(args.questions)
-        manifest["selected_case_ids"] = [q.get("id") for q in question_rows if args.split == "all" or q.get("split") == args.split]
-        if not manifest["selected_case_ids"]:
-            raise ValueError("Selected split contains no questions")
-        cases = load_cases(args.questions, args.gold, args.source_root)
-        selected = [c for c in cases if c["id"] in manifest["selected_case_ids"]]
-        if args.require_human_labels and any(c["label_status"] != "human_reviewed" for c in selected):
-            raise ValueError("Formal reviewed run requires all selected labels to be human_reviewed; pending IDs: " + ", ".join(c["id"] for c in selected if c["label_status"] != "human_reviewed"))
-        source_manifest = json.loads(args.source_manifest.read_text(encoding="utf-8"))
-        documents = source_manifest["documents"]
-        selected_documents = [d for d in documents if args.split == "all" or d.get("split") == args.split]
-        if not selected_documents:
-            raise ValueError("No source documents registered for selected split")
-        registered = {(d["source_path"], d["source_sha256"], str(d["stock_code"]), int(d["report_year"]), d["report_period"]) for d in documents}
-        for case in selected:
-            if case["label_status"] == "annotation_missing":
-                continue
-            for source in list(case["expected"].get("sources") or []) + list(case["expected"].get("values") or []):
-                if (source["source_path"], source["source_sha256"], str(source["stock_code"]), int(source["report_year"]), source["report_period"]) not in registered:
-                    raise ValueError(f"Label references an unregistered original PDF: {case['id']}")
-        for name, rows in (("questions.snapshot.jsonl", question_rows), ("gold.snapshot.jsonl", read_jsonl(args.gold))):
-            atomic_text(args.output / name, jsonl(rows))
-        write_json(args.output / "source_manifest.snapshot.json", source_manifest)
-        export_review_materials(args.output, selected, [])
-        configure_environment(args.env_file)
-        with HTTPAudit() as audit:
-            runtime = PDFRuntime(documents, selected_documents)
-            runtime.warmup()
-            info = runtime.runtime_info()
-            base = build_manifest(cases, info, False)
-            base.pop("fingerprint", None)
-            manifest = {**base, "schema_version": 1, "scorer_version": VERSION,
-                        "selected_case_ids": [c["id"] for c in selected], "modes": args.modes,
-                        "split": args.split, "source_root": str(args.source_root.resolve()),
-                        "source_manifest_sha256": fingerprint(source_manifest),
-                        "label_status_counts": dict(Counter(c["label_status"] for c in selected)),
-                        "order": "modes alternate direction within each case; warmup excluded",
-                        "holdout_note": "Prospective only; historical debugging exposure is unknown"}
-            manifest["fingerprint"] = fingerprint(manifest)
-            write_json(args.output / "database.snapshot.json", runtime.database_snapshot)
-            write_checkpoint(args.output, [], manifest, {"status": "running"})
-            records, status = run_records(selected, runtime, manifest, args.source_root, args.output, audit)
-        rescored = rescore_records(cases, read_jsonl(args.output / "report.jsonl"), manifest, args.source_root)
-        validate_run_coverage(rescored, manifest, status)
-        if [r["scores"] for r in rescored] != [r["scores"] for r in records]:
-            raise AssertionError("Disk replay changed independently scored results")
-        status["disk_replay_verified"] = True
-        write_checkpoint(args.output, records, manifest, status)
-        export_review_materials(args.output, selected, records)
-        print(f"Saved original-PDF evaluation and review queue: {args.output}")
-        return 2 if status["status"] != "completed" else 0
-    except (ModelDisconnected, Exception) as exc:
-        # 作品说明：后续重放或报告生成失败时，不得抹去已检查点保存的调用记录。
-        existing = read_jsonl(args.output / "report.jsonl") if (args.output / "report.jsonl").exists() else []
-        write_checkpoint(args.output, existing, manifest, {"status": "preflight_failed" if not existing else "aborted_error", "error": f"{type(exc).__name__}: {exc}"})
-        print(f"Run stopped; affected case IDs and error preserved in {args.output / 'run_status.json'}", flush=True)
-        return 2
+    if not args.rescore:
+        parser.error("Historical PDF live evaluation is retired; use eval/cloud_focused.py. This tool supports --rescore only.")
+    return replay(args)
+
 
 
 if __name__ == "__main__":

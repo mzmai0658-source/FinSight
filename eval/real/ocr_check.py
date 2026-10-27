@@ -1,4 +1,4 @@
-"""作品说明：用开发原件的隔离副本开展不复用缓存的 OCR 验收。"""
+"""用开发原件的隔离副本开展不复用缓存的 OCR 验收。"""
 from __future__ import annotations
 import argparse
 import hashlib
@@ -32,7 +32,7 @@ def main():
     from src.etl.ocr_client import ensure_ocr_json
     from pypdf import PdfReader
     manifest = json.loads((ROOT / 'data/runtime/real_validation/report_manifest.json').read_text(encoding='utf-8'))
-    # 作品说明：每家开发公司选页数最少的一份原件，不根据 OCR 结果挑选样本。
+    # 每家开发公司选页数最少的一份原件，不根据 OCR 结果挑选样本。
     selected = {}
     for doc in manifest['documents']:
         if doc['split'] != 'development':

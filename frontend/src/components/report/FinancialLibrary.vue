@@ -40,7 +40,7 @@ async function openPdf(item:FinancialMaterial){
  }catch(e){if(!disposed)pdfErrors.value[id]=e instanceof Error?`原件未能加载：${e.message}`:'原件加载失败，请重试。';}
  finally{pending.value[id]=false;}
 }
-/** 作品说明：卡片状态文案与视觉色调分别表达，状态含义保持一致。 */
+/** 卡片状态文案与视觉色调分别表达，状态含义保持一致。 */
 function statusLabel(item:FinancialMaterial){
  if(item.status==='imported')return item.qualityStatus==='warn'?'已结构化（部分字段待复核）':'已完成结构化入库';
  return item.contentState==='missing'?'正文待补充':item.contentState==='partial'?'部分正文已收录':'正文已收录';
@@ -132,7 +132,7 @@ onBeforeUnmount(()=>{disposed=true;version++;Object.values(pdfUrls.value).forEac
 }
 .filter-summary { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); font-size: var(--fs-sm); color: var(--c-text-secondary); }
 
-/* 作品说明：工具栏 */
+/* 工具栏 */
 .toolbar {
   display: flex;
   align-items: center;
@@ -179,7 +179,7 @@ onBeforeUnmount(()=>{disposed=true;version++;Object.values(pdfUrls.value).forEac
   color: var(--c-text-tertiary);
 }
 
-/* 作品说明：按钮 */
+/* 按钮 */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -223,7 +223,7 @@ onBeforeUnmount(()=>{disposed=true;version++;Object.values(pdfUrls.value).forEac
   padding: 0 var(--sp-4);
 }
 
-/* 作品说明：状态 */
+/* 状态 */
 .state {
   padding: var(--sp-10) var(--sp-6);
   text-align: center;
@@ -243,7 +243,7 @@ onBeforeUnmount(()=>{disposed=true;version++;Object.values(pdfUrls.value).forEac
   margin-left: var(--sp-2);
 }
 
-/* 作品说明：卡片 */
+/* 卡片 */
 .financial-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));

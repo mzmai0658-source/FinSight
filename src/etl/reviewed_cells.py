@@ -1,4 +1,4 @@
-"""作品说明：重新核验 PDF 区域后导入人工坐标标注。含糊 OCR 留在审计中；已复核单元格作为独立候选，仍须通过冲突与发布检查。"""
+"""重新核验 PDF 区域后导入人工坐标标注。含糊 OCR 留在审计中；已复核单元格作为独立候选，仍须通过冲突与发布检查。"""
 from functools import lru_cache
 import json
 from pathlib import Path

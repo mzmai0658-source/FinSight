@@ -1,4 +1,4 @@
-"""作品说明：共享和目标条件修改完成后统一补充领域默认值，使默认规则依据最终选择生效。"""
+"""共享和目标条件修改完成后统一补充领域默认值，使默认规则依据最终选择生效。"""
 from .contracts import Origin
 
 
@@ -17,7 +17,7 @@ def finalize_conditions(conditions, kinds, turn_id):
     if (c.calculation != 'none' or 'compare' in kinds) and (
         c.comparison_axis == 'none' or axis_origin is not None and axis_origin.kind == 'default'
     ):
-        # 作品说明：公司集合或局部条件变化后重算派生默认值，保留用户明确指定的方向。
+        # 公司集合或局部条件变化后重算派生默认值，保留用户明确指定的方向。
         pairs = c.time.pairs or [(year, period) for year in c.time.years for period in c.time.periods]
         c.comparison_axis = 'none'
         if len(c.codes) > 1 and (len(pairs) == 1 or

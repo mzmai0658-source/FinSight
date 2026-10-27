@@ -1,4 +1,4 @@
-"""作品说明：独立评分必须识别口径、金额、单位与图表错误，不能因生产核验自报通过而放行。"""
+"""独立评分必须识别口径、金额、单位与图表错误，不能因生产核验自报通过而放行。"""
 import copy
 from eval.real200_acceptance import score,summarize
 
@@ -26,3 +26,19 @@ def test_dialogue_groups_and_threshold_do_not_hide_failures():
     assert summarize(rows)['acceptance_passed']
     rows[0]['score']['critical']=['wrong_source'];assert not summarize(rows)['acceptance_passed']
     rows[0]['score']['critical']=[];rows[0]['score']['passed']=False;assert not summarize(rows)['dialogue_groups']['g']
+
+def test_outside_company_requires_clear_boundary_not_another_company_question():
+    c,r,f,o=sample();c['expect']=dict(kind='unsupported',outside_company='贵州茅台')
+    result=r['task']['result'];result['facts']=[];result['request_contract']['goals']=[];result['outcome']['status']='needs_clarification'
+    result['answer']['content']='请确认公司名称：贵州茅台。请明确要查询哪家公司。'
+    assert 'uncovered_company_boundary_not_explained' in score(c,r,f,o,'q')['errors']
+    result['outcome']['status']='unsupported';result['answer']['content']='当前库未覆盖：贵州茅台。'
+    assert score(c,r,f,o,'q')['passed']
+
+def test_supplemental_review_can_reject_an_automatically_passed_answer():
+    from eval.review_real200 import apply,answer_hash
+    c,r,f,o=sample();row=dict(case=c,run=r,score=score(c,r,f,o,'q'))
+    assert row['score']['passed'] and not row['score']['review_required']
+    decisions={'x':dict(passed=False,reason='正文遗漏用户要求',reviewer='assistant-independent-review',answer_evidence_sha256=answer_hash(row))}
+    reviewed=apply([row],decisions)[0]
+    assert not reviewed['score']['passed'] and reviewed['score']['review_status']=='fail'

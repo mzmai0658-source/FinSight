@@ -299,9 +299,10 @@
     "name": "httpx",
     "version": "0.28.1",
     "installed_version": "0.28.1",
-    "license": "License :: OSI Approved :: BSD License",
+    "license": "BSD-3-Clause",
     "source": "https://pypi.org/project/httpx/0.28.1/",
-    "verification": "installed distribution metadata; not a legal conclusion"
+    "verification": "installed distribution metadata; not a legal conclusion",
+    "license_source": "https://github.com/encode/httpx/blob/0.28.1/LICENSE.md"
   },
   {
     "name": "huggingface_hub",
@@ -429,14 +430,6 @@
     "installed_version": "1.2.23",
     "license": "License :: OSI Approved :: MIT License",
     "source": "https://pypi.org/project/langchain-core/1.2.23/",
-    "verification": "installed distribution metadata; not a legal conclusion"
-  },
-  {
-    "name": "langchain-ollama",
-    "version": "1.1.0",
-    "installed_version": "1.1.0",
-    "license": "License :: OSI Approved :: MIT License",
-    "source": "https://pypi.org/project/langchain-ollama/1.1.0/",
     "verification": "installed distribution metadata; not a legal conclusion"
   },
   {
@@ -584,14 +577,6 @@
     "verification": "installed distribution metadata; not a legal conclusion"
   },
   {
-    "name": "ollama",
-    "version": "0.6.2",
-    "installed_version": "0.6.2",
-    "license": "MIT",
-    "source": "https://pypi.org/project/ollama/0.6.2/",
-    "verification": "installed distribution metadata; not a legal conclusion"
-  },
-  {
     "name": "onnxruntime",
     "version": "1.24.4",
     "installed_version": "1.24.4",
@@ -720,6 +705,15 @@
     "verification": "installed distribution metadata; not a legal conclusion"
   },
   {
+    "name": "pdfminer.six",
+    "version": "20251230",
+    "installed_version": "20251230",
+    "license": "MIT",
+    "source": "https://pypi.org/project/pdfminer.six/20251230/",
+    "license_source": "https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE",
+    "verification": "installed distribution metadata and upstream license; not a legal conclusion"
+  },
+  {
     "name": "pdfplumber",
     "version": "0.11.9",
     "installed_version": "0.11.9",
@@ -816,6 +810,14 @@
     "verification": "installed distribution metadata; not a legal conclusion"
   },
   {
+    "name": "PyMuPDF",
+    "version": "1.27.2.3",
+    "installed_version": "1.27.2.3",
+    "license": "Dual Licensed - GNU AFFERO GPL 3.0 or Artifex Commercial License",
+    "source": "https://pypi.org/project/PyMuPDF/1.27.2.3/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
     "name": "PyMySQL",
     "version": "1.1.2",
     "installed_version": "1.1.2",
@@ -909,6 +911,14 @@
     "installed_version": "2026.3.32",
     "license": "Apache-2.0 AND CNRI-Python",
     "source": "https://pypi.org/project/regex/2026.3.32/",
+    "verification": "installed distribution metadata; not a legal conclusion"
+  },
+  {
+    "name": "reportlab",
+    "version": "4.5.1",
+    "installed_version": "4.5.1",
+    "license": "License :: OSI Approved :: BSD License",
+    "source": "https://pypi.org/project/reportlab/4.5.1/",
     "verification": "installed distribution metadata; not a legal conclusion"
   },
   {
@@ -1229,22 +1239,6 @@
     "installed_version": "0.25.0",
     "license": "BSD-3-Clause",
     "source": "https://pypi.org/project/zstandard/0.25.0/",
-    "verification": "installed distribution metadata; not a legal conclusion"
-  },
-  {
-    "name": "reportlab",
-    "version": "4.5.1",
-    "installed_version": "4.5.1",
-    "license": "License :: OSI Approved :: BSD License",
-    "source": "https://pypi.org/project/reportlab/4.5.1/",
-    "verification": "installed distribution metadata; not a legal conclusion"
-  },
-  {
-    "name": "PyMuPDF",
-    "version": "1.27.2.3",
-    "installed_version": "1.27.2.3",
-    "license": "Dual Licensed - GNU AFFERO GPL 3.0 or Artifex Commercial License",
-    "source": "https://pypi.org/project/PyMuPDF/1.27.2.3/",
     "verification": "installed distribution metadata; not a legal conclusion"
   }
 ]

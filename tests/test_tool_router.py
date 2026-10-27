@@ -1,6 +1,6 @@
 from typing import Any, Dict, List
 
-from src.agent.orchestrator import AgentEvent
+from src.agent.v3.agent import AgentEvent
 from src.agent.tool_router import ToolRouter
 
 

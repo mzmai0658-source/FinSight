@@ -2,7 +2,7 @@
     [string]$EnvFile = "",
     [string]$Database = "",
     [switch]$SkipDatabase,
-    [switch]$SkipModelPull
+    [switch]$SkipModelCheck
 )
 
 $ErrorActionPreference = "Stop"
@@ -13,7 +13,7 @@ if ([string]::IsNullOrWhiteSpace($EnvFile)) {
 if (-not (Test-Path -LiteralPath $EnvFile)) {
     throw "Missing $EnvFile. Copy .env.demo.example to .env.demo and set the local MySQL credentials first."
 }
- . (Join-Path $PSScriptRoot "Load-Env.ps1") -EnvFile $EnvFile -Override
+ . (Join-Path $PSScriptRoot "Load-Env.ps1") -EnvFile $EnvFile -Override -SkipCredentialPreparation
 $configuredDatabase = if ($env:DB_NAME) { $env:DB_NAME } else { "finsight_demo" }
 if ($Database -and $Database -ne $configuredDatabase) {
     throw "Database must match DB_NAME in the environment file. Edit the isolated demo configuration first."
@@ -23,22 +23,23 @@ if ($Database -notmatch '^finsight_demo(_[a-zA-Z0-9_]+)?$') {
     throw "Public demo bootstrap is restricted to the isolated finsight_demo database."
 }
 
+ . (Join-Path $PSScriptRoot "Load-Env.ps1") -EnvFile $EnvFile -Override
+
 $python = Join-Path $Root ".venv\Scripts\python.exe"
 if (-not (Test-Path -LiteralPath $python)) {
     $python = (Get-Command python -ErrorAction Stop).Source
 }
 
-$env:LLM_PROVIDER = "ollama"
+$env:LLM_PROVIDER = "openai_compat"
 $env:EMBEDDING_PROVIDER = "bge_local"
 $env:DB_NAME = $Database
 $env:MYSQL_DATABASE = $Database
 $env:CHROMA_DB_PATH = "data/demo_chroma_db"
 
-if (-not $SkipModelPull) {
-    $model = if ($env:OLLAMA_MODEL) { $env:OLLAMA_MODEL } else { "qwen3.5:9b-q4_K_M" }
-    & $python (Join-Path $PSScriptRoot "ensure_ollama_model.py") --model $model
+if (-not $SkipModelCheck) {
+    & $python (Join-Path $PSScriptRoot "check_cloud_model.py") --env $EnvFile
     if ($LASTEXITCODE -ne 0) {
-        throw "Ollama model check failed with exit code $LASTEXITCODE"
+        throw "Cloud configuration or model check failed with exit code $LASTEXITCODE"
     }
 }
 

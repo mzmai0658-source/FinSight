@@ -1,0 +1,213 @@
+{
+  "schema": 1,
+  "team_id": "AIC-2026-96123955",
+  "release": "FinSight-AIC-2026-96123955-r1",
+  "first_run_date": "2026-10-26",
+  "packaged_date": "2026-10-27",
+  "data_version": "ce133135ef5308bf7b73efd6ebcc1665e761250f8fa6c8888e7f608affae4e95",
+  "restore": {
+    "empty_database": true,
+    "empty_index": true,
+    "independent_readonly_account": true,
+    "dependency_download_cache_reused": true,
+    "first_attempt": "rejected existing reader grants; retained failure",
+    "final_attempt": "restored to another new database and index with dedicated SQL_DB_USER"
+  },
+  "packages": {
+    "minimal": {
+      "file": "AIC-2026-96123955_minimal-data.zip",
+      "bytes": 1956816,
+      "sha256": "eacb469d0f61395bef3308a24b69616ed0d390a65a94c75c147e149837096151",
+      "transport_sha256": "bc70a17bb019c86f9bcdfcfedd4623b9e28d5a4322fd660dda323ccf57a011f6",
+      "files": 12,
+      "tables": {
+        "company": 3,
+        "income_sheet": 3,
+        "balance_sheet": 3,
+        "cash_flow_sheet": 3,
+        "core_performance_indicators_sheet": 3,
+        "financial_report_versions": 3,
+        "financial_report_provenance": 3,
+        "financial_data_releases": 1,
+        "financial_canonical_reports": 3,
+        "financial_canonical_facts": 106,
+        "financial_data_pointer": 1
+      },
+      "vectors": [
+        {
+          "name": "financial_cloud_be3ca0220025e5483e8985e1cb32d26b",
+          "count": 57
+        }
+      ],
+      "users_exported": false,
+      "credentials_exported": false,
+      "ocr_regenerated": false,
+      "embeddings_regenerated": false
+    },
+    "full": {
+      "file": "AIC-2026-96123955_full-data.zip",
+      "bytes": 550339998,
+      "sha256": "9e337dce7d24395c7105ed892d157f317f7bb84b892363cb4b57a17131dab05a",
+      "transport_sha256": "0dae7b7f64374d971a0966a54854bf4e78e79ec2825e49eacdaff98825c3abbc",
+      "files": 255,
+      "tables": {
+        "company": 3,
+        "income_sheet": 3,
+        "balance_sheet": 3,
+        "cash_flow_sheet": 3,
+        "core_performance_indicators_sheet": 3,
+        "financial_report_versions": 3,
+        "financial_report_provenance": 3,
+        "financial_data_releases": 2,
+        "financial_canonical_reports": 122,
+        "financial_canonical_facts": 7713,
+        "financial_data_pointer": 2
+      },
+      "vectors": [
+        {
+          "name": "financial_cloud_9386cb8d99c713495e245e4dc587b265",
+          "count": 21437
+        },
+        {
+          "name": "financial_cloud_be3ca0220025e5483e8985e1cb32d26b",
+          "count": 57
+        }
+      ],
+      "users_exported": false,
+      "credentials_exported": false,
+      "ocr_regenerated": false,
+      "embeddings_regenerated": false
+    }
+  },
+  "cases": [
+    {
+      "id": "M01",
+      "question": "查询立讯精密2024年一季度合并营业收入，单位亿元、保留两位小数，并给出PDF原件页码。",
+      "status": "completed",
+      "saved": true,
+      "seconds": 7.563,
+      "answer": "立讯精密 2024 一季度累计的营业收入为 **524.07 亿元**（合并口径）。\n\n原件 PDF 第 8 页，合并利润表的“其中：营业收入”行。",
+      "data_version": "ce133135ef5308bf7b73efd6ebcc1665e761250f8fa6c8888e7f608affae4e95",
+      "first_result_sha256": "bf26c8f211f52cf574f35603be0b9672e769fe2532bf6cf799bc256d3e8c1209"
+    },
+    {
+      "id": "M02",
+      "question": "请给出这个数在PDF中的物理页码和原表整行，原文不要改写。",
+      "status": "failed",
+      "saved": true,
+      "seconds": 7.39,
+      "answer": "模型提出的条件不符合请求规范，本轮未执行财务查询。",
+      "data_version": null,
+      "first_result_sha256": "92851a2b7cff79d4dc6df2f462cc27a0fdf1771494edbefdd2868a0fa978e2cf"
+    },
+    {
+      "id": "M03",
+      "question": "只把单位改成万元，保留四位小数，用表格，不画图。",
+      "status": "completed",
+      "saved": true,
+      "seconds": 8.203,
+      "answer": "| 公司 | 报告期 | 指标 | 口径 | 数值 | 单位 |\n|---|---|---|---|---:|---|\n| 立讯精密 | 2024 一季度累计 | 营业收入 | 合并 | 5,240,677.5585 | 万元 |\n\n| 说明 |\n|---|\n| 原件 PDF 第 8 页，合并利润表的“其中：营业收入”行。 |",
+      "data_version": "ce133135ef5308bf7b73efd6ebcc1665e761250f8fa6c8888e7f608affae4e95",
+      "first_result_sha256": "e17a5715ad30b95384cd2ff3a7d1b170ca07ce1b60fc6d45b46a5e08a856ee2d"
+    },
+    {
+      "id": "M04",
+      "question": "查询比亚迪2024年全年合并营业收入，单位亿元，保留两位小数。",
+      "status": "completed",
+      "saved": true,
+      "seconds": 2.953,
+      "answer": "以下请求项没有可发布的核实数据：002594 2024 FY 营业收入（当前库没有该报告原件）。",
+      "data_version": "ce133135ef5308bf7b73efd6ebcc1665e761250f8fa6c8888e7f608affae4e95",
+      "first_result_sha256": "b40178e95a67fdcc1f4ccdfd9872977ac8176a54bb99d0594f2c6c9da89d3ad8"
+    }
+  ],
+  "scope": "installation smoke; not added to 64/88 accuracy; M02 failure retained",
+  "browser": {
+    "login": true,
+    "restored_query": true,
+    "restored_conversion": true,
+    "retained_failure": true,
+    "asset_http": 200,
+    "pdf_sha256": "4f398f064179ccdd4323a22aa70f90d5c75f4e1946fec52fd80858be6a9549a7",
+    "pdf_identity": true,
+    "pdf_page_target": true,
+    "popup_open": true,
+    "reload_history": true,
+    "page_errors": []
+  },
+  "permissions": {
+    "owner_http": 200,
+    "owner_sha256": "4f398f064179ccdd4323a22aa70f90d5c75f4e1946fec52fd80858be6a9549a7",
+    "anonymous_http": 401,
+    "other_user_http": 404,
+    "own_pdf_matches_original": true
+  },
+  "full_restore": {
+    "status": "restored",
+    "empty_database": true,
+    "empty_index": true,
+    "reports": 122,
+    "facts": 7713,
+    "collections": 2,
+    "chunks": 21494,
+    "statuses_preserved": true
+  },
+  "preflight": {
+    "minimal": [
+      {
+        "name": "mysql",
+        "ok": true,
+        "detail": "MySQL read-only accepted real version: 3 reports"
+      },
+      {
+        "name": "chat_model",
+        "ok": true,
+        "detail": "云端认证与型号列表可用：deepseek-flash；生成能力需单独验收"
+      },
+      {
+        "name": "knowledge",
+        "ok": true,
+        "detail": "集合可读取：57 片段，1024 维，模型指纹匹配"
+      },
+      {
+        "name": "redis",
+        "ok": true,
+        "detail": "Authenticated Redis PING"
+      },
+      {
+        "name": "rabbitmq",
+        "ok": true,
+        "detail": "Authenticated AMQP handshake and exclusive queue declaration"
+      }
+    ],
+    "full": [
+      {
+        "name": "mysql",
+        "ok": true,
+        "detail": "MySQL read-only experimental; source audit incomplete real version: 119 reports"
+      },
+      {
+        "name": "chat_model",
+        "ok": true,
+        "detail": "云端认证与型号列表可用：deepseek-flash；生成能力需单独验收"
+      },
+      {
+        "name": "knowledge",
+        "ok": true,
+        "detail": "集合可读取：21437 片段，1024 维，模型指纹匹配"
+      },
+      {
+        "name": "redis",
+        "ok": true,
+        "detail": "Authenticated Redis PING"
+      },
+      {
+        "name": "rabbitmq",
+        "ok": true,
+        "detail": "Authenticated AMQP handshake and exclusive queue declaration"
+      }
+    ]
+  },
+  "readonly_financial_tables": 12,
+  "user_and_chat_tables_granted": false
+}

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 作品说明：财务数据只读查询（ETL 导入的四张财务表）。
+ * 财务数据只读查询（ETL 导入的四张财务表）。
  * 仅查 FY（年报）口径用于展示；金额单位：万元。
  */
 @Mapper

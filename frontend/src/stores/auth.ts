@@ -28,7 +28,7 @@ export const useAuthStore = defineStore("auth", {
     isAdmin: (state) => state.user?.role === "ADMIN",
   },
   actions: {
-    /** 作品说明：应用启动时恢复登录态，并注册全局 401 过期跳转 */
+    /** 应用启动时恢复登录态，并注册全局 401 过期跳转 */
     init() {
       if (this.initialized) return;
       this.initialized = true;
@@ -42,7 +42,7 @@ export const useAuthStore = defineStore("auth", {
       const stored = loadStoredAuth();
       if (stored) {
         this.user = stored.user;
-        // 作品说明：后台校验 token 仍有效（失败时拦截器会触发刷新/登出）
+        // 后台校验 token 仍有效（失败时拦截器会触发刷新/登出）
         fetchMe()
           .then((user) => {
             this.user = user;
@@ -50,7 +50,7 @@ export const useAuthStore = defineStore("auth", {
             if (latest) saveStoredAuth({ ...latest, user });
           })
           .catch(() => {
-            // 作品说明：刷新失败场景由 authExpiredHandler 收尾
+            // 刷新失败场景由 authExpiredHandler 收尾
           });
       }
     },

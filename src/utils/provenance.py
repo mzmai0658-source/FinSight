@@ -1,4 +1,4 @@
-"""作品说明：读取已核对的版本化字段来源，不伪造位置。"""
+"""读取已核对的版本化字段来源，不伪造位置。"""
 import hashlib
 import json
 import math
@@ -33,7 +33,7 @@ def attach_provenance(rows: list[dict], lineage: dict, scope: dict, connection=N
         try:
             facts = read_facts(connection,[{**scope,**row} for row in rows])
         except SQLAlchemyError:
-            # 作品说明：旧数据库回答保持兼容，但不能编造来源。
+            # 旧数据库回答保持兼容，但不能编造来源。
             return rows
     else:
         return rows

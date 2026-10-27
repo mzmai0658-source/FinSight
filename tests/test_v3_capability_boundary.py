@@ -33,7 +33,7 @@ def test_unsupported_goal_does_not_block_independent_supported_company_query():
 def test_generic_company_phrase_cannot_select_previous_companies_in_a_new_task():
     u=proposal();u.continuity='continue'
     prior=DialogueState(conditions=Conditions(codes=list(COMPANIES),metrics=['operating_revenue']))
-    # 作品说明：新查询没有可授权沿用的公司上下文。
+    # 新查询没有可授权沿用的公司上下文。
     u.continuity='new'
     from src.agent.v3.contracts import MODIFICATION
     u.modifications=[MODIFICATION.validate_python({'field':'codes','operation':'replace','value':list(COMPANIES)}),
@@ -42,7 +42,7 @@ def test_generic_company_phrase_cannot_select_previous_companies_in_a_new_task()
     from src.agent.v3.state import InvalidUnderstanding
     with pytest.raises(InvalidUnderstanding,match='new task cannot select a company'):
         apply_understanding('医药公司2024年营业收入','t',u,prior,COMPANIES)
-    # 作品说明：合法的缺公司提案保持用户歧义，不能把模型擅选的无关历史公司当作建议。
+    # 合法的缺公司提案保持用户歧义，不能把模型擅选的无关历史公司当作建议。
     u.modifications[0]=MODIFICATION.validate_python({'field':'codes','operation':'replace','value':[]})
     r,_=apply_understanding('医药公司2024年营业收入','t',u,prior,COMPANIES)
     assert r.clarification and not r.conditions.codes and not r.conditions.all_companies

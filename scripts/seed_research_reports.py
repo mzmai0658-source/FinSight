@@ -1,4 +1,4 @@
-"""作品说明：研报元数据入库：metadata xlsx → research_report 表。
+"""研报元数据入库：metadata xlsx → research_report 表。
 
 用法（项目根目录执行，需先启动 Java 让 Flyway 建表）：
 .venv\\Scripts\\python.exe scripts\\seed_research_reports.py

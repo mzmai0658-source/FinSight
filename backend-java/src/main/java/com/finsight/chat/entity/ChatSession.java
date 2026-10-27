@@ -15,7 +15,7 @@ public class ChatSession {
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    /** 作品说明：对外暴露的会话 UUID */
+    /** 对外暴露的会话 UUID */
     private String sessionUid;
 
     private Long userId;

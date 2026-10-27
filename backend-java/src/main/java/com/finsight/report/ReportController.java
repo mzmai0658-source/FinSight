@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
-/** 作品说明：研报库：公开只读（与行情门户一致），数据来自研报元数据 xlsx 入库 */
+/** 研报库：公开只读（与行情门户一致），数据来自研报元数据 xlsx 入库 */
 @Tag(name = "研报库", description = "研究报告元数据检索")
 @RestController
 @RequestMapping("/api/reports")

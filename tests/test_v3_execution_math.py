@@ -15,6 +15,22 @@ class Repository:
         return [f for f in self.values if f.stock_code in codes and (f.year,f.period) in selections.get(f.stock_code,[]) and f.metric in metrics and f.scope==scope]
 
 
+def test_trend_table_and_fact_references_follow_chronology_independent_of_database_order():
+    repo=Repository([fact('600085',2023,'100'),fact('600085',2025,'300'),fact('600085',2024,'200')])
+    r=request(codes=['600085'],metrics=['attributable_net_profit'],
+        time={'mode':'explicit','years':[2023,2024,2025]},presentation={'chart_type':'line','format':'auto'})
+    r.goals=[Goal(id='chart',kind='chart',text='按年份从早到晚的趋势')]
+    result=execute(r,repo)
+    assert [f.year for f in result.facts]==[2023,2024,2025]
+    content=render_financial(r,result)
+    assert content.index('2023 年报') < content.index('2024 年报') < content.index('2025 年报')
+    assert result.charts[0]['x']==['2023 年报','2024 年报','2025 年报']
+    # Ranking still uses amounts, rather than the default chronological ordering.
+    r.goals=[Goal(id='rank',kind='rank',text='按金额降序')]
+    result=execute(r,repo)
+    assert [f.year for f in result.facts]==[2025,2024,2023]
+
+
 def test_yoy_loads_baseline_without_changing_the_requested_period_or_publishing_it_as_current():
     repo=Repository([fact('600085',2023,'-20'),fact('600085',2024,'10')])
     r=request(codes=['600085'],metrics=['attributable_net_profit'],time={'mode':'explicit','years':[2024]},calculation='yoy',comparison_axis='years',presentation={'unit':'%'})

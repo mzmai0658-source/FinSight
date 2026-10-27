@@ -16,7 +16,7 @@ public class NotificationService {
 
     private final NotificationMapper notificationMapper;
 
-    /** 作品说明：发送站内信（异步链路调用，失败不抛出，不影响主流程） */
+    /** 发送站内信（异步链路调用，失败不抛出，不影响主流程） */
     public void send(long userId, String type, String title, String content, String link) {
         try {
             Notification notification = new Notification();

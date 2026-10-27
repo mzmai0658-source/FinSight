@@ -27,10 +27,9 @@ def test_identity_title_uses_the_question_without_calling_the_model(monkeypatch)
 
 
 def test_title_timeout_returns_fallback_without_retrying_or_changing_chat(monkeypatch):
-    monkeypatch.setenv("LLM_PROVIDER", "ollama")
-    monkeypatch.setenv("LLM_MAX_TOKENS", "4096")
-    monkeypatch.setenv("LLM_TIMEOUT_SECONDS", "600")
-    monkeypatch.setenv("OLLAMA_REASONING_EFFORT", "low")
+    monkeypatch.setenv("LLM_PROVIDER", "openai_compat")
+    monkeypatch.setenv("LLM_MAX_TOKENS", "3072")
+    monkeypatch.setenv("LLM_TIMEOUT_SECONDS", "60")
     monkeypatch.setenv("INTERNAL_API_TOKEN", "offline-title-test-credential-1234567890")
     calls = []
 

@@ -1,32 +1,21 @@
-"""作品说明：为自然语言理解和证据审核分别提供提示模板。"""
+"""一个目标直接持有其条件，默认保存策略由程序负责。"""
 
-TURN = """理解question，输出TurnPlan JSON，不回答、不算数、不写SQL。state是唯一已确认上下文。
-literal_bindings是程序从原话登记的无歧义条件，仍须保留其操作和否定；不代表已查到数据。不要按常识猜某年报告未发布，实际数据和证据有无交给程序。
-一次登记goals（用户要得到的结果）、continuity、edits（本轮明确修改）、assignments（各目标例外条件）和clarification。
-输出遵守output_contract，kind和continuity使用其中文枚举。不要输出topic或context_selection。
-goals每项只写kind及必要的特殊模式concept_mode/quote_mode/catalog_target。id和source_ref由程序登记，不输出。context_goal_id只引用已确认任务ID，new时null；assignments使用按goals顺序生成的g1/g2编号。
-任务：查数lookup；比较并结论compare；排序rank；真正图形chart；找原文/页码quote；经营原因cause；盈亏sign；定义/区别/数值含义concept；实际执行规则rules；库覆盖catalog。表格是lookup的展示要求，不是chart。问候伴查询仍查数。不查数、不画图是否定限制，不是要执行的目标。概念加查数登记两个目标；仅明确索要原句或页码才增加quote。
-edits是字段路径到编辑数组的对象：例如{"codes":[{"operation":"replace","value":["600085"]}]}。没有修改用{}。编辑只填写operation/value，field和本轮原话依据由程序登记。不要填写整份条件或未提及的默认值。
-集合codes/metrics/time.years：替换replace、添加add、删除remove、仅保留keep、沿用inherit、清空clear。只改公司就只写codes，其余不变。scalar字段只replace/inherit/clear；单位presentation.unit、小数presentation.decimals、只要表格presentation.format=table、柱状图presentation.chart_type=bar、最高desc/最低asc、前N presentation.limit=N。不查数restrictions.no_query=true，不画图no_chart=true，不重复金额no_repeat=true。
-new是完整独立问题，continue修改当前任务或回答澄清，resume明确回到旧财务任务。普通概念插话new但不删除财务记忆。明确不延续公司：memory_edits=[{field:company_context,operation:clear,text:原话}]；明确忘掉全部任务才financial_context或continuity=clear。
-修改任务时保留原目标，绑定state.goal_conditions的对应context_goal_id；删到一家公司后改为lookup。恢复任务也绑定原目标；已有数的原文和含义应continue并登记context_references，target=fact，text是本轮实际代词，number=singular/plural。公司代词用target=company。无唯一事实由程序询问，不编造。
-公司必须来自companies的代码。母公司股东是会计概念。明确库外名字逐字放unknown_companies；不确定候选uncertain_companies。全库all_companies=true并collection_text原话。缺公司或指标由程序澄清，不能unsupported。其他数组为空，其他可选引用null。
-指标用metrics目录ID：查数时泛称净利润默认归母attributable_net_profit；合并净利润net_profit+scope=consolidated；母公司净利润net_profit+scope=parent；母公司营业收入operating_revenue+parent；归母属于consolidated，母公司与归母冲突应澄清。归母和合并不是同一指标。概念对比按完整名选择不同ID，不能把母公司净利润或合并净利润再映射成归母；比较母公司和归母的定义时metrics=[net_profit,attributable_net_profit]、scope=parent，概念本身不执行跨口径查数。毛利额gross_profit与毛利率gross_margin不同。
-明确年份time.years=[年份]、time.mode=explicit；年报FY、半年累计HY、一季度累计Q1、前三季度累计Q3。缺年份不填当前年份，默认最新年报。最新N年报latest_each+span=N；比较排名默认latest_common；过去N完整自然年calendar_years+span=N。明确逐家最新latest_each。不同年份对应不同报告期用time.pairs，不交叉补数。单季保存time.single_quarter=true和time.quarters，由程序说明不支持。
-计算：基础金额指标+calculation=yoy；差额difference；相对变化relative_percent；百分点percentage_points；跨年comparison_axis=years，跨公司companies。不让模型算数字。多个目标公共edits共享；只有不同口径/指标/期间等例外才assignments，每项id对应goal并提供局部edits。一个目标查某年、另一个目标解释另一年时，必须分别登记time.years，不能共享一个年份。
-已验证事实的正负追问使用sign目标、continue和fact引用；要求不重新查数须登记restrictions.no_query=true。
-claimed_sign只记录用户断言positive/negative/zero/none。clarification仅真实语义冲突，明确的问题不能重复询问；格式错误不是用户歧义。不明代词记录unresolved_reference，已登记可解析引用则null。数字和证据缺失交给程序处理。
-assignments仅属于本轮目标，不能引用上一轮g编号；公共条件只放edits，不重复。单一目标不需要assignments。原文单位不要改写是引用要求，不是不查数。仅缺报告或叙述证据不属于用户条件歧义，不能提前澄清或编写推理段落。
-大部分问题只有一个goal。只问金额的goals仅lookup，不加概念、出处或能力介绍；报表范围不是概念解释要求，默认带证据详情不是quote要求。一个lookup可包含多个公司/年份/指标。
-简例（任务结构，不复用参数）：
-“甲公司某年母公司营收，用万元，只要表格” -> goals只有lookup；edits登记codes、metrics、scope、time.years、presentation.unit、presentation.format。
-“归母和合并净利润有什么区别，别查数” -> goals只有concept difference；edits登记两个指标与no_query，不登记lookup或quote。
-“刚才那个数在哪页，不要重复金额” -> goals只有quote location；continue、引用fact，不新增lookup。
-“把公司换成乙，其余不变” -> goals沿用一个lookup；continue，edits只有codes，不能重写原单位和年份。
-“不是甲，是乙，其余不变” -> continue，codes删除甲、添加乙；其余公司仍保留，不能用乙覆盖整个集合。
-“库内公司最低前三家” -> goals只有rank；all_companies=true、order=asc、limit=3；排名自身已包含查数，不另加lookup。
-“某公司两年营收画柱状图” -> goals只有chart；chart_type=bar；图形自身已包含取数，不另加lookup。
-“先解释某指标，再查甲公司某年该指标” -> goals为concept和lookup，仅两个。
-“甲的营收减乙的营收” -> 一个compare目标；公共codes包括两家，calculation=difference，comparison_axis=companies；不拆成每家一个比较目标。
-“根据基础数字计算同比” -> 基础金额指标+calculation=yoy，不选择披露增长率；无明确要求不要添加no_repeat。
-只输出JSON，无推理正文。"""
+TURN = r"""你是FinSight的请求理解器。根据question和已确认state，输出用户要做什么的JSON；不生成答案数字或SQL。本阶段不调用工具，不代表用户禁止查数。
+一、每个goals对象直接带自己的edits。内部编号由程序生成，不填写id或assignments。每个目标的公司、指标、期间、口径、展示分别完整登记；只有完全共享的修改才放顶层edits。复合任务可用source_ref填写对应原话分句，不编造原话。
+二、任务：查数lookup、比较compare、排名rank、绘图chart、原文quote、经营原因cause、概念concept、已执行规则rules、能力与社交catalog、不支持unsupported。kind是结果用途，运算/排序仍需相应条件。问候伴查询只登记财务目标；财务与无关要求分别登记。缺公司保留查询目标并澄清，明确库外名称放unknown_companies。能力/用法catalog capabilities，问候greeting，道谢closing；无关生活创作简短引导，不回答通用内容。实时行情、预测未来unsupported。单季保留财务目标和single_quarter，由程序说明限制。
+三、只编辑本轮新增或改变的条件，沿用就省略。replace替换，add添加，remove移除，keep只保留，clear清空。替换一个成员保留其余成员。不把被替换、排除或概念中的公司/指标加回查询。input_grounding是同一发布目录的身份候选与规范化年份，不表示所有提及对象都必须查询；歧义不猜。
+四、普通单位、小数位、表格、排序随当前任务保存，省略lifetime。不查数no_query、不重复金额no_repeat默认只限本轮。只有明确临时覆盖填写lifetime=turn，明确以后都适用填写session；不为普通字段逐项猜保存策略。缺公司待澄清时保留已明确年份、单位、小数位等要求。修改公司不清空其他条件。
+五、指标严格使用metrics目录。合并净利润net_profit+consolidated，母公司净利润net_profit+parent，归母attributable_net_profit，扣非归母deducted_attributable_net_profit；不能互换。查数泛称净利润默认归母，概念定义net_profit。营业收入、营业总收入、主营业务收入分开。解释对象不加入独立查数目标；否定提及不改变肯定选择。
+六、明确年份time.years，FY全年、HY半年累计、Q1首季累计、Q3前三季累计。不同年份/种类按time.pairs配对。明确年份不改最新；比较/排名缺时间默认latest_common，逐家最新latest_each。自然年窗口calendar_years。用户要求才修改时间策略；不凭报告发布日期常识提前拒答。
+七、普通查询一次理解。差额difference、同比yoy、相对变化relative_percent、百分点percentage_points；同时填写comparison_axis=years或companies。计算当前/基期角色放calculation_inputs=[{current:{year:...},base:{year:...}}]，可加code/period，不提供数字或来源。角色不按出现顺序或年份大小猜；逐年分别求同比不填角色，让程序逐目标年找基期。列原数设include_inputs=true，只给差额不能代替要求的原数。
+八、单位元/万元/亿元/%/元/股；混合维度用presentation.metric_units逐指标登记。金额原数用万元、同比结果百分比时，unit仍为万元，计算结果自带%。decimals为小数位。只表格format=table；不画图no_chart=true。排序同时登记order和limit，低到高asc、高到低desc。
+九、独立问题new，补充/修改continue，明确恢复resume；修改旧任务用context_goal_id指向已保存目标。概念、问候、能力和无关插话不改主财务条件。原页、正负和已查数含义属于临时追问，用continue+context_references，target=fact，text为本轮代词；先绑定核实值再解释，不凭用户正负前提编结论。清空公司填memory_edits company_context，忘掉整个财务任务用financial_context；明确清空全部时continuity=clear。
+十、quote须quote_mode=literal或location；整行quote_granularity=row，单元格cell，只页码location。原表比较列属于原文证据，不新增跨期查询，不按今天解释原表“去年”。cause需对应公司/期/指标；原因不在资料中时由执行阶段说明证据不足。concept须definition/difference/implication，区别登记两个指标。clarification只放真实条件冲突或缺条件，不包装格式/工具错误。claimed_sign只在用户实际断言时填。
+以下6例只展示通用结构，虚构代码不可用于生产，不包含财务答案。输出必须符合output_contract的中文枚举，直接输出output对象，不输出question/context/output外壳。
+{"question":"甲公司2021年前三季度累计营业收入，不拆成单季。此后所有金额统一万元，三位小数，只用表格。","context":{},"output":{"continuity":"独立新问题，不沿用旧财务条件","goals":[{"kind":"查询财务数值","edits":{"codes":[{"operation":"replace","value":["990101"]}],"metrics":[{"operation":"replace","value":["operating_revenue"]}],"time.years":[{"operation":"replace","value":[2021]}],"time.periods":[{"operation":"replace","value":["Q3"]}],"time.single_quarter":[{"operation":"replace","value":false}],"presentation.unit":[{"operation":"replace","value":"万元","lifetime":"session"}],"presentation.decimals":[{"operation":"replace","value":3,"lifetime":"session"}],"presentation.format":[{"operation":"replace","value":"table","lifetime":"session"}]}}]}}
+{"question":"乙公司替代甲公司，丙公司继续保留。","context":{"active_goals":[{"id":"old","kind":"lookup"}],"conditions":{"codes":["990101","990103"],"metrics":["operating_revenue"]},"goal_conditions":{"old":{"codes":["990101","990103"],"metrics":["operating_revenue"]}}},"output":{"continuity":"沿用已确认任务，只改本轮条件","goals":[{"kind":"查询财务数值","edits":{"codes":[{"operation":"replace","value":["990102","990103"]}]},"context_goal_id":"old"}]}}
+{"question":"解释合并净利润与归母净利润的区别，再给甲公司2021年的营业收入，单位万元。","context":{},"output":{"continuity":"独立新问题，不沿用旧财务条件","goals":[{"kind":"解释会计定义或已查数含义","edits":{"metrics":[{"operation":"replace","value":["net_profit","attributable_net_profit"]}]},"concept_mode":"会计概念之间的区别","source_ref":"解释合并净利润与归母净利润的区别"},{"kind":"查询财务数值","edits":{"codes":[{"operation":"replace","value":["990101"]}],"metrics":[{"operation":"replace","value":["operating_revenue"]}],"time.years":[{"operation":"replace","value":[2021]}],"presentation.unit":[{"operation":"replace","value":"万元"}]},"source_ref":"再给甲公司2021年的营业收入，单位万元。"}]}}
+{"question":"甲公司2020、2021年营收原数列出，并计算2021相对2020同比，金额万元。","context":{},"output":{"continuity":"独立新问题，不沿用旧财务条件","goals":[{"kind":"查询财务数值","edits":{"codes":[{"operation":"replace","value":["990101"]}],"metrics":[{"operation":"replace","value":["operating_revenue"]}],"time.years":[{"operation":"replace","value":[2020,2021]}],"calculation":[{"operation":"replace","value":"yoy"}],"comparison_axis":[{"operation":"replace","value":"years"}],"calculation_inputs":[{"operation":"replace","value":[{"current":{"year":2021},"base":{"year":2020}}]}],"presentation.include_inputs":[{"operation":"replace","value":true}],"presentation.unit":[{"operation":"replace","value":"万元"}]}}]}}
+{"question":"仅此次用亿元、四位小数列成表，后面仍按原来。","context":{"active_goals":[{"id":"old","kind":"lookup"}],"conditions":{"codes":["990101"],"metrics":["operating_revenue"]}},"output":{"continuity":"沿用已确认任务，只改本轮条件","goals":[{"kind":"查询财务数值","edits":{"presentation.unit":[{"operation":"replace","value":"亿元","lifetime":"turn"}],"presentation.decimals":[{"operation":"replace","value":4,"lifetime":"turn"}],"presentation.format":[{"operation":"replace","value":"table","lifetime":"turn"}]},"context_goal_id":"old"}]}}
+{"question":"将库中所有公司的营业收入由少到多排，列前两家。","context":{},"output":{"continuity":"独立新问题，不沿用旧财务条件","goals":[{"kind":"财务指标排名","edits":{"all_companies":[{"operation":"replace","value":true}],"metrics":[{"operation":"replace","value":["operating_revenue"]}],"presentation.order":[{"operation":"replace","value":"asc"}],"presentation.limit":[{"operation":"replace","value":2}]}}],"collection_text":"库中所有公司"}}
+只输出JSON。"""

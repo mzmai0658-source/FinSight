@@ -1,4 +1,4 @@
-"""作品说明：按白名单打包实际工作树，逐文件摘要并直接检查 ZIP；不提交或上传。"""
+"""按白名单打包实际工作树，逐文件摘要并直接检查 ZIP；不提交或上传。"""
 from __future__ import annotations
 import argparse
 import hashlib
@@ -21,10 +21,13 @@ def release_files(root):
     for directory in DIRECTORIES:
         for path in (root/directory).rglob('*'):
             if not path.is_file() or any(p in EXCLUDE_DIRS for p in path.relative_to(root).parts):continue
-            # 作品说明：旧内部回归数据及其清单仅留本机，不随公开代码包披露。
+            # 旧内部回归数据及其清单仅留本机，不随公开代码包披露。
             if path.relative_to(root).parts[:2] == ('eval','regression_v3'):continue
-            # 作品说明：当前验收仅用真实财报，旧合成PDF保留本机历史，不混入本轮代码包。
+            # 当前验收仅用真实财报，旧合成PDF保留本机历史，不混入本轮代码包。
             if path.relative_to(root).parts[:3] == ('demo','v3','example_reports'):continue
+            relative=path.relative_to(root).as_posix()
+            if relative == 'docs/TECHNICAL_REPORT_REAL200_TEMPLATE.md':continue
+            if relative.startswith(('docs/evidence/','docs/history/','docs/superpowers/')):continue
             if path.suffix in {'.pyc','.log','.tmp','.sqlite','.db'} or path.name.startswith('.env'):continue
             if path.name in {'local_keys_private.py'}:continue
             files.append(path)
@@ -37,7 +40,7 @@ def package(output: Path):
     errors=check_release(ROOT,files=files)
     if errors:raise ValueError('\n'.join(errors))
     identities={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
-    manifest=dict(format_version=1,files=identities,scope='source and real200 evidence; historical demo definitions retained but synthetic PDFs, private corpus, credentials, weights and runtime excluded',
+    manifest=dict(format_version=1,files=identities,scope='source, current technical report and public run instructions; historical demo definitions retained but synthetic PDFs, private corpus, credentials, weights, local evidence and runtime excluded',
                   source_sha256=hashlib.sha256(json.dumps(identities,sort_keys=True).encode()).hexdigest())
     output.parent.mkdir(parents=True,exist_ok=True)
     with zipfile.ZipFile(output,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as archive:
@@ -54,7 +57,7 @@ def package(output: Path):
                 content=data.decode('utf-8',errors='ignore')
                 for label,pattern in SECRET_PATTERNS:
                     if pattern.search(content):raise ValueError(f'ZIP contains {label}: {name}')
-        # 作品说明：直接核对ZIP内相对文档链接，不依赖工作区里额外存在的历史文件。
+        # 直接核对ZIP内相对文档链接，不依赖工作区里额外存在的历史文件。
         names=set(archive.namelist())
         for name in names:
             if not name.endswith('.md'):continue

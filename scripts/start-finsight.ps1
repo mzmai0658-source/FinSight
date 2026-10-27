@@ -1,4 +1,4 @@
-﻿param([string]$EnvFile = ".env.demo", [int]$AgentPort = 8000, [int]$JavaPort = 8080, [int]$FrontendPort = 5173)
+param([string]$EnvFile = ".env", [int]$AgentPort = 8000, [int]$JavaPort = 8080, [int]$FrontendPort = 5173)
 $ErrorActionPreference = "Stop"
 if ($PSVersionTable.PSVersion.Major -lt 7) { throw "Unified startup requires PowerShell 7 (pwsh.exe)." }
 $Root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
@@ -11,7 +11,7 @@ foreach ($port in @($AgentPort,$JavaPort,$FrontendPort)) {
         $connect = $probe.ConnectAsync("127.0.0.1",$port)
         if ($connect.Wait(500) -and $probe.Connected) { throw "Port $port is occupied. No FinSight process was started; retain the existing service or select free ports." }
     } catch [System.AggregateException] {
-        # 作品说明：本机回环端口拒绝连接时，表示当前未有服务监听。
+        # 本机回环端口拒绝连接时，表示当前未有服务监听。
     } finally { $probe.Dispose() }
 }
 if (@($AgentPort,$JavaPort,$FrontendPort) | Group-Object | Where-Object Count -gt 1) { throw "FinSight service ports must be distinct." }
@@ -42,8 +42,8 @@ function Wait-ForReady([string]$Url,[Diagnostics.Process]$Process) {
     throw "FinSight readiness timed out for $Url. Inspect $logRoot. Already started processes are recorded and remain available for diagnosis."
 }
 foreach ($job in $jobs) {
-    # 作品说明：进程启动参数直接拼接不能自动保护路径中的空格。
-    # 作品说明：对完整 PowerShell 调用编码，保留工作区和环境文件路径的准确身份。
+    # 进程启动参数直接拼接不能自动保护路径中的空格。
+    # 对完整 PowerShell 调用编码，保留工作区和环境文件路径的准确身份。
     $command = "& " + (ConvertTo-PowerShellLiteral (Join-Path $PSScriptRoot $job.script)) + " -EnvFile " + (ConvertTo-PowerShellLiteral $EnvFile) + " -OverrideEnv"
     for ($index=0; $index -lt $job.args.Count; $index+=2) {
         $command += " " + $job.args[$index] + " " + (ConvertTo-PowerShellLiteral $job.args[$index+1])
@@ -55,5 +55,9 @@ foreach ($job in $jobs) {
     $pids | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $Runtime "finsight-processes.json")
     $ready = switch ($job.name) { "agent" { "http://127.0.0.1:$AgentPort/api/health" }; "java" { "http://127.0.0.1:$JavaPort/actuator/health" }; "frontend" { "http://127.0.0.1:$FrontendPort/" } }
     Wait-ForReady $ready $process
+    if ($job.name -eq "java") {
+        & (Join-Path $Root ".venv\Scripts\python.exe") -X utf8 (Join-Path $PSScriptRoot "ensure_real_reader.py") --env $EnvFile
+        if ($LASTEXITCODE -ne 0) { throw "Financial material read-only grants failed after Java migrations. Inspect configuration and account permissions." }
+    }
 }
 Write-Host "FinSight services are ready. Logs: $logRoot. Frontend: http://127.0.0.1:$FrontendPort"

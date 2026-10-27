@@ -1,4 +1,4 @@
-"""作品说明：通过隔离 Chrome 调试会话检查工作区页面的真实渲染。"""
+"""通过隔离 Chrome 调试会话检查工作区页面的真实渲染。"""
 from __future__ import annotations
 
 import argparse
@@ -100,7 +100,7 @@ class Browser:
     def evaluate(self, expression):
         result = self.call("Runtime.evaluate", {"expression": expression, "returnByValue": True, "awaitPromise": True})
         if result.get("exceptionDetails"):
-            # 作品说明：初始化表达式含认证令牌，错误信息不得包含该表达式。
+            # 初始化表达式含认证令牌，错误信息不得包含该表达式。
             raise RuntimeError("Browser JavaScript evaluation failed")
         return (result.get("result") or {}).get("value")
 
@@ -126,7 +126,7 @@ class Browser:
             try:
                 value = self.evaluate(expression)
             except RuntimeError:
-                # 作品说明：页面跳转期间可能短暂丢弃上一份 JavaScript 执行上下文。
+                # 页面跳转期间可能短暂丢弃上一份 JavaScript 执行上下文。
                 value = False
             if value:
                 return value
@@ -204,7 +204,7 @@ def persisted_turn_checks(messages, scenarios):
 
 
 def java_reports_upstream_unavailable(envelope):
-    """作品说明：只有 Java 自身的异常分支能证明其配置的 Python 上游不可达。"""
+    """只有 Java 自身的异常分支能证明其配置的 Python 上游不可达。"""
     if not isinstance(envelope, dict) or envelope.get("code") != 0:
         return False
     health = envelope.get("data") or {}
@@ -228,7 +228,7 @@ def assert_java_upstream_unavailable():
 
 
 def failure_answer_is_clear(text):
-    return bool(text) and any(marker in text for marker in ("连接失败", "未完成", "请重试")) \
+    return bool(text) and any(marker in text for marker in ("连接失败", "未完成", "请重试"))\
         and not any(claim in text for claim in ABSENCE_CLAIMS)
 
 
@@ -396,7 +396,7 @@ def run_scenarios(browser, output, turn_interval, semantic=False):
 
 
 def run_failure_scenario(browser, output):
-    """作品说明：关闭实际配置的 Python 服务，验证 Java 的终态兜底。"""
+    """关闭实际配置的 Python 服务，验证 Java 的终态兜底。"""
     report = {"mode": "upstream_failure", "question": FAILURE_QUESTION, "passed": False}
     report_path = output / "checks.json"
     previous_uid = browser.evaluate(f"localStorage.getItem({json.dumps(ACTIVE_SESSION_KEY)}) || ''")

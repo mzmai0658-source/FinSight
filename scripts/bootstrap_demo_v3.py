@@ -1,4 +1,4 @@
-"""作品说明：在隔离数据库中准备公开 PDF、事实与索引，通过统一验收后发布。"""
+"""在隔离数据库中准备公开 PDF、事实与索引，通过统一验收后发布。"""
 from __future__ import annotations
 import argparse
 import json

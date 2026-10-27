@@ -1,31 +1,32 @@
-# FinSight 财报证据助手
+# FinSight财报证据助手
 
-本轮使用 **10家上市公司的117份真实财报**，不使用虚构报告参与问答验收、原页标准、截图或技术报告。本轮公开版本包含代码、技术报告、题库与测试摘要；117份真实原件及整批来源资产不包含在此次源码提交中。
+用自然语言查询上市公司财报、比较与排名、绘图并回查PDF原页。DeepSeek理解要求；程序负责只读查询、Decimal计算、图表点和来源核验。网页上传经PaddleOCR解析、候选审核和管理员发布，未批准资料不会自动进入正式库。
 
-作品将自然语言整理成统一请求，使用本地Qwen理解条件，由只读查询、Decimal计算及来源检查交付表格、图表和PDF原页。采用Python / LangGraph、Java / Spring Boot、Vue、MySQL、Chroma和Ollama；主模型`qwen3.5:9b-q4_K_M`，16K上下文、temperature=0、关闭可配置思考。
+参赛编号：**AIC-2026-96123955**。冻结版本：**FinSight-AIC-2026-96123955-r1**（2026-10-27）。当前架构：Python/LangGraph、Java、Vue、MySQL、Chroma、Redis、RabbitMQ；生成使用DeepSeek，OCR使用远端PaddleOCR-VL-1.6，向量使用百炼text-embedding-v4/1024。正常运行无需Ollama或本地问答模型，需要联网和服务端私有密钥，可能产生API费用。
 
-## 当前验收
+## 安装与演示
 
-[200轮方法与运行说明](docs/REAL200_ACCEPTANCE.md)：120个独立问题，加20组四轮真实保存对话。目标170/200（85%），严重错数、口径替换、伪造来源和越权不能由总分抵消。原始回答、固定预期、修复前后成绩及独立复核分别保留，重复题库属于回归验收。
+先阅读[当前安装运行说明](docs/INSTALL_CURRENT.md)，再按[录屏题与拍摄顺序](docs/VIDEO_GUIDE.md)操作。公开源码包不含真实PDF、OCR、用户历史、密钥或向量数据，真实资料需另行准备；不使用虚构报告冒充当前知识库。不要将旧117份BGE向量改名混入新集合。
 
-最终冻结版本完整运行 **195/200（97.5%）**，经典题93/94，连续对话80/80、20组全部通过；本题库严重错误0项，剩余5项失败如实保留。经营原因8题仅1题真正交付有证据的解释，5题给出可靠数字并说明原因证据不足，2题失败，不能将整体正确率称为原因解释完成率。
+可先按[最小复现说明](docs/MINIMAL_REPRODUCTION.md)恢复3份严格版本报告，验证查询、金额换算、历史恢复和原件身份。完整119份试验库与最小资料包分开说明；两者都使用外部资料输入，网盘链接由团队另行提供。
 
-[共同问题与修复机制](docs/REAL200_REPAIRS.md)说明明确条件编译、集合修改、同比基期、原文定位和原因证据绑定。当前软件测试为Python960项、Java69项、前端44项通过，前端类型检查及构建通过；模型准确率和页面/故障操作另行实测，不从代码测试推断。
+Windows PowerShell5.1可以分别执行三个服务启动脚本；只有可选的start-finsight.ps1统一入口要求PowerShell7。当前说明不再要求用户直接执行不存在的pwsh。Python依赖固定于requirements.lock.txt，前端固定于package-lock.json，Java按pom.xml构建。
 
-真实数据含7466条规范事实、22828个叙述片段；6798条原件事实与668条派生事实分开。未核实的5287项排除，不补零、不换期间。全117份数据验收与200题所需的112条事实/46份原件标准是不同覆盖范围。程序检查及助手复核不冒充成员人工审核。
+## 数据与效果
 
-## 安装和数据前提
+固定试验数据为10家公司119份真实财报、7607事实（5554程序核验、1400未完整核验、653派生）与21437叙述片段。ocr-trial-v1保留experimental/relaxed_ocr及未完整核验提示；严格serving另有3份审核报告，两个范围不混称。
 
-已完整联调环境为Windows、Python3.11、PowerShell7、Node.js、JDK/Maven及真实MySQL、Redis、RabbitMQ、Ollama。代码安装、服务与数据发布前提见[真实数据运行说明](docs/REAL_DATA_RUN.md)、[运行维护说明](docs/DEPLOYMENT.md)及[v3接口](docs/FINSIGHT_V3_API.md)。
+最新同题64轮完整处理46轮；24轮自然改写完整处理18轮，合计64/88（72.73%）。同题旧基线44/64，9题进步、7题退步。数据依据缺项和环境失败留在分母，部分完成不给半分；不是第三方盲测或比赛及格承诺。见[结果摘要](docs/validation/RESULTS.md)与[技术报告源稿](docs/TECHNICAL_REPORT.md)。演示题经过选择，不算新成绩。
 
-真实原件、OCR、来源审核资产和已验收版本目前留在本机。仅下载此前的公开源码不能复现本轮真实验收环境；本轮尚未完成公开真实数据包的独立安装验收。不再以历史虚构演示代替真实数据复现。
+复杂长期偏好、多指标精度、原因证据、故障后仅说“照旧”等仍有限制。清晰给出公司、期间和指标更可靠。缺数据不补零，不跨期代替，不提供实时行情、单季拆分或确定预测。
 
-## 比赛材料与证据
+## 材料与许可
 
-- [可编辑技术报告](docs/TECHNICAL_REPORT.md)、[报告PDF](docs/FinSight-技术报告.pdf)、[作品简介](docs/WORK_INTRO.md)。
-- [当前验收状态](docs/DELIVERY_ACCEPTANCE.md)、[第三方资源清单](docs/THIRD_PARTY.md)、[上传检查清单](docs/UPLOAD_CHECKLIST.md)。
-- [最终200题逐题结果](docs/evidence/real200/RESULTS_200.md)、[首轮200题证据](docs/evidence/real200/baseline/RESULTS_200.md)、[真实原件覆盖摘要](docs/evidence/real200/data_coverage.json)。
+- [技术报告PDF](docs/FinSight-技术报告.pdf)、[作品简介](docs/WORK_INTRO.md)。
+- [第三方资源](docs/THIRD_PARTY.md)、[AI辅助与人工审核记录](docs/RESOURCE_REVIEW.md)。
+- [交付检查清单](docs/UPLOAD_CHECKLIST.md)、[历史边界](docs/HISTORICAL_MATERIALS.md)。
+- [演示数字与原件核对](docs/validation/original-financial-values-audit.md)、[本次验证记录](docs/SUBMISSION_VERIFICATION.md)。
 
-支持库内已验收事实的查询、比较、排名、图表、概念和原页定位。单季暂不支持；缺数据、证据不足和模型理解失败分别说明。当前每账号保留100个会话，超过上限的历史会清理；200题使用两个隔离账号避免测试自身触发该上限，这不是保留策略已修复。
+凌云队：麦明政负责实现与代码审核，黄俊仪主要完成项目检测报告；团队已确认材料并提供编号AIC-2026-96123955。AI辅助如实披露。自研文件使用[Apache-2.0](LICENSE)，第三方及组合分发仍按[NOTICE](NOTICE)及各自义务执行，尤其PyMuPDF生产依赖的AGPL/商业双许可。
 
-项目代码采用Apache-2.0，见[LICENSE](LICENSE)与[NOTICE](NOTICE)；第三方模型和财报分别适用各自资源义务。团队为凌云队：麦明政负责代码实现和代码审核，黄俊仪主要完成项目检测报告；团队编号及财务/许可证人工审核明细待补充。演示视频、真实用户试用和答辩PPT本阶段未开展。现阶段不把本地工程验收称为全部报名材料已齐全。
+本次源码、技术报告及公开核验材料的[提交分支](https://github.com/mzmai0658-source/FinSight/tree/codex/aic-96123955-final)与RELEASE_MANIFEST.json共同标识交付内容；冻结提交和文件摘要见随包交付回执。视频、百度网盘链接与报名系统正式提交由团队后续处理；截止日期按团队通知延期至2026年10月30日，具体截止时刻以报名系统为准。真实用户试用未开展。

@@ -1,4 +1,4 @@
-"""作品说明：覆盖双模型诊断发现的真实缺陷，验证紧凑请求契约。"""
+"""覆盖双模型诊断发现的真实缺陷，验证紧凑请求契约。"""
 import pytest
 from src.agent.v3.proposals import TurnPlan
 from src.agent.v3.turn_transport import turn_schema,decode_turn
@@ -43,8 +43,9 @@ def test_wrong_parent_scope_and_only_table_are_rejected_without_model_approval()
         satisfied=True,clarification=[],planner_defects=[],companies_correct=True,metrics_and_scope_correct=True,
         time_correct=True,goals_correct=True,constraints_correct=True,presentation_correct=True)
     checked=V3Agent._review_exact_bindings(request,review)
-    assert not checked.accepted
-    assert not checked.metrics_and_scope_correct and not checked.presentation_correct
+    from tests.request_expectations import mismatches
+    assert {'scope','unit','format'}<=set(mismatches(request,codes=['600085'],scope='parent',unit='亿元',format='table'))
+    assert all('自由语义未由独立模型认证' in check.detail for check in checked.checks if check.status=='pass')
 
 
 def test_field_map_cannot_hide_a_different_edit_or_internal_span_id():

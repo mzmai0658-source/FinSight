@@ -1,4 +1,4 @@
-"""作品说明：复用已校验缓存，支持同步与异步 OCR。PDF 与 JSON 摘要检查及旧缓存显式导入只能证明身份，不能证明识别准确。"""
+"""复用已校验缓存，支持同步与异步 OCR。PDF 与 JSON 摘要检查及旧缓存显式导入只能证明身份，不能证明识别准确。"""
 from __future__ import annotations
 
 import hashlib
@@ -16,11 +16,11 @@ OCR_MODEL_VERSION = "PaddleOCR-VL-1.6"
 
 
 class OcrNotConfiguredError(RuntimeError):
-    """作品说明：OCR 未配置且无缓存时返回明确错误。"""
+    """OCR 未配置且无缓存时返回明确错误。"""
 
 
 class OcrInvalidResponseError(RuntimeError):
-    """作品说明：版面不可用或 PDF 身份不匹配时阻断。"""
+    """版面不可用或 PDF 身份不匹配时阻断。"""
 
 
 def _enabled(name: str) -> bool:
@@ -33,7 +33,7 @@ def _sha256(path: Path) -> str:
 
 
 def validate_ocr_payload(payload: Any) -> None:
-    """作品说明：拒绝把作业回执、错误响应或空版面当作 OCR 结果。"""
+    """拒绝把作业回执、错误响应或空版面当作 OCR 结果。"""
     if not isinstance(payload, (dict, list)):
         raise OcrInvalidResponseError("OCR response must contain layout pages")
     if isinstance(payload, dict) and (payload.get("error") or payload.get("errorCode") not in (None, 0, "0")):
@@ -79,7 +79,7 @@ def write_validated_ocr_cache(
     origin: str = "remote_ocr", expected_pdf_sha256: str | None = None,
     cache_path: str | Path | None = None,
 ) -> Path:
-    """作品说明：先保存 JSON 再保存摘要；缓存对不完整时阻断使用。"""
+    """先保存 JSON 再保存摘要；缓存对不完整时阻断使用。"""
     pdf_path = Path(pdf_path)
     validate_ocr_payload(payload)
     pdf_hash = _sha256(pdf_path)
@@ -131,7 +131,7 @@ def _read_valid_cache(pdf_path: Path, cache_path: Path, pdf_hash: str) -> tuple[
 
 
 def ensure_ocr_json(pdf_path: str | Path, *, force: bool = False) -> Path:
-    """作品说明：强制无缓存模式跳过工作区缓存。"""
+    """强制无缓存模式跳过工作区缓存。"""
     pdf_path = Path(pdf_path)
     pdf_hash = _sha256(pdf_path)
     if not (force or _enabled("OCR_DISABLE_CACHE")):

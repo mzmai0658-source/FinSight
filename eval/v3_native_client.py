@@ -1,4 +1,4 @@
-"""作品说明：通过真实 Java/SSE 接口发送认证请求，结果文件不包含凭据。"""
+"""通过真实 Java/SSE 接口发送认证请求，结果文件不包含凭据。"""
 from __future__ import annotations
 import json,secrets,time,uuid
 from pathlib import Path
@@ -53,7 +53,7 @@ class NativeClient:
         admission_deadline=time.monotonic()+65
         while response.status_code==429 and time.monotonic()<admission_deadline:
             rejected=response.json()
-            # 作品说明：未登记请求的有界重试保留原请求标识；配额耗尽与排队失败如实记录。
+            # 未登记请求的有界重试保留原请求标识；配额耗尽与排队失败如实记录。
             if rejected.get('code')!=42900 or rejected.get('message')!='提问太快了，请稍等几秒再试':break
             response.close();time.sleep(2)
             response=self.http.post(self.base+'/api/chat/stream',json=body,stream=True,timeout=(12,285))
