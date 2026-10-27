@@ -53,6 +53,9 @@ def test_trial_requires_explicit_policy_and_integrity_acceptance():
 
 def test_explicit_trial_profile_can_be_selected_outside_the_original_lab_database(monkeypatch):
     from src.etl.ocr_trial import configured_trial_agent
+    # This checks repository selection, independent of any private cloud credentials.
+    monkeypatch.setenv('LLM_API_KEY', '')
+    monkeypatch.setattr('src.agent.v3.published_agent.AsyncModel', object)
     engine, _, _ = prepared()
     from src.etl.ocr_trial import publish_trial
     publish_trial(engine, 'v', dict(inventory_checked=True, index_verified=True))

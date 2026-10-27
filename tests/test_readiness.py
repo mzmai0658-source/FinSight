@@ -7,6 +7,9 @@ from src.api import readiness
 def test_readiness_selects_the_same_explicit_trial_pointer_as_chat(monkeypatch):
     from tests.test_ocr_trial import prepared
     from src.etl.ocr_trial import publish_trial
+    # The model transport is outside this repository-policy test's scope.
+    monkeypatch.setenv('LLM_API_KEY', '')
+    monkeypatch.setattr('src.agent.v3.published_agent.AsyncModel', object)
     engine, _, _ = prepared()
     publish_trial(engine, 'v', dict(inventory_checked=True, index_verified=True))
     monkeypatch.setenv('FINSIGHT_OCR_TRIAL', 'true')

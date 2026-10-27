@@ -200,7 +200,7 @@
     "docs/resources/node-resources.json": "2f527f169dad76ff394182c00615471ec98b0592fadd10719d02a3b1623765e7",
     "docs/resources/python-resources.json": "7af5290a7b69648a69f47b4e60748553a759cc7c1b2049a0567966d81b223cf7",
     "docs/ROLLOUT_146_20261022.md": "52e12e68cf5f6ed31de1e39687956357a8e6b825bbfc3c958d0ed60df8930337",
-    "docs/SUBMISSION_VERIFICATION.md": "6b3af576c763568b44d3aff267a91b5fe4a3f31fc47595350e49b7cd99d428bd",
+    "docs/SUBMISSION_VERIFICATION.md": "12b787d43a01ab2e51e13220afffb7800a1c5483771b174ab6b3c08335fbef06",
     "docs/TECHNICAL_REPORT.md": "f769ecbc97a82999d12305cf7e461d283be3308ea75c7df55d972db8e8868020",
     "docs/THIRD_PARTY.md": "52bbe9f0dbf2a5c45747454e5062ec786638bef3f955688ab3f4b2a768360bab",
     "docs/UPGRADE120_OCR_TRIAL.md": "af1f45b4d9366e2d2dfbebd0be9119b258ad9776add5be33c122f1abe38fed17",
@@ -603,7 +603,7 @@
     "tests/test_no_legacy_residue.py": "576bbe31c2a3a9bea237546433fc953f91cdd647d2ff315a70e3c6c9eb1b4cbf",
     "tests/test_observability.py": "b2bb6b81006b84e18bb79bae4bd9bfaec0ad450d6d05d1dabf894b491105e7cb",
     "tests/test_ocr_report_context.py": "dce741fe6103eb64c60e1138c52aa2e1aa5dc1a944a3f28707e1abb67eac0bc6",
-    "tests/test_ocr_trial.py": "2c4ced16c36f96f7f7244954fecca2c6efc28672ba27384d7e6808315dd84282",
+    "tests/test_ocr_trial.py": "3e792c445f362092dd8f1ba538338b710b93959bc06384b9fec459f521aeb7bc",
     "tests/test_ocr_trial_index.py": "da971912da7c566a8eae0ab0d77d27e46e9a52881b58066c103e13dfc3f37b86",
     "tests/test_original_archive.py": "86757d8f777088ef01d5edbbaa0d00b126583b370d91ae1596d76521034cdc6f",
     "tests/test_original_narrative_location.py": "6a6e6d191afc456cd2ac31c978e36fce92f3d96baeaee67ba9278866ef0a92fc",
@@ -613,7 +613,7 @@
     "tests/test_query_boundaries.py": "60936a5ec8cc578dfaf3cf5aaffb0c2451376c286a7d487349a9452d14ce930a",
     "tests/test_rag_incremental.py": "eaaf15ca6f3de555bdfa9b249a48d0b4d9911b0c5c2f67d2cf93f65acce57f25",
     "tests/test_rag_pagination.py": "fa9c67d27ea81f5cbc567bb0afd68dd0229553e37afc9fd8928f36d1caa67686",
-    "tests/test_readiness.py": "6e61f7215e856033251f42309203fa458e9b0806df820d00363bcb7075406092",
+    "tests/test_readiness.py": "005e918aab3f9dda47edf4aa9c46d6a6c5577b79f30c7849ef5f4d02dca63a43",
     "tests/test_real200_acceptance.py": "ec9df21faf0a39db0a0d6bdd26b35ad218eed0c48710ba354a8c60c6aaf18663",
     "tests/test_real_candidates.py": "90a9f87afaabfef330e946a6d7de5aa1b018d656ad5ca28b7497891be0a25476",
     "tests/test_real_delivery.py": "37e97295f84b5a59231f9731e21706bc9301d0dad40625fb07f7c2b6463e930b",
@@ -693,5 +693,5 @@
     "tests/test_verifier.py": "c608557dd708fe477075fc651141e072bc57fc0e95de2aa939369e1fc3174031"
   },
   "scope": "source, current technical report and public run instructions; historical demo definitions retained but synthetic PDFs, private corpus, credentials, weights, local evidence and runtime excluded",
-  "source_sha256": "f29954c6754bacd03d623041ec6cdae8303842b2284e6da739cc55fc28e270fa"
+  "source_sha256": "5eb27fe24854a04b6762dfb35fd4c90357a70d7dbcc92575e1163e85d9a5e37e"
 }
