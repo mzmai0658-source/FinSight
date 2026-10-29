@@ -177,7 +177,7 @@
     "docs/CLOUD118_MAIN_RUN.md": "19252c4f0a3ad321f21b0ea0194b3db27135d7ea1107c5bdb7229475eb75e43a",
     "docs/CLOUD_DATA_CAUSE_VALIDATION.md": "f2748bcdcdc38b845f78a9e54e403741846dbda2373c947d5ebd8456329f1cc6",
     "docs/CLOUD_FOCUSED_TEST.md": "d2fd79b440b1bc3d327dca1eb9dd54f4410b460e3f89d1db34b3be128b87f978",
-    "docs/CLOUD_FOLLOWUP36_TEST.md": "835ed423dd768ce1ac32edbaccdd237450517cf9c3828883fe7fd6af93cd204d",
+    "docs/CLOUD_FOLLOWUP36_TEST.md": "e98cdb915c5d73582c38cb92dd24c6bf4506291f73bd44ef105c2780f584e4df",
     "docs/DEMO.md": "0526dcfc6b1c61bbeebab7ae7117fc5f853e3e6c799ab6a9cfaee1bdb33902bc",
     "docs/DEPLOYMENT.md": "7ad25aa6da63f9a8f23770d95311f90e2f7d3b55a039f0372c163e7bd201e8c3",
     "docs/FINANCIAL_LIBRARY_IMPORT.md": "0ec834c10666ee7384f9cb97670dc88a37d16ffce6c6c74573969e437578a0ce",
@@ -187,7 +187,7 @@
     "docs/FinSight-技术报告.pdf": "2b741a03040971b59dd8ec48d644da2f18ca3c60d5a64cf45addfca3eefe4865",
     "docs/FINSIGHT_V3_API.md": "3f76a319111e27dd44def9d74caab3ce4c4faa7b0330be034edd6c645b5aa3c6",
     "docs/GITHUB_DELIVERY.md": "ccd2de9451c498697ccec1d51dc3bef2296f8d8d98004e821623b4c28e82789b",
-    "docs/HISTORICAL_MATERIALS.md": "93e80f9f58b57dfa07ff24d8e003ae4aa278a4e07c3454e044d95fb106d851e2",
+    "docs/HISTORICAL_MATERIALS.md": "dc7c446d0a10f2540b75d7fa5665c1af8a373a35b359bc4a999670e25347236c",
     "docs/INNOVATION_EVIDENCE.md": "7a49426d8d2d0bf574b337801aff2f2571f1c58ae2d8e8fa5b98b2da0ef80fad",
     "docs/INSTALL_CURRENT.md": "299ee30073594b44851c0f92f29fc6532b22b1a7f3a4000235f9999ee1993523",
     "docs/MINIMAL_REPRODUCTION.md": "ab93bea8e150f4013bf2a59fd6f6b67c4940f0fb9df897572779a1d80427edca",
@@ -703,5 +703,5 @@
     "tests/test_verifier.py": "c608557dd708fe477075fc651141e072bc57fc0e95de2aa939369e1fc3174031"
   },
   "scope": "source, current technical report and public run instructions; historical demo definitions retained but synthetic PDFs, private corpus, credentials, weights, local evidence and runtime excluded",
-  "source_sha256": "c4cf5b84e905e63329dc82c8a3e6686c7a87070044e0828352f9ee6437a2c3c5"
+  "source_sha256": "492d49986c8f0af96ebb11e9e60d3eeca6e0eac3d0e1f1255946af7beb8e6f99"
 }
