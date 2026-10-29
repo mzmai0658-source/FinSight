@@ -8,12 +8,12 @@
 
 模型仍为DeepSeek Flash，向量仍用本地BGE；真实财务库只读，不重建数据或索引。新输出目录、用户会话、任务记录与旧28轮分开。沿用测试专用的业务库、Redis号和RabbitMQ vhost，因此须先关闭此前同一命名空间的隔离应用，避免两套消费者同时工作。下面的停止命令只接受旧测试marker中相同PID及启动时间，不停止日常服务或共享依赖。
 
-此电脑PowerShell 7没有加入PATH，请在 `D:\data_discovery` 使用已验证的绝对路径：
+以下为历史36轮测试的复现命令。需要自行安装PowerShell 7并加入PATH；从项目根目录执行，不依赖开发者本机的用户目录：
 
 ```powershell
-$ps7 = 'C:\Users\21754\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\powershell\pwsh.exe'
-& $ps7 -NoProfile -File 'D:\data_discovery\scripts\stop-cloud-focused.ps1' -Output 'D:\data_discovery\.local_runtime\cloud-focused-review'
-& $ps7 -NoProfile -File 'D:\data_discovery\scripts\test-cloud-focused.ps1' -SuiteProfile followup36 -Output 'D:\data_discovery\.local_runtime\cloud-followup36-review'
+$ps7 = (Get-Command pwsh -ErrorAction Stop).Source
+& $ps7 -NoProfile -File './scripts/stop-cloud-focused.ps1' -Output './.local_runtime/cloud-focused-review'
+& $ps7 -NoProfile -File './scripts/test-cloud-focused.ps1' -SuiteProfile followup36 -Output './.local_runtime/cloud-followup36-review'
 ```
 
 首次运行会隐藏输入云端密钥。不要把密钥放进命令行。新目录尚未完成过的题会顺序提交；多轮只使用真实保存历史。默认另外检查一次取消、刷新与会话回读，生命周期结果单列，不计入36轮；会话标题可能额外调用模型。本批不重复OCR抽取冒烟。
@@ -23,13 +23,13 @@ $ps7 = 'C:\Users\21754\.cache\codex-runtimes\codex-primary-runtime\dependencies\
 不发API请求的检查命令：
 
 ```powershell
-& $ps7 -NoProfile -File 'D:\data_discovery\scripts\test-cloud-focused.ps1' -SuiteProfile followup36 -CheckOnly -Output 'D:\data_discovery\.local_runtime\cloud-followup36-review'
+& $ps7 -NoProfile -File './scripts/test-cloud-focused.ps1' -SuiteProfile followup36 -CheckOnly -Output './.local_runtime/cloud-followup36-review'
 ```
 
 中断后在代码、题目、数据版本不变时续跑：
 
 ```powershell
-& $ps7 -NoProfile -File 'D:\data_discovery\scripts\test-cloud-focused.ps1' -SuiteProfile followup36 -UseExisting -Resume -Output 'D:\data_discovery\.local_runtime\cloud-followup36-review'
+& $ps7 -NoProfile -File './scripts/test-cloud-focused.ps1' -SuiteProfile followup36 -UseExisting -Resume -Output './.local_runtime/cloud-followup36-review'
 ```
 
 若隔离应用也退出，确认旧监听已经结束后去掉 `-UseExisting`。不要在恢复同一目录时换源码或题目；冻结摘要不同会拒绝续跑，不能覆盖首发失败。
