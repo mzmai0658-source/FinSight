@@ -1,0 +1,24 @@
+{
+  "saved": true,
+  "table_chronological": true,
+  "chart_chronological": true,
+  "exact_values_match_original": true,
+  "answer_sha256": "706d5203d71537417d9a359ae8c1fe43d04501204c6ddb1ad3398cb5b531b762",
+  "data_version": "caaa851bfac89f33498e0c8c4569582214a048b45c05dc49a173090889202b6a",
+  "question": "把长江电力2023年至2025年全年合并营业收入画成折线图，按年份从早到晚，纵轴单位亿元，保留两位小数。",
+  "answer": "| 公司 | 报告期 | 指标 | 口径 | 数值 | 单位 |\n|---|---|---|---|---:|---|\n| 长江电力 | 2023 年报 | 营业收入 | 合并 | 781.12 | 亿元 |\n| 长江电力 | 2024 年报 | 营业收入 | 合并 | 844.92 | 亿元 |\n| 长江电力 | 2025 年报 | 营业收入 | 合并 | 862.42 | 亿元 |",
+  "chart_years": [
+    "2023 年报",
+    "2024 年报",
+    "2025 年报"
+  ],
+  "values_exact": [
+    "781.1157326575",
+    "844.9187056652",
+    "862.419402222"
+  ],
+  "browser_table_chronological": true,
+  "chart_canvas_present": true,
+  "history_after_refresh": true,
+  "page_errors": []
+}

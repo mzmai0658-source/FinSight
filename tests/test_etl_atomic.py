@@ -1,4 +1,4 @@
-"""作品说明：以真实事务型 SQLite 验证财务导入完整性。此处是持久化故障测试，不计为模型或财务泛化成绩，不依赖运行中的数据库、OCR 或模型服务。"""
+"""以真实事务型 SQLite 验证财务导入完整性。此处是持久化故障测试，不计为模型或财务泛化成绩，不依赖运行中的数据库、OCR 或模型服务。"""
 from copy import deepcopy
 from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier
@@ -80,7 +80,7 @@ def test_second_table_database_failure_restores_all_previous_rows_and_versions(s
     worker, engine, pdf = store
     worker._save_to_db(record(pdf))
     before = database_state(engine)
-    # 作品说明：在利润表插入后由数据库触发失败，验证真实事务回滚而非模拟返回值。
+    # 在利润表插入后由数据库触发失败，验证真实事务回滚而非模拟返回值。
     with engine.begin() as conn:
         conn.execute(text("CREATE TRIGGER reject_balance BEFORE INSERT ON balance_sheet "
                           "WHEN NEW.asset_total_assets = -999 "
@@ -190,7 +190,7 @@ def test_batch_failure_counts_match_durable_commits_and_failed_record_status(sto
 
 def test_summary_provenance_uses_accepted_values_and_does_not_invent_skipped_table(store):
     worker, engine, pdf = store
-    # 作品说明：旧导入可能有合法数值却缺少来源位置。
+    # 旧导入可能有合法数值却缺少来源位置。
     worker._save_to_db({**IDENTITY, "net_profit": 100.25})
     summary = record(pdf, source_is_summary=True, net_profit=999)
     worker._save_to_db(summary)
@@ -232,7 +232,7 @@ def test_warn_quality_is_persisted_and_summary_fill_only_keeps_it(store):
         "requires_manual_review": True,
     }
 
-    # 作品说明：后续摘要可以补齐缺项，但证据弱于完整报告，不能将已发布快照重新标记为完全通过。
+    # 后续摘要可以补齐缺项，但证据弱于完整报告，不能将已发布快照重新标记为完全通过。
     worker._save_to_db(record(
         pdf,
         source_is_summary=True,

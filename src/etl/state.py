@@ -4,24 +4,24 @@ from datetime import datetime
 
 @dataclass
 class AgentState:
-    """作品说明：数据导入多阶段共享状态。"""
-    # 作品说明：处理上下文。
+    """数据导入多阶段共享状态。"""
+    # 处理上下文。
     user_query: str = ""
     current_step: str = "idle"
     history: List[Dict[str, str]] = field(default_factory=list)
 
-    # 作品说明：数据上下文。
+    # 数据上下文。
     files_to_process: List[str] = field(default_factory=list)
     extracted_data: List[Dict[str, Any]] = field(default_factory=list)
 
-    # 作品说明：当前文件身份元数据。
+    # 当前文件身份元数据。
     current_file_path: Optional[str] = None
     current_stock_code: Optional[str] = None
     current_stock_abbr: Optional[str] = None
     current_report_year: Optional[int] = None
     current_report_period: Optional[str] = None
 
-    # 作品说明：输出结果。
+    # 输出结果。
     final_answer: Optional[str] = None
     sql_query: Optional[str] = None
     sql_result: Optional[List[Dict[str, Any]]] = None

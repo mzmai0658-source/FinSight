@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 
 /**
- * 作品说明：Redis 维护 token 生命周期：
+ * Redis 维护 token 生命周期：
  * - refresh token 白名单（按 jti），换发时旋转、登出时删除 → refresh 可主动撤销
  * - access token 黑名单（登出后剩余 TTL 内拒绝）
  */

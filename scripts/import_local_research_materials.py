@@ -1,4 +1,4 @@
-"""作品说明：登记本机研报 PDF 与已有 OCR 文本，不调用 OCR、模型或网络。指定 --env-file 预览，加 --apply 导入；重复运行更新同一登记，避免重复文件。"""
+"""登记本机研报 PDF 与已有 OCR 文本，不调用 OCR、模型或网络。指定 --env-file 预览，加 --apply 导入；重复运行更新同一登记，避免重复文件。"""
 import argparse
 import hashlib
 import json
@@ -67,7 +67,7 @@ def prepare(root, metadata):
 
 
 def apply_records(engine, records):
-    """作品说明：通过单个事务发布批次，调用方应在调用前完成数据库备份。"""
+    """通过单个事务发布批次，调用方应在调用前完成数据库备份。"""
     with engine.begin() as conn:
         for record in records:
             key = {'key': record['source_key']}
@@ -113,7 +113,7 @@ def main():
                'page_count_mismatches':sum(len(r['pages'])!=r['page_count'] for r in records), 'applied':False}
     if args.apply:
         engine = create_engine(get_db_config().connection_string)
-        # 作品说明：只备份此功能相关表，不记录连接凭据。
+        # 只备份此功能相关表，不记录连接凭据。
         backup = output/'before_import.json'
         if not backup.exists():
             with engine.connect() as conn:

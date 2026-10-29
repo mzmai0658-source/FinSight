@@ -29,11 +29,12 @@ public class WatchlistController {
     private static final int MAX_WATCH = 50;
 
     private final WatchlistMapper watchlistMapper;
+    private final WatchlistService watchlistService;
 
     @Operation(summary = "自选列表（含最新年报指标）")
     @GetMapping
     public ApiResponse<List<Map<String, Object>>> list() {
-        return ApiResponse.ok(watchlistMapper.listWithCompany(SecurityUtils.currentUserId()));
+        return ApiResponse.ok(watchlistService.list(SecurityUtils.currentUserId()));
     }
 
     @Operation(summary = "当前用户已关注的代码集合")
@@ -48,14 +49,13 @@ public class WatchlistController {
     @PostMapping("/{stockCode}")
     public ApiResponse<Void> add(@PathVariable String stockCode) {
         long userId = SecurityUtils.currentUserId();
-        long count = watchlistMapper.selectCount(new LambdaQueryWrapper<Watchlist>().eq(Watchlist::getUserId, userId));
-        if (count >= MAX_WATCH) {
-            throw new BizException(ErrorCode.BAD_REQUEST, "自选股数量已达上限 " + MAX_WATCH);
-        }
         boolean exists = watchlistMapper.selectCount(new LambdaQueryWrapper<Watchlist>()
                 .eq(Watchlist::getUserId, userId)
                 .eq(Watchlist::getStockCode, stockCode)) > 0;
         if (!exists) {
+            watchlistService.requireAvailable(stockCode);
+            long count = watchlistMapper.selectCount(new LambdaQueryWrapper<Watchlist>().eq(Watchlist::getUserId, userId));
+            if (count >= MAX_WATCH) throw new BizException(ErrorCode.BAD_REQUEST,"自选股数量已达上限 " + MAX_WATCH);
             Watchlist item = new Watchlist();
             item.setUserId(userId);
             item.setStockCode(stockCode);

@@ -21,7 +21,7 @@ const props = defineProps<{
 
 const ui = useUiStore();
 const compact = useMediaQuery("(max-width: 1200px)");
-// 作品说明：首次进入对话时收起曾记住的桌面证据面板，避免遮挡聊天内容。
+// 首次进入对话时收起曾记住的桌面证据面板，避免遮挡聊天内容。
 if (compact.value) ui.collapseRail();
 
 const tabs = computed(() => [
@@ -47,7 +47,7 @@ function sqlStatus(status?: string) {
   return { label: sqlStatusLabels[status] ?? status, tone };
 }
 
-/** 作品说明：SQL 概览：让“多次尝试、部分被拦截”一眼可见 */
+/** SQL 概览：让“多次尝试、部分被拦截”一眼可见 */
 const sqlSummary = computed(() => {
   const list = props.view?.sqlEvidence ?? [];
   return {
@@ -62,7 +62,7 @@ async function copyText(value: string) {
   try {
     await navigator.clipboard.writeText(value);
   } catch {
-    /* 作品说明：剪贴板不可用时静默 */
+    /* 剪贴板不可用时静默 */
   }
 }
 </script>
@@ -70,7 +70,7 @@ async function copyText(value: string) {
 <template>
   <ResponsivePanel :overlay="compact" :open="ui.railExpanded" side="right" label="回答证据" @close="ui.collapseRail()">
     <aside class="rail" :class="{ 'rail--expanded': ui.railExpanded }" aria-label="回答证据">
-    <!-- 作品说明：收起态：图标条 -->
+    <!-- 收起态：图标条 -->
     <div v-if="!ui.railExpanded" class="rail__strip">
       <button
         v-for="tab in tabs"
@@ -85,7 +85,7 @@ async function copyText(value: string) {
       </button>
     </div>
 
-    <!-- 作品说明：展开态：证据面板 -->
+    <!-- 展开态：证据面板 -->
     <div v-else class="rail__panel">
       <div class="rail__caption">
         <div><strong>回答证据</strong><p>{{ view ? (view.messageIndex < 0 ? '当前回答' : `第 ${Math.floor(view.messageIndex / 2) + 1} 轮回答`) : '提问后可核对数字与原文来源' }}</p></div>
@@ -113,7 +113,7 @@ async function copyText(value: string) {
           <BaseEmpty text="发起提问后，这里会展示证据详情" />
         </template>
 
-        <!-- 作品说明：自动核验 -->
+        <!-- 自动核验 -->
         <template v-else-if="ui.railTab === 'verification' && ['conversation', 'catalog'].includes(view.responseKind ?? '')">
           <BaseEmpty :text="view.responseKind === 'catalog' ? '本轮查询资料覆盖范围，可在 SQL 页查看目录依据；不进行财务数值核验。' : '本轮是使用说明或对话回应，没有执行财务数据查询。'" />
         </template>
@@ -144,7 +144,7 @@ async function copyText(value: string) {
           </div>
         </template>
 
-        <!-- 作品说明：SQL -->
+        <!-- SQL -->
         <template v-else-if="ui.railTab === 'sql'">
           <BaseEmpty v-if="!view.sqlEvidence.length" text="本轮没有执行 SQL" />
           <div v-else class="rail__summary">
@@ -193,13 +193,13 @@ async function copyText(value: string) {
           </article>
         </template>
 
-        <!-- 作品说明：执行过程 -->
+        <!-- 执行过程 -->
         <template v-else-if="ui.railTab === 'execution'">
           <BaseEmpty v-if="!view.steps.length" text="暂无执行记录" />
           <ThinkingTrail v-else :steps="view.steps" :live="view.live" />
         </template>
 
-        <!-- 作品说明：图表 -->
+        <!-- 图表 -->
         <template v-else-if="ui.railTab === 'chart'">
           <BaseEmpty v-if="!view.charts.length" text="本轮没有生成图表" />
           <ChartCard
@@ -213,7 +213,7 @@ async function copyText(value: string) {
           />
         </template>
 
-        <!-- 作品说明：引用 -->
+        <!-- 引用 -->
         <template v-else>
           <BaseEmpty v-if="!view.references.length" text="本轮没有引用研报/年报" />
           <ReferenceCards v-else :references="view.references" :live="view.live" />
@@ -383,7 +383,7 @@ async function copyText(value: string) {
   gap: var(--sp-3);
 }
 
-/* 作品说明：纵向 flex 容器里的卡片不能被压缩：overflow:hidden 的子项最小高度会变成 0，被挤扁后看起来互相遮挡 */
+/* 纵向 flex 容器里的卡片不能被压缩：overflow:hidden 的子项最小高度会变成 0，被挤扁后看起来互相遮挡 */
 .rail__content > * {
   flex-shrink: 0;
 }

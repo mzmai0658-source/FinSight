@@ -12,7 +12,7 @@ export const useUiStore = defineStore("ui", {
     health: null as HealthResponse | null,
     railExpanded: window.localStorage.getItem(RAIL_KEY) === "1",
     railTab: "sql" as EvidenceTab,
-    /** 作品说明：证据栏聚焦的 assistant 消息索引（messages 数组下标，-1 表示最新） */
+    /** 证据栏聚焦的 assistant 消息索引（messages 数组下标，-1 表示最新） */
     focusedMessageIndex: -1,
     focusedQueryId: "",
   }),

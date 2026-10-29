@@ -1,4 +1,4 @@
-"""作品说明：重新执行已保存的计算配方，旧回答文字不提供计算数值。"""
+"""重新执行已保存的计算配方，旧回答文字不提供计算数值。"""
 from .contracts import Conditions,ComputedReference,Request
 from .executor import ExecutionResult,calculate
 from .verification import verify
@@ -26,7 +26,7 @@ def revalidate_facts(repository,ids):
         scope=facts[0].scope,time={'mode':'explicit','pairs':list(dict.fromkeys((f.year,f.period) for f in facts))})
     request=Request(turn_id='reference-recheck',question='重核受验证引用',conditions=selection,goals=[])
     verdict=verify(request,ExecutionResult(facts=facts),[],[],tree)
-    # 作品说明：已登记引用的真实性与本轮选择分别检查，旧独立目标的不同口径仍保持分开的事实身份。
+    # 已登记引用的真实性与本轮选择分别检查，旧独立目标的不同口径仍保持分开的事实身份。
     return facts if all(check.status=='pass' for check in verdict.numeric) else []
 
 
@@ -38,15 +38,24 @@ def revalidate_computed(repository,reference):
     if (a.metric,a.scope,a.unit,a.data_version)!=(b.metric,b.scope,b.unit,b.data_version):return None
     if reference.comparison_axis=='years' and a.stock_code!=b.stock_code:return None
     if reference.comparison_axis=='companies' and (a.year,a.period)!=(b.year,b.period):return None
+    current,base=(a,b) if reference.comparison_axis=='companies' else (b,a)
+    def identity(fact):return dict(code=fact.stock_code,year=fact.year,period=fact.period)
     conditions=Conditions(codes=list(dict.fromkeys([a.stock_code,b.stock_code])),metrics=[a.metric],scope=a.scope,
-        time={'mode':'explicit','pairs':[(a.year,a.period),(b.year,b.period)]},calculation=reference.calculation,comparison_axis=reference.comparison_axis)
+        time={'mode':'explicit','pairs':[(a.year,a.period),(b.year,b.period)]},calculation=reference.calculation,comparison_axis=reference.comparison_axis,
+        calculation_inputs=[dict(current=identity(current),base=identity(base))])
     request=Request(turn_id='reference-recheck',question='重算受验证计算引用',conditions=conditions,goals=[])
     result=ExecutionResult(facts=[a,b]);calculate(request,result)
     expected=next((item for item in result.derived if item['id']==reference.id),None)
     if not expected:return None
     fields=('id','inputs','metric','company','year','period','value','unit','formula','label','detail')
     saved=reference.model_dump(mode='json')
-    if any(expected[field]!=saved[field] for field in fields):return None
+    def canonical_detail(text):
+        # 旧配方的“后期”与新配方的“本期”仅在原输入确为前后期时等价；角色来自有序输入，不从正文猜测。
+        order={'Q1':1,'HY':2,'Q3':3,'FY':4}
+        if reference.comparison_axis=='years' and (a.year,order[a.period])<(b.year,order[b.period]) and text.endswith('，后期减基期'):
+            return text[:-len('，后期减基期')]+'，本期减基期'
+        return text
+    if any((canonical_detail(expected[field])!=canonical_detail(saved[field]) if field=='detail' else expected[field]!=saved[field]) for field in fields):return None
     if reference.scope!=a.scope:return None
     return reference
 

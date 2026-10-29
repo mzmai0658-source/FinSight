@@ -16,14 +16,14 @@ public class Notification {
 
     private Long userId;
 
-    /** 作品说明：站内信类型区分系统、诊股报告与数据导入事件。 */
+    /** 站内信类型区分系统、诊股报告与数据导入事件。 */
     private String type;
 
     private String title;
 
     private String content;
 
-    /** 作品说明：前端跳转路径，如 /market/603259 */
+    /** 前端跳转路径，如 /market/603259 */
     private String link;
 
     private Integer readFlag;

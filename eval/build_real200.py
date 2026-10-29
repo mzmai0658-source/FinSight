@@ -1,4 +1,4 @@
-"""作品说明：在运行前建立真实财报200轮验收题库，固定目标和来源，禁止根据模型回答改变预期。"""
+"""在运行前建立真实财报200轮验收题库，固定目标和来源，禁止根据模型回答改变预期。"""
 from __future__ import annotations
 import argparse,json,hashlib
 from pathlib import Path
@@ -110,7 +110,7 @@ def build(folder):
     assert len(cases)==200 and len({c['question'] for c in cases})>=160
     assert sum(c['group'] is None for c in cases)==120
     assert len({c['group'] for c in cases if c['group']})==20
-    return dict(version=3,scope='real reports only; fixed regression acceptance, not an unseen blind test',reference_date='2026-10-02',target=170,model='qwen3.5:9b-q4_K_M',source_data_version=facts[0]['data_version'],distribution=dict(counts),cases=cases)
+    return dict(version=3,scope='real reports only; fixed regression acceptance, not an unseen blind test',reference_date='2026-10-02',target=170,model='deepseek-flash',source_data_version=facts[0]['data_version'],distribution=dict(counts),cases=cases)
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--audit',default='data/runtime/qa200/real-release');p.add_argument('--output',default='eval/real200_cases.json');a=p.parse_args()

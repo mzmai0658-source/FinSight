@@ -1,4 +1,4 @@
-"""作品说明：通过 PyMySQL 将随附 SQL 导入隔离演示数据库。"""
+"""通过 PyMySQL 将随附 SQL 导入隔离演示数据库。"""
 
 from __future__ import annotations
 
@@ -84,7 +84,7 @@ def seed_database(source: Path, database: str) -> Dict[str, Any]:
             cursor.execute(f"USE `{database}`")
             cursor.execute(COMPANY_TABLE_SQL)
             cursor.execute(COMPANY_SEED_SQL)
-            # 作品说明：保留原有演示公司行，但替换样例后不能让 Agent 继续宣称过期真实公司可查询。
+            # 保留原有演示公司行，但替换样例后不能让 Agent 继续宣称过期真实公司可查询。
             cursor.execute(
                 "UPDATE company c SET c.data_status='pending' "
                 "WHERE NOT EXISTS (SELECT 1 FROM income_sheet i WHERE i.stock_code=c.stock_code)"

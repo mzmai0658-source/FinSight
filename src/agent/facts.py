@@ -1,4 +1,4 @@
-"""作品说明：提供稳定证据标识与类型化事实，不由模型推测身份。"""
+"""提供稳定证据标识与类型化事实，不由模型推测身份。"""
 from __future__ import annotations
 
 import hashlib
@@ -22,7 +22,7 @@ _PERIOD_PATTERNS: tuple[tuple[str, str], ...] = (
     ("Q1", r"一季度|第一季度|一季报|(?<![A-Za-z])Q1(?![A-Za-z0-9])"),
     ("HY", r"上半年|半年度|半年报|中报|中期|半年(?!度|报)|(?<![A-Za-z])HY(?![A-Za-z0-9])|(?<![A-Za-z])H1(?![A-Za-z0-9])"),
     ("Q3", r"前三季度|三季度|第三季度|三季报|(?<![A-Za-z])Q3(?![A-Za-z0-9])"),
-    # 作品说明：半年报、半年度里的「年报」「年度」不是全年。
+    # 半年报、半年度里的「年报」「年度」不是全年。
     ("FY", r"全年|(?<!半)年报|(?<!半)年度|(?<![A-Za-z])FY(?![A-Za-z0-9])"),
 )
 _CN_YEAR_DIGIT = str.maketrans({
@@ -42,7 +42,7 @@ def field_specs() -> dict[str, dict[str, str]]:
         for field, label in fields.items():
             unit = "%" if "%" in label else "万元" if "万元" in label else "元" if "元)" in label or "元）" in label else ""
             if unit:
-                # 作品说明：括号可承载扣非等业务口径，不能全部删除，否则会把调整后指标混同原指标。
+                # 括号可承载扣非等业务口径，不能全部删除，否则会把调整后指标混同原指标。
                 business_label = re.sub(r'[（(](?:万元|亿元|元(?:/股)?|%|％)[）)]\s*$', '', label)
                 specs.setdefault(field, {"label": business_label, "unit": unit})
     return specs
@@ -55,14 +55,14 @@ def metric_mentions(text: str) -> list[tuple[int, int, str]]:
         aliases.setdefault(spec["label"], field)
     matches = [(m.start(), m.end(), field) for alias, field in aliases.items()
                for m in re.finditer(re.escape(alias), text, re.I)]
-    # 作品说明：扣非净利润或销售净利率内部的短名称不能再识别为另一个指标。
+    # 扣非净利润或销售净利率内部的短名称不能再识别为另一个指标。
     return sorted([item for item in matches if not any(
         other[0] <= item[0] and other[1] >= item[1] and other[1] - other[0] > item[1] - item[0]
         for other in matches)], key=lambda item: (item[0], item[1]))
 
 
 def requested_metric_fields(text: str) -> set[str]:
-    """作品说明：仅对明确支持的宽泛摘要请求展开主指标集合。"""
+    """仅对明确支持的宽泛摘要请求展开主指标集合。"""
     fields = {item[2] for item in metric_mentions(str(text or ""))}
     if _MAIN_METRICS_RE.search(str(text or "")):
         fields.update(MAIN_FINANCIAL_METRICS)
@@ -74,13 +74,13 @@ def asks_main_financial_metrics(text: str) -> bool:
 
 
 def _arabic_year_spellings(source: str) -> str:
-    """作品说明：支持中文完整年度及两位年度，分别规范为对应的四位年份。"""
+    """支持中文完整年度及两位年度，分别规范为对应的四位年份。"""
     source = re.sub(r"[零〇○一二三四五六七八九]{4}", lambda m: m.group(0).translate(_CN_YEAR_DIGIT), source)
     return re.sub(r"[零〇○一二三四五六七八九]{2}(?=年)", lambda m: m.group(0).translate(_CN_YEAR_DIGIT), source)
 
 
 def _listed_years(source: str) -> set[int]:
-    """作品说明：用户列举的每个年份均须保留，即使只有末项带年字。"""
+    """用户列举的每个年份均须保留，即使只有末项带年字。"""
     token = re.compile(r"(?<!\d)((?:20)?\d{2})(?!\d)")
     gap = re.compile(r"\s*年?\s*(?:和|与|及|、|，|,|/|\s)\s*")
     current: list[int] = []
@@ -105,7 +105,7 @@ def _listed_years(source: str) -> set[int]:
 
 
 def extract_report_years(text: str, *, current_year: int | None = None, report_anchor: int | None = None) -> list[int]:
-    """作品说明：支持完整年份、口语两位年份、年份区间及相对年份。"""
+    """支持完整年份、口语两位年份、年份区间及相对年份。"""
     source = _arabic_year_spellings(str(text or ""))
     years = {int(year) for year in re.findall(r"(?<!\d)(20\d{2})(?!\d)", source)}
     years.update(_listed_years(source))
@@ -132,18 +132,18 @@ def extract_report_years(text: str, *, current_year: int | None = None, report_a
     ):
         years.update((full(first), full(last)))
 
-    # 作品说明：两个简写年度可共享同一报告期间，例如 23/24 全年。
+    # 两个简写年度可共享同一报告期间，例如 23/24 全年。
     for first, last in re.findall(r"(?<!\d)(\d{2})\s*/\s*(\d{2})(?!\d)", source):
         years.update((full(first), full(last)))
 
-    # 作品说明：紧凑报告编号的期间应绑定邻近短年份。
+    # 紧凑报告编号的期间应绑定邻近短年份。
     years.update(full(value) for value in re.findall(
         r"(?<!\d)(\d{2})(?=(?:Q1|HY|Q3|FY)(?![A-Za-z0-9]))", source, re.I))
 
     years.update(full(value) for value in re.findall(r"(?<!\d)(\d{2})\s*(?:财)?年", source))
 
     calendar = int(current_year or datetime.now().year)
-    # 作品说明：今年始终按今天。去年、前年在追问里可以改锚到正在看的报告年。
+    # 今年始终按今天。去年、前年在追问里可以改锚到正在看的报告年。
     relative = int(report_anchor) if report_anchor else calendar
     if "今年" in source:
         years.add(calendar)
@@ -151,7 +151,7 @@ def extract_report_years(text: str, *, current_year: int | None = None, report_a
         years.add(relative - 1)
     if "前年" in source:
         years.add(relative - 2)
-    # 作品说明：旁边的「这三年」只是在确认已经列出的那一串，不另按今天倒推。
+    # 旁边的「这三年」只是在确认已经列出的那一串，不另按今天倒推。
     recent_match = re.search(rf"(?:最近|近|过去)({_YEAR_COUNT_WORD})年", source)
     if recent_match and not _listed_years(source):
         count = _year_count(recent_match.group(1))
@@ -165,7 +165,7 @@ YEAR_SPAN_RE = re.compile(rf"(最近|过去|近|这|前)({_YEAR_COUNT_WORD})年"
 
 
 def _year_count(raw: str) -> int:
-    """作品说明：中文两与二表示相同数量，数字本身保持不变。"""
+    """中文两与二表示相同数量，数字本身保持不变。"""
     named = {"二": 2, "两": 2, "三": 3, "四": 4, "五": 5}
     if raw in named:
         return named[raw]
@@ -173,7 +173,7 @@ def _year_count(raw: str) -> int:
 
 
 def year_span_request(text: str) -> tuple[int, str] | None:
-    """作品说明：用户未逐一列年时解析年度数量；已有年份列表时不重复生成窗口。窗口分为截至当前条件的最近若干年与之前若干年。"""
+    """用户未逐一列年时解析年度数量；已有年份列表时不重复生成窗口。窗口分为截至当前条件的最近若干年与之前若干年。"""
     source = _arabic_year_spellings(str(text or ""))
     if _listed_years(source):
         return None
@@ -188,7 +188,7 @@ def year_span_request(text: str) -> tuple[int, str] | None:
 
 
 def extract_report_periods(text: str) -> list[str]:
-    """作品说明：按原话出现顺序保留全部期间。"""
+    """按原话出现顺序保留全部期间。"""
     found: list[tuple[int, str]] = []
     for period, pattern in _PERIOD_PATTERNS:
         found.extend((match.start(), period) for match in re.finditer(pattern, str(text or ""), re.I))
@@ -205,7 +205,7 @@ def explicit_period(text: str) -> str | None:
 
 
 def extract_year_period_pairs(text: str) -> list[tuple[int, str]]:
-    """作品说明：将相邻年度与期间绑定，避免错误生成笛卡尔积。"""
+    """将相邻年度与期间绑定，避免错误生成笛卡尔积。"""
     source = str(text or "")
     years = extract_report_years(source)
     periods = extract_report_periods(source)
@@ -255,7 +255,7 @@ def request_scope(text: str, rows: Sequence[Mapping[str, Any]] = ()) -> dict[str
 
 
 def scoped_metadata(meta: Mapping[str, Any]) -> dict[str, Any]:
-    """作品说明：缺失身份只从文件名或报告标题补充，不能借正文中的其他期间填充。"""
+    """缺失身份只从文件名或报告标题补充，不能借正文中的其他期间填充。"""
     result = dict(meta)
     header = str(meta.get("source_title") or meta.get("doc_name") or meta.get("source") or "").replace("\\", "/").split("/")[-1]
     inferred = request_scope(header)
@@ -310,7 +310,7 @@ def build_facts(rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
         lineage = row.get("_column_lineage")
         for output_field, raw in row.items():
             info = (lineage or {}).get(output_field)
-            # 作品说明：只接受明确来源映射，未登记输出不能伪装成业务字段。
+            # 只接受明确来源映射，未登记输出不能伪装成业务字段。
             if isinstance(lineage, Mapping) and not info:
                 continue
             field = str(info.get("field") or output_field) if isinstance(info, Mapping) else output_field

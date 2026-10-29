@@ -1,4 +1,4 @@
-"""作品说明：后台任务持久化独立于SSE订阅连接，刷新或断网继续执行。"""
+"""后台任务持久化独立于SSE订阅连接，刷新或断网继续执行。"""
 from __future__ import annotations
 
 import asyncio
@@ -14,14 +14,23 @@ from .contracts import DialogueState,InterruptedRequest,Request,Execution
 
 TERMINAL = {'completed', 'cancelled', 'failed'}
 ERROR_MESSAGES = {
+    'cloud_api_key_required': '云端模型密钥缺失，请管理员配置服务端 LLM_API_KEY；本轮未完成。',
+    'cloud_authentication_or_balance_failed': '云端认证、权限或余额检查失败，请管理员检查密钥和账户；本轮未完成。',
+    'cloud_rate_limited': '云端模型服务限流，请稍后重新提交；本轮未完成。',
+    'cloud_model_or_endpoint_not_found': '云端模型或接口不存在，请管理员检查型号和服务地址；本轮未完成。',
+    'cloud_service_unavailable': '云端模型服务暂不可用；本轮未完成。',
+    'cloud_service_request_failed': '云端模型未接受请求，请管理员检查调用配置；本轮未完成。',
+    'cloud_connection_or_response_failed': '云端连接或响应异常；本轮未完成。',
+    'cloud_response_model_mismatch': '云端返回的型号与配置不一致，本轮结果不予发布。',
+    'cloud_invalid_response': '云端响应格式无效，本轮未完成。',
     'model_queue_full': '服务当前忙碌，等待队列已满，请稍后重试。',
     'model_queue_timeout': '排队超过30秒，本轮未开始，请稍后重试。',
     'queue_or_turn_timeout': '排队或执行超过服务时限，本轮未完成。',
     'turn_timeout': '本轮执行超过服务时限，未完成的结果不再发布。',
     'model_invalid_schema': '模型没有返回有效的请求清单，本轮未执行财务查询。',
     'model_empty_output': '模型返回空内容，本轮未完成。',
-    'model_connection_failed': '本地模型连接失败，本轮未完成。',
-    'model_timeout': '本地模型调用超时，本轮未完成。',
+    'model_connection_failed': '模型服务连接失败，本轮未完成。',
+    'model_timeout': '模型服务调用超时，本轮未完成。',
     'semantic_request_audit_failed': '本轮理解结果未通过要求核对，未发布财务答案。',
     'worker_restarted': '分析服务重启，这轮任务已结束，请重新提交。',
     'worker_shutdown': '分析服务关闭，这轮任务已结束，请重新提交。',
@@ -34,7 +43,7 @@ class TaskConflict(ValueError):
 
 
 def diagnostic_value(value,depth=0):
-    """作品说明：诊断只序列化普通数据，异常对象不能阻碍失败终态保存，也不能泄露驱动信息或凭据。"""
+    """诊断只序列化普通数据，异常对象不能阻碍失败终态保存，也不能泄露驱动信息或凭据。"""
     if value is None or isinstance(value,(str,bool,int)):return value
     if isinstance(value,float):return value if math.isfinite(value) else None
     if depth>=20:return {'type':'depth_limit'}
@@ -48,20 +57,54 @@ def failure_context(record):
     state.recent_facts=[];state.recent_computed=[]
     checkpoint=record.get('request_checkpoint') or {}
     request=Request.model_validate(checkpoint['request']) if checkpoint.get('request') else None
-    from .request_bindings import literal_condition_paths,explicit_condition_amendment
+    if request and request.memory_edits:
+        from .memory_updates import apply_memory_edits
+        state=apply_memory_edits(state,request.memory_edits,record.get('question',''),record['id'])
+    from .request_bindings import literal_condition_paths,explicit_condition_amendment,explicit_restrictions,explicit_financial_query
     financial=bool(request and any(g.kind in {'lookup','compare','rank','chart','quote','cause','sign'} for g in request.goals))
+    # 查看原页或概念插话失败不修改主财务任务；无已确认请求时，仅按本轮明确限制保护临时追问。
+    reference=bool(request and request.goals and request.conditions.restrictions.no_query and all(
+        g.kind in {'quote','sign'} or g.kind=='concept' and g.concept_mode=='implication' for g in request.goals))
+    question=record.get('question','')
+    nonfinancial=bool(request and not financial)
+    uncompiled_aside=not request and explicit_restrictions(question).get('no_query') and not (
+        explicit_condition_amendment(question) or explicit_financial_query(question))
+    aside=nonfinancial or reference or uncompiled_aside
     paths=set()
-    if not checkpoint.get('approved'):
+    if not checkpoint.get('approved') and not aside:
         paths.update(checkpoint.get('uncertain_paths',[]))
         if financial:
             paths.update(e.field for e in request.modifications if e.operation!='inherit')
             paths.update(e.field for g in request.goals for e in g.condition_edits if e.operation!='inherit')
-        question=record.get('question','')
-        # 作品说明：被拒绝的提案保留明确修改的未确认字段，不能静默清掉不确定性或猜值。
+        # 被拒绝的提案保留明确修改的未确认字段，不能静默清掉不确定性或猜值。
         if financial or explicit_condition_amendment(question):
             paths.update(literal_condition_paths(question,record.get('registered_companies',{})))
-    state.interrupted_request=InterruptedRequest(turn_id=record['id'],question=record.get('question',''),status=record['status'],uncertain_paths=sorted(paths))
-    if financial or paths:
+    from .condition_lifetimes import TURN_DEFAULTS,explicit_lifetime
+    from .condition_lifetimes import paths as edit_paths
+    typed_lifetimes={path:e.lifetime or ('turn' if path in TURN_DEFAULTS else 'task')
+        for e in ([*request.modifications,*(e for g in request.goals for e in g.condition_edits)] if request else [])
+        if e.operation!='inherit' for path in edit_paths(e)}
+    persistent_turn_fields={path for path,lifetime in typed_lifetimes.items() if lifetime in {'task','session'}}
+    paths-=TURN_DEFAULTS-persistent_turn_fields
+    paths={path for path in paths if (typed_lifetimes.get(path)!='turn' if path in typed_lifetimes
+        else explicit_lifetime(path,question)!='turn')}
+    if not aside or state.interrupted_request is None:
+        prior=state.interrupted_request
+        if prior and prior.uncertain_paths!=[]:
+            # 新一轮失败不能确认旧修改，也不能抹掉旧不确定性；已确认检查点中的状态已移除真正解决的字段。
+            state.interrupted_request=prior.model_copy(deep=True)
+            inherited=set(prior.uncertain_paths) if prior.uncertain_paths is not None else {'codes','metrics'}-set(prior.confirmed_fields)
+            if not prior.uncertain_paths_normalized:
+                persistent={e.field for e in state.session_preferences}
+                inherited={path for path in inherited if (path not in TURN_DEFAULTS or path in persistent)
+                           and explicit_lifetime(path,prior.question)!='turn'}
+            state.interrupted_request.uncertain_paths=sorted(inherited|paths)
+            state.interrupted_request.uncertain_paths_normalized=True
+            state.interrupted_request.confirmed_fields=[field for field in prior.confirmed_fields if field not in paths]
+        else:
+            state.interrupted_request=InterruptedRequest(turn_id=record['id'],question=question,status=record['status'],
+                uncertain_paths=sorted(paths),uncertain_paths_normalized=True)
+    if financial and not aside or paths:
         executed=Execution(turn_id=record['id'],data_version='',resolved_periods={},
             time_rule='条件已确认，查询未完成' if checkpoint.get('approved') else '请求未通过确认，没有可发布的本轮查询结果',
             fact_refs=[],status=record['status'],conditions=state.conditions.model_copy(deep=True) if checkpoint.get('approved') else None,
@@ -73,7 +116,7 @@ def failure_context(record):
 
 
 def terminal_result(record):
-    """作品说明：SSE、轮询、取消和重启使用同一份持久失败结果。"""
+    """SSE、轮询、取消和重启使用同一份持久失败结果。"""
     if record['result'] is not None:return record['result']
     if record['status'] not in {'failed','cancelled'}:return None
     return dict(version=3,task_id=record['id'],task_status=record['status'],question=record.get('question',''),
@@ -104,7 +147,7 @@ class TaskStore:
         return db
 
     def recover_restart(self):
-        # 作品说明：重启后没有原异步调用，遗留任务明确终结，避免重复调用模型或工具，并释放对应会话锁。
+        # 重启后没有原异步调用，遗留任务明确终结，避免重复调用模型或工具，并释放对应会话锁。
         with self.connect() as db:
             db.execute("UPDATE tasks SET status='failed', error='worker_restarted' WHERE status IN ('queued','running','cancelling')")
 
@@ -133,7 +176,7 @@ class TaskStore:
             return result
 
     def checkpoint(self,id,request,dialogue=None,approved=False):
-        # 作品说明：原子更新前检查请求和状态；迟到检查点不能覆盖正在取消或终态的任务。
+        # 原子更新前检查请求和状态；迟到检查点不能覆盖正在取消或终态的任务。
         parsed=Request.model_validate(request)
         if parsed.turn_id!=id:raise ValueError('Checkpoint task identity mismatch')
         state=DialogueState.model_validate(dialogue) if dialogue is not None else None
@@ -201,7 +244,7 @@ class TaskManager:
         record, created = self.store.create(id, client_id, session, min(deadline, time.time() + 270), state.model_dump(mode='json'), question,safety_paths)
         if created:
             self.changed[id] = asyncio.Event()
-            # 作品说明：持有后台协程引用，订阅断开不取消执行任务。
+            # 持有后台协程引用，订阅断开不取消执行任务。
             self.runners[id] = asyncio.create_task(self._run(record, question, history), name='financial-turn-' + id)
         return record
 
@@ -236,7 +279,7 @@ class TaskManager:
             async def emit(type, data):
                 await self._emit(id, type, data)
             result = await self.agent.run(question, history, id, record['deadline'], emit)
-            # 作品说明：取消终态优先，模型迟到结果不再发布为完成。
+            # 取消终态优先，模型迟到结果不再发布为完成。
             if self.store.transition(id, ['running'], 'completed', result=result):
                 await self._emit(id, 'done', {'result': result})
         except asyncio.CancelledError:
@@ -250,7 +293,7 @@ class TaskManager:
         except Exception as exc:
             reason = getattr(exc, 'reason', None) or type(exc).__name__
             current=self.store.get(id)
-            # 作品说明：编译失败仅保留有效提案用于定位未确认编辑，不将它当作执行授权。
+            # 编译失败仅保留有效提案用于定位未确认编辑，不将它当作执行授权。
             if not current.get('request_checkpoint',{}).get('approved') and isinstance(getattr(exc,'request',None),dict):
                 try:self.store.checkpoint(id,exc.request)
                 except ValueError:pass
@@ -283,7 +326,7 @@ class TaskManager:
             try:
                 await runner
             except asyncio.CancelledError:
-                # 作品说明：处理协程进入保护块之前就收到取消的情况。
+                # 处理协程进入保护块之前就收到取消的情况。
                 self.store.transition(id, ['cancelling'], 'cancelled', error='user_cancelled')
                 self.runners.pop(id, None)
         else:
@@ -302,7 +345,7 @@ class TaskManager:
                 yield event
             record = self.store.get(id)
             if record['status'] in TERMINAL:
-                # 作品说明：终态发布前读取已提交事件，避免快速执行丢失工具进度或提前发出done。
+                # 终态发布前读取已提交事件，避免快速执行丢失工具进度或提前发出done。
                 for sequence,event in self.store.events(id,sequence):
                     delivered_done=delivered_done or event.type=='done'
                     yield event

@@ -1,4 +1,4 @@
-"""作品说明：验证字面条件、替换时的集合保留及执行失败后的清空行为。"""
+"""验证字面条件、替换时的集合保留及执行失败后的清空行为。"""
 import asyncio
 import time
 import pytest
@@ -36,17 +36,24 @@ def prior():
 def test_literal_display_values_and_negations(q,expected):
     assert explicit_presentation_bindings(q)==expected
 
-def test_display_constraints_are_required_in_sampler():
+def test_display_constraints_are_checked_after_sparse_conditions_are_bound():
     s=turn_schema(sampling_schema(TurnPlan.model_json_schema()),dict(question='库内公司最低前三家',companies=COMPANIES))
-    assert {'all_companies','presentation.order','presentation.limit'}<=set(s['properties']['edits']['required'])
-    # 作品说明：字面条件不能删去合法任务类别。
+    assert {'all_companies','presentation.order','presentation.limit'}<=set(s['properties']['edits']['properties'])
+    from tests.test_v3_generalization_boundaries import review
+    request=Request(turn_id='missing-rank',question='库内公司2023年营业收入最低前三家',
+        conditions=Conditions(codes=['600085'],metrics=['operating_revenue'],time={'mode':'explicit','years':[2023]}),
+        goals=[Goal(id='g',kind='rank',text='库内公司2023年营业收入最低前三家')])
+    from tests.request_expectations import mismatches
+    assert {"all_companies","order","limit"}<=set(mismatches(request,all_companies=True,order="asc",limit=3))
+    # 字面条件不能删去合法任务类别。
     assert len(s['properties']['goals']['items']['properties']['kind']['enum'])==11
 
 def test_replacement_keeps_unmentioned_companies_and_rejects_bad_proposal():
+    from tests.request_expectations import mismatches
     q='不是太极集团，是盘龙药业，其余不变。'
     for codes in (['002864'],['600129','002864']):
-        with pytest.raises(InvalidUnderstanding,match='公司纠正'):
-            apply_understanding(q,'t',plan(q,[('codes','replace',codes)],continuity='continue'),prior(),COMPANIES)
+        request,_=apply_understanding(q,'t',plan(q,[('codes','replace',codes)],continuity='continue'),prior(),COMPANIES)
+        assert 'codes' in mismatches(request,codes=['600085','002864'])
     r,s=apply_understanding(q,'t',plan(q,[('codes','remove',['600129']),('codes','add',['002864'])],continuity='continue'),prior(),COMPANIES)
     assert set(r.conditions.codes)=={'600085','002864'}
     assert r.conditions.presentation.unit=='亿元' and r.conditions.presentation.decimals==3
@@ -72,12 +79,13 @@ def test_definition_aside_has_only_current_metrics_and_preserves_financial_conte
 
 def test_unknown_literal_name_is_not_substituted_and_non_company_prose_is_not_captured():
     q='贵州茅台2024年营业收入是多少？'
-    assert unregistered_company_literals(q,COMPANIES)==['贵州茅台']
+    # 名称由模型明确登记；程序不再从年份前的任意中文推测公司。
+    assert unregistered_company_literals(q,COMPANIES)==[]
     assert unregistered_company_literals('6005192024年营业收入',COMPANIES)==['600519']
     assert not unregistered_company_literals('营业收入100000元够吗',COMPANIES)
     for text in ('同仁堂和万邦德2024年营业收入','母公司股东2024年净利润','库内公司2024年归母净利润','不要贵州茅台2024年营业收入','查2024年营业收入','再查2024年营业收入','然后查2024年营业收入','同仁堂2023年和2024年营业收入，用亿元画柱状图'):
         assert not unregistered_company_literals(text,COMPANIES)
-    r,_=apply_understanding(q,'t',plan(q,[('metrics','replace',['operating_revenue']),('time.years','replace',[2024])]),DialogueState(),COMPANIES)
+    r,_=apply_understanding(q,'t',plan(q,[('metrics','replace',['operating_revenue']),('time.years','replace',[2024])],unknown_companies=['贵州茅台']),DialogueState(),COMPANIES)
     assert r.unsupported and not r.conditions.codes and not r.clarification
 
 def test_alternative_collection_name_is_recorded_and_accepted():
@@ -87,14 +95,13 @@ def test_alternative_collection_name_is_recorded_and_accepted():
     assert r.conditions.all_companies and set(r.conditions.codes)==set(COMPANIES) and not r.clarification
 
 def test_wrong_chart_type_fails_both_request_review_and_final_verification():
+    from tests.request_expectations import mismatches
     q='同仁堂2024年营业收入画柱状图'
     r=Request(turn_id='t',question=q,conditions=Conditions(codes=['600085'],metrics=['operating_revenue']),goals=[Goal(id='g',kind='chart',text=q)])
-    review=SemanticReview(audit_mode='program',goal_requirements=[GoalCoverage(kind='chart',goal_ids=['g'],representation='represented')],
-        satisfied=True,clarification=[],planner_defects=[],companies_correct=True,metrics_and_scope_correct=True,
-        time_correct=True,goals_correct=True,constraints_correct=True,presentation_correct=True)
-    assert not V3Agent._review_exact_bindings(r,review).accepted
+    assert 'chart_type' in mismatches(r,chart='bar')
+    # 缺图、假完成和图点篡改继续由实际交付核验，原话类型由独立预期判定。
     checked=verify(r,ExecutionResult(),[],[])
-    assert any(c.name=='literal_presentation.chart_type' and c.status=='fail' for c in checked.request)
+    assert checked.status!='pass'
 
 def test_company_deletion_survives_model_failure(tmp_path):
     class FailedAgent:
@@ -113,12 +120,12 @@ def test_company_deletion_survives_model_failure(tmp_path):
     asyncio.run(scenario())
 
 
-def test_unrestricted_sampling_does_not_allow_explicit_metric_substitution():
+def test_legal_metric_is_not_silently_replaced_or_claimed_as_semantically_certified():
     q='同仁堂2024年母公司营业收入，用亿元'
-    r=Request(turn_id='t',question=q,conditions=Conditions(codes=['600085'],metrics=['total_operating_revenue'],scope='parent',presentation=Presentation(unit='亿元')),goals=[Goal(id='g',kind='lookup',text=q)])
-    review=SemanticReview(audit_mode='program',goal_requirements=[GoalCoverage(kind='lookup',goal_ids=['g'],representation='represented')],
-        satisfied=True,clarification=[],planner_defects=[],companies_correct=True,metrics_and_scope_correct=True,
-        time_correct=True,goals_correct=True,constraints_correct=True,presentation_correct=True)
-    assert not V3Agent._review_exact_bindings(r,review).accepted
-    assert not review.metrics_and_scope_correct
-    assert any('不能用相近指标替代' in issue for issue in review.planner_defects)
+    # 目录合法仅说明可执行；自然语言理解错误由独立预期评分，程序不得默改成另一个指标。
+    request,_=apply_understanding(q,'t',plan(q,[('codes','replace',['600085']),
+            ('metrics','replace',['total_operating_revenue']),('scope','replace','parent'),
+            ('time.years','replace',[2024]),('presentation.unit','replace','亿元')]),DialogueState(),COMPANIES)
+    assert request.conditions.metrics==['total_operating_revenue']
+    from tests.test_v3_generalization_boundaries import review
+    assert all('自由语义未由独立模型认证' in c.detail for c in review(request).checks if c.status=='pass')

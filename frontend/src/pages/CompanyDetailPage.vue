@@ -59,7 +59,7 @@ const chartError = ref("");
 const stockCode = computed(() => String(route.params.code ?? ""));
 const imported = computed(() => detail.value?.profile.dataStatus === "imported");
 
-/* 作品说明：自选关注 */
+/* 自选关注 */
 
 const watched = ref(false);
 const watchBusy = ref(false);
@@ -71,7 +71,7 @@ async function loadWatched() {
     const codes = await fetchWatchedCodes();
     if (code === stockCode.value) watched.value = codes.includes(code);
   } catch {
-    // 作品说明：关注状态查询失败时保留页面，避免阻断公司详情。
+    // 关注状态查询失败时保留页面，避免阻断公司详情。
   }
 }
 
@@ -97,7 +97,7 @@ async function toggleWatch() {
   }
 }
 
-/* 作品说明：机构观点 */
+/* 机构观点 */
 
 const institutionReports = ref<ResearchReportItem[]>([]);
 const selectedReport = ref<ResearchReportItem | null>(null);
@@ -120,7 +120,7 @@ async function openReport(report: ResearchReportItem) {
   }
 }
 
-/* 作品说明：财务画像 */
+/* 财务画像 */
 
 const diagnosis = ref<AdvisorDiagnosis | null>(null);
 const diagnosisError = ref("");
@@ -194,7 +194,7 @@ const riskLabels: Record<string, string> = {
   aggressive: "进取型",
 };
 
-/* 作品说明：加载 */
+/* 加载 */
 
 let loadVersion = 0;
 async function loadCharts(code = stockCode.value) {
@@ -240,7 +240,7 @@ async function load() {
 onMounted(load);
 watch(stockCode, load);
 
-/* 作品说明：锚点导航 */
+/* 锚点导航 */
 
 const sections = computed(() => {
   const list: { id: string; label: string }[] = [];
@@ -273,7 +273,7 @@ watch(sections, updateActiveSection, { flush: "post" });
 onMounted(() => { window.addEventListener("scroll", onPageScroll, { passive: true }); window.addEventListener("resize", onPageScroll); });
 onBeforeUnmount(() => { loadVersion++; cancelAnimationFrame(sectionFrame); window.removeEventListener("scroll", onPageScroll); window.removeEventListener("resize", onPageScroll); });
 
-/** 作品说明：主数据未登记的字段不渲染空标签 */
+/** 主数据未登记的字段不渲染空标签 */
 const profileTags = computed(() => {
   const p = detail.value?.profile;
   if (!p) return [];
@@ -301,21 +301,21 @@ function coveragePeriods(periods: unknown): string[] {
     .map((p) => periodLabels[p] ?? p);
 }
 
-/* 作品说明：指标卡 */
+/* 指标卡 */
 
 const metricCards = computed(() => {
   const core = detail.value?.latestCore ?? {};
   return [
     { label: "营业收入", value: fmtYi(core.revenue), delta: toNum(core.revenue_yoy) },
-    { label: "净利润", value: fmtYi(core.net_profit), delta: toNum(core.net_profit_yoy) },
-    { label: "扣非净利润", value: fmtYi(core.net_profit_excl), delta: toNum(core.net_profit_excl_yoy) },
+    { label: "归母净利润", value: fmtYi(core.net_profit), delta: toNum(core.net_profit_yoy) },
+    { label: "扣非归母净利润", value: fmtYi(core.net_profit_excl), delta: toNum(core.net_profit_excl_yoy) },
     { label: "ROE", value: fmtPct(core.roe), delta: null },
     { label: "毛利率", value: fmtPct(core.gross_profit_margin), delta: null },
     { label: "每股收益", value: core.eps == null ? "—" : `${core.eps} 元`, delta: null },
   ];
 });
 
-/* 作品说明：图表 */
+/* 图表 */
 
 const profitOption = computed<EChartsOption>(() => {
   const rows = series.value?.core ?? [];
@@ -350,7 +350,7 @@ const profitOption = computed<EChartsOption>(() => {
         tooltip: { valueFormatter: fmtChartYi },
       },
       {
-        name: "净利润",
+        name: "归母净利润",
         type: "bar",
         data: rows.map((r) => toYi(r.net_profit)),
         barWidth: 26,
@@ -358,7 +358,7 @@ const profitOption = computed<EChartsOption>(() => {
         tooltip: { valueFormatter: fmtChartYi },
       },
       {
-        name: "净利润同比",
+        name: "归母净利润同比",
         type: "line",
         yAxisIndex: 1,
         smooth: true,
@@ -483,11 +483,11 @@ const cashflowOption = computed<EChartsOption>(() => {
   };
 });
 
-/* 作品说明：问 AI 联动 */
+/* 问 AI 联动 */
 
 const askPresets = computed(() => {
   const abbr = detail.value?.profile.abbr ?? "";
-  // 作品说明：用最新年报年份，避免问到只有季报/半年报的年份
+  // 用最新年报年份，避免问到只有季报/半年报的年份
   const year = detail.value?.latestCore.year ?? detail.value?.profile.lastYear ?? "";
   return [
     `${abbr}近三年的净利润和营收变化趋势如何？请画图`,
@@ -515,7 +515,7 @@ function askAi(question: string) {
         <span>{{ detail.profile.abbr }}</span>
       </nav>
 
-      <!-- 作品说明：档案头 -->
+      <!-- 档案头 -->
       <section class="head">
         <div class="head__main">
           <div class="head__identity">
@@ -562,7 +562,10 @@ function askAi(question: string) {
         <p v-if="watchError" class="head__error" role="alert">{{ watchError }}</p>
       </section>
 
-      <!-- 作品说明：待入库 -->
+      <!-- 待入库 -->
+      <p v-if="detail.dataset?.experimental" class="pending" role="note">
+        试验财报库：部分数字尚未完成原件逐项核验，请在 AI 工作台结合原件和页码核对。
+      </p>
       <div v-if="!imported" class="pending" role="status">
         <strong>财务数据待入库</strong>
         <span>
@@ -570,7 +573,7 @@ function askAi(question: string) {
         </span>
       </div>
 
-      <!-- 作品说明：分区导航 -->
+      <!-- 分区导航 -->
       <nav v-if="sections.length > 1" class="tabs" aria-label="页面分区">
         <button
           v-for="item in sections"
@@ -585,7 +588,7 @@ function askAi(question: string) {
         </button>
       </nav>
 
-      <!-- 作品说明：核心指标 -->
+      <!-- 核心指标 -->
       <section v-if="imported" id="metrics" class="block">
         <div class="block__head">
           <h2>核心指标</h2>
@@ -610,7 +613,7 @@ function askAi(question: string) {
         </div>
       </section>
 
-      <!-- 作品说明：提问核对 -->
+      <!-- 提问核对 -->
       <section v-if="imported" id="ask" class="ask">
         <div class="ask__text">
           <h2>带着问题核对</h2>
@@ -630,7 +633,7 @@ function askAi(question: string) {
         </div>
       </section>
 
-      <!-- 作品说明：图表 -->
+      <!-- 图表 -->
       <section v-if="imported" id="charts" class="block">
         <div class="block__head">
           <h2>财务图表</h2>
@@ -641,32 +644,36 @@ function askAi(question: string) {
         <div v-else class="charts">
           <AppCard>
             <template #header>
-              <AppSection title="营收与净利润" description="柱：亿元 · 线：净利润同比（%）" dense />
+              <AppSection title="营收与归母净利润" description="合并口径 · 柱：亿元 · 线：归母净利润同比（%）" dense />
             </template>
-            <EChart :option="profitOption" height="300px" />
+            <EChart v-if="series.core.some(row => row.revenue != null || row.net_profit != null)" :option="profitOption" height="300px" />
+            <AppEmpty v-else title="暂无年报营收与归母净利润数据" />
           </AppCard>
           <AppCard>
             <template #header>
               <AppSection title="盈利能力" description="单位：%" dense />
             </template>
-            <EChart :option="marginOption" height="300px" />
+            <EChart v-if="series.core.some(row => row.roe != null || row.gross_profit_margin != null || row.net_profit_margin != null)" :option="marginOption" height="300px" />
+            <AppEmpty v-else title="暂无年报盈利能力数据" />
           </AppCard>
           <AppCard>
             <template #header>
               <AppSection title="资产负债结构" description="柱：亿元 · 线：资产负债率（%）" dense />
             </template>
-            <EChart :option="balanceOption" height="300px" />
+            <EChart v-if="series.balance.length" :option="balanceOption" height="300px" />
+            <AppEmpty v-else title="暂无年报资产负债数据" />
           </AppCard>
           <AppCard>
             <template #header>
               <AppSection title="现金流" description="单位：亿元" dense />
             </template>
-            <EChart :option="cashflowOption" height="300px" />
+            <EChart v-if="series.cashflow.length" :option="cashflowOption" height="300px" />
+            <AppEmpty v-else title="暂无年报现金流数据" />
           </AppCard>
         </div>
       </section>
 
-      <!-- 作品说明：机构观点 -->
+      <!-- 机构观点 -->
       <section v-if="institutionReports.length" id="research" class="block">
         <div class="block__head">
           <h2>机构观点</h2>
@@ -697,7 +704,7 @@ function askAi(question: string) {
         </div>
       </section>
 
-      <!-- 作品说明：财务画像（学习用途） -->
+      <!-- 财务画像（学习用途） -->
       <section v-if="advisorEnabled && imported" id="advisor">
         <AppCard padding="lg">
           <template #header>
@@ -807,7 +814,7 @@ function askAi(question: string) {
   text-decoration: none;
 }
 
-/* 作品说明：档案头 */
+/* 档案头 */
 .head {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -911,7 +918,7 @@ function askAi(question: string) {
   color: var(--c-text-tertiary);
 }
 
-/* 作品说明：待入库提示 */
+/* 待入库提示 */
 .pending {
   display: flex;
   flex-direction: column;
@@ -929,7 +936,7 @@ function askAi(question: string) {
   color: var(--c-warning);
 }
 
-/* 作品说明：分区导航 */
+/* 分区导航 */
 .tabs {
   position: sticky;
   top: var(--portal-nav-h);
@@ -971,7 +978,7 @@ function askAi(question: string) {
   border-color: var(--c-primary-border);
 }
 
-/* 作品说明：通用分区 */
+/* 通用分区 */
 .block,
 #ask,
 #advisor {
@@ -997,7 +1004,7 @@ function askAi(question: string) {
   color: var(--c-text-tertiary);
 }
 
-/* 作品说明：指标 */
+/* 指标 */
 .metrics {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -1052,7 +1059,7 @@ function askAi(question: string) {
   font-weight: 400;
 }
 
-/* 作品说明：提问核对 */
+/* 提问核对 */
 .ask {
   display: grid;
   grid-template-columns: minmax(220px, 0.8fr) minmax(0, 2fr);
@@ -1111,7 +1118,7 @@ function askAi(question: string) {
   color: var(--c-primary);
 }
 
-/* 作品说明：图表 */
+/* 图表 */
 .charts {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1123,7 +1130,7 @@ function askAi(question: string) {
   font-size: var(--fs-xs);
 }
 
-/* 作品说明：机构观点 */
+/* 机构观点 */
 .iview__list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -1179,7 +1186,7 @@ function askAi(question: string) {
   color: var(--c-text-tertiary);
 }
 
-/* 作品说明：财务画像 */
+/* 财务画像 */
 .advisor__guest {
   color: var(--c-text-secondary);
   font-size: var(--fs-sm);

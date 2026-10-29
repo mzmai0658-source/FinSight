@@ -1,4 +1,4 @@
-"""作品说明：规则兜底：LLM 不可用时的降级查询路径。
+"""规则兜底：LLM 不可用时的降级查询路径。
 
 仅覆盖最常见的\"公司 + 年份/期间 + 指标\"型查询；
 同时提供轻量槽位抽取，供上下文标签（前端展示）复用。
@@ -22,7 +22,7 @@ _RANKING_MARKERS = ["排名", "最高", "最低", "前十", "前10", "前五", "
 
 
 def extract_slots(question: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-    """作品说明：轻量槽位抽取：公司、年份、报告期、指标字段。"""
+    """轻量槽位抽取：公司、年份、报告期、指标字段。"""
     q = str(question or "")
     context = context or {}
 
@@ -82,7 +82,7 @@ def extract_slots(question: str, context: Optional[Dict[str, Any]] = None) -> Di
 
 
 def build_display_context(question: str, executed_sql: List[str], previous: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-    """作品说明：生成仅供前端展示的上下文标签（公司/年份/期间/指标）。"""
+    """生成仅供前端展示的上下文标签（公司/年份/期间/指标）。"""
     slots = extract_slots(question, previous)
     sql_text = "\n".join(executed_sql or [])
 
@@ -123,7 +123,7 @@ def build_display_context(question: str, executed_sql: List[str], previous: Opti
 
 
 def build_fallback_sql(slots: Dict[str, Any]) -> Optional[str]:
-    """作品说明：根据槽位构建模板 SQL；信息不足时返回 None。"""
+    """根据槽位构建模板 SQL；信息不足时返回 None。"""
     metric_field = slots.get("metric_field")
     if not metric_field:
         return None
@@ -158,7 +158,7 @@ def build_fallback_sql(slots: Dict[str, Any]) -> Optional[str]:
 
 
 def format_fallback_answer(slots: Dict[str, Any], rows: List[Dict[str, Any]]) -> str:
-    """作品说明：模板化兜底回答。"""
+    """模板化兜底回答。"""
     label = slots.get("metric_keyword") or FIELD_LABEL_MAP.get(str(slots.get("metric_field") or ""), "该指标")
     if not rows:
         return (

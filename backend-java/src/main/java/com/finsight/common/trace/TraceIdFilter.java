@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 /**
- * 作品说明：全链路 traceId：优先沿用前端/网关带来的 X-Request-Id，否则生成。
+ * 全链路 traceId：优先沿用前端/网关带来的 X-Request-Id，否则生成。
  * 写入 MDC 供日志输出，并通过响应头返回；调用 Python 微服务时由 AgentClient 继续透传。
  */
 @Component

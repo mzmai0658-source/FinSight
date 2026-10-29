@@ -1,4 +1,4 @@
-"""作品说明：FinSight 发布前静态检查：必需文件、大文件、密钥与可选身份词扫描。"""
+"""FinSight 发布前静态检查：必需文件、大文件、密钥与可选身份词扫描。"""
 
 from __future__ import annotations
 
@@ -17,6 +17,9 @@ REQUIRED_PATHS = (
     "LICENSE",
     "NOTICE",
     "README.md",
+    "src/agent/v3/cloud_chat.py",
+    "src/agent/cloud_protocol.py",
+    "docs/DEPLOYMENT.md",
     "docs/DEMO.md",
     "docs/THIRD_PARTY.md",
     "scripts/build_demo_kb.py",
@@ -25,7 +28,7 @@ REQUIRED_PATHS = (
     "demo/v3/spec.json",
     "scripts/demo-seed.ps1",
     "scripts/demo-seed.sh",
-    "scripts/ensure_ollama_model.py",
+    "scripts/check_cloud_model.py",
     "scripts/prepare_demo_sql.py",
     "scripts/seed_demo_database.py",
     "scripts/verify_demo.py",
@@ -53,7 +56,7 @@ SECRET_PATTERNS = (
 
 
 def repository_files(root: Path = ROOT_DIR) -> List[Path]:
-    """作品说明：获取已跟踪及未忽略文件，不遍历被忽略的数据集。"""
+    """获取已跟踪及未忽略文件，不遍历被忽略的数据集。"""
     if not (root / '.git').exists():
         manifest=root/'RELEASE_MANIFEST.json'
         if not manifest.is_file():

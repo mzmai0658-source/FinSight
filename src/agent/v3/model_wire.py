@@ -1,4 +1,4 @@
-"""作品说明：为任务枚举提供可逆中文传输编码；只解释合同取值，目标选择仍由理解阶段提出。"""
+"""为任务枚举提供可逆中文传输编码；只解释合同取值，目标选择仍由理解阶段提出。"""
 
 LABELS={
     'representation':{'represented':'请求清单已有对应目标','missing':'请求清单缺少对应目标'},
@@ -18,13 +18,13 @@ LABELS={
         'implication':'已核实数值的正负或变化含义',
     },
     'quote_mode':{'literal':'原文逐字摘录','location':'仅定位来源和页码'},
-    'catalog_target':{'companies':'公司覆盖','periods':'报告期覆盖','metrics':'指标目录','capabilities':'系统能力'},
+    'catalog_target':{'companies':'公司覆盖','periods':'报告期覆盖','metrics':'指标目录','capabilities':'系统能力','greeting':'简短问候','closing':'礼貌收尾'},
 }
 REVERSE={key:{label:value for value,label in pairs.items()} for key,pairs in LABELS.items()}
 
 
 def intent_context_schema(schema,new_financial_allowed=True,requires_fact_reference=False):
-    """作品说明：目标、连续关系和引用结构由同一个提案表达，防止分别选择产生冲突。"""
+    """目标、连续关系和引用结构由同一个提案表达，防止分别选择产生冲突。"""
     from copy import deepcopy
     schema=deepcopy(schema);properties=schema['properties']
     modes=properties.pop('continuity')['enum'];references=properties.pop('context_references');goals=properties.pop('goals')

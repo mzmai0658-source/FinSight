@@ -1,4 +1,4 @@
-"""作品说明：固定文本用于示例、定义、澄清与拒答；财务数值由事实生成，模板只解释含义及用法。"""
+"""固定文本用于示例、定义、澄清与拒答；财务数值由事实生成，模板只解释含义及用法。"""
 from __future__ import annotations
 
 import re
@@ -36,12 +36,12 @@ def is_greeting(question: str) -> bool:
 
 
 def asks_for_reading(question: str) -> bool:
-    """作品说明：数值之后给出简短的阅读或比较说明。"""
+    """数值之后给出简短的阅读或比较说明。"""
     return bool(_READING.search(str(question or '')))
 
 
 def sample_companies(limit: int = 4) -> list[str]:
-    """作品说明：示例使用登记公司名称，不固定偏向演示公司集合。"""
+    """示例使用登记公司名称，不固定偏向演示公司集合。"""
     picked = []
     for name in CODE_TO_NAME_MAP.values():
         if name and name not in picked:
@@ -80,7 +80,7 @@ def follow_up_line(company: str, metric_label: str, year) -> str:
 
 
 def source_page_lines(rows: list[tuple]) -> str:
-    """作品说明：每个原始页对应一条来源说明，包含公司、年度、期间、指标、文件和页码。"""
+    """每个原始页对应一条来源说明，包含公司、年度、期间、指标、文件和页码。"""
     lines = []
     for company, year, period, metric, _filename, page in rows:
         sentence = f'{company}{year}{period}{metric}的原文在该报告 PDF 第{page}页。'
@@ -194,7 +194,7 @@ def no_data_reply(company: str = '', year=None, period_label: str = '', metric_l
 
 
 def _example_company(question: str = '', company: str = '') -> tuple[str, str]:
-    """作品说明：优先沿用页面当前公司，登记名称仅作为示例。"""
+    """优先沿用页面当前公司，登记名称仅作为示例。"""
     from .entity_linker import exact_company_codes
     named = [CODE_TO_NAME_MAP[code] for code in CODE_TO_NAME_MAP if code in exact_company_codes(question)]
     shown = company or (named[0] if named else '')

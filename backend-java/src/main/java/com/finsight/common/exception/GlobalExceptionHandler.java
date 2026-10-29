@@ -20,7 +20,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    /** 作品说明：HTTP 状态随 ErrorCode 走：SSE/网关/前端拦截器都依赖状态码做粗粒度分流 */
+    /** HTTP 状态随 ErrorCode 走：SSE/网关/前端拦截器都依赖状态码做粗粒度分流 */
     @ExceptionHandler(BizException.class)
     public ResponseEntity<ApiResponse<Void>> handleBiz(BizException e) {
         log.warn("业务异常: code={} message={}", e.getErrorCode().getCode(), e.getMessage());
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
         return ApiResponse.error(ErrorCode.BAD_REQUEST, "请求参数格式或取值有误");
     }
 
-    /** 作品说明：将未被过滤器处理的认证与授权异常映射为统一的 401/403 响应。 */
+    /** 将未被过滤器处理的认证与授权异常映射为统一的 401/403 响应。 */
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiResponse<Void> handleAuthentication(AuthenticationException e) {

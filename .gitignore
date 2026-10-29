@@ -35,6 +35,7 @@ dump.rdb
 erl_crash.dump
 *.rdb
 data/runtime/
+data/reference/
 data/chroma_db/
 data/demo_chroma_db/
 data/*chroma*/

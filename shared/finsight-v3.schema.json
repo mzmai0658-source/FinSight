@@ -17,6 +17,24 @@
           "title": "Text",
           "type": "string"
         },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
+        },
         "field": {
           "const": "comparison_axis",
           "title": "Field",
@@ -57,6 +75,24 @@
           "title": "Text",
           "type": "string"
         },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
+        },
         "field": {
           "const": "calculation",
           "title": "Field",
@@ -80,6 +116,132 @@
         "value"
       ],
       "title": "CalculationEdit",
+      "type": "object"
+    },
+    "CalculationInput": {
+      "additionalProperties": false,
+      "properties": {
+        "current": {
+          "$ref": "#/$defs/CalculationOperand"
+        },
+        "base": {
+          "$ref": "#/$defs/CalculationOperand"
+        }
+      },
+      "required": [
+        "current",
+        "base"
+      ],
+      "title": "CalculationInput",
+      "type": "object"
+    },
+    "CalculationInputsEdit": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
+        },
+        "field": {
+          "const": "calculation_inputs",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "items": {
+            "$ref": "#/$defs/CalculationInput"
+          },
+          "title": "Value",
+          "type": "array"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "CalculationInputsEdit",
+      "type": "object"
+    },
+    "CalculationOperand": {
+      "additionalProperties": false,
+      "description": "作品说明：仅选择计算输入的身份，模型不能在这里提供答案数字、来源或事实编号。",
+      "properties": {
+        "code": {
+          "anyOf": [
+            {
+              "pattern": "^\\d{6}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Code"
+        },
+        "year": {
+          "anyOf": [
+            {
+              "maximum": 2100,
+              "minimum": 2000,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Year"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "enum": [
+                "FY",
+                "HY",
+                "Q1",
+                "Q3"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Period"
+        }
+      },
+      "title": "CalculationOperand",
       "type": "object"
     },
     "Check": {
@@ -219,6 +381,24 @@
           "title": "Text",
           "type": "string"
         },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
+        },
         "field": {
           "const": "all_companies",
           "title": "Field",
@@ -256,6 +436,24 @@
           "default": "",
           "title": "Text",
           "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
         },
         "field": {
           "const": "codes",
@@ -500,6 +698,14 @@
           "title": "Calculation",
           "type": "string"
         },
+        "calculation_inputs": {
+          "description": "明确的本期与基期配对；省略的公司或报告期按同一指标分组匹配。逐年同比不填写，程序逐目标年查相邻基期。",
+          "items": {
+            "$ref": "#/$defs/CalculationInput"
+          },
+          "title": "Calculation Inputs",
+          "type": "array"
+        },
         "comparison_axis": {
           "default": "none",
           "enum": [
@@ -563,6 +769,12 @@
           "const": 3,
           "default": 3,
           "title": "Version",
+          "type": "integer"
+        },
+        "state_revision": {
+          "const": 2,
+          "default": 2,
+          "title": "State Revision",
           "type": "integer"
         },
         "revision": {
@@ -668,6 +880,7 @@
               "mapping": {
                 "all_companies": "#/$defs/CollectionEdit",
                 "calculation": "#/$defs/CalculationEdit",
+                "calculation_inputs": "#/$defs/CalculationInputsEdit",
                 "codes": "#/$defs/CompanyEdit",
                 "comparison_axis": "#/$defs/AxisEdit",
                 "metrics": "#/$defs/MetricEdit",
@@ -677,6 +890,7 @@
                 "presentation.format": "#/$defs/EditPresentationFormat",
                 "presentation.include_inputs": "#/$defs/EditPresentationIncludeInputs",
                 "presentation.limit": "#/$defs/EditPresentationLimit",
+                "presentation.metric_units": "#/$defs/EditPresentationMetricUnits",
                 "presentation.order": "#/$defs/EditPresentationOrder",
                 "presentation.unit": "#/$defs/EditPresentationUnit",
                 "restrictions": "#/$defs/RestrictionEdit",
@@ -717,6 +931,9 @@
                 "$ref": "#/$defs/AxisEdit"
               },
               {
+                "$ref": "#/$defs/CalculationInputsEdit"
+              },
+              {
                 "$ref": "#/$defs/EditTimeMode"
               },
               {
@@ -739,6 +956,9 @@
               },
               {
                 "$ref": "#/$defs/EditPresentationUnit"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationMetricUnits"
               },
               {
                 "$ref": "#/$defs/EditPresentationDecimals"
@@ -786,6 +1006,139 @@
           },
           "title": "Modifications",
           "type": "array"
+        },
+        "session_preferences": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "all_companies": "#/$defs/CollectionEdit",
+                "calculation": "#/$defs/CalculationEdit",
+                "calculation_inputs": "#/$defs/CalculationInputsEdit",
+                "codes": "#/$defs/CompanyEdit",
+                "comparison_axis": "#/$defs/AxisEdit",
+                "metrics": "#/$defs/MetricEdit",
+                "presentation": "#/$defs/PresentationEdit",
+                "presentation.chart_type": "#/$defs/EditPresentationChartType",
+                "presentation.decimals": "#/$defs/EditPresentationDecimals",
+                "presentation.format": "#/$defs/EditPresentationFormat",
+                "presentation.include_inputs": "#/$defs/EditPresentationIncludeInputs",
+                "presentation.limit": "#/$defs/EditPresentationLimit",
+                "presentation.metric_units": "#/$defs/EditPresentationMetricUnits",
+                "presentation.order": "#/$defs/EditPresentationOrder",
+                "presentation.unit": "#/$defs/EditPresentationUnit",
+                "restrictions": "#/$defs/RestrictionEdit",
+                "restrictions.excluded_codes": "#/$defs/EditRestrictionsExcludedCodes",
+                "restrictions.excluded_metrics": "#/$defs/EditRestrictionsExcludedMetrics",
+                "restrictions.no_chart": "#/$defs/EditRestrictionsNoChart",
+                "restrictions.no_query": "#/$defs/EditRestrictionsNoQuery",
+                "restrictions.no_repeat": "#/$defs/EditRestrictionsNoRepeat",
+                "scope": "#/$defs/ScopeEdit",
+                "time": "#/$defs/TimeEdit",
+                "time.mode": "#/$defs/EditTimeMode",
+                "time.pairs": "#/$defs/EditTimePairs",
+                "time.periods": "#/$defs/EditTimePeriods",
+                "time.quarters": "#/$defs/EditTimeQuarters",
+                "time.single_quarter": "#/$defs/EditTimeSingleQuarter",
+                "time.span": "#/$defs/EditTimeSpan",
+                "time.years": "#/$defs/EditTimeYears"
+              },
+              "propertyName": "field"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/CompanyEdit"
+              },
+              {
+                "$ref": "#/$defs/MetricEdit"
+              },
+              {
+                "$ref": "#/$defs/ScopeEdit"
+              },
+              {
+                "$ref": "#/$defs/CollectionEdit"
+              },
+              {
+                "$ref": "#/$defs/CalculationEdit"
+              },
+              {
+                "$ref": "#/$defs/AxisEdit"
+              },
+              {
+                "$ref": "#/$defs/CalculationInputsEdit"
+              },
+              {
+                "$ref": "#/$defs/EditTimeMode"
+              },
+              {
+                "$ref": "#/$defs/EditTimeYears"
+              },
+              {
+                "$ref": "#/$defs/EditTimePeriods"
+              },
+              {
+                "$ref": "#/$defs/EditTimeSpan"
+              },
+              {
+                "$ref": "#/$defs/EditTimePairs"
+              },
+              {
+                "$ref": "#/$defs/EditTimeSingleQuarter"
+              },
+              {
+                "$ref": "#/$defs/EditTimeQuarters"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationUnit"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationMetricUnits"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationDecimals"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationFormat"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationChartType"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationOrder"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationLimit"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationIncludeInputs"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsNoQuery"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsNoChart"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsNoRepeat"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsExcludedCodes"
+              },
+              {
+                "$ref": "#/$defs/EditRestrictionsExcludedMetrics"
+              },
+              {
+                "$ref": "#/$defs/TimeEdit"
+              },
+              {
+                "$ref": "#/$defs/PresentationEdit"
+              },
+              {
+                "$ref": "#/$defs/RestrictionEdit"
+              }
+            ]
+          },
+          "title": "Session Preferences",
+          "type": "array"
         }
       },
       "title": "DialogueState",
@@ -807,6 +1160,24 @@
           "default": "",
           "title": "Text",
           "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
         },
         "field": {
           "const": "presentation.chart_type",
@@ -848,6 +1219,24 @@
           "default": "",
           "title": "Text",
           "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
         },
         "field": {
           "const": "presentation.decimals",
@@ -893,6 +1282,24 @@
           "title": "Text",
           "type": "string"
         },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
+        },
         "field": {
           "const": "presentation.format",
           "title": "Field",
@@ -934,6 +1341,24 @@
           "title": "Text",
           "type": "string"
         },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
+        },
         "field": {
           "const": "presentation.include_inputs",
           "title": "Field",
@@ -969,6 +1394,24 @@
           "title": "Text",
           "type": "string"
         },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
+        },
         "field": {
           "const": "presentation.limit",
           "title": "Field",
@@ -996,6 +1439,133 @@
       "title": "EditPresentationLimit",
       "type": "object"
     },
+    "EditPresentationMetricUnits": {
+      "additionalProperties": false,
+      "properties": {
+        "operation": {
+          "enum": [
+            "replace",
+            "inherit",
+            "clear"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "text": {
+          "default": "",
+          "title": "Text",
+          "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
+        },
+        "field": {
+          "const": "presentation.metric_units",
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "additionalProperties": {
+            "enum": [
+              "元",
+              "万元",
+              "亿元",
+              "%",
+              "元/股"
+            ],
+            "type": "string"
+          },
+          "propertyNames": {
+            "enum": [
+              "operating_revenue",
+              "total_operating_revenue",
+              "main_business_revenue",
+              "net_profit",
+              "attributable_net_profit",
+              "deducted_attributable_net_profit",
+              "operating_cost",
+              "gross_profit",
+              "gross_margin",
+              "net_margin",
+              "eps_basic",
+              "eps_diluted",
+              "roe_weighted",
+              "roe_weighted_deducted",
+              "roe_diluted",
+              "total_assets",
+              "total_liabilities",
+              "total_equity",
+              "cash",
+              "receivables",
+              "inventory",
+              "trading_assets",
+              "construction",
+              "payables",
+              "advances",
+              "contract_liabilities",
+              "short_loans",
+              "retained_earnings",
+              "operating_profit",
+              "total_profit",
+              "other_income",
+              "selling_expense",
+              "administration_expense",
+              "finance_expense",
+              "research_expense",
+              "tax_surcharges",
+              "total_operating_cost",
+              "asset_impairment",
+              "credit_impairment",
+              "operating_cash_flow",
+              "investing_cash_flow",
+              "financing_cash_flow",
+              "net_cash_change",
+              "sales_cash",
+              "investment_cash_paid",
+              "cash_begin",
+              "cash_end",
+              "debt_ratio",
+              "net_assets_per_share",
+              "operating_cash_per_share",
+              "operating_revenue_reported_yoy",
+              "total_operating_revenue_reported_yoy",
+              "attributable_net_profit_reported_yoy",
+              "net_profit_reported_yoy",
+              "deducted_attributable_net_profit_reported_yoy",
+              "total_assets_reported_yoy",
+              "total_liabilities_reported_yoy",
+              "net_cash_change_reported_yoy",
+              "total_assets_reported_change_vs_year_end",
+              "total_liabilities_reported_change_vs_year_end"
+            ]
+          },
+          "title": "Value",
+          "type": "object"
+        }
+      },
+      "required": [
+        "operation",
+        "field",
+        "value"
+      ],
+      "title": "EditPresentationMetricUnits",
+      "type": "object"
+    },
     "EditPresentationOrder": {
       "additionalProperties": false,
       "properties": {
@@ -1012,6 +1582,24 @@
           "default": "",
           "title": "Text",
           "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
         },
         "field": {
           "const": "presentation.order",
@@ -1051,6 +1639,24 @@
           "default": "",
           "title": "Text",
           "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
         },
         "field": {
           "const": "presentation.unit",
@@ -1104,6 +1710,24 @@
           "title": "Text",
           "type": "string"
         },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
+        },
         "field": {
           "const": "restrictions.excluded_codes",
           "title": "Field",
@@ -1145,6 +1769,24 @@
           "default": "",
           "title": "Text",
           "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
         },
         "field": {
           "const": "restrictions.excluded_metrics",
@@ -1246,6 +1888,24 @@
           "title": "Text",
           "type": "string"
         },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
+        },
         "field": {
           "const": "restrictions.no_chart",
           "title": "Field",
@@ -1280,6 +1940,24 @@
           "default": "",
           "title": "Text",
           "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
         },
         "field": {
           "const": "restrictions.no_query",
@@ -1316,6 +1994,24 @@
           "title": "Text",
           "type": "string"
         },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
+        },
         "field": {
           "const": "restrictions.no_repeat",
           "title": "Field",
@@ -1350,6 +2046,24 @@
           "default": "",
           "title": "Text",
           "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
         },
         "field": {
           "const": "time.mode",
@@ -1392,6 +2106,24 @@
           "default": "",
           "title": "Text",
           "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
         },
         "field": {
           "const": "time.pairs",
@@ -1459,6 +2191,24 @@
           "title": "Text",
           "type": "string"
         },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
+        },
         "field": {
           "const": "time.periods",
           "title": "Field",
@@ -1506,6 +2256,24 @@
           "title": "Text",
           "type": "string"
         },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
+        },
         "field": {
           "const": "time.quarters",
           "title": "Field",
@@ -1550,6 +2318,24 @@
           "title": "Text",
           "type": "string"
         },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
+        },
         "field": {
           "const": "time.single_quarter",
           "title": "Field",
@@ -1584,6 +2370,24 @@
           "default": "",
           "title": "Text",
           "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
         },
         "field": {
           "const": "time.span",
@@ -1631,6 +2435,24 @@
           "default": "",
           "title": "Text",
           "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
         },
         "field": {
           "const": "time.years",
@@ -1961,6 +2783,7 @@
               "mapping": {
                 "all_companies": "#/$defs/CollectionEdit",
                 "calculation": "#/$defs/CalculationEdit",
+                "calculation_inputs": "#/$defs/CalculationInputsEdit",
                 "codes": "#/$defs/CompanyEdit",
                 "comparison_axis": "#/$defs/AxisEdit",
                 "metrics": "#/$defs/MetricEdit",
@@ -1969,6 +2792,7 @@
                 "presentation.format": "#/$defs/EditPresentationFormat",
                 "presentation.include_inputs": "#/$defs/EditPresentationIncludeInputs",
                 "presentation.limit": "#/$defs/EditPresentationLimit",
+                "presentation.metric_units": "#/$defs/EditPresentationMetricUnits",
                 "presentation.order": "#/$defs/EditPresentationOrder",
                 "presentation.unit": "#/$defs/EditPresentationUnit",
                 "restrictions.excluded_codes": "#/$defs/EditRestrictionsExcludedCodes",
@@ -2007,6 +2831,9 @@
                 "$ref": "#/$defs/AxisEdit"
               },
               {
+                "$ref": "#/$defs/CalculationInputsEdit"
+              },
+              {
                 "$ref": "#/$defs/EditTimeMode"
               },
               {
@@ -2029,6 +2856,9 @@
               },
               {
                 "$ref": "#/$defs/EditPresentationUnit"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationMetricUnits"
               },
               {
                 "$ref": "#/$defs/EditPresentationDecimals"
@@ -2075,7 +2905,9 @@
                 "companies",
                 "periods",
                 "metrics",
-                "capabilities"
+                "capabilities",
+                "greeting",
+                "closing"
               ],
               "type": "string"
             },
@@ -2113,6 +2945,23 @@
           ],
           "default": null,
           "title": "Quote Mode"
+        },
+        "quote_granularity": {
+          "anyOf": [
+            {
+              "enum": [
+                "location",
+                "cell",
+                "row"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Quote Granularity"
         },
         "concept_mode": {
           "anyOf": [
@@ -2303,6 +3152,21 @@
           "default": null,
           "title": "Calculation"
         },
+        "calculation_inputs": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/CalculationInput"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Calculation Inputs"
+        },
         "comparison_axis": {
           "anyOf": [
             {
@@ -2410,6 +3274,11 @@
           ],
           "default": null,
           "title": "Uncertain Paths"
+        },
+        "uncertain_paths_normalized": {
+          "default": false,
+          "title": "Uncertain Paths Normalized",
+          "type": "boolean"
         }
       },
       "required": [
@@ -2470,6 +3339,24 @@
           "default": "",
           "title": "Text",
           "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
         },
         "field": {
           "const": "metrics",
@@ -2574,6 +3461,23 @@
           "default": "",
           "title": "Turn Id",
           "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lifetime"
         }
       },
       "required": [
@@ -2682,6 +3586,85 @@
           "default": null,
           "title": "Unit"
         },
+        "metric_units": {
+          "additionalProperties": {
+            "enum": [
+              "元",
+              "万元",
+              "亿元",
+              "%",
+              "元/股"
+            ],
+            "type": "string"
+          },
+          "description": "不同维度或明确分指标单位；覆盖该指标的公共单位，不改变计算结果原生百分比或百分点",
+          "propertyNames": {
+            "enum": [
+              "operating_revenue",
+              "total_operating_revenue",
+              "main_business_revenue",
+              "net_profit",
+              "attributable_net_profit",
+              "deducted_attributable_net_profit",
+              "operating_cost",
+              "gross_profit",
+              "gross_margin",
+              "net_margin",
+              "eps_basic",
+              "eps_diluted",
+              "roe_weighted",
+              "roe_weighted_deducted",
+              "roe_diluted",
+              "total_assets",
+              "total_liabilities",
+              "total_equity",
+              "cash",
+              "receivables",
+              "inventory",
+              "trading_assets",
+              "construction",
+              "payables",
+              "advances",
+              "contract_liabilities",
+              "short_loans",
+              "retained_earnings",
+              "operating_profit",
+              "total_profit",
+              "other_income",
+              "selling_expense",
+              "administration_expense",
+              "finance_expense",
+              "research_expense",
+              "tax_surcharges",
+              "total_operating_cost",
+              "asset_impairment",
+              "credit_impairment",
+              "operating_cash_flow",
+              "investing_cash_flow",
+              "financing_cash_flow",
+              "net_cash_change",
+              "sales_cash",
+              "investment_cash_paid",
+              "cash_begin",
+              "cash_end",
+              "debt_ratio",
+              "net_assets_per_share",
+              "operating_cash_per_share",
+              "operating_revenue_reported_yoy",
+              "total_operating_revenue_reported_yoy",
+              "attributable_net_profit_reported_yoy",
+              "net_profit_reported_yoy",
+              "deducted_attributable_net_profit_reported_yoy",
+              "total_assets_reported_yoy",
+              "total_liabilities_reported_yoy",
+              "net_cash_change_reported_yoy",
+              "total_assets_reported_change_vs_year_end",
+              "total_liabilities_reported_change_vs_year_end"
+            ]
+          },
+          "title": "Metric Units",
+          "type": "object"
+        },
         "decimals": {
           "anyOf": [
             {
@@ -2767,6 +3750,24 @@
           "title": "Text",
           "type": "string"
         },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
+        },
         "field": {
           "const": "presentation",
           "title": "Field",
@@ -2805,6 +3806,92 @@
           ],
           "default": null,
           "title": "Unit"
+        },
+        "metric_units": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "enum": [
+                  "元",
+                  "万元",
+                  "亿元",
+                  "%",
+                  "元/股"
+                ],
+                "type": "string"
+              },
+              "propertyNames": {
+                "enum": [
+                  "operating_revenue",
+                  "total_operating_revenue",
+                  "main_business_revenue",
+                  "net_profit",
+                  "attributable_net_profit",
+                  "deducted_attributable_net_profit",
+                  "operating_cost",
+                  "gross_profit",
+                  "gross_margin",
+                  "net_margin",
+                  "eps_basic",
+                  "eps_diluted",
+                  "roe_weighted",
+                  "roe_weighted_deducted",
+                  "roe_diluted",
+                  "total_assets",
+                  "total_liabilities",
+                  "total_equity",
+                  "cash",
+                  "receivables",
+                  "inventory",
+                  "trading_assets",
+                  "construction",
+                  "payables",
+                  "advances",
+                  "contract_liabilities",
+                  "short_loans",
+                  "retained_earnings",
+                  "operating_profit",
+                  "total_profit",
+                  "other_income",
+                  "selling_expense",
+                  "administration_expense",
+                  "finance_expense",
+                  "research_expense",
+                  "tax_surcharges",
+                  "total_operating_cost",
+                  "asset_impairment",
+                  "credit_impairment",
+                  "operating_cash_flow",
+                  "investing_cash_flow",
+                  "financing_cash_flow",
+                  "net_cash_change",
+                  "sales_cash",
+                  "investment_cash_paid",
+                  "cash_begin",
+                  "cash_end",
+                  "debt_ratio",
+                  "net_assets_per_share",
+                  "operating_cash_per_share",
+                  "operating_revenue_reported_yoy",
+                  "total_operating_revenue_reported_yoy",
+                  "attributable_net_profit_reported_yoy",
+                  "net_profit_reported_yoy",
+                  "deducted_attributable_net_profit_reported_yoy",
+                  "total_assets_reported_yoy",
+                  "total_liabilities_reported_yoy",
+                  "net_cash_change_reported_yoy",
+                  "total_assets_reported_change_vs_year_end",
+                  "total_liabilities_reported_change_vs_year_end"
+                ]
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Metric Units"
         },
         "decimals": {
           "anyOf": [
@@ -2939,6 +4026,7 @@
               "mapping": {
                 "all_companies": "#/$defs/CollectionEdit",
                 "calculation": "#/$defs/CalculationEdit",
+                "calculation_inputs": "#/$defs/CalculationInputsEdit",
                 "codes": "#/$defs/CompanyEdit",
                 "comparison_axis": "#/$defs/AxisEdit",
                 "metrics": "#/$defs/MetricEdit",
@@ -2948,6 +4036,7 @@
                 "presentation.format": "#/$defs/EditPresentationFormat",
                 "presentation.include_inputs": "#/$defs/EditPresentationIncludeInputs",
                 "presentation.limit": "#/$defs/EditPresentationLimit",
+                "presentation.metric_units": "#/$defs/EditPresentationMetricUnits",
                 "presentation.order": "#/$defs/EditPresentationOrder",
                 "presentation.unit": "#/$defs/EditPresentationUnit",
                 "restrictions": "#/$defs/RestrictionEdit",
@@ -2988,6 +4077,9 @@
                 "$ref": "#/$defs/AxisEdit"
               },
               {
+                "$ref": "#/$defs/CalculationInputsEdit"
+              },
+              {
                 "$ref": "#/$defs/EditTimeMode"
               },
               {
@@ -3010,6 +4102,9 @@
               },
               {
                 "$ref": "#/$defs/EditPresentationUnit"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationMetricUnits"
               },
               {
                 "$ref": "#/$defs/EditPresentationDecimals"
@@ -3106,6 +4201,13 @@
           },
           "title": "Unsupported",
           "type": "array"
+        },
+        "resolved_goal_conditions": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Conditions"
+          },
+          "title": "Resolved Goal Conditions",
+          "type": "object"
         }
       },
       "required": [
@@ -3133,6 +4235,24 @@
           "default": "",
           "title": "Text",
           "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
         },
         "field": {
           "const": "restrictions",
@@ -3340,6 +4460,24 @@
           "title": "Text",
           "type": "string"
         },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
+        },
         "field": {
           "const": "scope",
           "title": "Field",
@@ -3509,6 +4647,17 @@
         },
         "label_region": {
           "$ref": "#/$defs/HashedOriginalRegion"
+        },
+        "column_scope": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OriginalRegion"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [
@@ -3620,6 +4769,24 @@
           "default": "",
           "title": "Text",
           "type": "string"
+        },
+        "lifetime": {
+          "anyOf": [
+            {
+              "enum": [
+                "turn",
+                "task",
+                "session"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围",
+          "title": "Lifetime"
         },
         "field": {
           "const": "time",
@@ -3942,6 +5109,7 @@
               "mapping": {
                 "all_companies": "#/$defs/CollectionEdit",
                 "calculation": "#/$defs/CalculationEdit",
+                "calculation_inputs": "#/$defs/CalculationInputsEdit",
                 "codes": "#/$defs/CompanyEdit",
                 "comparison_axis": "#/$defs/AxisEdit",
                 "metrics": "#/$defs/MetricEdit",
@@ -3951,6 +5119,7 @@
                 "presentation.format": "#/$defs/EditPresentationFormat",
                 "presentation.include_inputs": "#/$defs/EditPresentationIncludeInputs",
                 "presentation.limit": "#/$defs/EditPresentationLimit",
+                "presentation.metric_units": "#/$defs/EditPresentationMetricUnits",
                 "presentation.order": "#/$defs/EditPresentationOrder",
                 "presentation.unit": "#/$defs/EditPresentationUnit",
                 "restrictions": "#/$defs/RestrictionEdit",
@@ -3991,6 +5160,9 @@
                 "$ref": "#/$defs/AxisEdit"
               },
               {
+                "$ref": "#/$defs/CalculationInputsEdit"
+              },
+              {
                 "$ref": "#/$defs/EditTimeMode"
               },
               {
@@ -4013,6 +5185,9 @@
               },
               {
                 "$ref": "#/$defs/EditPresentationUnit"
+              },
+              {
+                "$ref": "#/$defs/EditPresentationMetricUnits"
               },
               {
                 "$ref": "#/$defs/EditPresentationDecimals"
@@ -4178,6 +5353,7 @@
         "mapping": {
           "all_companies": "#/$defs/CollectionEdit",
           "calculation": "#/$defs/CalculationEdit",
+          "calculation_inputs": "#/$defs/CalculationInputsEdit",
           "codes": "#/$defs/CompanyEdit",
           "comparison_axis": "#/$defs/AxisEdit",
           "metrics": "#/$defs/MetricEdit",
@@ -4187,6 +5363,7 @@
           "presentation.format": "#/$defs/EditPresentationFormat",
           "presentation.include_inputs": "#/$defs/EditPresentationIncludeInputs",
           "presentation.limit": "#/$defs/EditPresentationLimit",
+          "presentation.metric_units": "#/$defs/EditPresentationMetricUnits",
           "presentation.order": "#/$defs/EditPresentationOrder",
           "presentation.unit": "#/$defs/EditPresentationUnit",
           "restrictions": "#/$defs/RestrictionEdit",
@@ -4227,6 +5404,9 @@
           "$ref": "#/$defs/AxisEdit"
         },
         {
+          "$ref": "#/$defs/CalculationInputsEdit"
+        },
+        {
           "$ref": "#/$defs/EditTimeMode"
         },
         {
@@ -4249,6 +5429,9 @@
         },
         {
           "$ref": "#/$defs/EditPresentationUnit"
+        },
+        {
+          "$ref": "#/$defs/EditPresentationMetricUnits"
         },
         {
           "$ref": "#/$defs/EditPresentationDecimals"

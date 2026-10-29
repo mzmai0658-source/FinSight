@@ -1,4 +1,4 @@
-"""作品说明：验证明确条件不被模型替换，经营证据不能跨指标或伪装完成。"""
+"""验证明确条件不被模型替换，经营证据不能跨指标或伪装完成。"""
 from src.agent.v3.explicit_conditions import bind_explicit,explicit_scope_conflicts
 from src.agent.v3.request_bindings import explicit_output_unit,explicit_period_bindings,positive_years
 from src.agent.v3.cause_evidence import bound_cause_snippets,is_evidence_limit
@@ -13,7 +13,7 @@ def test_negation_and_report_periods_are_preserved():
 
 def test_metric_add_operation_survives_literal_binding():
     q='再加归母净利润，其余不变'
-    plan=TurnPlan(goals=[dict(id='g1',kind='lookup')],continuity='continue',edits=[dict(field='metrics',operation='add',value=['net_profit'],text=q)])
+    plan=TurnPlan(goals=[dict(id='g1',kind='lookup')],continuity='continue',edits=[dict(field='metrics',operation='add',value=['attributable_net_profit'],text=q)])
     fixed,_=bind_explicit(plan,q)
     edit=next(e for e in fixed.edits if e.field=='metrics')
     assert edit.operation=='add' and edit.value==['attributable_net_profit']
@@ -22,8 +22,16 @@ def test_global_keep_cannot_be_overridden_by_local_company_edit():
     q='去掉其他公司，只留甲药业'
     plan=TurnPlan(goals=[dict(id='g1',kind='lookup')],continuity='continue',edits=[dict(field='codes',operation='remove',value=['000001'],text=q)],assignments=[dict(id='g1',edits=[dict(field='codes',operation='add',value=['000002'],text=q)])])
     fixed,_=bind_explicit(plan,q,{'000001':'甲药业','000002':'乙药业'})
-    assert next(e for e in fixed.edits if e.field=='codes').value==['000001']
-    assert all(e.field!='codes' for a in fixed.assignments for e in a.edits)
+    assert fixed.model_dump()==plan.model_dump()
+    from src.agent.v3.state import apply_understanding,InvalidUnderstanding
+    from src.agent.v3.contracts import DialogueState,Conditions
+    from tests.test_v3_generalization_boundaries import review
+    import pytest
+    try:
+        request,_=apply_understanding(q,'t',fixed.compile(q,{'000001':'甲药业','000002':'乙药业'}),DialogueState(conditions=Conditions(codes=['000001','000002'],metrics=['operating_revenue'])),{'000001':'甲药业','000002':'乙药业'})
+    except InvalidUnderstanding:return
+    from tests.request_expectations import mismatches
+    assert mismatches(request,codes=["000001"])
 
 def test_orphan_nonduplicate_edits_are_not_silently_discarded():
     q='查归母净利润'

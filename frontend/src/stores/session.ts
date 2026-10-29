@@ -61,9 +61,9 @@ interface StreamingState {
 }
 
 interface SessionState {
-  /** 作品说明：会话列表（按最近活跃排序） */
+  /** 会话列表（按最近活跃排序） */
   sessions: SessionSummary[];
-  /** 作品说明：当前打开的会话 */
+  /** 当前打开的会话 */
   activeUid: string;
   messages: SessionMessage[];
   latestContext: Record<string, unknown>;
@@ -101,7 +101,7 @@ interface PendingTurn { sessionUid: string; question: string; clientRequestId: s
 function pendingTurns(): Record<string, PendingTurn> {
   try {
     const value = JSON.parse(window.localStorage.getItem(pendingKey()) || "{}");
-    // 作品说明：兼容读取旧单请求表示，保留已有恢复信息。
+    // 兼容读取旧单请求表示，保留已有恢复信息。
     return value.clientRequestId ? { [value.clientRequestId]: value } : value;
   } catch { return {}; }
 }
@@ -130,7 +130,7 @@ export const useSessionStore = defineStore("session", {
     activeSession: (state) => state.sessions.find((item) => item.sessionUid === state.activeUid) ?? null,
   },
   actions: {
-    /* 作品说明：会话列表 */
+    /* 会话列表 */
     async loadSessions() {
       this.loadingSessions = true;
       try {
@@ -139,7 +139,7 @@ export const useSessionStore = defineStore("session", {
         this.loadingSessions = false;
       }
     },
-    /** 作品说明：进入工作台时恢复上次会话；没有则空白待开 */
+    /** 进入工作台时恢复上次会话；没有则空白待开 */
     async bootstrap() {
       await this.loadSessions();
       const remembered = window.localStorage.getItem(ACTIVE_KEY) ?? "";
@@ -161,7 +161,7 @@ export const useSessionStore = defineStore("session", {
             if (task && (!this.activeUid || task.session_uid === this.activeUid)) this.resumeTask(task);
             else if (!task) this.resumePending(pending);
           }
-        } catch { /* 作品说明：待发送请求可能尚未到达服务端，保留客户端标识用于恢复。 */ }
+        } catch { /* 待发送请求可能尚未到达服务端，保留客户端标识用于恢复。 */ }
       }
     },
     async openSession(sessionUid: string) {
@@ -220,7 +220,7 @@ export const useSessionStore = defineStore("session", {
       return {};
     },
 
-    /* 作品说明：流式问答 */
+    /* 流式问答 */
     detachTaskView() {
       if (this.streaming.active) this.rememberTask();
       ++pollGeneration;
@@ -273,7 +273,7 @@ export const useSessionStore = defineStore("session", {
       this.messages.push({role:"assistant",ts:new Date().toISOString(),content:"服务端尚未登记这次请求。可以用原请求重试。",
         error:"请求尚未登记。",retryQuestion:question,retryClientRequestId:clientRequestId,retrySessionUid:this.activeUid});
       this.streaming=emptyStreaming();
-      // 作品说明：只有服务端权威任务进入终态后，才清除客户端请求标识。
+      // 只有服务端权威任务进入终态后，才清除客户端请求标识。
     },
     async retryMessage(index: number) {
       const message=this.messages[index];
@@ -375,7 +375,7 @@ export const useSessionStore = defineStore("session", {
                 clientRequestId: submittedClientId!, taskId: event.task_id });
               if (!belongsToView()) return;
               if (event.session_uid && event.session_uid !== this.activeUid) {
-                // 作品说明：服务端自动建会话
+                // 服务端自动建会话
                 this.activeUid = event.session_uid;
                 window.localStorage.setItem(ACTIVE_KEY, event.session_uid);
               }
@@ -456,7 +456,7 @@ export const useSessionStore = defineStore("session", {
             },
             onDone: (event) => {
               if (completed || !this.streaming.active || this.streaming.clientRequestId !== submittedClientId) return;
-              // 作品说明：服务端已落库：本地直接由 result 构造两条消息，避免整页刷新
+              // 服务端已落库：本地直接由 result 构造两条消息，避免整页刷新
               const now = new Date().toISOString();
               const result = event.result;
               completed = true;
@@ -521,7 +521,7 @@ export const useSessionStore = defineStore("session", {
           this.streaming.holding = true;
           void this.waitForTask();
         }
-        // 作品说明：标题/排序可能已变化，后台静默刷新列表
+        // 标题/排序可能已变化，后台静默刷新列表
         this.loadSessions().catch(() => undefined);
       } catch (error) {
         if (completed || !belongsToView()) return;

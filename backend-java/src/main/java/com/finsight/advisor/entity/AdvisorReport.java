@@ -26,15 +26,15 @@ public class AdvisorReport {
 
     private String riskProfile;
 
-    /** 作品说明：规则引擎总分 0-100 */
+    /** 规则引擎总分 0-100 */
     private Integer score;
 
     private String rating;
 
-    /** 作品说明：分维度评分明细 JSON */
+    /** 分维度评分明细 JSON */
     private String dimensions;
 
-    /** 作品说明：LLM 生成的 Markdown 报告 */
+    /** LLM 生成的 Markdown 报告 */
     private String reportMd;
 
     private String status;

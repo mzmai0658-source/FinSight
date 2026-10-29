@@ -1,4 +1,4 @@
-"""作品说明：基于固定数据库快照独立评分条件、数值及完成情况，不依赖核验徽标。现有已核对数值作为本轮问答重构的参考；因果解释与歧义对话另行审阅。"""
+"""基于固定数据库快照独立评分条件、数值及完成情况，不依赖核验徽标。数值以已核对结果为参考；因果解释与歧义对话另行审阅。"""
 from __future__ import annotations
 import argparse
 from collections import Counter
@@ -16,7 +16,7 @@ REFUSAL=re.compile(r'暂不提供|无法确认|不支持|无法提供|无法按|
 PERIOD={'FY':'全年','HY':'上半年','Q1':'一季度','Q3':'前三季度'}
 MIXED_PAIRS={'period-6':{(2023,'FY'),(2024,'HY')},
              'calculation-6':{(2023,'FY'),(2024,'HY')}}
-# 作品说明：现金流小计存在歧义时，独立明确要求的营业收入仍应保留。
+# 现金流小计存在歧义时，独立明确要求的营业收入仍应保留。
 PARTIAL_CLARIFICATION={'metrics-1':{'fields':['total_operating_revenue'],'period':'FY'}}
 CATALOG_HEADER=re.compile(r'^\|\s*(?:公司\s*\|\s*股票代码|公司\s*\|\s*年份\s*\|\s*报告期|指标\s*\|\s*单位)\s*\|\s*$',re.MULTILINE)
 CAUSE_LIMIT=re.compile(r'无法.{0,12}(?:解释|确认.*原因)|不能.{0,12}(?:解释|推断|确定.*原因)|未找到.{0,24}(?:原文|证据|解释)|证据不足|原因.{0,12}(?:无法|不能|不足|不明)')
@@ -49,7 +49,7 @@ def comparison_requested(record):
 
 
 def comparison_conclusion_missing(record,result,expected,answer):
-    """作品说明：只有比较对象的全部同口径事实存在时，才能认定显式比较完成。"""
+    """只有比较对象的全部同口径事实存在时，才能认定显式比较完成。"""
     if not comparison_requested(record) or expected.get('period') not in PERIOD:
         return False
     codes=expected.get('codes') or []
@@ -174,7 +174,7 @@ def score(record,snapshot):
             comparison_made=bool(result.get('derived_facts')) or (len(years)>1 and bool(re.search(r'同比|相比|较上年|增长|下降|减少|增加',answer)))
             if not comparison_made and not PREMISE_LIMIT.search(answer):
                 failures.append('change_premise_unchecked')
-    # 作品说明：独立按固定数据行身份和字段检查返回事实。
+    # 独立按固定数据行身份和字段检查返回事实。
     snapshot_index={}
     for table,rows in snapshot['tables'].items():
         for row in rows:
@@ -215,7 +215,7 @@ def score(record,snapshot):
             field=key[3]
             def equals(value,unit):
                 normalized=value*10000 if unit=='亿元' else value/10000 if unit=='元' and field!='eps' else value
-                # 作品说明：以亿元展示四位小数时，对应万元值的最大舍入误差为 0.5。
+                # 以亿元展示四位小数时，对应万元值的最大舍入误差为 0.5。
                 tolerance=0.500001 if unit=='亿元' else 0.000051 if unit=='元' and field!='eps' else .0051
                 return any(math.isclose(normalized,v,rel_tol=1e-10,abs_tol=tolerance) for v in values)
             if not any(equals(v,u) for v,u in claims): failures.append('available_requested_value_not_presented')

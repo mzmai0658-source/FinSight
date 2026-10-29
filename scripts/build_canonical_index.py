@@ -1,4 +1,4 @@
-"""作品说明：在现用集合之外构建按内容寻址的不可变索引。"""
+"""在现用集合之外构建按内容寻址的不可变索引。"""
 from __future__ import annotations
 
 import argparse
@@ -12,6 +12,19 @@ sys.path.insert(0, str(ROOT))
 
 from src.agent.v3.repository import identity_digest
 from src.etl.release_profiles import check_report_coverage
+
+
+def save_index_ledger(folder,ledger):
+    """重复建库时记录零新增，保留已验收文件的首次构建摘要。"""
+    path=folder/'index_coverage.json'
+    if path.exists() and ledger['new_vectors']==0 and ledger['reused_vectors']==0:
+        prior=json.loads(path.read_text(encoding='utf-8'))
+        stable=('version','collection','chunks','reports','coverage','accepted')
+        if any(prior.get(key)!=ledger.get(key) for key in stable):
+            raise ValueError('Existing index ledger differs; use a new candidate directory')
+        (folder/'index_last_run.json').write_text(json.dumps(ledger,ensure_ascii=False,indent=2),encoding='utf-8')
+        return
+    path.write_text(json.dumps(ledger,ensure_ascii=False,indent=2),encoding='utf-8')
 
 
 def main():
@@ -51,13 +64,14 @@ def main():
     chunks = {}
     for line in (folder / 'narratives.jsonl').read_text(encoding='utf-8').splitlines():
         row = json.loads(line)
-        # 作品说明：路径只作为元数据；内容版本、物理页与页内位置决定身份，同一文件换路径上传不会产生重复片段。
+        # 路径只作为元数据；内容版本、物理页与页内位置决定身份，同一文件换路径上传不会产生重复片段。
         for start in range(0, len(row['text']), 700):
             text = row['text'][start:start + 850].strip()
             if len(text) < 40:
                 continue
             id = identity_digest({'document_version': row['document_version'], 'page': row['page'], 'offset': start, 'content': text})
-            chunks[id] = dict(text=text, metadata={k: row[k] for k in ('stock_code', 'company', 'year', 'period', 'document_version', 'source_path', 'page')})
+            chunks[id] = dict(text=text, metadata={**{k: row[k] for k in ('stock_code', 'company', 'year', 'period', 'document_version', 'source_path', 'page')},'offset':start,
+                'text_origin':row.get('text_origin','original_pdf'),'ocr_sha256':row.get('ocr_sha256','')})
     items = list(chunks.items())
     for start in range(0, len(items), 64):
         batch = items[start:start + 64]
@@ -90,7 +104,7 @@ def main():
     ledger = dict(version=version, collection=collection.name, chunks=collection.count(), reports=len(coverage),
         coverage=[dict(stock_code=k[0], year=k[1], period=k[2], chunks=v) for k, v in sorted(coverage.items())],
         reused_vectors=reused_count,new_vectors=embedded_count,reuse_source=args.reuse_collection or None,accepted=True)
-    (folder / 'index_coverage.json').write_text(json.dumps(ledger, ensure_ascii=False, indent=2), encoding='utf-8')
+    save_index_ledger(folder,ledger)
     print(json.dumps({k:v for k,v in ledger.items() if k != 'coverage'}, ensure_ascii=False))
 
 

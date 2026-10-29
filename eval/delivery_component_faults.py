@@ -1,4 +1,4 @@
-"""作品说明：真实SQL故障与独立原生Python服务的模型/数据库连接故障；不使用替代服务。"""
+"""真实SQL故障与独立原生Python服务的模型/数据库连接故障；不使用替代服务。"""
 from __future__ import annotations
 import argparse, json, os, re, socket, subprocess, sys, time, uuid
 from pathlib import Path
@@ -30,14 +30,14 @@ def main():
     finally:
         with admin.cursor() as cur:cur.execute(f'GRANT SELECT ON `{cfg.database}`.`financial_canonical_facts` TO %s@%s',(reader,'localhost'))
         admin.close()
-    # 作品说明：新端口、独立任务库启动实际Uvicorn组件，只修改该子进程连接地址；共享服务不中断。
+    # 新端口、独立任务库启动实际Uvicorn组件，只修改该子进程连接地址；共享服务不中断。
     headers={'X-Internal-Token':os.environ['INTERNAL_API_TOKEN']}
     with socket.socket() as probe:
         if probe.connect_ex(('127.0.0.1',19001))==0:raise RuntimeError('Fault service port already occupied')
     for mode in ('model_unreachable','database_unreachable'):
         env=os.environ.copy();env['FINSIGHT_TASK_DB']=f'.local_runtime/delivery/fault-{mode}-{uuid.uuid4().hex}.sqlite3'
         if mode=='model_unreachable':
-            env['OLLAMA_BASE_URL']='http://127.0.0.1:19/v1';env['LLM_BASE_URL']='http://127.0.0.1:19/v1'
+            env['LLM_BASE_URL']='https://127.0.0.1:19/v1'
         else:env['DB_PORT']='19';env['MYSQL_PORT']='19'
         log=ROOT/'.local_runtime/delivery'/f'{mode}.log'
         with log.open('w',encoding='utf-8') as stream:
@@ -63,7 +63,7 @@ def main():
                         try:payloads.append(json.loads('\n'.join(lines)))
                         except json.JSONDecodeError:pass
                 done=next((p for p in reversed(payloads) if 'result' in p),{}).get('result',{})
-                record('native_python_model_connection_unreachable',response.status_code==200 and not done.get('facts') and done.get('outcome',{}).get('status')=='failed',component='Real Uvicorn and Ollama client with unreachable child-process endpoint; not Java/SSE end-to-end',outcome=done.get('outcome'),answer=(done.get('answer') or {}).get('content'))
+                record('native_python_model_connection_unreachable',response.status_code==200 and not done.get('facts') and done.get('outcome',{}).get('status')=='failed',component='Real Uvicorn and cloud client with unreachable child-process endpoint; not Java/SSE end-to-end',outcome=done.get('outcome'),answer=(done.get('answer') or {}).get('content'))
             finally:
                 process.terminate()
                 try:process.wait(timeout=10)

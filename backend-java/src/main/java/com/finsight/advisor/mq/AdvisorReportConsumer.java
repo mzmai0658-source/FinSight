@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 作品说明：诊股报告消费者：取评分快照 + 近年指标 → Python LLM 生成 Markdown → 回写 + 站内信。
+ * 诊股报告消费者：取评分快照 + 近年指标 → Python LLM 生成 Markdown → 回写 + 站内信。
  * 失败由监听器自动重试，重试耗尽进死信并把报告标记 FAILED 留给用户重试。
  */
 @Slf4j
@@ -72,13 +72,13 @@ public class AdvisorReportConsumer {
             log.error("[advisor] 报告生成失败 reportId={}: {}", report.getId(), e.toString());
             markFailedIfLastAttempt(report, e);
             observabilityService.recordAdvisorReport(AdvisorReport.STATUS_FAILED, System.currentTimeMillis() - startedAt);
-            throw new IllegalStateException("诊股报告生成失败", e); // 作品说明：触发监听器重试
+            throw new IllegalStateException("诊股报告生成失败", e); // 触发监听器重试
         }
         ManualAckSupport.ack(channel, amqpMessage);
     }
 
     /**
-     * 作品说明：标记失败状态（每次尝试都更新，最后一次重试失败后状态即为 FAILED；
+     * 标记失败状态（每次尝试都更新，最后一次重试失败后状态即为 FAILED；
      * 若后续重试成功会再覆盖为 READY，状态最终一致）。
      */
     private void markFailedIfLastAttempt(AdvisorReport report, Exception e) {
@@ -102,7 +102,7 @@ public class AdvisorReportConsumer {
                 "dimensions", dimensions);
     }
 
-    /** 作品说明：近年年报指标快照（核心 + 资负 + 现金流，金额单位万元） */
+    /** 近年年报指标快照（核心 + 资负 + 现金流，金额单位万元） */
     private Map<String, Object> metricsPayload(String stockCode) {
         return Map.of(
                 "core_yearly", tail(financeMapper.coreSeries(stockCode), 4),

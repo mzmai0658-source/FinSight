@@ -1,4 +1,4 @@
-"""作品说明：准备私有本机服务令牌，不输出凭据。"""
+"""准备私有本机服务令牌，不输出凭据。"""
 import argparse
 import os
 from pathlib import Path

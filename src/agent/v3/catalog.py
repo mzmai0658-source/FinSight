@@ -1,4 +1,4 @@
-"""作品说明：建立财务指标身份目录，别名仅表达等价口径，防止用相近指标替换请求。"""
+"""建立财务指标身份目录，别名仅表达等价口径，防止用相近指标替换请求。"""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -97,7 +97,7 @@ for base in ('total_assets','total_liabilities'):
 
 METRICS = {m.id: m for m in _METRICS}
 ALIASES = {alias: m.id for m in _METRICS for alias in (m.id, m.label, *m.aliases)}
-# 作品说明：指标家族包含多个不同成员；家族名称不能授权模型自行选取，需保留明确口径或询问用户。
+# 指标家族包含多个不同成员；家族名称不能授权模型自行选取，需保留明确口径或询问用户。
 AMBIGUOUS_TERMS = {'现金流': ('operating_cash_flow','investing_cash_flow','financing_cash_flow','net_cash_change')}
 FAMILY_CHOICES = {'现金流': {'经营活动':'operating_cash_flow','投资活动':'investing_cash_flow','筹资活动':'financing_cash_flow','净增加额':'net_cash_change'}}
 LEGACY = {key: m.id for m in _METRICS for key in m.legacy}

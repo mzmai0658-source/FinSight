@@ -1,4 +1,4 @@
-"""作品说明：重新生成公开的虚构演示样例，不读取外部数据。随代码提供的 JSON 和文档是样例依据；生成器独立于 Agent、SQL 提取、核验及评分器。"""
+"""重新生成公开的虚构演示样例，不读取外部数据。随代码提供的 JSON 和文档是样例依据；生成器独立于 Agent、SQL 提取、核验及评分器。"""
 from __future__ import annotations
 
 import hashlib

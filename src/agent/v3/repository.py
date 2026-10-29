@@ -1,4 +1,4 @@
-"""作品说明：请求固定已接受的数据版本，并使用只读账户查询标准事实。"""
+"""请求固定已接受的数据版本，并使用只读账户查询标准事实。"""
 from __future__ import annotations
 
 import hashlib
@@ -48,21 +48,25 @@ def identity_digest(value: dict) -> str:
 
 
 class CanonicalRepository:
+    pointer_name = 'serving'
+    release_status = 'accepted'
+    fact_statuses = ('verified', 'derived')
+
     def __init__(self, engine, version: str | None = None):
         self.engine = engine
         self.query_trace = []
-        # 作品说明：一轮请求只解析一次发布指针，执行中保持同一数据和索引版本。
+        # 一轮请求只解析一次发布指针，执行中保持同一数据和索引版本。
         with self._connect() as conn:
-            self.version = version or conn.execute(select(pointer.c.version).where(pointer.c.name == 'serving')).scalar_one()
+            self.version = version or conn.execute(select(pointer.c.version).where(pointer.c.name == self.pointer_name)).scalar_one()
             release = conn.execute(select(releases).where(releases.c.version == self.version)).mappings().one()
-            if release['status'] != 'accepted':
+            if release['status'] != self.release_status:
                 raise ValueError('Canonical release has not been accepted')
             self.collection = release['index_collection']
             self.manifest = json_payload(release['manifest'])
 
     @contextmanager
     def _connect(self):
-        # 作品说明：连接池每次取出的连接都配置只读与超时，防止换连接后丢失约束。
+        # 连接池每次取出的连接都配置只读与超时，防止换连接后丢失约束。
         with self.engine.connect() as conn:
             if self.engine.dialect.name=='mysql':
                 from sqlalchemy import text
@@ -103,7 +107,7 @@ class CanonicalRepository:
             return []
         statement = select(facts.c.payload).where(facts.c.data_version == self.version,
             facts.c.metric.in_(metrics), facts.c.scope == scope,
-            facts.c.status.in_(['verified', 'derived']), or_(*periods)).limit(2001)
+            facts.c.status.in_(self.fact_statuses), or_(*periods)).limit(2001)
         values = self._select_payloads(statement,'financial_facts')
         if len(values) > 2000:
             raise ValueError('Canonical fact result limit exceeded')
@@ -113,12 +117,12 @@ class CanonicalRepository:
         if len(ids) > 2000:
             raise ValueError('Fact reference limit exceeded')
         values = self._select_payloads(select(facts.c.payload).where(facts.c.data_version == self.version,
-            facts.c.id.in_(ids), facts.c.status.in_(['verified', 'derived'])),'fact_references')
+            facts.c.id.in_(ids), facts.c.status.in_(self.fact_statuses)),'fact_references')
         return [Fact.model_validate(json_payload(value)) for value in values]
 
 
 def stage_release(engine, version: str, fact_list: list[Fact], report_list: list[dict], collection: str, manifest: dict):
-    """作品说明：写入仅供ETL准备候选版本；重复准备相同数据保持幂等。"""
+    """写入仅供ETL准备候选版本；重复准备相同数据保持幂等。"""
     metadata.create_all(engine)
     keys = defaultdict(list)
     for fact in fact_list:
@@ -128,8 +132,8 @@ def stage_release(engine, version: str, fact_list: list[Fact], report_list: list
     if any(len(values) > 1 for values in keys.values()):
         raise ValueError('Conflicts must be resolved or excluded before staging')
     with engine.begin() as conn:
-        old = conn.execute(select(releases.c.status).where(releases.c.version == version)).scalar_one_or_none()
-        if old == 'accepted':
+        old = conn.execute(select(releases.c.status).where(releases.c.version == version).with_for_update()).scalar_one_or_none()
+        if old in {'accepted', 'experimental'}:
             raise ValueError('Accepted releases are immutable')
         conn.execute(facts.delete().where(facts.c.data_version == version))
         conn.execute(reports.delete().where(reports.c.data_version == version))
@@ -144,12 +148,20 @@ def stage_release(engine, version: str, fact_list: list[Fact], report_list: list
                 status=f.status, payload=f.model_dump(mode='json')) for f in fact_list[start:start + 250]])
 
 
-def publish_release(engine, version: str, acceptance: dict, project=None):
-    """作品说明：以事务同时发布已验收事实和索引，失败时继续使用上一发布指针。"""
+_UNSPECIFIED_POINTER=object()
+
+
+def publish_release(engine, version: str, acceptance: dict, project=None, *, expected_previous=_UNSPECIFIED_POINTER):
+    """以事务同时发布已验收事实和索引，失败时继续使用上一发布指针。"""
     if not all(acceptance.get(k) is True for k in ('facts_verified', 'reports_verified', 'index_verified', 'projections_verified')):
         raise ValueError('Release acceptance is incomplete')
     with engine.begin() as conn:
+        current=conn.execute(select(pointer.c.version).where(pointer.c.name=='serving').with_for_update()).scalar_one_or_none()
+        if expected_previous is not _UNSPECIFIED_POINTER and current!=expected_previous:
+            raise ValueError('Serving release changed while the candidate was being prepared')
         release = conn.execute(select(releases).where(releases.c.version == version).with_for_update()).mappings().one()
+        if release['status']!='staged':
+            raise ValueError('Accepted releases are immutable; use an explicit rollback workflow')
         if project is not None:
             project(conn)
         manifest = {**json_payload(release['manifest']), 'acceptance': acceptance}

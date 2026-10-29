@@ -1,4 +1,4 @@
-"""作品说明：按内容盘点原始 PDF，从封面识别报告身份，不采用披露日期替代期间。"""
+"""按内容盘点原始 PDF，从封面识别报告身份，不采用披露日期替代期间。"""
 from __future__ import annotations
 import argparse
 import hashlib
@@ -48,7 +48,7 @@ def main():
     with checkpoint.open('a',encoding='utf-8') as stream:
         for index,path in enumerate(sorted(args.root.rglob('*.pdf')),1):
             relative=path.relative_to(ROOT).as_posix()
-            # 作品说明：恢复盘点时仍重新计算文件摘要，以发现内容变化。
+            # 恢复盘点时仍重新计算文件摘要，以发现内容变化。
             old=existing.get(relative)
             with path.open('rb') as f: digest=hashlib.file_digest(f,'sha256').hexdigest()
             row=old if old and old.get('source_sha256')==digest else inspect_pdf(path)

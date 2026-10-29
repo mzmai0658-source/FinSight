@@ -11,7 +11,7 @@ import java.time.Duration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-/** 作品说明：JWT 双 token 单测：签发/解析往返、access 与 refresh 类型隔离、过期与篡改拒绝。 */
+/** JWT 双 token 单测：签发/解析往返、access 与 refresh 类型隔离、过期与篡改拒绝。 */
 class JwtTokenProviderTest {
 
     private static final String SECRET = "unit-test-secret-key-0123456789abcdef-0123456789abcdef";
@@ -45,7 +45,7 @@ class JwtTokenProviderTest {
         assertThat(claims.getSubject()).isEqualTo("42");
         assertThat(claims.get(JwtTokenProvider.CLAIM_USERNAME, String.class)).isEqualTo("alice");
         assertThat(claims.get(JwtTokenProvider.CLAIM_ROLE, String.class)).isEqualTo("USER");
-        assertThat(claims.getId()).isNotBlank(); // 作品说明：jti 用于 Redis 撤销
+        assertThat(claims.getId()).isNotBlank(); // jti 用于 Redis 撤销
     }
 
     @Test
@@ -54,7 +54,7 @@ class JwtTokenProviderTest {
 
         assertThatThrownBy(() -> provider.parseAccessToken(refresh))
                 .isInstanceOf(BizException.class);
-        // 作品说明：反方向同样拒绝
+        // 反方向同样拒绝
         String access = provider.createAccessToken(1L, "bob", "USER");
         assertThatThrownBy(() -> provider.parseRefreshToken(access))
                 .isInstanceOf(BizException.class);
@@ -64,7 +64,7 @@ class JwtTokenProviderTest {
     void expiredTokenIsRejected() throws Exception {
         JwtProperties expired = new JwtProperties();
         expired.setSecret(SECRET);
-        expired.setAccessTokenTtl(Duration.ofMillis(-1000)); // 作品说明：签发即过期
+        expired.setAccessTokenTtl(Duration.ofMillis(-1000)); // 签发即过期
         JwtTokenProvider expiredProvider = newProvider(expired);
 
         String token = expiredProvider.createAccessToken(7L, "carol", "USER");

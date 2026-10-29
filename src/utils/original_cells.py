@@ -1,4 +1,4 @@
-"""作品说明：按字面核对原始文本，保留正负号与原始字节依据。"""
+"""按字面核对原始文本，保留正负号与原始字节依据。"""
 import re
 
 
@@ -7,7 +7,7 @@ def normalized_positions(text,ignore_commas=False,preserve_separators=False):
     for index,char in enumerate(text):
         if char.isspace() and not preserve_separators: continue
         if char.isspace() and preserve_separators:
-            # 作品说明：PDF 可能把负号或千位分隔符换行；恢复时仍须保留数值单元格边界。
+            # PDF 可能把负号或千位分隔符换行；恢复时仍须保留数值单元格边界。
             following=text[index:].lstrip()
             previous=text[index-1] if index else ''
             if following and following[0].isdigit() and (characters and characters[-1]=='-' or previous in {',','，'}):continue

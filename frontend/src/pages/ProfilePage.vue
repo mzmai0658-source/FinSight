@@ -24,7 +24,7 @@ import type { NotificationItem, WatchlistItem } from "@/types/platform";
 const auth = useAuthStore();
 const router = useRouter();
 
-/* 作品说明：资料编辑 */
+/* 资料编辑 */
 
 const nickname = ref(auth.user?.nickname ?? "");
 const riskProfile = ref(auth.user?.riskProfile ?? "balanced");
@@ -52,7 +52,7 @@ async function saveProfile() {
   }
 }
 
-/* 作品说明：自选股 */
+/* 自选股 */
 
 const watchlist = ref<WatchlistItem[]>([]);
 const watchlistLoading = ref(true);
@@ -85,7 +85,7 @@ async function unwatch(code: string) {
   }
 }
 
-/* 作品说明：站内信 */
+/* 站内信 */
 
 const notifications = ref<NotificationItem[]>([]);
 const notifyTotal = ref(0);
@@ -154,12 +154,13 @@ async function onLogout() {
   <PortalShell>
     <PageHeader title="个人中心" :description="`${auth.user?.nickname || auth.user?.username || ''}，在这里管理资料、关注的公司和站内通知。`">
       <template #actions>
+        <router-link to="/financial-submissions">我的财报提交</router-link>
         <AppButton variant="outline" size="sm" @click="onLogout">退出登录</AppButton>
       </template>
     </PageHeader>
 
       <div class="profile__grid">
-        <!-- 作品说明：资料 + 风险偏好 -->
+        <!-- 资料 + 风险偏好 -->
         <AppCard padding="lg">
           <template #header>
             <AppSection title="基本资料" dense />
@@ -196,7 +197,7 @@ async function onLogout() {
           </div>
         </AppCard>
 
-        <!-- 作品说明：站内信 -->
+        <!-- 站内信 -->
         <AppCard padding="lg">
           <template #header>
             <div class="panel__title-row">
@@ -242,12 +243,13 @@ async function onLogout() {
         </AppCard>
       </div>
 
-      <!-- 作品说明：自选股 -->
+      <!-- 自选股 -->
       <AppCard padding="lg">
         <template #header>
           <AppSection title="关注的公司" :description="`${watchlist.length} 家 · 指标取最新已入库年报`" dense />
         </template>
         <div v-if="watchlistError" class="profile__load-error" role="alert">{{ watchlistError }}<AppButton variant="ghost" size="sm" @click="loadWatchlist">重新加载</AppButton></div>
+        <p v-if="watchlist.some(item => item.experimental)" class="watch__note" role="note">试验财报库：部分数字尚未完成原件核验，可进入公司详情进一步核对。</p>
         <p v-if="watchlistLoading" class="profile__loading" role="status">正在加载关注的公司…</p>
         <AppEmpty v-else-if="!watchlist.length && !watchlistError" title="还没有关注的公司">
           去
@@ -261,8 +263,8 @@ async function onLogout() {
                 <th>公司</th>
                 <th>行业</th>
                 <th class="num">营收（最新年报）</th>
-                <th class="num">净利润</th>
-                <th class="num">净利同比</th>
+                <th class="num">归母净利润</th>
+                <th class="num">归母净利同比</th>
                 <th class="num">ROE</th>
                 <th></th>
               </tr>
@@ -270,15 +272,17 @@ async function onLogout() {
             <tbody>
               <tr v-for="item in watchlist" :key="item.stockCode">
                 <td>
-                  <router-link :to="`/market/${item.stockCode}`" class="watch__name">
+                  <router-link v-if="item.dataStatus !== 'unavailable'" :to="`/market/${item.stockCode}`" class="watch__name">
                     {{ item.abbr ?? item.stockCode }}
                     <span class="mono watch__code">{{ item.stockCode }}</span>
                   </router-link>
+                  <span v-else class="watch__name">{{ item.stockCode }} · 当前资料库未覆盖</span>
+                  <small v-if="item.lastYear" class="watch__year">{{ item.lastYear }} 年报</small>
                 </td>
                 <td class="watch__industry">{{ (item.industry ?? "").replace(/^.*-/, "") || "—" }}</td>
                 <td class="num">{{ item.revenue == null ? "—" : fmtYi(item.revenue) }}</td>
                 <td class="num">{{ item.netProfit == null ? "—" : fmtYi(item.netProfit) }}</td>
-                <td class="num" :class="item.netProfitYoy == null ? '' : item.netProfitYoy >= 0 ? 'up' : 'down'">
+                <td class="num" :class="item.netProfitYoy == null ? '' : Number(item.netProfitYoy) >= 0 ? 'up' : 'down'">
                   {{ item.netProfitYoy == null ? "—" : fmtPct(item.netProfitYoy) }}
                 </td>
                 <td class="num">{{ item.roe == null ? "—" : fmtPct(item.roe) }}</td>
@@ -294,6 +298,8 @@ async function onLogout() {
 </template>
 
 <style scoped>
+.watch__note { padding: 10px 12px; margin-bottom: var(--sp-3); color: var(--c-text-secondary); background: var(--c-primary-soft); border-radius: var(--r-md); font-size: var(--fs-xs); line-height: 1.7; }
+.watch__year { display: block; margin-top: 4px; color: var(--c-text-tertiary); font-size: var(--fs-xs); }
 .profile__load-error { display: flex; align-items: center; flex-wrap: wrap; gap: var(--sp-2); color: var(--c-danger); font-size: var(--fs-sm); padding: var(--sp-3) 0; }
 .profile__loading { color: var(--c-text-secondary); padding: var(--sp-5) 0; }
 .profile__pager { display: flex; justify-content: center; align-items: center; gap: var(--sp-3); padding-top: var(--sp-4); font-size: var(--fs-sm); }
@@ -395,7 +401,7 @@ async function onLogout() {
   color: var(--c-success);
 }
 
-/* 作品说明：站内信 */
+/* 站内信 */
 .notify__list {
   list-style: none;
   margin: 0;
@@ -446,7 +452,7 @@ async function onLogout() {
   color: var(--c-text-secondary);
 }
 
-/* 作品说明：自选表格 */
+/* 自选表格 */
 .watch__table-wrap {
   overflow-x: auto;
 }

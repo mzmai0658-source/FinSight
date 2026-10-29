@@ -1,4 +1,4 @@
-"""作品说明：提供可复现公开虚构基准与独立证据重放。"""
+"""提供可复现公开虚构基准与独立证据重放。"""
 from __future__ import annotations
 import argparse
 import hashlib
@@ -132,7 +132,7 @@ def render_markdown(records: Sequence[Mapping[str, Any]], dataset_size: int) -> 
 def write_outputs(records: Sequence[Mapping[str, Any]], report_path: Path, dataset_size: int, manifest=None) -> None:
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(render_markdown(records, dataset_size), encoding="utf-8")
-    # 作品说明：保留完整嵌套结果，包括引用、数据行、事实、图表及事件，避免丢失关键证据。
+    # 保留完整嵌套结果，包括引用、数据行、事实、图表及事件，避免丢失关键证据。
     report_path.with_suffix(".jsonl").write_text("".join(json.dumps(r, ensure_ascii=False, default=str) + "\n" for r in records), encoding="utf-8")
     if manifest is not None:
         report_path.with_suffix(".manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -150,6 +150,8 @@ def main() -> int:
     parser.add_argument("--rescore", type=Path)
     parser.add_argument("--manual-reviews", type=Path, help="JSONL case_id/mode/reviewer/answer_sha256/supported annotations")
     args = parser.parse_args()
+    if not args.fake and not args.rescore:
+        parser.error("Historical live evaluation is retired; use eval/cloud_focused.py. This harness supports --fake or --rescore only.")
     cases = load_dataset(args.dataset)
     if args.rescore:
         manifest = json.loads(args.rescore.with_suffix(".manifest.json").read_text(encoding="utf-8"))
@@ -160,7 +162,6 @@ def main() -> int:
                               "scorer_sha256": hashlib.sha256((ROOT_DIR / "eval/oracle.py").read_bytes()).hexdigest(),
                               "rescored_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
     else:
-        os.environ.setdefault("LLM_PROVIDER", "ollama")
         os.environ.setdefault("EMBEDDING_PROVIDER", "bge_local")
         runtime = FakeLLMRuntime() if args.fake else RealRuntime()
         manifest = build_manifest(cases, runtime.runtime_info(), args.fake)
@@ -174,7 +175,7 @@ def main() -> int:
             for mode in MODES:
                 if mode in requested and (case["id"], mode) not in reused:
                     records.extend(run_evaluation([case], mode=mode, fake=args.fake, runtime=runtime, manifest=manifest))
-                    # 作品说明：后续模型调用或主机失败时，保留所有已完成调用。
+                    # 后续模型调用或主机失败时，保留所有已完成调用。
                     write_outputs(records, args.output, len({r["case_id"] for r in records}), manifest)
     if args.manual_reviews:
         reviews = {(r["case_id"], r["mode"]):r for r in (json.loads(line) for line in args.manual_reviews.read_text(encoding="utf-8").splitlines() if line.strip())}

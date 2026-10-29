@@ -1,5 +1,5 @@
 export interface EtlStep { name: string; status: string; detail?: string }
-/** 作品说明：兼容旧步骤数组与当前包含可重试阶段的结果封装。 */
+/** 兼容旧步骤数组与当前包含可重试阶段的结果封装。 */
 export function parseEtlSteps(raw?: string | null): { steps: EtlStep[]; retryable: string[] } {
   try {
     const value = JSON.parse(raw || "[]");

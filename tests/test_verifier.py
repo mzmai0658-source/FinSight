@@ -1,4 +1,4 @@
-"""作品说明：离线以反例验证财务核验的完整身份约束。"""
+"""离线以反例验证财务核验的完整身份约束。"""
 from copy import deepcopy
 import pytest
 from src.agent.facts import bind_sql_rows, metadata_matches

@@ -2,6 +2,7 @@
 export interface AxisEditV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "comparison_axis";
   value: "years" | "companies" | "none";
 }
@@ -9,8 +10,28 @@ export interface AxisEditV3 {
 export interface CalculationEditV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "calculation";
   value: "none" | "difference" | "yoy" | "relative_percent" | "percentage_points";
+}
+
+export interface CalculationInputV3 {
+  current: CalculationOperandV3;
+  base: CalculationOperandV3;
+}
+
+export interface CalculationInputsEditV3 {
+  operation: "replace" | "inherit" | "clear";
+  text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
+  field: "calculation_inputs";
+  value: Array<CalculationInputV3>;
+}
+
+export interface CalculationOperandV3 {
+  code?: string | null;
+  year?: number | null;
+  period?: "FY" | "HY" | "Q1" | "Q3" | null;
 }
 
 export interface CheckV3 {
@@ -28,6 +49,7 @@ export interface ClarificationChoicesV3 {
 export interface CollectionEditV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "all_companies";
   value: boolean;
 }
@@ -35,6 +57,7 @@ export interface CollectionEditV3 {
 export interface CompanyEditV3 {
   operation: "replace" | "add" | "remove" | "keep" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "codes";
   value: Array<string>;
 }
@@ -72,6 +95,7 @@ export interface ConditionsV3 {
   presentation?: PresentationV3;
   restrictions?: RestrictionsV3;
   calculation?: "none" | "difference" | "yoy" | "relative_percent" | "percentage_points";
+  calculation_inputs?: Array<CalculationInputV3>;
   comparison_axis?: "years" | "companies" | "none";
   origins?: Record<string, OriginV3>;
 }
@@ -84,6 +108,7 @@ export interface ContextReferenceV3 {
 
 export interface DialogueStateV3 {
   version?: 3;
+  state_revision?: 2;
   revision?: number;
   topic?: string;
   legacy_scope_unknown?: boolean;
@@ -97,12 +122,14 @@ export interface DialogueStateV3 {
   interrupted_request?: InterruptedRequestV3 | null;
   last_execution?: ExecutionV3 | null;
   executions?: Array<ExecutionV3>;
-  modifications?: Array<CompanyEditV3 | MetricEditV3 | ScopeEditV3 | CollectionEditV3 | CalculationEditV3 | AxisEditV3 | EditTimeModeV3 | EditTimeYearsV3 | EditTimePeriodsV3 | EditTimeSpanV3 | EditTimePairsV3 | EditTimeSingleQuarterV3 | EditTimeQuartersV3 | EditPresentationUnitV3 | EditPresentationDecimalsV3 | EditPresentationFormatV3 | EditPresentationChartTypeV3 | EditPresentationOrderV3 | EditPresentationLimitV3 | EditPresentationIncludeInputsV3 | EditRestrictionsNoQueryV3 | EditRestrictionsNoChartV3 | EditRestrictionsNoRepeatV3 | EditRestrictionsExcludedCodesV3 | EditRestrictionsExcludedMetricsV3 | TimeEditV3 | PresentationEditV3 | RestrictionEditV3>;
+  modifications?: Array<CompanyEditV3 | MetricEditV3 | ScopeEditV3 | CollectionEditV3 | CalculationEditV3 | AxisEditV3 | CalculationInputsEditV3 | EditTimeModeV3 | EditTimeYearsV3 | EditTimePeriodsV3 | EditTimeSpanV3 | EditTimePairsV3 | EditTimeSingleQuarterV3 | EditTimeQuartersV3 | EditPresentationUnitV3 | EditPresentationMetricUnitsV3 | EditPresentationDecimalsV3 | EditPresentationFormatV3 | EditPresentationChartTypeV3 | EditPresentationOrderV3 | EditPresentationLimitV3 | EditPresentationIncludeInputsV3 | EditRestrictionsNoQueryV3 | EditRestrictionsNoChartV3 | EditRestrictionsNoRepeatV3 | EditRestrictionsExcludedCodesV3 | EditRestrictionsExcludedMetricsV3 | TimeEditV3 | PresentationEditV3 | RestrictionEditV3>;
+  session_preferences?: Array<CompanyEditV3 | MetricEditV3 | ScopeEditV3 | CollectionEditV3 | CalculationEditV3 | AxisEditV3 | CalculationInputsEditV3 | EditTimeModeV3 | EditTimeYearsV3 | EditTimePeriodsV3 | EditTimeSpanV3 | EditTimePairsV3 | EditTimeSingleQuarterV3 | EditTimeQuartersV3 | EditPresentationUnitV3 | EditPresentationMetricUnitsV3 | EditPresentationDecimalsV3 | EditPresentationFormatV3 | EditPresentationChartTypeV3 | EditPresentationOrderV3 | EditPresentationLimitV3 | EditPresentationIncludeInputsV3 | EditRestrictionsNoQueryV3 | EditRestrictionsNoChartV3 | EditRestrictionsNoRepeatV3 | EditRestrictionsExcludedCodesV3 | EditRestrictionsExcludedMetricsV3 | TimeEditV3 | PresentationEditV3 | RestrictionEditV3>;
 }
 
 export interface EditPresentationChartTypeV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "presentation.chart_type";
   value: "line" | "bar" | "pie" | "scatter";
 }
@@ -110,6 +137,7 @@ export interface EditPresentationChartTypeV3 {
 export interface EditPresentationDecimalsV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "presentation.decimals";
   value: number | null;
 }
@@ -117,6 +145,7 @@ export interface EditPresentationDecimalsV3 {
 export interface EditPresentationFormatV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "presentation.format";
   value: "auto" | "text" | "table" | "chart";
 }
@@ -124,6 +153,7 @@ export interface EditPresentationFormatV3 {
 export interface EditPresentationIncludeInputsV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "presentation.include_inputs";
   value: boolean;
 }
@@ -131,13 +161,23 @@ export interface EditPresentationIncludeInputsV3 {
 export interface EditPresentationLimitV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "presentation.limit";
   value: number | null;
+}
+
+export interface EditPresentationMetricUnitsV3 {
+  operation: "replace" | "inherit" | "clear";
+  text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
+  field: "presentation.metric_units";
+  value: Record<string, "元" | "万元" | "亿元" | "%" | "元/股">;
 }
 
 export interface EditPresentationOrderV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "presentation.order";
   value: "asc" | "desc";
 }
@@ -145,6 +185,7 @@ export interface EditPresentationOrderV3 {
 export interface EditPresentationUnitV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "presentation.unit";
   value: "元" | "万元" | "亿元" | "%" | "元/股" | null;
 }
@@ -152,6 +193,7 @@ export interface EditPresentationUnitV3 {
 export interface EditRestrictionsExcludedCodesV3 {
   operation: "replace" | "add" | "remove" | "keep" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "restrictions.excluded_codes";
   value: Array<string>;
 }
@@ -159,6 +201,7 @@ export interface EditRestrictionsExcludedCodesV3 {
 export interface EditRestrictionsExcludedMetricsV3 {
   operation: "replace" | "add" | "remove" | "keep" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "restrictions.excluded_metrics";
   value: Array<"operating_revenue" | "total_operating_revenue" | "main_business_revenue" | "net_profit" | "attributable_net_profit" | "deducted_attributable_net_profit" | "operating_cost" | "gross_profit" | "gross_margin" | "net_margin" | "eps_basic" | "eps_diluted" | "roe_weighted" | "roe_weighted_deducted" | "roe_diluted" | "total_assets" | "total_liabilities" | "total_equity" | "cash" | "receivables" | "inventory" | "trading_assets" | "construction" | "payables" | "advances" | "contract_liabilities" | "short_loans" | "retained_earnings" | "operating_profit" | "total_profit" | "other_income" | "selling_expense" | "administration_expense" | "finance_expense" | "research_expense" | "tax_surcharges" | "total_operating_cost" | "asset_impairment" | "credit_impairment" | "operating_cash_flow" | "investing_cash_flow" | "financing_cash_flow" | "net_cash_change" | "sales_cash" | "investment_cash_paid" | "cash_begin" | "cash_end" | "debt_ratio" | "net_assets_per_share" | "operating_cash_per_share" | "operating_revenue_reported_yoy" | "total_operating_revenue_reported_yoy" | "attributable_net_profit_reported_yoy" | "net_profit_reported_yoy" | "deducted_attributable_net_profit_reported_yoy" | "total_assets_reported_yoy" | "total_liabilities_reported_yoy" | "net_cash_change_reported_yoy" | "total_assets_reported_change_vs_year_end" | "total_liabilities_reported_change_vs_year_end">;
 }
@@ -166,6 +209,7 @@ export interface EditRestrictionsExcludedMetricsV3 {
 export interface EditRestrictionsNoChartV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "restrictions.no_chart";
   value: boolean;
 }
@@ -173,6 +217,7 @@ export interface EditRestrictionsNoChartV3 {
 export interface EditRestrictionsNoQueryV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "restrictions.no_query";
   value: boolean;
 }
@@ -180,6 +225,7 @@ export interface EditRestrictionsNoQueryV3 {
 export interface EditRestrictionsNoRepeatV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "restrictions.no_repeat";
   value: boolean;
 }
@@ -187,6 +233,7 @@ export interface EditRestrictionsNoRepeatV3 {
 export interface EditTimeModeV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "time.mode";
   value: "explicit" | "calendar_years" | "latest_common" | "latest_each" | "latest";
 }
@@ -194,6 +241,7 @@ export interface EditTimeModeV3 {
 export interface EditTimePairsV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "time.pairs";
   value: Array<[number, "FY" | "HY" | "Q1" | "Q3"]> | null;
 }
@@ -201,6 +249,7 @@ export interface EditTimePairsV3 {
 export interface EditTimePeriodsV3 {
   operation: "replace" | "add" | "remove" | "keep" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "time.periods";
   value: Array<"FY" | "HY" | "Q1" | "Q3">;
 }
@@ -208,6 +257,7 @@ export interface EditTimePeriodsV3 {
 export interface EditTimeQuartersV3 {
   operation: "replace" | "add" | "remove" | "keep" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "time.quarters";
   value: Array<1 | 2 | 3 | 4>;
 }
@@ -215,6 +265,7 @@ export interface EditTimeQuartersV3 {
 export interface EditTimeSingleQuarterV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "time.single_quarter";
   value: boolean;
 }
@@ -222,6 +273,7 @@ export interface EditTimeSingleQuarterV3 {
 export interface EditTimeSpanV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "time.span";
   value: number | null;
 }
@@ -229,6 +281,7 @@ export interface EditTimeSpanV3 {
 export interface EditTimeYearsV3 {
   operation: "replace" | "add" | "remove" | "keep" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "time.years";
   value: Array<number>;
 }
@@ -275,10 +328,11 @@ export interface GoalV3 {
   context_goal_id?: string | null;
   context_conditions?: ConditionsV3 | null;
   selection?: GoalSelectionV3 | null;
-  condition_edits?: Array<CompanyEditV3 | MetricEditV3 | ScopeEditV3 | CollectionEditV3 | CalculationEditV3 | AxisEditV3 | EditTimeModeV3 | EditTimeYearsV3 | EditTimePeriodsV3 | EditTimeSpanV3 | EditTimePairsV3 | EditTimeSingleQuarterV3 | EditTimeQuartersV3 | EditPresentationUnitV3 | EditPresentationDecimalsV3 | EditPresentationFormatV3 | EditPresentationChartTypeV3 | EditPresentationOrderV3 | EditPresentationLimitV3 | EditPresentationIncludeInputsV3 | EditRestrictionsNoQueryV3 | EditRestrictionsNoChartV3 | EditRestrictionsNoRepeatV3 | EditRestrictionsExcludedCodesV3 | EditRestrictionsExcludedMetricsV3>;
-  catalog_target?: "companies" | "periods" | "metrics" | "capabilities" | null;
+  condition_edits?: Array<CompanyEditV3 | MetricEditV3 | ScopeEditV3 | CollectionEditV3 | CalculationEditV3 | AxisEditV3 | CalculationInputsEditV3 | EditTimeModeV3 | EditTimeYearsV3 | EditTimePeriodsV3 | EditTimeSpanV3 | EditTimePairsV3 | EditTimeSingleQuarterV3 | EditTimeQuartersV3 | EditPresentationUnitV3 | EditPresentationMetricUnitsV3 | EditPresentationDecimalsV3 | EditPresentationFormatV3 | EditPresentationChartTypeV3 | EditPresentationOrderV3 | EditPresentationLimitV3 | EditPresentationIncludeInputsV3 | EditRestrictionsNoQueryV3 | EditRestrictionsNoChartV3 | EditRestrictionsNoRepeatV3 | EditRestrictionsExcludedCodesV3 | EditRestrictionsExcludedMetricsV3>;
+  catalog_target?: "companies" | "periods" | "metrics" | "capabilities" | "greeting" | "closing" | null;
   execution_ref?: string | null;
   quote_mode?: "literal" | "location" | null;
+  quote_granularity?: "location" | "cell" | "row" | null;
   concept_mode?: "definition" | "difference" | "implication" | null;
   clarification?: Array<string>;
 }
@@ -299,6 +353,7 @@ export interface GoalSelectionV3 {
   time?: TimePatchV3 | null;
   presentation?: PresentationPatchV3 | null;
   calculation?: "none" | "difference" | "yoy" | "relative_percent" | "percentage_points" | null;
+  calculation_inputs?: Array<CalculationInputV3> | null;
   comparison_axis?: "years" | "companies" | "none" | null;
 }
 
@@ -314,6 +369,7 @@ export interface InterruptedRequestV3 {
   status: "failed" | "cancelled";
   confirmed_fields?: Array<"codes" | "metrics">;
   uncertain_paths?: Array<string> | null;
+  uncertain_paths_normalized?: boolean;
 }
 
 export interface MemoryEditV3 {
@@ -325,6 +381,7 @@ export interface MemoryEditV3 {
 export interface MetricEditV3 {
   operation: "replace" | "add" | "remove" | "keep" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "metrics";
   value: Array<"operating_revenue" | "total_operating_revenue" | "main_business_revenue" | "net_profit" | "attributable_net_profit" | "deducted_attributable_net_profit" | "operating_cost" | "gross_profit" | "gross_margin" | "net_margin" | "eps_basic" | "eps_diluted" | "roe_weighted" | "roe_weighted_deducted" | "roe_diluted" | "total_assets" | "total_liabilities" | "total_equity" | "cash" | "receivables" | "inventory" | "trading_assets" | "construction" | "payables" | "advances" | "contract_liabilities" | "short_loans" | "retained_earnings" | "operating_profit" | "total_profit" | "other_income" | "selling_expense" | "administration_expense" | "finance_expense" | "research_expense" | "tax_surcharges" | "total_operating_cost" | "asset_impairment" | "credit_impairment" | "operating_cash_flow" | "investing_cash_flow" | "financing_cash_flow" | "net_cash_change" | "sales_cash" | "investment_cash_paid" | "cash_begin" | "cash_end" | "debt_ratio" | "net_assets_per_share" | "operating_cash_per_share" | "operating_revenue_reported_yoy" | "total_operating_revenue_reported_yoy" | "attributable_net_profit_reported_yoy" | "net_profit_reported_yoy" | "deducted_attributable_net_profit_reported_yoy" | "total_assets_reported_yoy" | "total_liabilities_reported_yoy" | "net_cash_change_reported_yoy" | "total_assets_reported_change_vs_year_end" | "total_liabilities_reported_change_vs_year_end">;
 }
@@ -333,6 +390,7 @@ export interface OriginV3 {
   kind: "current" | "context" | "default";
   text: string;
   turn_id?: string;
+  lifetime?: "turn" | "task" | "session" | null;
 }
 
 export interface OriginalCellProofV3 {
@@ -351,6 +409,7 @@ export interface OriginalRegionV3 {
 
 export interface PresentationV3 {
   unit?: "元" | "万元" | "亿元" | "%" | "元/股" | null;
+  metric_units?: Record<string, "元" | "万元" | "亿元" | "%" | "元/股">;
   decimals?: number | null;
   format?: "auto" | "text" | "table" | "chart";
   chart_type?: "line" | "bar" | "pie" | "scatter";
@@ -362,12 +421,14 @@ export interface PresentationV3 {
 export interface PresentationEditV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "presentation";
   value: PresentationPatchV3;
 }
 
 export interface PresentationPatchV3 {
   unit?: "元" | "万元" | "亿元" | "%" | "元/股" | null;
+  metric_units?: Record<string, "元" | "万元" | "亿元" | "%" | "元/股"> | null;
   decimals?: number | null;
   format?: "auto" | "text" | "table" | "chart" | null;
   chart_type?: "line" | "bar" | "pie" | "scatter" | null;
@@ -382,7 +443,7 @@ export interface RequestV3 {
   question: string;
   continuity?: "continue" | "new" | "resume" | "clear";
   conditions: ConditionsV3;
-  modifications?: Array<CompanyEditV3 | MetricEditV3 | ScopeEditV3 | CollectionEditV3 | CalculationEditV3 | AxisEditV3 | EditTimeModeV3 | EditTimeYearsV3 | EditTimePeriodsV3 | EditTimeSpanV3 | EditTimePairsV3 | EditTimeSingleQuarterV3 | EditTimeQuartersV3 | EditPresentationUnitV3 | EditPresentationDecimalsV3 | EditPresentationFormatV3 | EditPresentationChartTypeV3 | EditPresentationOrderV3 | EditPresentationLimitV3 | EditPresentationIncludeInputsV3 | EditRestrictionsNoQueryV3 | EditRestrictionsNoChartV3 | EditRestrictionsNoRepeatV3 | EditRestrictionsExcludedCodesV3 | EditRestrictionsExcludedMetricsV3 | TimeEditV3 | PresentationEditV3 | RestrictionEditV3>;
+  modifications?: Array<CompanyEditV3 | MetricEditV3 | ScopeEditV3 | CollectionEditV3 | CalculationEditV3 | AxisEditV3 | CalculationInputsEditV3 | EditTimeModeV3 | EditTimeYearsV3 | EditTimePeriodsV3 | EditTimeSpanV3 | EditTimePairsV3 | EditTimeSingleQuarterV3 | EditTimeQuartersV3 | EditPresentationUnitV3 | EditPresentationMetricUnitsV3 | EditPresentationDecimalsV3 | EditPresentationFormatV3 | EditPresentationChartTypeV3 | EditPresentationOrderV3 | EditPresentationLimitV3 | EditPresentationIncludeInputsV3 | EditRestrictionsNoQueryV3 | EditRestrictionsNoChartV3 | EditRestrictionsNoRepeatV3 | EditRestrictionsExcludedCodesV3 | EditRestrictionsExcludedMetricsV3 | TimeEditV3 | PresentationEditV3 | RestrictionEditV3>;
   memory_edits?: Array<MemoryEditV3>;
   clarification_choices?: Array<ClarificationChoicesV3>;
   goals: Array<GoalV3>;
@@ -390,11 +451,13 @@ export interface RequestV3 {
   company_mentions?: Array<CompanyMentionV3>;
   clarification?: Array<string>;
   unsupported?: Array<string>;
+  resolved_goal_conditions?: Record<string, ConditionsV3>;
 }
 
 export interface RestrictionEditV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "restrictions";
   value: RestrictionPatchV3;
 }
@@ -418,6 +481,7 @@ export interface RestrictionsV3 {
 export interface ScopeEditV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "scope";
   value: "consolidated" | "parent";
 }
@@ -448,6 +512,7 @@ export interface StatementScopeProofV3 {
   family: "资产负债表" | "利润表" | "现金流量表" | "notes" | "indicators";
   value_region: HashedOriginalRegionV3;
   label_region: HashedOriginalRegionV3;
+  column_scope?: OriginalRegionV3 | null;
 }
 
 export interface TaskRecordV3 {
@@ -466,6 +531,7 @@ export interface TaskRecordV3 {
 export interface TimeEditV3 {
   operation: "replace" | "inherit" | "clear";
   text?: string;
+  lifetime?: "turn" | "task" | "session" | null;
   field: "time";
   value: TimePatchV3;
 }
@@ -496,7 +562,7 @@ export interface UnderstandingV3 {
   context_references?: Array<ContextReferenceV3>;
   company_mentions?: Array<CompanyMentionV3>;
   goals: Array<GoalV3>;
-  modifications: Array<CompanyEditV3 | MetricEditV3 | ScopeEditV3 | CollectionEditV3 | CalculationEditV3 | AxisEditV3 | EditTimeModeV3 | EditTimeYearsV3 | EditTimePeriodsV3 | EditTimeSpanV3 | EditTimePairsV3 | EditTimeSingleQuarterV3 | EditTimeQuartersV3 | EditPresentationUnitV3 | EditPresentationDecimalsV3 | EditPresentationFormatV3 | EditPresentationChartTypeV3 | EditPresentationOrderV3 | EditPresentationLimitV3 | EditPresentationIncludeInputsV3 | EditRestrictionsNoQueryV3 | EditRestrictionsNoChartV3 | EditRestrictionsNoRepeatV3 | EditRestrictionsExcludedCodesV3 | EditRestrictionsExcludedMetricsV3 | TimeEditV3 | PresentationEditV3 | RestrictionEditV3>;
+  modifications: Array<CompanyEditV3 | MetricEditV3 | ScopeEditV3 | CollectionEditV3 | CalculationEditV3 | AxisEditV3 | CalculationInputsEditV3 | EditTimeModeV3 | EditTimeYearsV3 | EditTimePeriodsV3 | EditTimeSpanV3 | EditTimePairsV3 | EditTimeSingleQuarterV3 | EditTimeQuartersV3 | EditPresentationUnitV3 | EditPresentationMetricUnitsV3 | EditPresentationDecimalsV3 | EditPresentationFormatV3 | EditPresentationChartTypeV3 | EditPresentationOrderV3 | EditPresentationLimitV3 | EditPresentationIncludeInputsV3 | EditRestrictionsNoQueryV3 | EditRestrictionsNoChartV3 | EditRestrictionsNoRepeatV3 | EditRestrictionsExcludedCodesV3 | EditRestrictionsExcludedMetricsV3 | TimeEditV3 | PresentationEditV3 | RestrictionEditV3>;
   memory_edits?: Array<MemoryEditV3>;
   clarification: Array<string>;
   unsupported: Array<string>;

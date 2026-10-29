@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.slf4j.MDC;
 
-/** 作品说明：统一响应包装：{ code, message, data, traceId } */
+/** 统一响应包装：{ code, message, data, traceId } */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

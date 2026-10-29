@@ -9,7 +9,7 @@ watch(() => props.open, (open) => {
   if (open && !dialog.value?.open) dialog.value?.showModal();
   if (!open && dialog.value?.open) dialog.value.close();
 }, { flush: "post", immediate: true });
-// 作品说明：已打开的父组件渲染后，弹窗元素可能才挂载，需同步其打开状态。
+// 已打开的父组件渲染后，弹窗元素可能才挂载，需同步其打开状态。
 watch(dialog, (el) => { if (el && props.open && !el.open) el.showModal(); });
 onBeforeUnmount(() => dialog.value?.close());
 </script>

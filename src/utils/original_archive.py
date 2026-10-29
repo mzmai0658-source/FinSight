@@ -1,4 +1,4 @@
-"""作品说明：按内容身份保存原始 PDF 字节，使上传与历史引用可追溯。"""
+"""按内容身份保存原始 PDF 字节，使上传与历史引用可追溯。"""
 import hashlib
 import os
 from pathlib import Path

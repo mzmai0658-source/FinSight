@@ -1,4 +1,4 @@
-/** 作品说明：平台扩展类型覆盖诊股、研报库、自选、站内信及管理端。 */
+/** 平台扩展类型覆盖诊股、研报库、自选、站内信及管理端。 */
 
 export interface AdvisorDimension {
   name: string;
@@ -65,10 +65,11 @@ export interface WatchlistItem {
   industry: string | null;
   dataStatus: string | null;
   lastYear: number | null;
-  revenue: number | null;
-  netProfit: number | null;
-  netProfitYoy: number | null;
-  roe: number | null;
+  revenue: number | string | null;
+  netProfit: number | string | null;
+  netProfitYoy: number | string | null;
+  roe: number | string | null;
+  experimental?: boolean;
   createdAt: string;
 }
 

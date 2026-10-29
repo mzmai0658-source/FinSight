@@ -1,4 +1,4 @@
-"""作品说明：由 Python v3 统一定义生成共享模式和 TypeScript 类型。"""
+"""由 Python v3 统一定义生成共享模式和 TypeScript 类型。"""
 from __future__ import annotations
 
 import json

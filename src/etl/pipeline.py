@@ -1,4 +1,4 @@
-"""作品说明：单文件 ETL 管线：管理端上传与批量脚本共用的标准处理链路。
+"""单文件 ETL 管线：管理端上传与批量脚本共用的标准处理链路。
 
 步骤：OCR 缓存解析 → 结构化抽取 → 入库 → 公司级同比重算 → company 主数据回写 → RAG 入库（可选）。
 每一步的状态都会记录到 PipelineReport，供 etl_task 状态机展示。
@@ -19,14 +19,14 @@ from src.etl.ocr_client import OcrNotConfiguredError, ensure_ocr_json
 @dataclass
 class StepResult:
     name: str
-    status: str  # 作品说明：结果状态区分成功、跳过与失败。
+    status: str  # 结果状态区分成功、跳过与失败。
     detail: str = ""
     elapsed_ms: int = 0
 
 
 @dataclass
 class PipelineReport:
-    status: str = "pending"  # 作品说明：批次状态区分成功、部分完成与失败。
+    status: str = "pending"  # 批次状态区分成功、部分完成与失败。
     file: str = ""
     stock_code: str = ""
     stock_abbr: str = ""
@@ -69,7 +69,7 @@ class _Timer:
 
 
 def _update_company_master(stock_code: str, stock_abbr: str) -> str:
-    """作品说明：财务数据入库后回写 company 主数据：状态置 imported，年份范围取库内极值。"""
+    """财务数据入库后回写 company 主数据：状态置 imported，年份范围取库内极值。"""
     from sqlalchemy import create_engine, text
 
     from config.db_config import get_db_config
@@ -99,14 +99,14 @@ def run_single_file(
     ingest_rag: bool = True,
     llm_client=None,
 ) -> PipelineReport:
-    """作品说明：处理单份财报 PDF 的完整管线。
+    """处理单份财报 PDF 的完整管线。
     
     OCR/抽取/入库任一步失败立即终止；同比重算、company 回写、RAG 入库失败返回 partial 和可重试步骤。
     """
     pdf_path = Path(pdf_path)
     report = PipelineReport(file=str(pdf_path))
 
-    # 作品说明：1. OCR 缓存（本地命中或远端服务，远端未配置则失败）
+    # 1. OCR 缓存（本地命中或远端服务，远端未配置则失败）
     with _Timer() as t:
         try:
             json_path = ensure_ocr_json(pdf_path)
@@ -120,7 +120,7 @@ def run_single_file(
             report.status, report.message = "failed", f"OCR 失败: {e}"
             return report
 
-    # 作品说明：2. 结构化抽取（复用 ETLWorker，行为与批量链路一致）
+    # 2. 结构化抽取（复用 ETLWorker，行为与批量链路一致）
     if llm_client is None:
         from src.agent.llm_client import LLMClient
 
@@ -130,7 +130,7 @@ def run_single_file(
     worker = ETLWorker(llm_client)
     with _Timer() as t:
         try:
-            # 作品说明：直接喂 OCR JSON：上传副本目录下无缓存时（工作区命中）worker 也能读到同一份内容
+            # 直接喂 OCR JSON：上传副本目录下无缓存时（工作区命中）worker 也能读到同一份内容
             result = worker.run(str(json_path), save_to_db=False, source_pdf_path=str(pdf_path))
         except Exception as e:
             report.add_step("extract", "failed", str(e))
@@ -157,7 +157,7 @@ def run_single_file(
         report.status = "success"
         return report
 
-    # 作品说明：3. 入库（公司级回填 + 写四张表）
+    # 3. 入库（公司级回填 + 写四张表）
     with _Timer() as t:
         try:
             worker.backfill_cross_file_growths([result])
@@ -170,7 +170,7 @@ def run_single_file(
             report.status, report.message = "failed", f"入库失败: {e}"
             return report
 
-    # 作品说明：4. 公司级同比重算（新报告期落库后相邻年份的 yoy 才可补全）
+    # 4. 公司级同比重算（新报告期落库后相邻年份的 yoy 才可补全）
     with _Timer() as t:
         try:
             updated = recompute_company_derived(report.stock_code)
@@ -179,7 +179,7 @@ def run_single_file(
             logger.warning(f"[pipeline] 同比重算失败: {e}")
             report.add_step("derived", "failed", str(e))
 
-    # 作品说明：5. company 主数据回写（市场模块据此展示）
+    # 5. company 主数据回写（市场模块据此展示）
     with _Timer() as t:
         try:
             detail = _update_company_master(report.stock_code, report.stock_abbr)
@@ -188,7 +188,7 @@ def run_single_file(
             logger.warning(f"[pipeline] company 回写失败: {e}")
             report.add_step("company", "failed", str(e))
 
-    # 作品说明：6. RAG 入库（依赖向量服务，可关闭）
+    # 6. RAG 入库（依赖向量服务，可关闭）
     if ingest_rag:
         with _Timer() as t:
             try:
@@ -211,7 +211,7 @@ def run_single_file(
 
 
 def run_research_file(pdf_path: str | Path, ingest_rag: bool = True) -> PipelineReport:
-    """作品说明：处理单份研报 PDF：text-first 优先，仅做 RAG 入库（研报无结构化数值）。"""
+    """处理单份研报 PDF：text-first 优先，仅做 RAG 入库（研报无结构化数值）。"""
     pdf_path = Path(pdf_path)
     report = PipelineReport(file=str(pdf_path))
 

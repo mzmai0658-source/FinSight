@@ -16,7 +16,7 @@ public final class ChatDtos {
     public record StreamRequest(
             @QuestionText String question,
             String sessionUid,
-            /** 作品说明：客户端幂等 ID，重复提交防重 */
+            /** 客户端幂等 ID，重复提交防重 */
             @Size(max = 128) String clientRequestId) {
         public StreamRequest {
             question = QuestionText.Validator.normalize(question);

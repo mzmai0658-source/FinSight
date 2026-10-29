@@ -17,7 +17,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
-/** 作品说明：JWT 双 token：access 用于接口鉴权（短期），refresh 用于换发（长期、Redis 可撤销）。 */
+/** JWT 双 token：access 用于接口鉴权（短期），refresh 用于换发（长期、Redis 可撤销）。 */
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
@@ -59,7 +59,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    /** 作品说明：解析并校验签名/有效期/签发者，过期与非法分别映射到不同错误码。 */
+    /** 解析并校验签名/有效期/签发者，过期与非法分别映射到不同错误码。 */
     public Claims parse(String token) {
         try {
             return Jwts.parser()

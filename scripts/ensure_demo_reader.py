@@ -1,4 +1,4 @@
-"""作品说明：创建隔离的只读查询账号，将凭据私下保存。"""
+"""创建隔离的只读查询账号，将凭据私下保存。"""
 import argparse
 import os
 from pathlib import Path

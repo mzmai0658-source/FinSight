@@ -1,4 +1,4 @@
-"""作品说明：检查本机 Agent 动作与证据完整性；文字解释仍需审阅。"""
+"""检查本机 Agent 动作与证据完整性；文字解释仍需审阅。"""
 from __future__ import annotations
 import argparse
 from collections import Counter
@@ -21,7 +21,7 @@ def score(record):
     tools=[e['data'].get('tool') for e in events if e.get('event')=='tool_call']
     sql=result.get('validation',{}).get('sql_events',[])
     charts=result.get('chart_data_list') or []
-    # 作品说明：旧运行没有绘图工具事件，需兼容其实际图表事件。
+    # 旧运行没有绘图工具事件，需兼容其实际图表事件。
     if charts and 'render_chart' not in tools: tools.append('render_chart')
     status=result.get('outcome',{}).get('status')
     if record.get('error'): failures.append('transport_error')

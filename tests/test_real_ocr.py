@@ -1,4 +1,4 @@
-"""作品说明：验证 OCR 传输与缓存故障；构造样例不等于远程 OCR 验收。"""
+"""验证 OCR 传输与缓存故障；构造样例不等于远程 OCR 验收。"""
 import hashlib
 import json
 from pathlib import Path
@@ -163,7 +163,7 @@ def test_async_submit_poll_download_contract_uses_runtime_settings(pdf, payload,
     assert post.call_args.kwargs["headers"]["Authorization"] == "bearer fixture-only-token"
     assert post.call_args.kwargs["data"]["model"] == model
     assert get.call_args_list[0].args[0] == "https://ocr.example/jobs/job-1"
-    assert "headers" not in get.call_args_list[-1].kwargs  # 作品说明：OCR 认证令牌不得发送给结果下载主机。
+    assert "headers" not in get.call_args_list[-1].kwargs  # OCR 认证令牌不得发送给结果下载主机。
 
 
 @pytest.mark.parametrize("state", ["failed", "unknown", None])

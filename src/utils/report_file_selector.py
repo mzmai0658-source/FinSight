@@ -98,7 +98,7 @@ def _preferred_variant_sort_key(path: Path) -> Tuple[int, int, str]:
 
 
 def select_preferred_report_files(paths: Iterable[Path]) -> Tuple[List[Path], Dict[str, List[Path]]]:
-    """作品说明：统一财报筛选逻辑：
+    """统一财报筛选逻辑：
     - 跳过英文版
     - 跳过“更新前/更正前”
     - 对同公司同年份同报告期的中文文件，若存在“更新后/更正后”，优先保留它

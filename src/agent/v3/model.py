@@ -1,13 +1,10 @@
-"""作品说明：Ollama异步调用共用准入控制和整轮预算，避免问答与后台请求争抢资源。"""
+"""云端问答、解释和审核共用准入、整轮预算及可取消连接。"""
 from __future__ import annotations
 
 import asyncio
 import json
 import time
 from dataclasses import dataclass, field
-from urllib.parse import urlparse
-
-from langchain_ollama import ChatOllama
 from pydantic import BaseModel
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import ValidationError as WireValidationError
@@ -15,6 +12,7 @@ from jsonschema.exceptions import ValidationError as WireValidationError
 from src.agent.providers import resolve_chat_provider
 from src.agent.model_admission import SCHEDULER, AdmissionFailure
 from .model_wire import encode_schema,translate_data
+from .cloud_chat import CloudChat,CloudProviderFailure
 
 
 class ModelFailure(RuntimeError):
@@ -24,11 +22,29 @@ class ModelFailure(RuntimeError):
 
 
 def sampling_schema(schema):
-    """作品说明：采样合同移除展示性元数据，完整保留字段验证规则。"""
+    """采样合同移除展示性元数据，完整保留字段验证规则。"""
     if isinstance(schema,list): return [sampling_schema(item) for item in schema]
     if isinstance(schema,dict):
-        return {key:sampling_schema(value) for key,value in schema.items() if key not in {'title','default','description'}}
+        named_maps={'properties','patternProperties','$defs','definitions','dependentSchemas'}
+        return {key:({name:sampling_schema(child) for name,child in value.items()}
+                     if key in named_maps and isinstance(value,dict) else sampling_schema(value))
+                for key,value in schema.items() if key not in {'title','default','description'}}
     return schema
+
+
+def schema_feedback(error):
+    """纠错指出字段和约束，不回显模型输入、驱动异常或整份请求。"""
+    if not isinstance(error,WireValidationError):return {}
+    feedback={'validator':error.validator,'field_path':list(error.absolute_path)}
+    if error.validator=='required' and isinstance(error.instance,dict):
+        feedback['missing_fields']=[key for key in error.validator_value if key not in error.instance]
+    elif error.validator=='additionalProperties' and isinstance(error.instance,dict):
+        known=set(error.schema.get('properties',{}))
+        feedback['unexpected_fields']=[key if isinstance(key,str) and key.isidentifier() and len(key)<=64 else '<invalid-field>'
+            for key in error.instance if key not in known]
+    elif error.validator in {'type','enum','minItems','maxItems'}:
+        feedback['expected']=error.validator_value
+    return feedback
 
 
 @dataclass
@@ -51,19 +67,19 @@ class Budget:
 
 
 class AsyncModel:
-    def __init__(self, factory=ChatOllama):
+    def __init__(self, factory=None):
         config = resolve_chat_provider()
-        if config.provider != 'ollama' or urlparse(config.base_url).hostname not in {'localhost', '127.0.0.1', '::1'}:
-            raise ModelFailure('local_ollama_required')
-        self.model = factory(model=config.model, base_url=config.base_url.removesuffix('/v1'),
-            temperature=0, reasoning=False, num_ctx=16384, num_predict=3072,
-            client_kwargs={'timeout': 60}, async_client_kwargs={'timeout': 60})
+        if factory is not None:
+            self.model = factory(config=config)
+        else:
+            try:self.model=CloudChat(config)
+            except CloudProviderFailure as exc:raise ModelFailure(exc.reason) from None
 
     async def structured(self, schema: type[BaseModel], system: str, payload: dict, budget: Budget):
         try:
             return await self._structured_once(schema,system,payload,budget)
         except ModelFailure as failure:
-            # 作品说明：整轮最多一次格式修正，计入同一调用预算；修正不更改用户输入，也不冒充用户澄清。
+            # 整轮最多一次格式修正，计入同一调用预算；修正不更改用户输入，也不冒充用户澄清。
             if failure.reason!='model_invalid_schema' or budget.artifacts.get('proposal_repair_used'):raise
             budget.artifacts['proposal_repair_used']=True
             diagnostics=getattr(failure,'diagnostics',{}).get('format_validation',{})
@@ -82,21 +98,20 @@ class AsyncModel:
         span_catalog={}
         expected_prefix=[]
         try:
-            # 作品说明：使用可取消的异步连接，使停止任务能关闭模型请求并释放调用名额。
+            # 使用可取消的异步连接，使停止任务能关闭模型请求并释放调用名额。
             async with asyncio.timeout(max(0.001,min(60, budget.remaining()-budget.finalization_reserve))):
                 output_schema = sampling_schema(schema.model_json_schema())
-                # 作品说明：生成合同与程序校验共用公司登记集合；未覆盖名称进入unknown_companies，不能编造可执行代码。
+                # 生成合同与程序校验共用公司登记集合；未覆盖名称进入unknown_companies，不能编造可执行代码。
                 if schema.__name__=='TurnPlan':
                     from .turn_transport import turn_schema
                     output_schema=turn_schema(output_schema,payload)
+                    if output_schema['properties']['goals']['type']=='object':
+                        system+='\n本次纠错合同的goals是对象，填写列出的lookup/cause/concept目标对象及remaining目标数组。编号顺序为lookup、cause、concept（存在时）再remaining，从g1开始；assignments按此编号绑定。不能省略已指出遗漏的任务目标。'
                 if schema.__name__=='Explanations':
-                    # 作品说明：叙述引用只能使用检索到的文档证据；财务事实编号不能替代叙述依据。
-                    citation=output_schema['$defs']['Claim']['properties']['evidence_ids']
-                    ids=[snippet['id'] for snippet in payload.get('snippets',[])]
-                    if ids:citation['items']={'type':'string','enum':ids}
-                    else:citation['maxItems']=0
+                    from .evidence import explanation_schema
+                    output_schema=explanation_schema(output_schema,payload)
                 output_schema=encode_schema(output_schema)
-                # 作品说明：采样约束与紧凑字段说明来自同一合同，并再次严格校验；用户原话放在合同和记忆之后，减少旧任务或默认值干扰。
+                # 采样约束与紧凑字段说明来自同一合同，并再次严格校验；用户原话放在合同和记忆之后，减少旧任务或默认值干扰。
                 if schema.__name__=='TurnPlan':
                     from .turn_transport import turn_guide
                     contract=turn_guide(output_schema)
@@ -107,6 +122,8 @@ class AsyncModel:
                     ('system', system+'\n目标与对话关系的英文名称仅是内部代号；输出使用output_contract/schema中的中文枚举，其含义一一对应。'),
                     ('human', json.dumps(translate_data(ordered), ensure_ascii=False, default=str, separators=(',',':')))])
             metadata = {k:response.response_metadata.get(k) for k in ('model','prompt_eval_count','eval_count')}
+            budget.artifacts.setdefault('model_wire_outputs',[]).append(dict(call=budget.calls,step=schema.__name__,
+                model=metadata.get('model'),content=response.content if isinstance(response.content,str) else None))
             if not isinstance(response.content, str) or not response.content.strip():
                 raise ModelFailure('model_empty_output')
             try:
@@ -118,6 +135,12 @@ class AsyncModel:
                     return result
                 raw=json.loads(response.content,object_pairs_hook=unique_object)
                 if not isinstance(raw,dict):raise ValueError('The model response must be an object')
+                if schema.__name__=='TurnPlan':
+                    from .turn_transport import normalize_turn_response
+                    raw,normalizations=normalize_turn_response(raw,payload['question'])
+                    if normalizations:
+                        budget.artifacts.setdefault('transport_normalizations',[]).append(
+                            dict(call=budget.calls,step='TurnPlan',operations=normalizations))
                 Draft202012Validator(output_schema).validate(raw)
                 raw=translate_data(raw,decode=True)
                 if schema.__name__=='TurnPlan':
@@ -132,7 +155,14 @@ class AsyncModel:
                 failure=ModelFailure('model_invalid_schema')
                 failure.diagnostics={'format_validation':dict(step=schema.__name__,error_type=type(exc).__name__,
                     errors=exc.errors(include_input=False,include_context=False,include_url=False) if hasattr(exc,'errors') else [],
-                    field_path=list(exc.absolute_path) if isinstance(exc,WireValidationError) else [])}
+                    **schema_feedback(exc))}
+                if schema.__name__=='TurnPlan' and isinstance(locals().get('raw'),dict):
+                    goals=raw.get('goals');known=translate_data({'goals':goals},decode=True)['goals']
+                    if isinstance(known,list):
+                        from .contracts import GoalKind
+                        from typing import get_args
+                        failure.diagnostics['format_validation']['observed_goal_kinds']=[g.get('kind') if isinstance(g,dict) and g.get('kind') in get_args(GoalKind) else 'invalid' for g in known]
+                    # 一次格式纠错只报告实际Schema缺陷，不凭实体关键词指定另一种业务任务。
                 raise failure from exc
         except TimeoutError as exc:
             raise ModelFailure('model_timeout') from exc
@@ -140,8 +170,10 @@ class AsyncModel:
             raise
         except ModelFailure:
             raise
+        except CloudProviderFailure as exc:
+            raise ModelFailure(exc.reason) from None
         except Exception as exc:
-            # 作品说明：驱动异常可能携带私有地址或凭据，仅返回经过整理的错误类别。
+            # 驱动异常可能携带私有地址或凭据，仅返回经过整理的错误类别。
             raise ModelFailure('model_connection_failed') from exc
         finally:
             budget.timings.append({'step': schema.__name__, 'seconds': round(time.monotonic() - started, 3), **metadata})

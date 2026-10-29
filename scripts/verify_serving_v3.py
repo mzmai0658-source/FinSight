@@ -1,4 +1,4 @@
-"""作品说明：离线只读检查现用版本及完整来源链。"""
+"""离线只读检查现用版本及完整来源链。"""
 import argparse,collections,hashlib,json,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
@@ -19,7 +19,7 @@ def main():
         values=[Fact.model_validate(json_payload(v)) for v in conn.execute(select(facts.c.payload).where(facts.c.data_version==repo.version)).scalars()]
     request=Request(turn_id='offline-serving-audit',question='offline full provenance audit',conditions=Conditions(),goals=[])
     numeric=verify(request,ExecutionResult(facts=values),[],[],values).numeric
-    # 作品说明：全范围遍历用于离线数值来源检查，不是用户请求，也不证明自然语言理解正确。
+    # 全范围遍历用于离线数值来源检查，不是用户请求，也不证明自然语言理解正确。
     reports=repo.report_catalog();counts=collections.Counter(f.status for f in values)
     folder=ROOT/a.audit
     audit_reports=json.loads((folder/'reports.json').read_text(encoding='utf-8'))

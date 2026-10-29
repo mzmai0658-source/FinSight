@@ -1,4 +1,4 @@
-"""作品说明：SQL 查询工具：只读校验 → 执行 → 空结果诊断。
+"""SQL 查询工具：只读校验 → 执行 → 空结果诊断。
 
 SQL 由 LLM 生成，因此执行前必须经 `sql_guard` 归一为只读语句；查询结果同时用于
 回答合成与数字核对，行数据需原样返回而不做二次加工。
@@ -21,7 +21,7 @@ from src.utils.provenance import attach_provenance
 
 
 class SQLTool:
-    """作品说明：SQL 数据库查询工具：只读校验 → 执行 → 空结果诊断。"""
+    """SQL 数据库查询工具：只读校验 → 执行 → 空结果诊断。"""
 
     name = "sql_tool"
 
@@ -89,7 +89,7 @@ class SQLTool:
 
     @staticmethod
     def _build_field_hint(sql: str) -> str:
-        """作品说明：报错时附上 SQL 引用表的合法字段清单，帮助 LLM 一次纠正。"""
+        """报错时附上 SQL 引用表的合法字段清单，帮助 LLM 一次纠正。"""
         try:
             tables = {m.lower() for m in re.findall(r"\b(?:FROM|JOIN)\s+`?(\w+)`?", sql, re.IGNORECASE)}
             table_fields = get_table_fields()
@@ -103,7 +103,7 @@ class SQLTool:
             return ""
 
     def _build_empty_hint(self, sql: str, engine) -> str:
-        """作品说明：查询数据库现状，给 LLM 提供具体修复建议。"""
+        """查询数据库现状，给 LLM 提供具体修复建议。"""
         try:
             m = re.search(r"\bFROM\s+(\w+)", sql, re.IGNORECASE)
             if not m:

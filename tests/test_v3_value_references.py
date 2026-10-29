@@ -51,11 +51,11 @@ def test_followup_implication_uses_revalidated_calculation_not_underlying_amount
     class NoModel:
         async def structured(self,*args):raise AssertionError('A verified sign is rendered by the program')
     async def emit(*args):pass
-    r=request(restrictions={'no_query':True});r.goals=[Goal(id='meaning',kind='concept',text='这个负数是什么意思',concept_mode='implication')]
+    r=request(codes=['600085'],metrics=['attributable_net_profit'],time={'mode':'explicit','years':[2024]},restrictions={'no_query':True});r.goals=[Goal(id='meaning',kind='concept',text='这个负数是什么意思',concept_mode='implication')]
     previous=DialogueState(recent_computed=[computed(repo)])
     u=Understanding(topic='concept',continuity='continue',goals=r.goals,modifications=[],clarification=[],unsupported=[],unknown_companies=[],claimed_sign='negative')
     state=dict(request=r,previous=previous,understanding=u,emit=emit,budget=Budget(time.time()+60))
-    agent=V3Agent(None,{},model=NoModel(),repository_factory=lambda *a,**kw:repo)
+    agent=V3Agent(None,{'600085':'A'},model=NoModel(),repository_factory=lambda *a,**kw:repo)
     async def scenario():
         executed=await agent._execute(state)
         assert not executed['context_facts'] and len(executed['context_computed'])==1

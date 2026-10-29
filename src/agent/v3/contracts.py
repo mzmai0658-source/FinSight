@@ -1,16 +1,17 @@
-"""作品说明：定义v3接口合同，准确财务数值以十进制字符串传递。"""
+"""定义v3接口合同，准确财务数值以十进制字符串传递。"""
 from __future__ import annotations
 
 from decimal import Decimal
 from typing import Annotated, Literal, Union
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, TypeAdapter, create_model, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, StringConstraints, TypeAdapter, create_model, field_validator, model_validator
 from .catalog import METRICS
 
 Code = Annotated[str, StringConstraints(pattern=r'^\d{6}$')]
 Year = Annotated[int, Field(ge=2000, le=2100)]
 DecimalString = Annotated[str, StringConstraints(pattern=r'^-?\d+(?:\.\d+)?$')]
 Period = Literal['FY', 'HY', 'Q1', 'Q3']
+DisplayUnit = Literal['元', '万元', '亿元', '%', '元/股']
 GoalKind = Literal['lookup', 'compare', 'rank', 'chart', 'quote', 'cause', 'concept', 'rules', 'catalog', 'sign', 'unsupported']
 TaskStatus = Literal['queued', 'running', 'cancelling', 'completed', 'cancelled', 'failed']
 
@@ -23,6 +24,7 @@ class Origin(Strict):
     kind: Literal['current', 'context', 'default']
     text: str
     turn_id: str = ''
+    lifetime: Literal['turn','task','session'] | None = None
 
 
 class TimeSelection(Strict):
@@ -56,7 +58,9 @@ class TimeSelection(Strict):
 
 
 class Presentation(Strict):
-    unit: Literal['元', '万元', '亿元', '%', '元/股'] | None = None
+    unit: DisplayUnit | None = None
+    metric_units: dict[Literal[*METRICS], DisplayUnit] = Field(default_factory=dict,
+        description='不同维度或明确分指标单位；覆盖该指标的公共单位，不改变计算结果原生百分比或百分点')
     decimals: int | None = Field(default=None, ge=0, le=12)
     format: Literal['auto', 'text', 'table', 'chart'] = 'auto'
     chart_type: Literal['line', 'bar', 'pie', 'scatter'] = 'line'
@@ -73,6 +77,30 @@ class Restrictions(Strict):
     excluded_metrics: list[str] = Field(default_factory=list)
 
 
+class CalculationOperand(Strict):
+    """作品说明：仅选择计算输入的身份，模型不能在这里提供答案数字、来源或事实编号。"""
+    code: Code | None = None
+    year: Year | None = None
+    period: Period | None = None
+
+    @model_validator(mode='after')
+    def has_identity(self):
+        if self.code is None and self.year is None and self.period is None:
+            raise ValueError('A calculation operand must identify a company or report period')
+        return self
+
+
+class CalculationInput(Strict):
+    current: CalculationOperand
+    base: CalculationOperand
+
+    @model_validator(mode='after')
+    def distinct_roles(self):
+        if self.current == self.base:
+            raise ValueError('Current and base operands must identify different inputs')
+        return self
+
+
 class Conditions(Strict):
     codes: list[Code] = Field(default_factory=list)
     all_companies: bool = False
@@ -82,6 +110,8 @@ class Conditions(Strict):
     presentation: Presentation = Field(default_factory=Presentation)
     restrictions: Restrictions = Field(default_factory=Restrictions)
     calculation: Literal['none', 'difference', 'yoy', 'relative_percent', 'percentage_points'] = 'none'
+    calculation_inputs: list[CalculationInput] = Field(default_factory=list,
+        description='明确的本期与基期配对；省略的公司或报告期按同一指标分组匹配。逐年同比不填写，程序逐目标年查相邻基期。')
     comparison_axis: Literal['years', 'companies', 'none'] = 'none'
     origins: dict[str, Origin] = Field(default_factory=dict)
 
@@ -97,7 +127,8 @@ class TimePatch(Strict):
 
 
 class PresentationPatch(Strict):
-    unit: Literal['元', '万元', '亿元', '%', '元/股'] | None = None
+    unit: DisplayUnit | None = None
+    metric_units: dict[Literal[*METRICS], DisplayUnit] | None = None
     decimals: int | None = Field(default=None, ge=0, le=12)
     format: Literal['auto', 'text', 'table', 'chart'] | None = None
     chart_type: Literal['line', 'bar', 'pie', 'scatter'] | None = None
@@ -122,7 +153,11 @@ class GoalSelection(Strict):
     time: TimePatch | None = None
     presentation: PresentationPatch | None = None
     calculation: Literal['none', 'difference', 'yoy', 'relative_percent', 'percentage_points'] | None = None
+    calculation_inputs: list[CalculationInput] | None = None
     comparison_axis: Literal['years', 'companies', 'none'] | None = None
+
+
+CatalogTarget = Literal['companies', 'periods', 'metrics', 'capabilities', 'greeting', 'closing']
 
 
 class Goal(Strict):
@@ -134,9 +169,10 @@ class Goal(Strict):
     context_conditions: Conditions | None = None
     selection: GoalSelection | None = None
     condition_edits: list[AtomicModification] = Field(default_factory=list)
-    catalog_target: Literal['companies', 'periods', 'metrics', 'capabilities'] | None = None
+    catalog_target: CatalogTarget | None = None
     execution_ref: str | None = None
     quote_mode: Literal['literal', 'location'] | None = None
+    quote_granularity: Literal['location', 'cell', 'row'] | None = None
     concept_mode: Literal['definition', 'difference', 'implication'] | None = None
     clarification: list[str] = Field(default_factory=list,description='只阻塞此目标的缺条件或歧义；独立且明确的其他目标仍可执行')
 
@@ -166,6 +202,7 @@ class ClarificationChoices(Strict):
 
 
 class Request(Strict):
+    _catalog_codes: tuple[str, ...] = PrivateAttr(default=())
     version: Literal[3] = 3
     turn_id: str
     question: str
@@ -179,12 +216,22 @@ class Request(Strict):
     company_mentions: list[CompanyMention] = Field(default_factory=list)
     clarification: list[str] = Field(default_factory=list)
     unsupported: list[str] = Field(default_factory=list)
+    resolved_goal_conditions: dict[str, Conditions] = Field(default_factory=dict)
+
+    def bind_catalog(self, companies):
+        self._catalog_codes=tuple(companies)
+        return self
 
     def for_goal(self, goal: Goal) -> 'Request':
+        if goal.id in self.resolved_goal_conditions:
+            resolved=goal.model_copy(update={'context_conditions':None,'condition_edits':[],'selection':None})
+            return self.model_copy(update={'conditions':self.resolved_goal_conditions[goal.id].model_copy(deep=True),
+                'goals':[resolved],'modifications':[],'resolved_goal_conditions':{}})
         conditions = (goal.context_conditions or self.conditions).model_copy(deep=True)
+        concept=goal.kind=='concept' and goal.concept_mode in {'definition','difference'}
         if goal.context_conditions and self.modifications:
             from .condition_updates import apply_edits
-            conditions=apply_edits(conditions,self.modifications,self.question,self.turn_id)
+            conditions=apply_edits(conditions,self.modifications,self.question,self.turn_id,concept=concept)
         if goal.selection:
             for key in goal.selection.model_fields_set:
                 value=getattr(goal.selection,key)
@@ -195,11 +242,18 @@ class Request(Strict):
                 setattr(conditions,key,value)
         if goal.condition_edits:
             from .condition_updates import apply_edits
-            conditions=apply_edits(conditions,goal.condition_edits,self.question,self.turn_id)
+            conditions=apply_edits(conditions,goal.condition_edits,self.question,self.turn_id,concept=concept)
         from .condition_defaults import finalize_conditions
+        if conditions.all_companies and self._catalog_codes:
+            conditions.codes=[code for code in self._catalog_codes if code not in conditions.restrictions.excluded_codes]
         conditions=finalize_conditions(conditions,[goal.kind],self.turn_id)
         resolved=goal.model_copy(update={'context_conditions':None,'condition_edits':[],'selection':None})
         return self.model_copy(update={'conditions': conditions, 'goals': [resolved],'modifications':[]})
+
+    def freeze_conditions(self):
+        """作品说明：编译一次的目标条件供审核、执行和状态保存共同读取。"""
+        self.resolved_goal_conditions={g.id:self.for_goal(g).conditions for g in self.goals}
+        return self
 
 
 MetricId = Literal[*METRICS]
@@ -208,6 +262,8 @@ MetricId = Literal[*METRICS]
 class Edit(Strict):
     operation: Literal['replace', 'add', 'remove', 'keep', 'inherit', 'clear']
     text: str = ''
+    lifetime: Literal['turn','task','session'] | None = Field(default=None,
+        description='仅在用户明确指定本轮、当前任务或以后都适用时填写；缺省由程序采用字段的默认作用范围')
 
 
 class CompanyEdit(Edit):
@@ -262,7 +318,13 @@ class AxisEdit(Edit):
     value: Literal['years', 'companies', 'none']
 
 
-# 作品说明：新提案逐字段修改；旧对象编辑格式保留用于读取已保存的v3消息。
+class CalculationInputsEdit(Edit):
+    field: Literal['calculation_inputs']
+    operation: Literal['replace', 'inherit', 'clear']
+    value: list[CalculationInput]
+
+
+# 新提案逐字段修改；旧对象编辑格式保留用于读取已保存的v3消息。
 LEAF_SPECS={
     'time.mode':Literal['explicit','calendar_years','latest_common','latest_each','latest'],
     'time.years':list[Year], 'time.periods':list[Period],
@@ -270,6 +332,7 @@ LEAF_SPECS={
     'time.pairs':list[tuple[Year,Period]]|None,
     'time.single_quarter':bool, 'time.quarters':list[Literal[1,2,3,4]],
     'presentation.unit':Literal['元','万元','亿元','%','元/股']|None,
+    'presentation.metric_units':dict[Literal[*METRICS],DisplayUnit],
     'presentation.decimals':Annotated[int,Field(ge=0,le=12)]|None,
     'presentation.format':Literal['auto','text','table','chart'],
     'presentation.chart_type':Literal['line','bar','pie','scatter'],
@@ -287,7 +350,7 @@ for _path,_value_type in LEAF_SPECS.items():
     _operations=Literal['replace','add','remove','keep','inherit','clear'] if _path in SET_PATHS else Literal['replace','inherit','clear']
     LEAF_EDITS.append(create_model(_name,__base__=Edit,__module__=__name__,
         field=(Literal[_path],...),operation=(_operations,...),value=(_value_type,...)))
-ATOMIC_TYPES=[CompanyEdit,MetricEdit,ScopeEdit,CollectionEdit,CalculationEdit,AxisEdit,*LEAF_EDITS]
+ATOMIC_TYPES=[CompanyEdit,MetricEdit,ScopeEdit,CollectionEdit,CalculationEdit,AxisEdit,CalculationInputsEdit,*LEAF_EDITS]
 AtomicModification=Annotated[Union[tuple(ATOMIC_TYPES)],Field(discriminator='field')]
 ATOMIC_MODIFICATION=TypeAdapter(AtomicModification)
 Modification=Annotated[Union[tuple([*ATOMIC_TYPES,TimeEdit,PresentationEdit,RestrictionEdit])],Field(discriminator='field')]
@@ -346,6 +409,7 @@ class StatementScopeProof(Strict):
     family: Literal['资产负债表','利润表','现金流量表','notes','indicators']
     value_region: HashedOriginalRegion
     label_region: HashedOriginalRegion
+    column_scope: OriginalRegion | None = None
 
 
 class Source(Strict):
@@ -434,17 +498,19 @@ class InterruptedRequest(Strict):
     status: Literal['failed','cancelled']
     confirmed_fields: list[Literal['codes','metrics']] = Field(default_factory=list)
     uncertain_paths: list[str] | None = None
+    uncertain_paths_normalized: bool = False
 
     @field_validator('uncertain_paths')
     @classmethod
     def known_uncertain_paths(cls, value):
-        if value is not None and set(value)-{'codes','metrics','scope','all_companies','calculation','comparison_axis',*LEAF_SPECS}:
+        if value is not None and set(value)-{'codes','metrics','scope','all_companies','calculation','calculation_inputs','comparison_axis',*LEAF_SPECS}:
             raise ValueError('Uncertainty must address registered condition leaves')
         return sorted(set(value)) if value is not None else None
 
 
 class DialogueState(Strict):
     version: Literal[3] = 3
+    state_revision: Literal[2] = 2
     revision: int = 0
     topic: str = 'other'
     legacy_scope_unknown: bool = False
@@ -459,6 +525,14 @@ class DialogueState(Strict):
     last_execution: Execution | None = None
     executions: list[Execution] = Field(default_factory=list)
     modifications: list[Modification] = Field(default_factory=list)
+    session_preferences: list[Modification] = Field(default_factory=list)
+
+    @field_validator('session_preferences')
+    @classmethod
+    def presentation_preferences_only(cls, values):
+        if any(not value.field.startswith(('presentation.','restrictions.')) or value.lifetime!='session' for value in values):
+            raise ValueError('Session preferences must be explicitly scoped presentation or restriction fields')
+        return values
 
 
 class Check(Strict):

@@ -1,4 +1,4 @@
-"""作品说明：构建带版本与来源的检索索引，支持 OCR JSON、原 PDF 文字层及辅助摘要表。新版本完整校验发布后才清理旧片段，失败保留现用证据；章节、页码及报告身份进入元数据。"""
+"""构建带版本与来源的检索索引，支持 OCR JSON、原 PDF 文字层及辅助摘要表。新版本完整校验发布后才清理旧片段，失败保留现用证据；章节、页码及报告身份进入元数据。"""
 
 import os
 import sys
@@ -15,7 +15,7 @@ from loguru import logger
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional, Any
 
-# 作品说明：路径修正：从 src/agent → src → 项目根
+# 路径修正：从 src/agent → src → 项目根
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT_DIR))
 
@@ -42,18 +42,18 @@ from src.utils.data_paths import (
     get_preferred_data_root,
 )
 
-# 作品说明：配置
+# 配置
 
 CHROMA_DB_PATH = str(resolve_chroma_db_path())
 COLLECTION_NAME = "financial_reports"
 
-# 作品说明：研报数据目录（统一 data_root 布局）
+# 研报数据目录（统一 data_root 布局）
 REPORTS_DIR = find_research_reports_root() or (get_preferred_data_root() / "research_reports")
 
-# 作品说明：财报目录（用于 MD&A 提取）
+# 财报目录（用于 MD&A 提取）
 FINANCIAL_REPORTS_DIR = find_financial_reports_root() or (get_preferred_data_root() / "financial_reports")
 
-# 作品说明：MD&A 相关章节关键词（匹配标题）
+# MD&A 相关章节关键词（匹配标题）
 MDA_SECTION_KEYWORDS = [
     '管理层讨论', '经营情况讨论', '经营情况', '报告期内经营情况', '主要业务情况',
     '主营业务情况', '报告期内业绩', '业绩驱动', '重要事项', '未来发展',
@@ -110,15 +110,15 @@ SEMANTIC_TEXT_LABELS = {"text", "content", "vision_footnote", "chart"}
 SEMANTIC_IGNORED_LABELS = {"header", "footer", "number", "image"}
 SEMANTIC_OVERLAP_CHARS = RAG_SEMANTIC_CHUNK_OVERLAP
 
-# 作品说明：Embedding 初始化
+# Embedding 初始化
 
 def get_embedding_function():
-    """作品说明：获取 Embedding 函数：本地开源 BGE 为主路径，DashScope 为可选回退。"""
+    """获取 Embedding 函数：本地开源 BGE 为主路径，DashScope 为可选回退。"""
     return resolve_embedding_function(purpose="rag_build")
 
 
 def init_chroma() -> Any:
-    """作品说明：初始化 ChromaDB 集合，并把向量模型指纹写入元数据。
+    """初始化 ChromaDB 集合，并把向量模型指纹写入元数据。
     
     构建与查询模型不一致时检索结果无效，指纹让这种情况在查询侧直接报错。
     """
@@ -145,7 +145,7 @@ def init_chroma() -> Any:
 
 
 def reset_chroma_db() -> None:
-    """作品说明：清空整个 ChromaDB 目录，确保重建结果不混入历史数据。"""
+    """清空整个 ChromaDB 目录，确保重建结果不混入历史数据。"""
     db_path = Path(CHROMA_DB_PATH)
     if db_path.exists():
         shutil.rmtree(db_path)
@@ -153,7 +153,7 @@ def reset_chroma_db() -> None:
     db_path.mkdir(parents=True, exist_ok=True)
 
 
-# 作品说明：文本切片
+# 文本切片
 
 def _is_top_level_title(title: str) -> bool:
     return bool(re.match(r"^第[一二三四五六七八九十百]+节", title.strip()))
@@ -343,7 +343,7 @@ def chunk_text(
     chunk_size: int = RAG_SEMANTIC_CHUNK_SIZE,
     overlap: int = RAG_SEMANTIC_CHUNK_OVERLAP,
 ) -> List[str]:
-    """作品说明：纯文本兜底切分：
+    """纯文本兜底切分：
     先按段落/句子做语义切分，再保留少量重叠。
     """
     global SEMANTIC_OVERLAP_CHARS
@@ -355,7 +355,7 @@ def chunk_text(
         SEMANTIC_OVERLAP_CHARS = previous_overlap
 
 
-# 作品说明：元数据提取
+# 元数据提取
 
 def extract_meta_from_filename(name: str) -> Tuple[Optional[str], Optional[int]]:
     stock_code, report_year = None, None
@@ -369,7 +369,7 @@ def extract_meta_from_filename(name: str) -> Tuple[Optional[str], Optional[int]]
 
 
 def extract_meta_from_content(text: str) -> Tuple[Optional[str], Optional[int]]:
-    """作品说明：从文档正文提取股票代码和报告年份（比文件名更可靠）。"""
+    """从文档正文提取股票代码和报告年份（比文件名更可靠）。"""
     stock_code = None
     report_year = None
 
@@ -384,13 +384,13 @@ def extract_meta_from_content(text: str) -> Tuple[Optional[str], Optional[int]]:
     return stock_code, report_year
 
 
-# 作品说明：MD&A 章节提取
+# MD&A 章节提取
 
 def extract_mda_sections(markdown_text: str) -> List[str]:
-    """作品说明：从财报 Markdown 中提取管理层讨论与分析（MD&A）等叙述性章节。
+    """从财报 Markdown 中提取管理层讨论与分析（MD&A）等叙述性章节。
     排除纯财务数据表格，保留定性分析文字。
     """
-    # 作品说明：按 Markdown 标题分割
+    # 按 Markdown 标题分割
     section_pattern = re.compile(r'(#{1,4}\s+.+)', re.MULTILINE)
     parts = section_pattern.split(markdown_text)
 
@@ -400,7 +400,7 @@ def extract_mda_sections(markdown_text: str) -> List[str]:
 
     for part in parts:
         if re.match(r'#{1,4}\s+', part):
-            # 作品说明：保存上一个章节
+            # 保存上一个章节
             if current_body.strip() and _is_mda_section(current_title, current_body):
                 mda_sections.append(f"{current_title}\n{current_body.strip()}")
             current_title = part.strip()
@@ -408,7 +408,7 @@ def extract_mda_sections(markdown_text: str) -> List[str]:
         else:
             current_body += part
 
-    # 作品说明：最后一个章节
+    # 最后一个章节
     if current_body.strip() and _is_mda_section(current_title, current_body):
         mda_sections.append(f"{current_title}\n{current_body.strip()}")
 
@@ -416,7 +416,7 @@ def extract_mda_sections(markdown_text: str) -> List[str]:
 
 
 def _is_mda_section(title: str, body: str) -> bool:
-    """作品说明：判断是否为叙述性 MD&A 章节（排除纯表格内容）。"""
+    """判断是否为叙述性 MD&A 章节（排除纯表格内容）。"""
     clean_title = str(title or "")
     clean_body = re.sub(r'<[^>]+>', '', str(body or ''))
     text_chars = len(clean_body)
@@ -559,7 +559,7 @@ def _extract_semantic_sections_from_ocr_json(json_path: Path) -> List[Dict[str, 
         current_section = None
 
     for page_index, page in enumerate(iter_layout_pages(payload), start=1):
-        # 作品说明：即使章节跨页，也保留文本的页级边界。
+        # 即使章节跨页，也保留文本的页级边界。
         carried_titles = list((current_section or {}).get('title_path') or [])
         flush_current()
         if carried_titles:
@@ -632,7 +632,7 @@ def _build_semantic_chunks_from_ocr_json(json_path: Path) -> List[str]:
     return documents
 
 
-# 作品说明：研报处理
+# 研报处理
 
 def _init_build_stats() -> Dict[str, int]:
     return {
@@ -771,7 +771,7 @@ def _delete_existing_source_chunks(
 
 
 def _source_fingerprint(pdf_path: Optional[Path], json_path: Optional[Path]) -> str:
-    """作品说明：发布版本由原始 PDF 与提取内容共同确定。"""
+    """发布版本由原始 PDF 与提取内容共同确定。"""
     digests=[]
     for target in (pdf_path,json_path):
         if target and Path(target).is_file():
@@ -786,7 +786,7 @@ def _source_already_current(
     source_json: Optional[str],
     fingerprint: str,
 ) -> bool:
-    """作品说明：增量构建：库内该来源的指纹未变化则跳过重建。"""
+    """增量构建：库内该来源的指纹未变化则跳过重建。"""
     if not fingerprint:
         return False
     for key, value in (("source_json", source_json), ("source", source)):
@@ -800,7 +800,7 @@ def _source_already_current(
         if metadatas:
             fingerprint_matches = all(str(meta.get("source_fingerprint") or "") == fingerprint and meta.get("publication_status") != "staged" for meta in metadatas)
             expected_chunks = int(metadatas[0].get("source_chunk_count") or 0)
-            # 作品说明：新入库来源记录总分片数，可识别上次中断造成的部分写入；旧数据没有
+            # 新入库来源记录总分片数，可识别上次中断造成的部分写入；旧数据没有
             # 该字段时保持向后兼容，仍按指纹判断。
             count_matches = not expected_chunks or len(payload.get("ids") or []) == expected_chunks
             return fingerprint_matches and count_matches
@@ -902,7 +902,7 @@ def _upsert_document_records(
         ids.append(record_id)
 
     if not documents:
-        return 0  # 作品说明：空提取结果不能抹除已发布来源。
+        return 0  # 空提取结果不能抹除已发布来源。
     for metadata in metadatas:
         metadata["source_chunk_count"] = len(documents)
     try:
@@ -910,13 +910,13 @@ def _upsert_document_records(
         inserted = collection.get(ids=ids, include=["metadatas"])
         if set(inserted.get("ids") or []) != set(ids):
             raise RuntimeError("New source version is incomplete")
-        # 作品说明：全部向量生成成功后再发布元数据。
+        # 全部向量生成成功后再发布元数据。
         published = [{**meta, "publication_status": "active"} for meta in metadatas]
         collection.update(ids=ids, metadatas=published)
     except Exception:
         collection.delete(ids=ids)
         raise
-    # 作品说明：新版本可读取之前不能删除旧版本。
+    # 新版本可读取之前不能删除旧版本。
     if old_ids:
         collection.delete(ids=list(old_ids))
     return len(documents)
@@ -928,7 +928,7 @@ def process_pdf_reports(
     stats: Optional[Dict[str, int]] = None,
     skip_if_json_exists: bool = True,
 ):
-    """作品说明：处理 PDF 研报（个股研报 / 行业研报）。若已存在 OCR JSON，默认跳过。"""
+    """处理 PDF 研报（个股研报 / 行业研报）。若已存在 OCR JSON，默认跳过。"""
     pdf_files = list(base_dir.rglob("*.pdf"))
     logger.info(f"发现 {len(pdf_files)} 个研报 PDF")
     if stats is not None:
@@ -989,7 +989,7 @@ def process_pdf_reports(
 
 
 def _research_extra_meta(source_pdf_path: Path, metadata_index: Optional[Dict[str, Any]]) -> Dict[str, Any]:
-    """作品说明：按文件名（即研报标题）关联结构化元数据，补充股票代码/机构/评级/发布日期。"""
+    """按文件名（即研报标题）关联结构化元数据，补充股票代码/机构/评级/发布日期。"""
     if not metadata_index:
         return {}
     from src.etl.research_metadata import lookup_research_meta
@@ -1023,7 +1023,7 @@ def _ingest_research_records(
         report_year = content_year
 
     extra_meta = _research_extra_meta(source_pdf_path, metadata_index)
-    # 作品说明：元数据中的股票代码（个股研报）比文件名/正文推断更可靠
+    # 元数据中的股票代码（个股研报）比文件名/正文推断更可靠
     if extra_meta.get("research_stock_code"):
         stock_code = extra_meta["research_stock_code"]
 
@@ -1046,7 +1046,7 @@ def _ingest_research_json(
     metadata_index: Optional[Dict[str, Any]] = None,
     incremental: bool = False,
 ) -> int:
-    """作品说明：处理单个研报 OCR JSON；返回入库片段数（-1 表示增量跳过）。"""
+    """处理单个研报 OCR JSON；返回入库片段数（-1 表示增量跳过）。"""
     source_pdf_path = _get_pdf_path_from_json_path(json_path)
 
     if incremental and _source_already_current(
@@ -1086,7 +1086,7 @@ def _ingest_research_json(
 
 
 def _load_research_text_direct(pdf_path: Path) -> Optional[str]:
-    """作品说明：text-first 路线：研报为纯文本 PDF 时直接抽取文字层，无需 OCR。"""
+    """text-first 路线：研报为纯文本 PDF 时直接抽取文字层，无需 OCR。"""
     try:
         from src.utils.pdf_splitter import extract_text_pages
 
@@ -1105,7 +1105,7 @@ def ingest_research_pdf(
     metadata_index: Optional[Dict[str, Any]] = None,
     incremental: bool = True,
 ) -> int:
-    """作品说明：单份研报入库（上传管线复用）：优先 OCR JSON，无 JSON 走 text-first。"""
+    """单份研报入库（上传管线复用）：优先 OCR JSON，无 JSON 走 text-first。"""
     pdf_path = Path(pdf_path)
     if collection is None:
         collection = init_chroma()
@@ -1144,7 +1144,7 @@ def process_json_reports(
     incremental: bool = False,
     metadata_index: Optional[Dict[str, Any]] = None,
 ):
-    """作品说明：统一使用 PaddleOCR JSON 处理研报（incremental=True 时跳过未变化来源）。"""
+    """统一使用 PaddleOCR JSON 处理研报（incremental=True 时跳过未变化来源）。"""
     json_files = [
         p for p in base_dir.rglob("*.json")
         if any(p.name.endswith(suffix) for suffix in OCR_JSON_SUFFIXES)
@@ -1179,7 +1179,7 @@ def process_json_reports(
 
 
 def process_tabular_reports(collection, base_dir: Path, stats: Optional[Dict[str, int]] = None):
-    """作品说明：处理研报摘要表（xlsx），仅作辅助知识源。"""
+    """处理研报摘要表（xlsx），仅作辅助知识源。"""
     tabular_files = list(base_dir.rglob("*.xlsx"))
     logger.info(f"发现 {len(tabular_files)} 个研报表格文件")
     if stats is not None:
@@ -1247,16 +1247,16 @@ def process_tabular_reports(collection, base_dir: Path, stats: Optional[Dict[str
                 stats["research_tabular_failed"] += 1
 
 
-# 作品说明：财报 MD&A 处理
+# 财报 MD&A 处理
 
 def _financial_page_records(pdf_path: Path, sections: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """作品说明：原 PDF 可选择文字用于逐字引用，OCR 仅作为明确标记的兜底来源。"""
+    """原 PDF 可选择文字用于逐字引用，OCR 仅作为明确标记的兜底来源。"""
     reader = None
     try:
         from pypdf import PdfReader
         reader = PdfReader(pdf_path)
     except Exception:
-        pass  # 作品说明：扫描页或不可读页保留 OCR 的页身份。
+        pass  # 扫描页或不可读页保留 OCR 的页身份。
     by_page = {}
     for section in sections:
         kind = _classify_financial_section(section.get('title_path',[]),section.get('body_parts',[]))
@@ -1275,7 +1275,7 @@ def _financial_page_records(pdf_path: Path, sections: List[Dict[str, Any]]) -> L
             parts=[native];method='pdf_text'
         else:
             parts=[part for _,section in entries for part in section.get('body_parts',[])];method='ocr'
-        # 作品说明：章节标题只作为元数据，不能把合成标题添加到原文摘录中。
+        # 章节标题只作为元数据，不能把合成标题添加到原文摘录中。
         chunks=_build_chunk_records([],parts,base_meta={'doc_type':kind,'page_start':page,'page_end':page,
                                                        'doc_category':'financial','extraction_method':method})
         for chunk in chunks:
@@ -1291,7 +1291,7 @@ def process_financial_report_mda(
     source_override: Optional[Dict[str, Dict[str, Optional[Path]]]] = None,
     incremental: bool = False,
 ):
-    """作品说明：统一使用 PaddleOCR JSON 提取财报叙述性章节入库。"""
+    """统一使用 PaddleOCR JSON 提取财报叙述性章节入库。"""
     if source_override is None and not base_dir.exists():
         logger.warning(f"财报目录不存在，跳过 MD&A 提取: {base_dir}")
         return
@@ -1381,7 +1381,7 @@ def process_financial_report_mda(
 
 
 def _extract_narrative_from_large_pdf(pdf_path: str) -> Optional[str]:
-    """作品说明：大 PDF 专用：用 pdfplumber 提取非财务表格页的叙述文字。
+    """大 PDF 专用：用 pdfplumber 提取非财务表格页的叙述文字。
     先解析目录确定财务页范围，然后提取其余页面。
     """
     try:
@@ -1399,7 +1399,7 @@ def _extract_narrative_from_large_pdf(pdf_path: str) -> Optional[str]:
 
 
 def _load_markdown_for_pdf(pdf_path: Path) -> Optional[str]:
-    """作品说明：尝试从缓存或 OCR 获取 Markdown 文本。"""
+    """尝试从缓存或 OCR 获取 Markdown 文本。"""
     json_path = find_json_cache_for_pdf(str(pdf_path))
     if json_path:
         try:
@@ -1433,7 +1433,7 @@ def _batched_upsert(
     max_retries: int = 3,
     retry_base_delay: float = 2.0,
 ) -> None:
-    """作品说明：按 Provider 合适的批次写入，并带指数退避重试。"""
+    """按 Provider 合适的批次写入，并带指数退避重试。"""
     total = len(documents)
     if not total:
         return
@@ -1475,7 +1475,7 @@ def _upsert_chunks(
     report_year: Optional[int],
     doc_type: str,
 ):
-    """作品说明：将文本切片批量 upsert 到 ChromaDB。"""
+    """将文本切片批量 upsert 到 ChromaDB。"""
     if not chunks:
         return
     ids = [f"{pdf_path.stem}_{doc_type}_{i}" for i in range(len(chunks))]
@@ -1515,7 +1515,7 @@ def process_selected_financial_report_mda(
     pdf_paths: List[Path],
     stats: Optional[Dict[str, int]] = None,
 ):
-    """作品说明：仅对指定 PDF 列表提取并入库财报 MD&A，用于抽样检查。"""
+    """仅对指定 PDF 列表提取并入库财报 MD&A，用于抽样检查。"""
     selected: List[Path] = []
     for path_value in pdf_paths:
         path = Path(path_value)
@@ -1552,10 +1552,10 @@ def process_selected_financial_report_mda(
     )
 
 
-# 作品说明：主入口
+# 主入口
 
 def ingest_financial_report_pdf(pdf_path: Path, collection=None, source_json_path: Optional[Path] = None) -> int:
-    """作品说明：单份财报 MD&A 入库（上传管线复用）。"""
+    """单份财报 MD&A 入库（上传管线复用）。"""
     if collection is None:
         collection = init_chroma()
     from collections import defaultdict
@@ -1577,7 +1577,7 @@ def build_knowledge_base(
     reset: bool = True,
     incremental: bool = False,
 ):
-    """作品说明：构建 RAG 知识库。
+    """构建 RAG 知识库。
     Args:
     include_research_reports: 是否处理研报
     include_financial_mda: 是否提取财报 MD&A 章节
@@ -1619,7 +1619,7 @@ def build_knowledge_base(
 
 
 class RAGKnowledgeBase:
-    """作品说明：供批量构建流程调用的知识库构建接口。"""
+    """供批量构建流程调用的知识库构建接口。"""
 
     def __init__(self, reset_on_first_build: bool = False):
         self.collection = None
@@ -1655,7 +1655,7 @@ class RAGKnowledgeBase:
         elif is_financial_dir:
             process_financial_report_mda(collection, base_dir, stats=stats)
         else:
-            # 作品说明：未知目录时做保守兼容：优先 JSON + 表格摘要，再尝试财报语义提取。
+            # 未知目录时做保守兼容：优先 JSON + 表格摘要，再尝试财报语义提取。
             process_json_reports(collection, base_dir, stats=stats)
             process_tabular_reports(collection, base_dir, stats=stats)
             process_financial_report_mda(collection, base_dir, stats=stats)

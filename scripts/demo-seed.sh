@@ -5,14 +5,14 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ENV_FILE="$ROOT_DIR/.env.demo"
 DEMO_DATABASE="finsight_demo"
 SKIP_DATABASE=0
-SKIP_MODEL_PULL=0
+SKIP_MODEL_CHECK=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --env-file) ENV_FILE="$2"; shift 2 ;;
     --database) DEMO_DATABASE="$2"; shift 2 ;;
     --skip-database) SKIP_DATABASE=1; shift ;;
-    --skip-model-pull) SKIP_MODEL_PULL=1; shift ;;
+    --skip-model-check) SKIP_MODEL_CHECK=1; shift ;;
     *) echo "Unknown argument: $1" >&2; exit 2 ;;
   esac
 done
@@ -37,15 +37,14 @@ else
   PYTHON="${PYTHON:-python3}"
 fi
 
-export LLM_PROVIDER=ollama
+export LLM_PROVIDER=openai_compat
 export EMBEDDING_PROVIDER=bge_local
 export DB_NAME="$DEMO_DATABASE"
 export MYSQL_DATABASE="$DEMO_DATABASE"
 export CHROMA_DB_PATH=data/demo_chroma_db
 
-if [[ "$SKIP_MODEL_PULL" -eq 0 ]]; then
-  MODEL="${OLLAMA_MODEL:-qwen3.5:9b-q4_K_M}"
-  "$PYTHON" "$ROOT_DIR/scripts/ensure_ollama_model.py" --model "$MODEL"
+if [[ "$SKIP_MODEL_CHECK" -eq 0 ]]; then
+  "$PYTHON" "$ROOT_DIR/scripts/check_cloud_model.py" --env "$ENV_FILE"
 fi
 
 if [[ "$SKIP_DATABASE" -eq 0 ]]; then

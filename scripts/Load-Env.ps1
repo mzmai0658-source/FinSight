@@ -1,6 +1,7 @@
-﻿param(
+param(
     [string]$EnvFile = "",
-    [switch]$Override
+    [switch]$Override,
+    [switch]$SkipCredentialPreparation
 )
 
 $ErrorActionPreference = "Stop"
@@ -68,7 +69,7 @@ if (Test-Path -LiteralPath $EnvFile) {
     Write-Warning "No .env file found at $EnvFile. Defaults from application.yml and Python settings will be used."
 }
 
-# 作品说明：本机启动时同步 Java MYSQL_* 与 Python DB_* 配置。
+# 本机启动时同步 Java MYSQL_* 与 Python DB_* 配置。
 Copy-EnvIfPresent -Source "DB_HOST" -Target "MYSQL_HOST"
 Copy-EnvIfPresent -Source "DB_PORT" -Target "MYSQL_PORT"
 Copy-EnvIfPresent -Source "DB_USER" -Target "MYSQL_USER"
@@ -89,8 +90,8 @@ Set-ProcessEnv -Name "RABBITMQ_USERNAME" -Value "guest" -Default
 Set-ProcessEnv -Name "RABBITMQ_PASSWORD" -Value "guest" -Default
 Set-ProcessEnv -Name "AGENT_BASE_URL" -Value "http://127.0.0.1:8000" -Default
 
-# 作品说明：两项本机服务共享工作区私有凭据。
-if ([string]::IsNullOrWhiteSpace($env:INTERNAL_API_TOKEN)) {
+# 两项本机服务共享工作区私有凭据。
+if (-not $SkipCredentialPreparation -and [string]::IsNullOrWhiteSpace($env:INTERNAL_API_TOKEN)) {
     $taskPython = Join-Path $Root '.venv\Scripts\python.exe'
     if (-not (Test-Path -LiteralPath $taskPython)) { $taskPython = 'python' }
     & $taskPython (Join-Path $Root 'scripts\runtime_env.py')

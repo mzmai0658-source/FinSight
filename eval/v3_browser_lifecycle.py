@@ -1,4 +1,4 @@
-"""作品说明：验证实际 Vue 页面中的刷新、断网、会话切换与停止生成。"""
+"""验证实际 Vue 页面中的刷新、断网、会话切换与停止生成。"""
 import json,sys,time
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
@@ -32,7 +32,7 @@ def main():
         b.navigate('http://127.0.0.1:5176/login');b.wait_for('Boolean(document.querySelector("input[type=password]"))')
         b.evaluate('(()=>{const c='+json.dumps(credentials)+';for(const e of document.querySelectorAll("input")){e.value=e.type==="password"?c.password:c.username;e.dispatchEvent(new Event("input",{bubbles:true}));}document.querySelector("form").requestSubmit();return true})()')
         b.wait_for('Boolean(localStorage.getItem("finsight-auth"))');b.navigate('http://127.0.0.1:5176/workspace')
-        # 作品说明：新建隔离会话，防止将旧任务或旧回答误认成本次结果；浏览器操作使用实际页面控件。
+        # 新建隔离会话，防止将旧任务或旧回答误认成本次结果；浏览器操作使用实际页面控件。
         b.wait_for('Boolean(document.querySelector(".ws__topbar-new") && !document.querySelector(".ws__topbar-new").disabled)')
         click('.ws__topbar-new')
         turn=submit('请查同仁堂2022、2023、2024年归母净利润，并逐年解释变化原因，分别给出对应原文依据。')

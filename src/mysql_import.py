@@ -1,5 +1,5 @@
 
-"""作品说明：MySQL 数据导入脚本
+"""MySQL 数据导入脚本
 将提取的数据导入到 MySQL 数据库
 """
 
@@ -15,7 +15,7 @@ from config.db_config import get_db_config
 from src.init_db import Base, IncomeSheet, BalanceSheet, CashFlowSheet, CorePerformanceIndicatorsSheet
 
 def create_database():
-    """作品说明：创建数据库"""
+    """创建数据库"""
     config = get_db_config()
     engine = create_engine(config.connection_string_no_db)
     with engine.connect() as conn:
@@ -24,14 +24,14 @@ def create_database():
         logger.info(f"数据库 '{config.database}' 创建成功")
 
 def create_tables():
-    """作品说明：创建表结构"""
+    """创建表结构"""
     config = get_db_config()
     engine = create_engine(config.connection_string)
     Base.metadata.create_all(engine)
     logger.info("所有表创建成功")
 
 def get_table_columns(model_class):
-    """作品说明：获取模型类的所有列名"""
+    """获取模型类的所有列名"""
     return [c.name for c in model_class.__table__.columns]
 
 
@@ -145,14 +145,14 @@ def import_sheet(
     fill_only: bool = False,
     replace_existing: bool = False,
 ):
-    """作品说明：通用导入函数"""
+    """通用导入函数"""
     if df.empty:
         return 0
 
-    # 作品说明：获取数据库表的有效列
+    # 获取数据库表的有效列
     valid_columns = get_table_columns(model_class)
 
-    # 作品说明：筛选DataFrame中存在的列
+    # 筛选DataFrame中存在的列
     df_columns = [c for c in df.columns if c in valid_columns]
     df_filtered = df[df_columns]
 
@@ -275,43 +275,43 @@ def import_sheet(
         raise
 
 def import_data(excel_path: str):
-    """作品说明：导入数据到 MySQL"""
+    """导入数据到 MySQL"""
     config = get_db_config()
     engine = create_engine(config.connection_string)
 
     xlsx = pd.ExcelFile(excel_path)
 
-    # 作品说明：导入利润表
+    # 导入利润表
     if '利润表' in xlsx.sheet_names:
         df = pd.read_excel(xlsx, sheet_name='利润表')
         import_sheet(engine, df, IncomeSheet, 'income_sheet')
 
-    # 作品说明：导入资产负债表
+    # 导入资产负债表
     if '资产负债表' in xlsx.sheet_names:
         df = pd.read_excel(xlsx, sheet_name='资产负债表')
         import_sheet(engine, df, BalanceSheet, 'balance_sheet')
 
-    # 作品说明：导入现金流量表
+    # 导入现金流量表
     if '现金流量表' in xlsx.sheet_names:
         df = pd.read_excel(xlsx, sheet_name='现金流量表')
         import_sheet(engine, df, CashFlowSheet, 'cash_flow_sheet')
 
-    # 作品说明：导入核心业绩指标表
+    # 导入核心业绩指标表
     if '核心业绩指标表' in xlsx.sheet_names:
         df = pd.read_excel(xlsx, sheet_name='核心业绩指标表')
         import_sheet(engine, df, CorePerformanceIndicatorsSheet, 'core_performance_indicators_sheet')
 
 def init_mysql_database():
-    """作品说明：初始化 MySQL 数据库"""
+    """初始化 MySQL 数据库"""
     logger.info("开始初始化 MySQL 数据库...")
 
-    # 作品说明：创建数据库
+    # 创建数据库
     create_database()
 
-    # 作品说明：创建表
+    # 创建表
     create_tables()
 
-    # 作品说明：导入数据
+    # 导入数据
     excel_path = "data/runtime/results/extracted_data.xlsx"
     if os.path.exists(excel_path):
         import_data(excel_path)

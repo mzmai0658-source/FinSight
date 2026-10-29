@@ -9,7 +9,7 @@ import type {
   AssistantMetadata,
 } from "@/types/api";
 
-/** 作品说明：消息渲染视图模型：静态历史消息与流式进行中消息共用同一渲染路径。 */
+/** 消息渲染视图模型：静态历史消息与流式进行中消息共用同一渲染路径。 */
 export interface MessageView {
   datasetProfile?: AssistantMetadata["dataset_profile"];
   responseKind?: AssistantMetadata["response_kind"];
@@ -35,7 +35,7 @@ export interface MessageView {
   clarifyOptions: string[];
   error: string;
   holding?: boolean;
-  /** 作品说明：messages 数组中的下标，用于证据栏联动；流式消息为 -1 */
+  /** messages 数组中的下标，用于证据栏联动；流式消息为 -1 */
   messageIndex: number;
 }
 

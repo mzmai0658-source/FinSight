@@ -1,4 +1,4 @@
-"""作品说明：每轮预算与有界诊断，不记录提示词或内部思考。"""
+"""每轮预算与有界诊断，不记录提示词或内部思考。"""
 from __future__ import annotations
 
 from contextlib import contextmanager
@@ -66,7 +66,7 @@ def record_failure(code, stage, detail, **extra):
 
 @contextmanager
 def turn_runtime():
-    # 作品说明：执行预算低于 Java 超时，为本轮一次修正留出时间。
+    # 执行预算低于 Java 超时，为本轮一次修正留出时间。
     seconds = min(240, max(30, float(os.getenv('AGENT_TURN_TIMEOUT_SECONDS', '240'))))
     current = TurnRuntime(seconds=seconds)
     token = _current.set(current)

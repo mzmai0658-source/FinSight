@@ -1,4 +1,4 @@
-"""作品说明：比较基期不是额外的同比目标；多年度各年同比仍逐年执行。"""
+"""比较基期不是额外的同比目标；多年度各年同比仍逐年执行。"""
 from src.agent.v3.executor import calculation_targets
 from src.agent.v3.contracts import Request,Conditions,Goal
 
@@ -8,6 +8,8 @@ def request(question):
 def test_base_year_does_not_require_previous_growth():
     selection={'600080':[(2022,'FY'),(2023,'FY')]}
     r=request('计算2023年净利润相对2022年的同比增长率')
+    from src.agent.v3.contracts import CalculationInput
+    r.conditions.calculation_inputs=[CalculationInput(current={'year':2023},base={'year':2022})]
     assert calculation_targets(r,selection)=={'600080':[(2023,'FY')]}
 
 def test_each_year_yoy_still_requires_each_base():

@@ -1,4 +1,4 @@
-"""作品说明：研报元数据索引：标题 ↔ 股票代码/机构/评级/发布日期。
+"""研报元数据索引：标题 ↔ 股票代码/机构/评级/发布日期。
 
 数据源：data_root/research_reports/metadata/医药|中药 下的研报信息 xlsx。
 研报 PDF 文件名即标题，借此把 RAG 切片与结构化元数据关联起来。
@@ -19,7 +19,7 @@ from src.utils.data_paths import find_research_metadata_dir
 @dataclass
 class ResearchMeta:
     title: str
-    report_type: str  # 作品说明：股票代码与行业身份。
+    report_type: str  # 股票代码与行业身份。
     stock_code: str = ""
     stock_name: str = ""
     org_name: str = ""
@@ -33,7 +33,7 @@ class ResearchMeta:
 
 
 def normalize_title(title: str) -> str:
-    """作品说明：文件名/标题归一化：去空白与全半角差异，便于匹配。"""
+    """文件名/标题归一化：去空白与全半角差异，便于匹配。"""
     text = str(title or "").strip()
     text = re.sub(r"\s+", "", text)
     table = str.maketrans({"：": ":", "，": ",", "（": "(", "）": ")", "！": "!", "？": "?"})
@@ -51,7 +51,7 @@ def _normalize_code(value) -> str:
 
 
 def load_research_metadata(metadata_dir: Optional[Path] = None) -> Dict[str, ResearchMeta]:
-    """作品说明：构建 normalized_title → ResearchMeta 索引（个股研报含股票代码）。"""
+    """构建 normalized_title → ResearchMeta 索引（个股研报含股票代码）。"""
     base = metadata_dir or find_research_metadata_dir()
     index: Dict[str, ResearchMeta] = {}
     if base is None or not Path(base).is_dir():
@@ -61,7 +61,7 @@ def load_research_metadata(metadata_dir: Optional[Path] = None) -> Dict[str, Res
     for xlsx in sorted(Path(base).rglob("*.xlsx")):
         if xlsx.name.startswith("~$") or "字段说明" in xlsx.name:
             continue
-        dataset_tag = xlsx.parent.name  # 作品说明：医药 / 中药
+        dataset_tag = xlsx.parent.name  # 医药 / 中药
         is_stock = "个股" in xlsx.name
         try:
             df = pd.read_excel(xlsx)
@@ -100,6 +100,6 @@ def load_research_metadata(metadata_dir: Optional[Path] = None) -> Dict[str, Res
 def lookup_research_meta(
     index: Dict[str, ResearchMeta], filename_or_title: str,
 ) -> Optional[ResearchMeta]:
-    """作品说明：按文件名（去扩展名）或标题查找元数据。"""
+    """按文件名（去扩展名）或标题查找元数据。"""
     stem = Path(str(filename_or_title)).stem
     return index.get(normalize_title(stem))

@@ -64,7 +64,7 @@ public class AuthService {
         return issueTokenPair(user);
     }
 
-    /** 作品说明：refresh token 旋转换发：旧 refresh 立即失效，防止重放。 */
+    /** refresh token 旋转换发：旧 refresh 立即失效，防止重放。 */
     public TokenPairResponse refresh(String refreshToken) {
         Claims claims = tokenProvider.parseRefreshToken(refreshToken);
         long userId = Long.parseLong(claims.getSubject());
@@ -86,10 +86,10 @@ public class AuthService {
                 Claims claims = tokenProvider.parseRefreshToken(refreshToken);
                 tokenStore.revokeRefreshToken(Long.parseLong(claims.getSubject()), claims.getId());
             } catch (BizException ignored) {
-                // 作品说明：refresh 已过期/非法则无需撤销
+                // refresh 已过期/非法则无需撤销
             }
         }
-        // 作品说明：access token 拉黑剩余有效期
+        // access token 拉黑剩余有效期
         tokenStore.blacklistAccessToken(loginUser.tokenId(), jwtProperties.getAccessTokenTtl());
     }
 

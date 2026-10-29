@@ -1,4 +1,4 @@
-"""作品说明：将导入的开发事实与独立原始 PDF 候选比对；结果属于导入审计，不是模型得分或人工核验准确率。"""
+"""将导入的开发事实与独立原始 PDF 候选比对；结果属于导入审计，不是模型得分或人工核验准确率。"""
 from __future__ import annotations
 import argparse
 import hashlib

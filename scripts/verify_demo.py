@@ -1,4 +1,4 @@
-"""作品说明：公开演示采用生产 v3 事实、原页与检索索引；检查隔离只读权限。"""
+"""公开演示采用生产 v3 事实、原页与检索索引；检查隔离只读权限。"""
 from __future__ import annotations
 import argparse,json,sys
 from pathlib import Path

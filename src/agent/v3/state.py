@@ -1,4 +1,4 @@
-"""作品说明：按明确编辑更新状态，将确认的条件与未核实回答文字分开保存。"""
+"""按明确编辑更新状态，将确认的条件与未核实回答文字分开保存。"""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -8,6 +8,7 @@ import re
 from .catalog import ALIASES, AMBIGUOUS_TERMS, FAMILY_CHOICES, METRICS
 from .contracts import ClarificationChoices, Conditions, DialogueState, Goal, Origin, Request, Understanding
 from .condition_updates import merge_object,patch_values,apply_edits,validate_year_change
+from .company_identity import current_company_codes
 
 
 class InvalidUnderstanding(ValueError):
@@ -18,11 +19,11 @@ FINANCIAL_KINDS={'lookup','compare','rank','chart','quote','cause','sign'}
 
 
 def financial_context_conditions(state: DialogueState):
-    """作品说明：继承条件来自类型化请求或执行快照，旧回答正文不参与条件恢复。"""
+    """继承条件来自类型化请求或执行快照，旧回答正文不参与条件恢复。"""
     if state.pending:
         return {g.id:state.pending.for_goal(g).conditions for g in state.pending.goals if g.kind in FINANCIAL_KINDS}
     if state.goal_conditions:return {key:value.model_copy(deep=True) for key,value in state.goal_conditions.items()}
-    # 作品说明：历史执行记录用于回查，不作为第二份记忆来源，避免概念插话后恢复已清除的公司。
+    # 历史执行记录用于回查，不作为第二份记忆来源，避免概念插话后恢复已清除的公司。
     return {g.id:state.conditions.model_copy(deep=True) for g in state.active_goals if g.kind in FINANCIAL_KINDS}
 
 
@@ -33,18 +34,19 @@ def read_state(history: list[dict]) -> DialogueState:
         raw = (item.get('metadata') or {}).get('dialogue_state')
         if isinstance(raw, dict) and raw.get('version') == 3:
             try:
-                return DialogueState.model_validate(raw)
+                from .condition_lifetimes import migrate_state
+                return migrate_state(DialogueState.model_validate(raw),legacy='state_revision' not in raw)
             except ValueError:
-                # 作品说明：状态结构损坏时采用空状态，不把损坏内容转为财务事实。
+                # 状态结构损坏时采用空状态，不把损坏内容转为财务事实。
                 return DialogueState()
         if isinstance(raw, dict):
-            # 作品说明：旧格式只迁移明确登记的身份，缺少口径信息时重新确认。
+            # 旧格式只迁移明确登记的身份，缺少口径信息时重新确认。
             old = raw.get('active_request') or {}
             codes = [c for c in old.get('codes', []) if isinstance(c, str) and len(c) == 6 and c.isdigit()]
             state = DialogueState()
             state.conditions.codes = codes
             state.legacy_scope_unknown = bool(codes)
-            # 作品说明：旧指标、报表范围和回答数值不升级为当前确认条件。
+            # 旧指标、报表范围和回答数值不升级为当前确认条件。
             return state
     return DialogueState()
 
@@ -53,7 +55,22 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
                         previous: DialogueState, companies: dict[str, str]) -> tuple[Request, DialogueState]:
     from .memory_updates import apply_memory_edits
     previous=apply_memory_edits(previous,understanding.memory_edits,question,turn_id)
+    previous=_leave_unrelated_failed_request(previous,understanding)
     state = previous.model_copy(deep=True)
+    from .request_bindings import pending_company_answer
+    if (understanding.continuity=='new' and any(g.kind in FINANCIAL_KINDS for g in understanding.goals)
+        and pending_company_answer(question,previous.pending,companies)):
+        invalid=InvalidUnderstanding('本轮仅补充待澄清任务中的公司，应使用continue或resume；保留已确认的指标和年份，不能作为新任务清空。')
+        invalid.rejected_continuities=('new','clear')
+        raise invalid
+    from .request_bindings import literal_fact_reference
+    if (understanding.continuity in {'continue','resume'} and literal_fact_reference(question)
+        and any(g.kind in {'sign','quote'} or g.kind=='concept' and g.concept_mode=='implication' for g in understanding.goals)
+        and not any(r.target=='fact' for r in understanding.context_references)):
+        raise InvalidUnderstanding('本轮指代已查询的数值，必须登记对应事实引用；不能把临时追问当作新财务任务。')
+    # 事实出处、正负和含义的临时追问保存本轮结果，但不取代原财务任务及其展示条件。
+    from .condition_lifetimes import is_reference_turn
+    fact_aside=is_reference_turn(understanding)
     goal_context=financial_context_conditions(previous)
     confirmed_codes=set(previous.conditions.codes)
     if understanding.continuity in {'continue','resume'}:
@@ -67,7 +84,8 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
         if origin.kind == 'current':
             origin.kind = 'context'
     if understanding.continuity in {'new', 'clear'}:
-        state.conditions = Conditions()
+        from .condition_lifetimes import preferences_base
+        state.conditions = preferences_base(state.session_preferences)
         if understanding.topic=='financial' or understanding.continuity=='clear':state.interrupted_request=None
         if understanding.topic=='financial' or understanding.continuity=='clear':
             state.active_goals=[];state.goal_conditions={}
@@ -90,7 +108,7 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
         state.suspended = previous.conditions.model_copy(deep=True)
     context_conditions=state.conditions.model_copy(deep=True)
     if understanding.goals and all(g.kind=='concept' and g.concept_mode in {'definition','difference'} for g in understanding.goals) and not understanding.context_references:
-        # 作品说明：独立概念定义使用本轮指标集合，财务任务条件继续保留供明确恢复。
+        # 独立概念定义使用本轮指标集合，财务任务条件继续保留供明确恢复。
         state.conditions.metrics=[]
     independent_context=len({str(value.model_dump(exclude={'origins'})) for value in goal_context.values()})>1
     for goal in understanding.goals:
@@ -111,7 +129,8 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
     if understanding.topic in {'rules','catalog'} and understanding.unsupported and not understanding.unknown_companies:
         raise InvalidUnderstanding('System rules and supported capabilities cannot be rejected for missing financial query conditions')
     try:
-        state.conditions=apply_edits(state.conditions,understanding.modifications,question,turn_id)
+        concept=bool(understanding.goals) and all(g.kind=='concept' and g.concept_mode in {'definition','difference'} for g in understanding.goals)
+        state.conditions=apply_edits(state.conditions,understanding.modifications,question,turn_id,concept=concept)
         if any(edit.field=='scope' and edit.operation!='inherit' for edit in understanding.modifications):
             state.legacy_scope_unknown=False
     except ValueError as exc:
@@ -124,23 +143,34 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
     c = state.conditions
     clarification = list(understanding.clarification)
     unsupported = list(understanding.unsupported)
+    unresolved_company_refs=[]
     for reference in understanding.context_references:
         cleared_company=reference.target=='company' and any(edit.field in {'company_context','financial_context'} for edit in understanding.memory_edits)
         if reference.text not in question or understanding.continuity not in {'continue','resume'} and not cleared_company:
             raise InvalidUnderstanding('Context reference must bind to an explicit current span and retained context')
-        if reference.target=='company' and reference.number=='singular' and len(confirmed_codes)!=1:
-            clarification.append('这次“'+reference.text+'”指哪家公司？请明确公司名称或股票代码。')
+        current_named=current_company_codes(question,companies)
+        explicit_current_company=len(current_named)==1 and set(c.codes)==current_named
+        if reference.target=='company' and reference.number=='singular' and len(confirmed_codes)!=1 and not explicit_current_company:
+            unresolved_company_refs.append(reference.text)
             c.codes=[]
             for goal in understanding.goals:
                 if goal.selection:goal.selection.codes=[]
-        if reference.target=='fact' and reference.number=='singular' and len(previous.recent_facts)+len(previous.recent_computed)!=1:
-            clarification.append('这次“'+reference.text+'”指哪个已核实数值？请明确公司、指标和报告期。')
+        # 事实编号不含公司或指标；执行阶段重读可信引用后，先按
+        # 本轮目标条件筛选再判唯一，不能用上一轮全部数字的数量拒绝追问。
         if reference.target=='financial_task' and not previous.active_goals and not previous.pending:
             clarification.append('当前没有唯一可恢复的财务任务，请明确公司、指标和报告期。')
+    unresolved_company_refs=list(dict.fromkeys(unresolved_company_refs))
+    if len(unresolved_company_refs)==1:
+        company_question='这次“'+unresolved_company_refs[0]+'”指哪家公司？请明确公司名称或股票代码。'
+    elif unresolved_company_refs:
+        company_question='请明确'+ '、'.join('“'+text+'”' for text in unresolved_company_refs)+'各指哪家公司或股票代码。'
+    else:
+        company_question='请明确要查询哪家公司。'
+    if unresolved_company_refs:clarification.append(company_question)
     for mention in understanding.company_mentions:
         if mention.text not in question:
             raise InvalidUnderstanding('Company mention is not a literal span of the current input')
-        matched={code for code,name in companies.items() if code in mention.text or name in mention.text}
+        matched=current_company_codes(mention.text,companies)
         if mention.kind=='explicit' and set(mention.codes)!=matched:
             raise InvalidUnderstanding('Explicit company binding does not match the registered name/code in its source span')
         if mention.kind=='context' and (understanding.continuity not in {'continue','resume'} or not mention.codes or not set(mention.codes) <= confirmed_codes):
@@ -163,11 +193,11 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
     financial = any(g.kind in financial_kinds for g in understanding.goals)
     shared_financial = any(g.kind in financial_kinds and not g.selection and not g.condition_edits and not g.context_conditions for g in understanding.goals)
     if not financial and understanding.goals and all(g.kind in {'rules','catalog'} for g in understanding.goals):
-        # 作品说明：系统规则和目录不需要财务查询条件；模型提出的未来查询建议不是当前任务前提，引用歧义另行记录。
+        # 系统规则和目录不需要财务查询条件；模型提出的未来查询建议不是当前任务前提，引用歧义另行记录。
         unresolved_refs=[g for g in understanding.goals if g.execution_ref and not any(e.turn_id==g.execution_ref for e in previous.executions)]
         if not unresolved_refs: clarification=[]
     for term,candidates in AMBIGUOUS_TERMS.items():
-        # 作品说明：指标目录建立身份与口径，不构成第二条语义路由；明确的已确认成员可继续沿用。
+        # 指标目录建立身份与口径，不构成第二条语义路由；明确的已确认成员可继续沿用。
         explicit=any(alias in question for alias,metric in ALIASES.items() if metric in candidates)
         inherited=understanding.continuity in {'continue','resume'} and bool(context_conditions.metrics) and set(context_conditions.metrics)<=set(candidates)
         if financial and term in question and not explicit and not inherited:
@@ -180,7 +210,7 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
         clarification.append('旧会话没有可靠记录报表范围，请确认采用合并报表还是母公司报表。')
     if shared_financial and not c.restrictions.no_query and not unsupported:
         if not c.codes and not c.all_companies:
-            clarification.append('请明确要查询哪家公司。')
+            clarification.append(company_question)
         if not c.metrics and not any(term in question for term in AMBIGUOUS_TERMS):
             clarification.append('请明确要查询哪个财务指标。')
     if shared_financial and not c.restrictions.no_query and c.time.single_quarter:
@@ -189,12 +219,12 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
         clarification.append('请明确需要的年份。')
     if shared_financial and not c.restrictions.no_query and c.scope == 'parent' and any(m in METRICS and 'parent' not in METRICS[m].scopes for m in c.metrics):
         clarification.append('归母、扣非归母和每股指标属于合并归属口径；是否改为母公司净利润？')
-    if shared_financial and not c.restrictions.no_query and c.presentation.unit:
+    if shared_financial and not c.restrictions.no_query and (c.presentation.unit or c.presentation.metric_units):
         from .units import presentation_unit_compatible
         for metric in c.metrics:
             m = METRICS.get(metric)
             if m and not presentation_unit_compatible(c,metric):
-                clarification.append(f'{m.label}单位为{m.unit}，不能换算为{c.presentation.unit}。')
+                clarification.append(f'{m.label}单位为{m.unit}，不能换算为{c.presentation.metric_units.get(metric,c.presentation.unit)}。')
     if c.presentation.format == 'table':
         c.restrictions.no_chart = True
     if c.restrictions.no_chart and (c.presentation.format == 'chart' or any(g.kind == 'chart' for g in understanding.goals)):
@@ -202,8 +232,8 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
     if set(c.codes) & set(c.restrictions.excluded_codes) or set(c.metrics) & set(c.restrictions.excluded_metrics):
         clarification.append('选择条件与排除条件冲突，请明确保留哪些。')
     if c.all_companies:
-        collection_basis=any(m.kind=='collection' and any(marker in m.text for marker in
-            ('所有','全部','全库','库内','库里','库中','全体','数据库内','数据库里')) for m in understanding.company_mentions)
+        from .request_bindings import collection_span_supported
+        collection_basis=any(m.kind=='collection' and m.text and m.text in question for m in understanding.company_mentions)
         if financial and not collection_basis and not (understanding.continuity in {'continue','resume'} and context_conditions.all_companies):
             raise InvalidUnderstanding('An all-company selection requires an explicit current collection or a confirmed inherited collection')
         c.codes = [code for code in companies if code not in c.restrictions.excluded_codes]
@@ -211,8 +241,10 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
     c=finalize_conditions(c,[g.kind for g in understanding.goals],turn_id)
     state.conditions=c
     request_conditions = c.model_copy(deep=True)
+    if fact_aside:
+        request_conditions.restrictions.no_query=True
     if not financial and understanding.topic in {'concept', 'rules'}:
-        # 作品说明：概念或规则插话有独立的临时选择，财务公司、金额单位和范围留在挂起条件中。
+        # 概念或规则插话有独立的临时选择，财务公司、金额单位和范围留在挂起条件中。
         if any(ref.target=='fact' for ref in understanding.context_references):
             request_conditions=c.model_copy(deep=True)
             request_conditions.restrictions.no_query=True
@@ -221,7 +253,7 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
         else:
             request_conditions = Conditions(metrics=c.metrics, restrictions={'no_query':True},
                 origins={key:origin for key,origin in c.origins.items() if key == 'metrics'})
-            # 作品说明：保留插话本轮明确的口径和展示要求，同时保留原财务选择用于后续恢复。
+            # 保留插话本轮明确的口径和展示要求，同时保留原财务选择用于后续恢复。
             for key,origin in c.origins.items():
                 if origin.kind!='current' or origin.turn_id!=turn_id:continue
                 if key=='scope':request_conditions.scope=c.scope
@@ -237,14 +269,14 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
                       memory_edits=deepcopy(understanding.memory_edits),
                       goals=deepcopy(understanding.goals), clarification=list(dict.fromkeys(clarification)),
                       context_references=understanding.context_references,
-                      unsupported=list(dict.fromkeys(unsupported)),company_mentions=understanding.company_mentions)
+                      unsupported=list(dict.fromkeys(unsupported)),company_mentions=understanding.company_mentions).bind_catalog(companies)
     if shared_financial and not c.metrics:
         menus={menu.family:menu.model_copy(deep=True) for menu in (previous.pending.clarification_choices
             if previous.pending and understanding.continuity in {'continue','resume'} else [])}
         menus.update({family:ClarificationChoices(family=family,options=choices)
             for family,choices in FAMILY_CHOICES.items() if family in question})
         request.clarification_choices=list(menus.values())
-    # 作品说明：同一有效财务选择成为当前对话条件；真正独立的例外保留目标绑定，避免局部条件在追问时丢失。
+    # 同一有效财务选择成为当前对话条件；真正独立的例外保留目标绑定，避免局部条件在追问时丢失。
     financial_goals=[g for g in request.goals if g.kind in financial_kinds]
     selected=[request.for_goal(g).conditions for g in financial_goals]
     for goal in financial_goals:
@@ -274,9 +306,10 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
         if c.time.mode=='latest': c.time.mode='latest_common' if any(g.kind in {'compare','rank'} for g in financial_goals) else 'latest_each'
         if c.presentation.format=='table': c.restrictions.no_chart=True
         request.conditions=c.model_copy(deep=True)
+        request.modifications=deepcopy(state.modifications)
         for goal in financial_goals: goal.selection=None;goal.condition_edits=[];goal.context_conditions=None
     elif selected:
-        # 作品说明：仅一个集合维度不同时可记住公共选择；公司和指标都不同时继续分目标保存，避免扩大成交叉组合。
+        # 仅一个集合维度不同时可记住公共选择；公司和指标都不同时继续分目标保存，避免扩大成交叉组合。
         for field in ('metrics','codes'):
             comparable=[value.model_dump(exclude={field,'origins'}) for value in selected]
             if all(value==comparable[0] for value in comparable):
@@ -285,34 +318,46 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
                 common.origins[field]=Origin(kind='current',text=question,turn_id=turn_id)
                 request.conditions=common;state.conditions=common.model_copy(deep=True);c=state.conditions
                 break
-    if financial_goals:
+    if financial_goals and not fact_aside:
         state.active_goals=deepcopy(financial_goals)
         state.topic='financial'
         if state.interrupted_request and understanding.continuity in {'continue','resume'}:
             from .request_bindings import metric_candidates
-            named_codes={code for code,name in companies.items() if code in question or name in question}
+            named_codes=current_company_codes(question,companies)
             named_metrics=metric_candidates(question)
             actual_codes={code for g in financial_goals for code in request.for_goal(g).conditions.codes}
             actual_metrics={metric for g in financial_goals for metric in request.for_goal(g).conditions.metrics}
+            from .condition_lifetimes import paths
+            from .contracts import SET_PATHS
+            applied=[*understanding.modifications,*(edit for goal in understanding.goals for edit in goal.condition_edits)]
+            # 未知集合不能由增删动作确认；替换、仅保留或清空才能给出可靠的集合基础。
+            resolved={path for edit in applied if edit.operation!='inherit'
+                for path in paths(edit) if path not in SET_PATHS or edit.operation in {'replace','keep','clear'}}
             confirmed=set(state.interrupted_request.confirmed_fields)
-            if named_codes and actual_codes<=named_codes:confirmed.add('codes')
-            if named_metrics and actual_metrics and actual_metrics<=named_metrics:confirmed.add('metrics')
+            if named_codes and actual_codes<=named_codes and 'codes' in resolved:confirmed.add('codes')
+            if named_metrics and actual_metrics and actual_metrics<=named_metrics and 'metrics' in resolved:confirmed.add('metrics')
             state.interrupted_request.confirmed_fields=sorted(confirmed)
             uncertain=state.interrupted_request.uncertain_paths
             if uncertain is None:
                 missing={'codes','metrics'}-confirmed
             else:
-                resolved={edit.field for edit in request.modifications if edit.operation!='inherit'}
-                resolved.update(edit.field for goal in financial_goals for edit in goal.condition_edits if edit.operation!='inherit')
+                from .condition_lifetimes import TURN_DEFAULTS,explicit_lifetime
+                persistent={edit.field for edit in state.session_preferences if edit.lifetime=='session'}
+                if not state.interrupted_request.uncertain_paths_normalized:
+                    # 兼容旧消息的临时条件；新失败记录已逐轮归一，不能再用某一轮原话重解释合并后的不确定性。
+                    uncertain=[path for path in uncertain if path not in TURN_DEFAULTS or path in persistent]
+                    uncertain=[path for path in uncertain if explicit_lifetime(path,state.interrupted_request.question)!='turn']
+                    state.interrupted_request.uncertain_paths_normalized=True
                 missing=set(uncertain)-resolved
                 state.interrupted_request.uncertain_paths=sorted(missing)
             if missing:
                 labels={'codes':'公司','metrics':'指标','scope':'报表口径','all_companies':'公司范围','calculation':'计算要求','comparison_axis':'比较对象'}
-                issue='上一轮修改尚未确认，请明确'+ '、'.join(dict.fromkeys(labels.get(path,'时间要求' if path.startswith('time.') else '展示要求' if path.startswith('presentation.') else '执行限制') for path in sorted(missing)))+'；其他已确认条件继续保留。'
+                preference_saved=any(edit.field.startswith('presentation.') and edit.lifetime=='session' and edit.operation!='inherit' for edit in applied)
+                issue=('已记录本轮确认的长期显示偏好；' if preference_saved else '')+'尚有修改未确认，请明确'+ '、'.join(dict.fromkeys(labels.get(path,'时间要求' if path.startswith('time.') else '展示要求' if path.startswith('presentation.') else '执行限制') for path in sorted(missing)))+'；其他已确认条件继续保留，本轮未查询这些待确认项。'
                 request.clarification.append(issue)
                 for goal in financial_goals:goal.clarification.append(issue)
             else:state.interrupted_request=None
-    # 作品说明：类型化能力检查保留独立可执行目标；不支持的选择作为明确任务结果，而非服务故障。
+    # 类型化能力检查保留独立可执行目标；不支持的选择作为明确任务结果，而非服务故障。
     for goal in request.goals:
         if goal.kind not in financial_kinds:
             continue
@@ -330,7 +375,7 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
         if unavailable:
             goal.kind = 'unsupported'
             request.unsupported.extend(unavailable)
-    # 作品说明：能力结论依据登记身份；明确库外名称不能误报为需要用户再次指定公司。
+    # 能力结论依据登记身份；明确库外名称不能误报为需要用户再次指定公司。
     unknown_names=set(understanding.unknown_companies)
     request.clarification=[item for item in request.clarification if item not in unknown_names]
     if unknown_names and not any(g.kind in financial_kinds for g in request.goals) and not any(m.kind in {'ambiguous','candidate'} for m in understanding.company_mentions):
@@ -342,84 +387,83 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
         while any(g.id==f'unsupported{index}' for g in request.goals):
             index+=1
         request.goals.append(Goal(id=f'unsupported{index}',kind='unsupported',text='；'.join(request.unsupported)))
-    # 作品说明：未登记身份移出可执行和确认条件，原始代码保留在不支持说明中。
+    # 未登记身份移出可执行和确认条件，原始代码保留在不支持说明中。
     request.conditions.codes=[code for code in request.conditions.codes if code in companies]
     state.conditions.codes=[code for code in state.conditions.codes if code in companies]
     for goal in request.goals:
         if goal.selection and goal.selection.codes is not None:
             goal.selection.codes=[code for code in goal.selection.codes if code in companies]
-    # 作品说明：分目标公司、期间、指标和范围同样验证，不能将所有提及身份任意交叉查询。
+    # 分目标公司、期间、指标和范围同样验证，不能将所有提及身份任意交叉查询。
     for goal in request.goals:
         if goal.kind not in financial_kinds:
             continue
         gc = request.for_goal(goal).conditions
         issues=goal.clarification
         if not gc.restrictions.no_query:
-            prefix=f'{goal.id} ' if goal.selection else ''
+            prefix='该查询：' if goal.selection else ''
             if not gc.codes and not gc.all_companies:
-                issues.append(prefix+'请明确要查询哪家公司。')
+                issues.append(company_question if unresolved_company_refs else prefix+company_question)
             if not gc.metrics and not any(term in question for term in AMBIGUOUS_TERMS):
                 issues.append(prefix+'请明确要查询哪个财务指标。')
         if any(code not in companies for code in gc.codes) or any(metric not in METRICS for metric in gc.metrics):
             raise InvalidUnderstanding('Goal selection contains an unknown registered identity')
         if gc.scope == 'parent' and any('parent' not in METRICS[m].scopes for m in gc.metrics):
-            issues.append(f'{goal.id} 的指标不适用于母公司报表，请明确口径。')
+            issues.append('该查询的指标不适用于母公司报表，请明确口径。')
         if gc.time.mode in {'explicit', 'calendar_years'} and not gc.time.years and not gc.time.pairs and not (gc.time.mode=='calendar_years' and gc.time.span):
-            issues.append(f'{goal.id} 请明确需要的年份。')
+            issues.append('请明确该查询需要的年份。')
         if set(gc.codes) & set(gc.restrictions.excluded_codes) or set(gc.metrics) & set(gc.restrictions.excluded_metrics):
-            issues.append(f'{goal.id} 的选择与本轮排除条件冲突。')
+            issues.append('该查询的选择与本轮排除条件冲突。')
         if gc.restrictions.no_chart and goal.kind == 'chart':
-            issues.append(f'{goal.id} 与不画图的要求冲突。')
+            issues.append('该查询与不画图的要求冲突。')
         from .units import presentation_unit_compatible
-        if gc.presentation.unit and any(not presentation_unit_compatible(gc,m) for m in gc.metrics):
-            issues.append(f'{goal.id} 的指标与输出单位不一致。')
-    # 作品说明：公司选择须有登记身份或明确上下文依据；泛称公司不默认表示全库。
+        if (gc.presentation.unit or gc.presentation.metric_units) and any(not presentation_unit_compatible(gc,m) for m in gc.metrics):
+            issues.append('该查询的指标与输出单位不一致。')
+    # 公司选择须有登记身份或明确上下文依据；泛称公司不默认表示全库。
     old_codes=set(context_conditions.codes)
-    old_metrics=set(context_conditions.metrics)
     if understanding.continuity in {'continue','resume'}:
         old_codes.update(code for value in goal_context.values() for code in value.codes)
-        old_metrics.update(metric for value in goal_context.values() for metric in value.metrics)
     normalized=''.join(question.split()).casefold()
-    # 作品说明：校验财务选择的身份依据，目标和指标含义仍由模型提案表达。
-    financial_terms=(*ALIASES,'利润','收入','现金流','赚','盈利','亏损','资产','负债','收益')
-    has_metric_basis=any(term.casefold() in normalized for term in financial_terms)
-    selected_metrics={metric for g in request.goals if g.kind in financial_kinds for metric in request.for_goal(g).conditions.metrics}
-    # 作品说明：用户可用已给出的有限选项短名回答澄清；只核对所选身份，不从仅年份回复猜指标。
-    pending_choices={metric for menu in (previous.pending.clarification_choices if previous.pending else [])
-        for label,metric in menu.options.items() if label in question}
-    if len(pending_choices)==1 and selected_metrics==pending_choices:
-        has_metric_basis=True
-    inherited_metrics=understanding.continuity in {'continue','resume'} and selected_metrics <= old_metrics
-    if selected_metrics and not has_metric_basis and not inherited_metrics:
-        if selected_metrics <= set(previous.conditions.metrics) and understanding.continuity=='new':
-            raise InvalidUnderstanding('A new task cannot select a metric only from previous context; a condition change requires continue')
-        request.clarification.append('请明确需要的财务指标，例如营业收入、归母净利润或总资产。')
-        request.conditions.metrics=[];state.conditions.metrics=[]
-        for goal in request.goals:
-            if goal.selection:goal.selection.metrics=[]
-    explicit_codes={code for code,name in companies.items() if code in normalized or name.casefold() in normalized}
+    # 指标身份由类型化提案与目录约束给出；口语未命中别名不删除合法指标。
+    # 待澄清菜单仍需本轮作出选择，单改年份不能把模型猜的菜单项当作用户确认。
+    if previous.pending and previous.pending.clarification_choices and understanding.continuity in {'continue','resume'}:
+        from .request_bindings import metric_candidates
+        choices={metric for menu in previous.pending.clarification_choices for metric in menu.options.values()}
+        chosen={metric for menu in previous.pending.clarification_choices for label,metric in menu.options.items() if label in question}
+        chosen.update(metric_candidates(question,positive_only=True)&choices)
+        if not chosen and not previous.pending.conditions.metrics:
+            for goal in request.goals:
+                if goal.kind not in financial_kinds:continue
+                local=request.for_goal(goal).conditions
+                if not set(local.metrics)&choices:continue
+                local.metrics=[metric for metric in local.metrics if metric not in choices]
+                request.resolved_goal_conditions[goal.id]=local
+                goal.clarification.append('请明确选择上一轮列出的财务指标。')
+            request.conditions.metrics=[metric for metric in request.conditions.metrics if metric not in choices]
+            state.conditions.metrics=[metric for metric in state.conditions.metrics if metric not in choices]
+    explicit_codes=current_company_codes(question,companies)
     selected_codes={code for g in request.goals if g.kind in financial_kinds for code in request.for_goal(g).conditions.codes}
-    from .request_bindings import explicit_company_replacements
-    replacements=explicit_company_replacements(question,companies)
-    if replacements and financial:
-        expected=set(old_codes)
-        for removed,added in replacements:expected.discard(removed);expected.add(added)
-        if selected_codes!=expected:
-            raise InvalidUnderstanding('明确公司纠正必须只移除被纠正的公司并加入新公司，其余已确认公司保持不变；预期代码：'+','.join(sorted(expected)))
     supported_codes=explicit_codes | (old_codes if understanding.continuity in {'continue','resume'} else set())
     if not c.all_companies and selected_codes - supported_codes:
         if understanding.continuity=='new' and selected_codes <= set(previous.conditions.codes):
             raise InvalidUnderstanding('A new task cannot select a company only from previous context; a condition change requires continue')
         request.clarification.append('请明确公司名称或股票代码。')
-        # 作品说明：没有确认的公司建议不进入待澄清条件，避免后续只改年份就执行猜测公司。
+        # 没有确认的公司建议不进入待澄清条件，避免后续只改年份就执行猜测公司。
         request.conditions.codes=[code for code in request.conditions.codes if code in supported_codes]
         state.conditions.codes=[code for code in state.conditions.codes if code in supported_codes]
         for goal in request.goals:
             if goal.selection and goal.selection.codes is not None:
                 goal.selection.codes=[code for code in goal.selection.codes if code in supported_codes]
+    # 每个目标独立校验身份，不能借另一目标的全库范围绕过检查。
+    for goal in request.goals:
+        if goal.kind not in financial_kinds:continue
+        local=request.for_goal(goal).conditions
+        if local.all_companies or not set(local.codes)-supported_codes:continue
+        local.codes=[code for code in local.codes if code in supported_codes]
+        request.resolved_goal_conditions[goal.id]=local
+        goal.clarification.append('请明确公司名称或股票代码。')
     request.unsupported=list(dict.fromkeys(request.unsupported))
     request.clarification=list(dict.fromkeys(request.clarification))
-    # 作品说明：共享歧义仅阻塞依赖它的财务目标；局部目标独立检查，概念说明可以在查数待澄清时交付。
+    # 共享歧义仅阻塞依赖它的财务目标；局部目标独立检查，概念说明可以在查数待澄清时交付。
     for goal in request.goals:
         shared_issue=goal.kind in financial_kinds and goal.selection is None and not goal.condition_edits and not goal.context_conditions
         fact_issue=goal.kind=='concept' and goal.concept_mode=='implication' and any(ref.target=='fact' for ref in request.context_references)
@@ -427,16 +471,72 @@ def apply_understanding(question: str, turn_id: str, understanding: Understandin
         goal.clarification=list(dict.fromkeys(goal.clarification))
     request.clarification=list(dict.fromkeys([*request.clarification,*(issue for goal in request.goals for issue in goal.clarification)]))
     state.pending = request if request.clarification else None
-    if financial_goals:
+    if financial_goals and not fact_aside:
         state.goal_conditions={g.id:request.for_goal(g).conditions for g in request.goals if g.kind in FINANCIAL_KINDS}
+    if fact_aside:
+        state.conditions=previous.conditions.model_copy(deep=True)
+        state.pending=previous.pending.model_copy(deep=True) if previous.pending else None
     if request.clarification and understanding.continuity != 'clear':
         state.conditions = previous.conditions.model_copy(deep=True)
     if not financial and understanding.topic in {'concept', 'rules','catalog','greeting','other'} and understanding.continuity != 'clear':
-        # 作品说明：插话中的不查数限制或概念指标不覆盖挂起的财务条件，明确返回时可恢复原任务。
+        # 插话中的不查数限制或概念指标不覆盖挂起的财务条件，明确返回时可恢复原任务。
         state.conditions = previous.conditions.model_copy(deep=True)
         state.pending=previous.pending.model_copy(deep=True) if previous.pending else None
-    # 作品说明：本轮事实引用仅在执行及核验成功后更新。
+    # 本轮事实引用仅在执行及核验成功后更新。
     if financial and not c.restrictions.no_query or understanding.topic=='financial' and request.unsupported:
         state.recent_facts = []
         state.recent_computed = []
+    from .condition_lifetimes import persist_conditions,update_preferences
+    all_edits=[*understanding.modifications,*(edit for goal in understanding.goals for edit in goal.condition_edits)]
+    state.session_preferences=update_preferences(state.session_preferences,all_edits)
+    if fact_aside:
+        # 查看一项来源只缩小本轮引用，不替换主财务任务。
+        state.recent_facts=previous.recent_facts.copy()
+        state.recent_computed=previous.recent_computed.copy()
+        request.conditions.restrictions.no_query=True
+        for goal in request.goals:
+            if goal.context_conditions:goal.context_conditions.restrictions.no_query=True
+    elif financial and not request.clarification:
+        original_goal_edits={g.id:g.condition_edits for g in understanding.goals}
+        financial_edits=[*understanding.modifications,*(edit for g in understanding.goals if g.kind in FINANCIAL_KINDS for edit in g.condition_edits)]
+        state.conditions=persist_conditions(state.conditions,context_conditions,financial_edits,state.session_preferences)
+        state.goal_conditions={g.id:persist_conditions(request.for_goal(g).conditions,
+            goal_context.get(g.context_goal_id,context_conditions),
+            [*understanding.modifications,*original_goal_edits.get(g.id,[])],state.session_preferences)
+            for g in request.goals if g.kind in FINANCIAL_KINDS}
+    request.freeze_conditions()
+    if fact_aside:
+        for value in request.resolved_goal_conditions.values():value.restrictions.no_query=True
+    if state.pending and financial and not fact_aside:
+        from .condition_lifetimes import persist_pending
+        state.pending=persist_pending(request,understanding,previous,state.session_preferences,
+            base=context_conditions,goal_context=goal_context)
     return request, state
+
+
+def _leave_unrelated_failed_request(previous,understanding):
+    """完整替换新查询的身份与期间后，不再强制确认旧失败任务的无关条件。增删及引用仍受旧集合约束。"""
+    if not previous.interrupted_request or understanding.continuity not in {'continue','resume'}:
+        return previous
+    if understanding.context_references or any(goal.context_goal_id or goal.execution_ref for goal in understanding.goals):
+        return previous
+    if not understanding.goals or any(goal.kind not in {'lookup','compare','rank','chart','cause'} for goal in understanding.goals):
+        return previous
+    edits={edit.field:edit for edit in understanding.modifications if edit.operation=='replace' and edit.value}
+    if not {'codes','metrics'}<=edits.keys() or not ({'time.years','time.pairs'} & edits.keys()):
+        return previous
+    if any(goal.condition_edits or goal.selection for goal in understanding.goals):return previous
+    result=previous.model_copy(deep=True)
+    from .condition_lifetimes import get_path,set_path,preferences_base
+    raw=result.conditions.model_dump();defaults=preferences_base(result.session_preferences).model_dump()
+    uncertain=result.interrupted_request.uncertain_paths
+    if uncertain is None:uncertain=list({'codes','metrics'}-set(result.interrupted_request.confirmed_fields))
+    for path in uncertain:
+        if path in edits:continue
+        set_path(raw,path,get_path(defaults,path));raw['origins'].pop(path,None)
+    if 'calculation' in uncertain and 'calculation' not in edits:
+        raw['calculation_inputs']=[]
+    result.conditions=Conditions.model_validate(raw)
+    result.pending=None;result.interrupted_request=None;result.goal_conditions={};result.active_goals=[]
+    result.recent_facts=[];result.recent_computed=[]
+    return result

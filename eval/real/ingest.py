@@ -1,4 +1,4 @@
-"""作品说明：对固定选中的真实报告运行生产 PDF 导入链路。"""
+"""对固定选中的真实报告运行生产 PDF 导入链路。"""
 from __future__ import annotations
 import argparse
 import hashlib
@@ -22,14 +22,16 @@ def main():
     parser.add_argument('--ocr-cache-dir',type=Path,help='Use SHA-validated new OCR results for the same frozen originals')
     parser.add_argument('--output',type=Path,required=True)
     args=parser.parse_args()
-    from dotenv import dotenv_values
-    os.environ.update({k:v for k,v in dotenv_values(args.env_file).items() if v is not None})
-    os.environ['PYTHON_DOTENV_DISABLED']='1'
-    os.environ['HF_HUB_OFFLINE']='1'
+    from eval.real.runtime import configure_environment, assert_local_isolation
+    configure_environment(Path(args.env_file))
     from config.db_config import get_db_config
     config=get_db_config()
     if config.database!='finsight_real_eval' or config.host not in {'localhost','127.0.0.1','::1'}:
         raise RuntimeError('Real validation import must use the dedicated local database')
+    from src.agent.providers import resolve_chat_provider
+    cloud=resolve_chat_provider()
+    assert_local_isolation(config,os.environ.get('CHROMA_DB_PATH',''),cloud.base_url)
+    if not cloud.is_configured:raise RuntimeError('Cloud model credentials are required for original-PDF ingestion')
     if args.output.exists():raise FileExistsError('Refusing to overwrite ingestion evidence')
     args.output.parent.mkdir(parents=True,exist_ok=True)
     selected=[r for r in json.loads(args.manifest.read_text(encoding='utf-8'))['documents'] if args.split=='all' or r['split']==args.split]
@@ -43,7 +45,7 @@ def main():
             self.calls=[]
 
         def _request_completion(self, payload):
-            call={'request':{**payload, **self._reasoning_options()}}
+            call={'request':dict(payload)}
             self.calls.append(call)
             started=time.monotonic()
             try:
@@ -54,14 +56,11 @@ def main():
                 call['elapsed_seconds']=round(time.monotonic()-started,3)
 
     llm=AuditedLLM()
-    from urllib.parse import urlparse
-    if llm.provider!='ollama' or llm.model!='qwen3.5:9b-q4_K_M' or llm.reasoning_effort!='low' or urlparse(llm.api_url).hostname not in {'localhost','127.0.0.1','::1'}:
-        raise RuntimeError('This experiment requires the local thinking model')
     records=[]
     def checkpoint(status, **extra):
         temporary=args.output.with_suffix('.tmp')
         temporary.write_text(json.dumps({'planned':len(selected),'completed':len(records),
-            'status':status,'model':llm.model,'reasoning_effort':llm.reasoning_effort,
+            'status':status,'model':llm.model,'provider':llm.provider,'thinking':'disabled',
             'selection':selected,'records':records,**extra},ensure_ascii=False,indent=2),encoding='utf-8')
         temporary.replace(args.output)
     checkpoint('running')
@@ -73,10 +72,8 @@ def main():
                 raise RuntimeError('Frozen original changed')
         print(f'IMPORT {index}/{len(selected)} {document["stock_code"]} {document["report_year"]} {document["report_period"]}',flush=True)
         llm.calls=[]
+        llm.last_diagnostics={}
         try:
-            import requests
-            parsed=urlparse(llm.api_url)
-            requests.get(f'{parsed.scheme}://{parsed.netloc}/api/version',timeout=5).raise_for_status()
             if args.ocr_cache_dir:
                 from src.etl.ocr_client import write_validated_ocr_cache
                 cached=args.ocr_cache_dir/(pdf.name+'_by_PaddleOCR-VL-1.6.json')
@@ -91,13 +88,14 @@ def main():
         records.append(record)
         checkpoint('running')
         print('IMPORTED',report.get('status'),report.get('message'),flush=True)
-        if report.get('status')=='failed':
-            # 作品说明：失败报告保留在统计分母中；服务不可用时应及时终止，避免长时间运行只有兜底结果的失真实验。
-            import requests
-            try:requests.get('http://127.0.0.1:11434/api/version',timeout=5).raise_for_status()
-            except requests.RequestException:
-                checkpoint('aborted_service_unavailable')
-                raise RuntimeError('Local model service stopped; import checkpoint retained')
+        reason=llm.last_diagnostics.get('reason')
+        if report.get('status')=='failed' and reason in {
+            'cloud_timeout','cloud_connection_failed','cloud_api_key_required',
+            'cloud_authentication_or_balance_failed','cloud_model_or_endpoint_not_found',
+            'cloud_rate_limited','cloud_service_unavailable','cloud_service_request_failed',
+        }:
+            checkpoint('aborted_service_unavailable',failure_reason=reason)
+            raise RuntimeError('Cloud model service failed; ingestion checkpoint retained without changing the selected sample set')
     checkpoint('completed')
     print(f'IMPORT COMPLETE {len(records)} records; {sum(r["report"].get("status")=="success" for r in records)} successful',flush=True)
 

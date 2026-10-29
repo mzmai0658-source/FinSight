@@ -1,4 +1,4 @@
-"""作品说明：对保留请求及有原件依据的数值进行独立断言，不导入生产规划器、执行器或其核验结论；叙述含义仍需另行审查原文。"""
+"""对保留请求及有原件依据的数值进行独立断言，不导入生产规划器、执行器或其核验结论；叙述含义仍需另行审查原文。"""
 from __future__ import annotations
 import argparse,hashlib,json,re
 from collections import Counter
@@ -26,7 +26,10 @@ def fixture(folder):
 
 def selectors(spec,reference):
     catalog={(r['stock_code'],r['year'],r['period']) for r in reference['reports']}
-    codes=spec['codes']; periods=spec['periods']; years=spec['years']; policy=spec.get('time_policy')
+    codes=list(spec['codes'])
+    if not codes and spec.get('all_companies'):
+        codes=sorted({code for code,_,_ in catalog})
+    periods=spec['periods']; years=spec['years']; policy=spec.get('time_policy')
     result={}
     for code in codes:
         if spec.get('pairs'): pairs={tuple(v) for v in spec['pairs']}
@@ -64,7 +67,7 @@ def score(record,spec,references,prior_facts=None):
     def require(condition,message,zero=False):
         if not condition:
             errors.append(message)
-            # 作品说明：传输结束不等于用户目标完成。格式错误或被阻断的计划仍记失败；已发布结果或声称完成时，进一步检查是否发生条件替换。
+            # 传输结束不等于用户目标完成。格式错误或被阻断的计划仍记失败；已发布结果或声称完成时，进一步检查是否发生条件替换。
             if zero and (outcome=='answered' or actual or charts):critical.append(message)
     task=record['run']['task'];result=task.get('result') or {};request=result.get('request_contract') or {}
     outcome=(result.get('outcome') or {}).get('status');body=(result.get('answer') or {}).get('content','')
@@ -196,7 +199,7 @@ def score(record,spec,references,prior_facts=None):
         if positive_reference:
             require(any(word in body for word in ('正数','为正','实际为正','先核对','并非负','不是负')),'Did not correct the false negative premise',True)
         else:
-            # 作品说明：前次查询失败后，后续回答不能假装见过正数。原场景仍算失败，但询问指代对象不等于编造财务事实。
+            # 前次查询失败后，后续回答不能假装见过正数。原场景仍算失败，但询问指代对象不等于编造财务事实。
             require(False,'Referenced lookup produced no unique verified positive fact; original conversation scenario remains unfulfilled')
     if spec.get('must_say_loss'):require('亏损' in body,'Loss conclusion missing or reversed',True)
     if spec.get('must_absolute_base'):require('绝对' in body and ('扭亏' in body or '由亏转盈' in body),'Negative base convention not explained')
@@ -240,7 +243,7 @@ def check_chart(chart,reference,require):
 
 
 def observed_fact_context(run,references,previous):
-    """作品说明：用封存原件样例核对实际发布的事实，不依赖生产记忆引用或核验徽标。失败、取消和无数据的财务轮次清空事实上下文；概念插话保留上下文，直到明确清空或新的财务查询。"""
+    """用封存原件样例核对实际发布的事实，不依赖生产记忆引用或核验徽标。失败、取消和无数据的财务轮次清空事实上下文；概念插话保留上下文，直到明确清空或新的财务查询。"""
     task=run['task'];result=task.get('result') or {};request=result.get('request_contract') or {}
     if task['status'] in {'failed','cancelled'} or request.get('continuity')=='clear':return []
     reference=references.get(result.get('data_version'))

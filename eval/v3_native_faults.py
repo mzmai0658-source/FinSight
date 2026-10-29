@@ -1,4 +1,4 @@
-"""作品说明：使用真实服务验证归属校验、取消、幂等与 MySQL 保存失败。"""
+"""使用真实服务验证归属校验、取消、幂等与 MySQL 保存失败。"""
 from __future__ import annotations
 import argparse,json,os,sys,time,uuid
 from pathlib import Path
@@ -53,7 +53,7 @@ def main():
         if after['model']['active']==0 and after['worker_tasks']==0:break
         time.sleep(.2)
     next_task=client.turn('万邦德2024年营业收入是多少？')
-    record('real_ollama_cancel_and_next_task',dict(before=before,after=after,cancelled=cancelled,next_task=next_task),
+    record('real_model_cancel_and_next_task',dict(before=before,after=after,cancelled=cancelled,next_task=next_task),
         cancelled['status']=='cancelled' and cancelled['saved'] and after['model']['active']==0 and after['worker_tasks']==0 and
         (next_task['task'].get('result') or {}).get('outcome',{}).get('status')=='answered')
     repeat=client.turn(next_task['question'],next_task['session_uid'],next_task['client_request_id'])
@@ -72,7 +72,7 @@ def main():
     exact,body=detached(client,'\U00010000'*2000)
     client.call('POST','/api/chat/tasks/'+exact['task_id']+'/cancel');limit=terminal(client,exact['task_id'])
     record('input_2000_unicode_codepoints',dict(task_id=limit['task_id'],status=limit['status']),limit['status']=='cancelled')
-    # 作品说明：故障触发器只作用于本次新建的验收会话，不影响其他用户。
+    # 故障触发器只作用于本次新建的验收会话，不影响其他用户。
     session=client.call('POST','/api/chat/sessions');engine=create_engine(get_db_config().connection_string)
     with engine.connect() as conn:
         sid=conn.execute(text('SELECT id FROM chat_session WHERE session_uid=:uid'),{'uid':session['sessionUid']}).scalar_one()

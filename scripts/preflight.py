@@ -1,4 +1,4 @@
-"""作品说明：探测依赖的实际协议，不输出连接凭据。"""
+"""探测依赖的实际协议，不输出连接凭据。"""
 from __future__ import annotations
 import argparse,json,os,socket,struct,sys,urllib.request
 from pathlib import Path
@@ -10,27 +10,35 @@ def run():
     def check(name,fn):
         try: detail=fn();result.append(dict(name=name,ok=True,detail=detail))
         except Exception as exc:
-            hints={'mysql':'检查MySQL连接、已验收发布的数据版本和独立只读账号SELECT权限；先完成demo-seed。',
-                   'ollama':'启动本机Ollama并准备所配置模型；核对LLM_*与OLLAMA_*优先级和连接地址。',
+            hints={'mysql':'检查MySQL连接、已验收发布的数据版本和独立只读账号SELECT权限；先运行prepare_real_data.py。',
+                   'chat_model':'检查LLM_PROVIDER、LLM_MODEL、LLM_BASE_URL和LLM_API_KEY；云端缺配置不会回退到本地模型。',
+                   'knowledge':'检查CHROMA_DB_PATH、所选数据版本和实际向量模型指纹；不要混用向量空间。',
                    'redis':'检查Redis地址、密码及REDIS_DATABASE；需要服务端支持所选数据库号。',
                    'rabbitmq':'检查AMQP端口、账号密码和RABBITMQ_VHOST；指定vhost须提前创建并授权。'}
             result.append(dict(name=name,ok=False,detail=type(exc).__name__,hint=hints[name]))
     def database():
-        from src.agent.v3.repository import CanonicalRepository
+        from src.api.readiness import selected_repository
         from src.etl.release_profiles import check_report_coverage
         from config.db_config import get_readonly_db_config
         engine=create_engine(get_readonly_db_config().connection_string)
-        repository=CanonicalRepository(engine)
+        repository=selected_repository(engine)
         profile=check_report_coverage(repository.manifest,repository.report_catalog())
-        return f'MySQL read-only accepted {profile.kind} version: {profile.reports} reports'
-    def ollama():
-        from src.agent.providers import resolve_chat_provider
-        config=resolve_chat_provider()
-        assert config.provider=='ollama', 'Public demo requires local Ollama'
-        host=config.base_url.removesuffix('/v1').rstrip('/')
-        payload=json.load(urllib.request.urlopen(host+'/api/tags',timeout=5))
-        assert any(m['name']==config.model for m in payload['models']), 'Configured Ollama model missing'
-        return 'Native Ollama API, local models present'
+        status='experimental; source audit incomplete' if getattr(repository,'numeric_source_policy','strict')=='ocr_trial' else 'accepted'
+        return f'MySQL read-only {status} {profile.kind} version: {profile.reports} reports'
+    def chat_model():
+        from src.api.readiness import probe_llm
+        ok,detail=probe_llm()
+        if not ok:raise RuntimeError(detail)
+        return detail
+    def knowledge():
+        from src.api.readiness import probe_knowledge
+        from src.agent.tool_shared import resolve_chroma_db_path
+        from src.api.readiness import selected_repository
+        from config.db_config import get_readonly_db_config
+        repository=selected_repository(create_engine(get_readonly_db_config().connection_string))
+        ok,detail=probe_knowledge(resolve_chroma_db_path(),repository.collection)
+        if not ok:raise RuntimeError(detail)
+        return detail
     def redis():
         with socket.create_connection((os.getenv('REDIS_HOST','127.0.0.1'),int(os.getenv('REDIS_PORT',6379))),timeout=5) as client:
             stream=client.makefile('rb')
@@ -68,10 +76,10 @@ def run():
             send(1,50,10,b'\x00\x00'+short('')+b'\x0c'+b'\x00'*4);receive((50,11))
             send(0,10,50,struct.pack('!H',200)+short('preflight finished')+b'\x00'*4);receive((10,51))
         return 'Authenticated AMQP handshake and exclusive queue declaration'
-    for name,fn in [('mysql',database),('ollama',ollama),('redis',redis),('rabbitmq',rabbit)]: check(name,fn)
+    for name,fn in [('mysql',database),('chat_model',chat_model),('knowledge',knowledge),('redis',redis),('rabbitmq',rabbit)]: check(name,fn)
     return result
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--env',default='.env.integration');p.add_argument('--output',default='data/runtime/v3/preflight.json');args=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--env',default='.env');p.add_argument('--output',default='data/runtime/v3/preflight.json');args=p.parse_args()
     from dotenv import load_dotenv
     load_dotenv(ROOT/args.env,override=True)
     rows=run();target=ROOT/args.output;target.parent.mkdir(parents=True,exist_ok=True);target.write_text(json.dumps(rows,indent=2),encoding='utf-8')

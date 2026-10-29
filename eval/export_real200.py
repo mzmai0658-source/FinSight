@@ -1,4 +1,4 @@
-"""作品说明：导出完整单版本验收附件，凭据、账号与完整原件页不进入材料包。"""
+"""导出完整单版本验收附件，凭据、账号与完整原件页不进入材料包。"""
 import argparse,hashlib,json,sys,zipfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))

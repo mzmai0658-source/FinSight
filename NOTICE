@@ -1,20 +1,22 @@
-FinSight 可信财报智能体
+FinSight 财报证据助手
 Copyright 2026 FinSight contributors
 
-The original FinSight source files are licensed under the Apache License,
-Version 2.0. This does not replace third-party or combined-work obligations.
+Original FinSight source files are licensed under Apache License 2.0.
+This license does not replace third-party or combined-work obligations.
 
-The project uses third-party open-source software and separately distributed
-model weights. Their copyrights and licenses remain with their respective
-owners. See docs/THIRD_PARTY.md for versions, usage, license obligations, and
-the boundary between third-party resources and the project's original work.
+The current runtime uses DeepSeek cloud generation, remote PaddleOCR, and
+DashScope text-embedding-v4 vectors stored in Chroma. Model weights,
+third-party binaries, private credentials, real PDFs and OCR are not
+redistributed in the source ZIP. Historical BGE compatibility is explicit,
+never a fallback. See docs/THIRD_PARTY.md and docs/RESOURCE_REVIEW.md.
 
-The files under demo/knowledge are original demonstration materials released
-under the same Apache-2.0 license. They are not official company disclosures
-and must not be treated as investment advice.
+PyMuPDF is used in production PDF processing and evidence verification.
+It is available under AGPLv3 or a commercial license. When using its open
+source route, preserve applicable notices and provide the corresponding
+source, installation/build materials and applicable network source offer.
+The Apache license on original files does not remove these obligations.
+No commercial PyMuPDF license is asserted by this project.
 
-The public v3 synthetic PDF definitions and generated fictional reports are
-also original Apache-2.0 materials. No real financial PDFs, OCR ledgers, model
-weights or third-party binaries are redistributed. PyMuPDF is AGPL-3.0 or
-commercially licensed; see docs/THIRD_PARTY.md for the source availability and
-combined distribution/network service obligations before public use.
+AI development assistance is disclosed in docs/RESOURCE_REVIEW.md.
+Current report and evaluation results are versioned; historical Qwen,
+Fin-R1, Ollama and synthetic-demo results do not establish current scores.

@@ -13,12 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-
 import java.util.List;
 import java.util.Map;
 
-/** 作品说明：门户元信息：健康状态（聚合 Python 微服务）与精选示例问题。免登录可访问。 */
+/** 门户元信息：健康状态（聚合 Python 微服务）与精选示例问题。免登录可访问。 */
 @Slf4j
 @Tag(name = "元信息")
 @RestController
@@ -28,29 +26,12 @@ public class MetaController {
 
     private final AgentClient agentClient;
     private final ObjectMapper objectMapper;
-    private final JdbcTemplate jdbcTemplate;
 
     @Operation(summary = "按当前数据生成示例问题")
     @GetMapping("/examples")
     public ApiResponse<Map<String, Object>> examples() {
         try {
-            List<Map<String, Object>> rows = jdbcTemplate.queryForList(
-                    "SELECT stock_abbr, MAX(report_year) AS last_year "
-                    + "FROM income_sheet WHERE report_period='FY' GROUP BY stock_code, stock_abbr ORDER BY stock_code LIMIT 3");
-            if (!rows.isEmpty()) {
-                List<Map<String, String>> examples = new java.util.ArrayList<>();
-                int index = 1;
-                for (Map<String, Object> row : rows) {
-                    String company = String.valueOf(row.get("stock_abbr"));
-                    String year = String.valueOf(row.get("last_year"));
-                    examples.add(Map.of(
-                            "id", "ex-" + index,
-                            "type", "查数字",
-                            "question", company + year + "年营收多少"));
-                    index++;
-                }
-                return ApiResponse.ok(Map.of("examples", examples));
-            }
+            return ApiResponse.ok(Map.of("examples", agentClient.marketSnapshot().examples()));
         } catch (Exception e) {
             log.warn("[meta] 示例数据暂不可读取: {}", e.getClass().getSimpleName());
         }

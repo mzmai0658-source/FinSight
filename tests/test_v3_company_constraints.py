@@ -20,8 +20,10 @@ def test_independent_model_approval_cannot_publish_reversed_company_removal():
     q='把同仁堂去掉，只留万邦德'
     request=Request(turn_id='t',question=q,conditions=Conditions(codes=['600085'],metrics=['operating_revenue']),
         goals=[Goal(id='lookup',kind='lookup',text=q)],company_mentions=[CompanyMention(text=name,kind='explicit',codes=[code]) for code,name in COMPANIES.items()])
-    audit=SemanticReview(goal_requirements=[dict(kind='lookup',goal_ids=['lookup'],covered=True)],satisfied=True,
+    audit=SemanticReview(audit_mode='program',goal_requirements=[dict(kind='lookup',goal_ids=['lookup'],covered=True)],satisfied=True,
         clarification=[],planner_defects=[],companies_correct=True,metrics_and_scope_correct=True,time_correct=True,
         goals_correct=True,constraints_correct=True,presentation_correct=True)
     reviewed=V3Agent._review_exact_bindings(request,audit)
-    assert not reviewed.accepted and not reviewed.companies_correct
+    from tests.request_expectations import mismatches
+    assert 'codes' in mismatches(request,codes=['002082'])
+    assert all('自由语义未由独立模型认证' in item.detail for item in reviewed.checks if item.status=='pass')

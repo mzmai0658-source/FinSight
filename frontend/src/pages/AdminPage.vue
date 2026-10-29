@@ -6,6 +6,7 @@ import AppButton from "@/components/ui/AppButton.vue";
 import AppCard from "@/components/ui/AppCard.vue";
 import AppEmpty from "@/components/ui/AppEmpty.vue";
 import AppSection from "@/components/ui/AppSection.vue";
+import AppSkeleton from "@/components/ui/AppSkeleton.vue";
 import PortalNav from "@/components/market/PortalNav.vue";
 import {
   IconAlert,
@@ -38,7 +39,7 @@ const tabs = [
   { key: "logs", label: "对话审计" },
 ] as const;
 
-/* 作品说明：看板 */
+/* 看板 */
 
 const overview = ref<AdminOverview | null>(null);
 const overviewLoading = ref(true);
@@ -113,12 +114,14 @@ function formatCount(value: number): string {
   return new Intl.NumberFormat("zh-CN").format(value);
 }
 
-/* 作品说明：ETL 任务 */
+/* ETL 任务 */
 
 const tasks = ref<EtlTaskItem[]>([]);
 const taskTotal = ref(0);
 const taskPage = ref(1);
 const taskStats = ref<Record<string, number>>({});
+const tasksLoading = ref(false), taskError = ref("");
+let taskRequest = 0;
 const uploading = ref(false);
 const retryingTask = ref<number | null>(null);
 const uploadMessage = ref("");
@@ -136,14 +139,21 @@ const fileInput = ref<HTMLInputElement | null>(null);
 let taskTimer: number | null = null;
 
 async function loadTasks() {
-  const result = await fetchEtlTasks({ page: taskPage.value, size: 10 });
-  tasks.value = result.records;
-  taskTotal.value = result.total;
-  taskStats.value = (result.stats as Record<string, number>) ?? {};
-  const active = tasks.value.some((t) => t.status === "PENDING" || t.status === "RUNNING");
+  const request = ++taskRequest;
+  tasksLoading.value = true; taskError.value = "";
   stopTaskPoll();
-  if (active) {
-    taskTimer = window.setTimeout(() => void loadTasks(), 5000);
+  try {
+    const result = await fetchEtlTasks({ page: taskPage.value, size: 10 });
+    if (request !== taskRequest) return;
+    tasks.value = result.records;
+    taskTotal.value = result.total;
+    taskStats.value = (result.stats as Record<string, number>) ?? {};
+    if (tasks.value.some((t) => t.status === "PENDING" || t.status === "RUNNING"))
+      taskTimer = window.setTimeout(() => void loadTasks(), 5000);
+  } catch {
+    if (request === taskRequest) taskError.value = "任务加载失败，请重试。";
+  } finally {
+    if (request === taskRequest) tasksLoading.value = false;
   }
 }
 
@@ -154,7 +164,10 @@ function stopTaskPoll() {
   }
 }
 
-onBeforeUnmount(stopTaskPoll);
+onBeforeUnmount(() => {
+  taskRequest += 1; userRequest += 1; logRequest += 1;
+  stopTaskPoll();
+});
 
 async function onUpload(event: Event) {
   const input = event.target as HTMLInputElement;
@@ -189,41 +202,63 @@ async function retryTask(task: EtlTaskItem) {
   finally { retryingTask.value = null; }
 }
 
-/* 作品说明：用户 */
+/* 用户 */
 
 const users = ref<AdminUserItem[]>([]);
 const userTotal = ref(0);
 const userPage = ref(1);
 const userKeyword = ref("");
+const usersLoading = ref(false), userError = ref("");
+const changingUser = ref<number|null>(null);
+let userRequest = 0;
 
 async function loadUsers() {
-  const result = await fetchAdminUsers({
-    page: userPage.value,
-    size: 10,
-    keyword: userKeyword.value || undefined,
-  });
-  users.value = result.records;
-  userTotal.value = result.total;
+  const request = ++userRequest;
+  usersLoading.value = true; userError.value = "";
+  try {
+    const result = await fetchAdminUsers({page:userPage.value,size:10,keyword:userKeyword.value || undefined});
+    if (request !== userRequest) return;
+    users.value = result.records; userTotal.value = result.total;
+  } catch {
+    if (request === userRequest) userError.value = "用户列表加载失败，请重试。";
+  } finally {
+    if (request === userRequest) usersLoading.value = false;
+  }
 }
 
 async function toggleUser(user: AdminUserItem) {
-  await updateUserStatus(user.id, user.status === 1 ? 0 : 1);
-  user.status = user.status === 1 ? 0 : 1;
+  if (changingUser.value !== null) return;
+  changingUser.value = user.id; userError.value = "";
+  try {
+    await updateUserStatus(user.id, user.status === 1 ? 0 : 1);
+    user.status = user.status === 1 ? 0 : 1;
+  } catch { userError.value = "用户状态更新失败，请重试。"; }
+  finally { changingUser.value = null; }
 }
 
-/* 作品说明：审计日志 */
+/* 审计日志 */
 
 const logs = ref<ChatLogItem[]>([]);
 const logTotal = ref(0);
 const logPage = ref(1);
+const logsLoading = ref(false), logError = ref("");
+let logRequest = 0;
 
 async function loadLogs() {
-  const result = await fetchAdminChatLogs(logPage.value, 12);
-  logs.value = result.records;
-  logTotal.value = result.total;
+  const request = ++logRequest;
+  logsLoading.value = true; logError.value = "";
+  try {
+    const result = await fetchAdminChatLogs(logPage.value, 12);
+    if (request !== logRequest) return;
+    logs.value = result.records; logTotal.value = result.total;
+  } catch {
+    if (request === logRequest) logError.value = "审计日志加载失败，请重试。";
+  } finally {
+    if (request === logRequest) logsLoading.value = false;
+  }
 }
 
-/* 作品说明：tab 切换加载 */
+/* tab 切换加载 */
 
 const loaders: Record<Tab, () => Promise<void>> = {
   overview: loadOverview,
@@ -275,7 +310,7 @@ const badgeVariant = (status: string) => {
           <h1>运营与数据管理</h1>
           <p>查看平台使用情况，管理报告导入、用户和对话审计。</p>
         </div>
-        <span class="admin__identity">管理员工作区</span>
+        <router-link to="/admin/financial-submissions" class="admin__identity">财报审核与发布 →</router-link>
       </header>
 
       <nav class="admin__tabs">
@@ -291,7 +326,7 @@ const badgeVariant = (status: string) => {
         </button>
       </nav>
 
-      <!-- 作品说明：运营看板 -->
+      <!-- 运营看板 -->
       <section v-if="tab === 'overview'" class="admin__section admin__section--overview">
         <div class="overview__head">
           <div>
@@ -403,20 +438,20 @@ const badgeVariant = (status: string) => {
         </template>
       </section>
 
-      <!-- 作品说明：数据管线 -->
+      <!-- 数据管线 -->
       <section v-else-if="tab === 'etl'" class="admin__section">
         <AppCard padding="lg">
           <template #header>
-            <AppSection title="上传报告 PDF" description="财报 / 研报 PDF 入队后由 Python 管线异步处理" dense />
+            <AppSection title="上传报告 PDF" description="财报进入候选审核；研报沿用知识库处理流程" dense />
           </template>
           <p class="admin__hint">
-            上传后任务入队（RabbitMQ），Python 管线串行执行：OCR 缓存 → 结构化抽取 → 入库 → 公司级同比重算 → 主数据回写。
+            上传后任务入队处理。财报识别完成只生成候选，需在财报审核与发布中逐份核对、批准并选定发布。
             {{ ocrCapability }}。研报支持纯文本直读。
           </p>
           <div class="admin__upload-row">
             <div class="admin__filetype">
               <label :class="{ active: fileType === 'financial' }">
-                <input v-model="fileType" type="radio" value="financial" />财报（入库+指标）
+                <input v-model="fileType" type="radio" value="financial" />财报（候选审核）
               </label>
               <label :class="{ active: fileType === 'research' }">
                 <input v-model="fileType" type="radio" value="research" />研报（RAG 知识库）
@@ -441,7 +476,9 @@ const badgeVariant = (status: string) => {
               <AppButton variant="outline" size="sm" @click="loadTasks">刷新</AppButton>
             </div>
           </template>
-          <div class="admin__table-wrap">
+          <div v-if="taskError" class="admin__load-error" role="alert">{{ taskError }}<AppButton size="sm" variant="outline" @click="loadTasks">重新加载</AppButton></div>
+          <AppSkeleton v-if="tasksLoading && !tasks.length" :lines="3" />
+          <div v-else class="admin__table-wrap">
             <table class="admin__table">
               <thead>
                 <tr><th>#</th><th>文件</th><th>类型</th><th>状态</th><th>结果</th><th>时间</th></tr>
@@ -463,7 +500,7 @@ const badgeVariant = (status: string) => {
                   </td>
                   <td class="mono admin__time">{{ task.createdAt?.replace("T", " ").slice(0, 16) }}</td>
                 </tr>
-                <tr v-if="!tasks.length">
+                <tr v-if="!tasks.length && !taskError">
                   <td colspan="6">
                     <AppEmpty title="暂无任务" />
                   </td>
@@ -472,14 +509,14 @@ const badgeVariant = (status: string) => {
             </table>
           </div>
           <div v-if="taskTotal > 10" class="admin__pager">
-            <AppButton variant="outline" size="sm" :disabled="taskPage <= 1" @click="taskPage -= 1">上一页</AppButton>
+            <AppButton variant="outline" size="sm" :disabled="taskPage <= 1 || tasksLoading" @click="taskPage -= 1">上一页</AppButton>
             <span class="mono">{{ taskPage }}</span>
-            <AppButton variant="outline" size="sm" :disabled="taskPage * 10 >= taskTotal" @click="taskPage += 1">下一页</AppButton>
+            <AppButton variant="outline" size="sm" :disabled="taskPage * 10 >= taskTotal || tasksLoading" @click="taskPage += 1">下一页</AppButton>
           </div>
         </AppCard>
       </section>
 
-      <!-- 作品说明：用户管理 -->
+      <!-- 用户管理 -->
       <section v-else-if="tab === 'users'" class="admin__section">
         <AppCard padding="lg">
           <template #header>
@@ -493,7 +530,9 @@ const badgeVariant = (status: string) => {
               />
             </div>
           </template>
-          <div class="admin__table-wrap">
+          <div v-if="userError" class="admin__load-error" role="alert">{{ userError }}<AppButton size="sm" variant="outline" @click="loadUsers">重新加载</AppButton></div>
+          <AppSkeleton v-if="usersLoading && !users.length" :lines="3" />
+          <div v-else class="admin__table-wrap">
             <table class="admin__table">
               <thead>
                 <tr><th>#</th><th>用户名</th><th>昵称</th><th>角色</th><th>风险偏好</th><th>状态</th><th>注册时间</th><th></th></tr>
@@ -514,32 +553,34 @@ const badgeVariant = (status: string) => {
                   </td>
                   <td class="mono admin__time">{{ user.createdAt?.replace("T", " ").slice(0, 16) }}</td>
                   <td>
-                    <button v-if="user.role !== 'ADMIN'" type="button" class="link-btn" @click="toggleUser(user)">
+                    <button v-if="user.role !== 'ADMIN'" type="button" class="link-btn" :disabled="changingUser !== null" @click="toggleUser(user)">
                       {{ user.status === 1 ? "禁用" : "启用" }}
                     </button>
                   </td>
                 </tr>
-                <tr v-if="!users.length">
+                <tr v-if="!users.length && !userError">
                   <td colspan="8"><AppEmpty title="暂无用户" /></td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div v-if="userTotal > 10" class="admin__pager">
-            <AppButton variant="outline" size="sm" :disabled="userPage <= 1" @click="userPage -= 1">上一页</AppButton>
+            <AppButton variant="outline" size="sm" :disabled="userPage <= 1 || usersLoading" @click="userPage -= 1">上一页</AppButton>
             <span class="mono">{{ userPage }}</span>
-            <AppButton variant="outline" size="sm" :disabled="userPage * 10 >= userTotal" @click="userPage += 1">下一页</AppButton>
+            <AppButton variant="outline" size="sm" :disabled="userPage * 10 >= userTotal || usersLoading" @click="userPage += 1">下一页</AppButton>
           </div>
         </AppCard>
       </section>
 
-      <!-- 作品说明：对话审计 -->
+      <!-- 对话审计 -->
       <section v-else class="admin__section">
         <AppCard padding="lg">
           <template #header>
             <AppSection title="对话审计" :description="`MQ 异步落库，共 ${logTotal} 条`" dense />
           </template>
-          <div class="admin__table-wrap">
+          <div v-if="logError" class="admin__load-error" role="alert">{{ logError }}<AppButton size="sm" variant="outline" @click="loadLogs">重新加载</AppButton></div>
+          <AppSkeleton v-if="logsLoading && !logs.length" :lines="3" />
+          <div v-else class="admin__table-wrap">
             <table class="admin__table">
               <thead>
                 <tr><th>#</th><th>用户</th><th>问题</th><th>状态</th><th>耗时</th><th>traceId</th><th>时间</th></tr>
@@ -553,19 +594,19 @@ const badgeVariant = (status: string) => {
                     <AppBadge :variant="badgeVariant(item.status)">{{ item.status }}</AppBadge>
                   </td>
                   <td class="mono">{{ (item.durationMs / 1000).toFixed(1) }}s</td>
-                  <td class="mono admin__trace" :title="item.requestId">{{ item.requestId.slice(0, 8) }}</td>
+                  <td class="mono admin__trace" :title="item.requestId">{{ item.requestId?.slice(0, 8) || '—' }}</td>
                   <td class="mono admin__time">{{ item.createdAt?.replace("T", " ").slice(0, 16) }}</td>
                 </tr>
-                <tr v-if="!logs.length">
+                <tr v-if="!logs.length && !logError">
                   <td colspan="7"><AppEmpty title="暂无审计日志" /></td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div v-if="logTotal > 12" class="admin__pager">
-            <AppButton variant="outline" size="sm" :disabled="logPage <= 1" @click="logPage -= 1">上一页</AppButton>
+            <AppButton variant="outline" size="sm" :disabled="logPage <= 1 || logsLoading" @click="logPage -= 1">上一页</AppButton>
             <span class="mono">{{ logPage }}</span>
-            <AppButton variant="outline" size="sm" :disabled="logPage * 12 >= logTotal" @click="logPage += 1">下一页</AppButton>
+            <AppButton variant="outline" size="sm" :disabled="logPage * 12 >= logTotal || logsLoading" @click="logPage += 1">下一页</AppButton>
           </div>
         </AppCard>
       </section>
@@ -574,6 +615,7 @@ const badgeVariant = (status: string) => {
 </template>
 
 <style scoped>
+.admin__load-error { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 12px 0; color: var(--c-danger); font-size: var(--fs-sm); }
 .admin {
   min-height: 100%;
   background: var(--c-bg);

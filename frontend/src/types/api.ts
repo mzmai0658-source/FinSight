@@ -1,6 +1,6 @@
 export type MessageRole = "user" | "assistant" | "system";
 
-/** 作品说明：Java 后端统一响应包装 */
+/** Java 后端统一响应包装 */
 export interface ApiEnvelope<T> {
   code: number;
   message: string;
@@ -8,7 +8,7 @@ export interface ApiEnvelope<T> {
   traceId?: string;
 }
 
-/* 作品说明：认证 */
+/* 认证 */
 
 export interface AuthUser {
   id: number;
@@ -25,7 +25,7 @@ export interface TokenPair {
   user: AuthUser;
 }
 
-/* 作品说明：多会话 */
+/* 多会话 */
 
 export interface SessionSummary {
   sessionUid: string;
@@ -282,7 +282,7 @@ export interface SessionResponse {
   updated_at: string;
 }
 
-/** 作品说明：一轮对话的最终结果（done 事件 result 字段） */
+/** 一轮对话的最终结果（done 事件 result 字段） */
 export interface TurnResult {
   version?: number;
   data_version?: string;
@@ -332,7 +332,7 @@ export interface StreamDoneEvent {
   error?: string;
 }
 
-/* 作品说明：SSE 流式事件 */
+/* SSE 流式事件 */
 
 export type StreamEventType =
   | "session"

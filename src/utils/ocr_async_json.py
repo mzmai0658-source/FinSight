@@ -1,4 +1,4 @@
-"""作品说明：PaddleOCR 异步任务版 JSON 提取工具。
+"""PaddleOCR 异步任务版 JSON 提取工具。
 
 独立于现有 `ocr.py`，用于：
 1. 提交 PDF 到异步 OCR 接口
@@ -164,7 +164,7 @@ def submit_async_ocr_job(
     job_url: str | None = None,
     token: str | None = None,
 ) -> str:
-    """作品说明：提交本地 PDF 或远端 URL 到异步 OCR 接口，返回 job_id。"""
+    """提交本地 PDF 或远端 URL 到异步 OCR 接口，返回 job_id。"""
     is_remote_file = pdf_path.startswith("http://") or pdf_path.startswith("https://")
     if not is_remote_file and not os.path.exists(pdf_path):
         raise FileNotFoundError(pdf_path)
@@ -204,7 +204,7 @@ def submit_async_ocr_job(
             )
 
     if resp.status_code not in (200, 201, 202):
-        # 作品说明：提供可操作的校验错误，不泄露凭据。
+        # 提供可操作的校验错误，不泄露凭据。
         secret = token if token is not None else (os.getenv('PADDLEOCR_API_TOKEN') or os.getenv('OCR_API_TOKEN', ''))
         try:
             body = resp.json()
@@ -232,7 +232,7 @@ def poll_async_ocr_job(
     job_url: str | None = None,
     token: str | None = None,
 ) -> Dict[str, Any]:
-    """作品说明：轮询异步 OCR 任务直到完成，返回任务详情。"""
+    """轮询异步 OCR 任务直到完成，返回任务详情。"""
     headers = {
         "Authorization": f"bearer {token if token is not None else (os.getenv('PADDLEOCR_API_TOKEN') or os.getenv('OCR_API_TOKEN', ''))}",
     }
@@ -292,7 +292,7 @@ def poll_async_ocr_job(
 
 
 def download_async_ocr_json(job_result: Dict[str, Any]) -> Any:
-    """作品说明：根据任务完成结果下载 JSON 文件并解析。"""
+    """根据任务完成结果下载 JSON 文件并解析。"""
     result_url = job_result.get("resultUrl", {}).get("jsonUrl")
     if not result_url:
         raise RuntimeError("OCR completed task lacks jsonUrl")
@@ -326,7 +326,7 @@ def download_async_ocr_json(job_result: Dict[str, Any]) -> Any:
     if not text:
         raise RuntimeError(f"下载到的 JSON 结果为空: {last_error}")
 
-    # 作品说明：官方返回有时是 JSON 数组，有时可能是 JSONL；统一兼容
+    # 官方返回有时是 JSON 数组，有时可能是 JSONL；统一兼容
     try:
         return json.loads(text)
     except json.JSONDecodeError:
@@ -349,7 +349,7 @@ def convert_pdf_to_async_json(
     model: str = OCR_MODEL,
     optional_payload: Optional[Dict[str, Any]] = None,
 ) -> Any:
-    """作品说明：将 PDF 异步解析为 JSON 结构。
+    """将 PDF 异步解析为 JSON 结构。
     
     - 默认优先读取本地缓存
     - `force=True` 时强制重新提交异步任务
@@ -374,7 +374,7 @@ def convert_pdf_to_async_json(
 
 
 def list_report_pdfs(report_dirs: Optional[list[Path]] = None) -> list[str]:
-    """作品说明：扫描默认测试目录中的 PDF 文件路径。"""
+    """扫描默认测试目录中的 PDF 文件路径。"""
     pdf_candidates: list[Path] = []
     for report_dir in report_dirs or DEFAULT_REPORT_DIRS:
         if not report_dir.exists():
@@ -439,7 +439,7 @@ def convert_pdfs_in_default_dirs(
     optional_payload: Optional[Dict[str, Any]] = None,
     max_workers: int = DEFAULT_MAX_WORKERS,
 ) -> Dict[str, str]:
-    """作品说明：批量处理默认目录中的全部 PDF。
+    """批量处理默认目录中的全部 PDF。
     
     返回:
     {pdf_path: \"saved\" | \"cached\" | \"locked\" | \"failed\"}
@@ -559,7 +559,7 @@ def main() -> None:
                 print("python ocr_async_json.py <pdf_path>")
             return
 
-        # 作品说明：直接运行且未传参：默认批量处理两个测试目录
+        # 直接运行且未传参：默认批量处理两个测试目录
         results = convert_pdfs_in_default_dirs(
             force=args.force,
             save=not args.no_save,

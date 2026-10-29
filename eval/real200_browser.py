@@ -1,4 +1,4 @@
-"""作品说明：真实财报保存结果的浏览器验收和报告截图，不产生额外问答成绩。"""
+"""真实财报保存结果的浏览器验收和报告截图，不产生额外问答成绩。"""
 import argparse,base64,hashlib,json,sys,time
 import requests,websocket
 from pathlib import Path

@@ -13,7 +13,7 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-/** 作品说明：对话审计异步落库（失败自动重试，重试耗尽进死信队列） */
+/** 对话审计异步落库（失败自动重试，重试耗尽进死信队列） */
 @Slf4j
 @Component
 @RequiredArgsConstructor

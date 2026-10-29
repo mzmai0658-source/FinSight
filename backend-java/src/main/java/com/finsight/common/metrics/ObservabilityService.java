@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/** 作品说明：记录主要异步及流式工作流程的业务指标。 */
+/** 记录主要异步及流式工作流程的业务指标。 */
 @Service
 public class ObservabilityService {
 

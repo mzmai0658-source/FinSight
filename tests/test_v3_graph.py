@@ -84,7 +84,9 @@ def test_graph_failure_retains_bounded_contract_diagnostics_without_driver_text(
         asyncio.run(agent.run('查询',[],'failed',time.time()+270,emit))
     diagnostics=captured.value.diagnostics
     assert diagnostics['model_calls']==6 and diagnostics['structured_trace'][0]['call']==1
-    assert set(diagnostics)=={'model_calls','timings','structured_trace','correction_feedback'}
+    assert set(diagnostics)=={'model_calls','timings','structured_trace','model_wire_outputs','correction_feedback'}
+    assert diagnostics['model_wire_outputs']==[]
+    assert 'driver' not in str(diagnostics).lower()
 
 def test_invalid_ranking_shape_is_not_marked_complete():
     r=request(codes=['600085'],metrics=['operating_revenue','net_profit'],scope='parent')
@@ -182,7 +184,7 @@ def test_concept_cannot_cite_a_financial_fact_even_when_model_audit_approves():
     r=request(metrics=['operating_revenue']);r.goals=[Goal(id='concept',kind='concept',text='解释营收')]
     result=asyncio.run(V3Agent(None,{},model=ConceptModel())._evidence(dict(request=r,executed=ExecutionResult(),
         previous=None,repository=None,budget=None,emit=emit)))
-    assert result['executed'].goals[0].status=='no_data'
+    assert result['executed'].goals[0].status=='failed'
     assert '这是收入指标。' not in result['prose']
 
 
@@ -230,7 +232,13 @@ def test_rule_aside_publication_does_not_erase_pending_financial_conditions():
         executed=ExecutionResult(),prose=['默认选最新年报。'],
         verification=Verification(numeric=[],request=[],evidence=[],status='pass'),budget=Budget(time.time()+100),
         semantic=SemanticReview(goal_requirements=[dict(kind='rules',goal_ids=['rules'],covered=True)],satisfied=True,clarification=[],planner_defects=[],companies_correct=True,metrics_and_scope_correct=True,time_correct=True,goals_correct=True,constraints_correct=True,presentation_correct=True))
-    result=asyncio.run(V3Agent(None,{},model=Model())._publish(state))['result']
+    async def verified_publish():
+        async def emit(*args):pass
+        state.update(emit=emit,evidence_checks=[])
+        agent=V3Agent(None,{},model=Model())
+        state.update(await agent._verify(state))
+        return (await agent._publish(state))['result']
+    result=asyncio.run(verified_publish())
     assert result['dialogue_state']['pending']['conditions']['codes']==['002082']
 
 

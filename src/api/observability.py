@@ -1,4 +1,4 @@
-"""作品说明：内部服务记录追踪信息与 Prometheus 指标。"""
+"""内部服务记录追踪信息与 Prometheus 指标。"""
 from __future__ import annotations
 
 import time
@@ -30,7 +30,7 @@ def trace_context(trace_id: Optional[str]) -> Iterator[None]:
 
 
 class ApiMetrics:
-    """作品说明：用统一包装器封装监控指标。"""
+    """用统一包装器封装监控指标。"""
 
     def __init__(self, registry: Optional[CollectorRegistry] = None):
         self.registry = registry or CollectorRegistry()

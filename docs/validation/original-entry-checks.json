@@ -1,0 +1,131 @@
+{
+  "checks": {
+    "ui_login": true,
+    "D04_all_original_shortcuts": true,
+    "reference_and_repeat_open": true,
+    "D06_all_original_shortcuts": true,
+    "D09_all_original_shortcuts": true,
+    "history_switch_and_refresh": true,
+    "real_404_blob_message": true,
+    "retry_after_404": true,
+    "popup_blocked_fallback_link": true,
+    "mobile_no_document_overflow": true,
+    "page_identity": true,
+    "not_blank": true,
+    "no_framework_overlay": true,
+    "no_page_errors": true,
+    "no_unexpected_console_errors": true
+  },
+  "observations": [
+    {
+      "name": "D04-2024",
+      "status": 200,
+      "bytes": 10092140,
+      "sha256_matches_original": true,
+      "page": 10,
+      "native_pdf_page_verified": true,
+      "content_disposition": null,
+      "csp_preserved": true
+    },
+    {
+      "name": "D04-reference",
+      "status": 200,
+      "bytes": 10092140,
+      "sha256_matches_original": true,
+      "page": 10,
+      "native_pdf_page_verified": true,
+      "content_disposition": null,
+      "csp_preserved": true
+    },
+    {
+      "name": "D04-repeat",
+      "status": 200,
+      "bytes": 10092140,
+      "sha256_matches_original": true,
+      "page": 10,
+      "native_pdf_page_verified": true,
+      "content_disposition": null,
+      "csp_preserved": true
+    },
+    {
+      "name": "D06-2023",
+      "status": 200,
+      "bytes": 1799710,
+      "sha256_matches_original": true,
+      "page": 92,
+      "native_pdf_page_verified": true,
+      "content_disposition": null,
+      "csp_preserved": true
+    },
+    {
+      "name": "D06-2025",
+      "status": 200,
+      "bytes": 1533692,
+      "sha256_matches_original": true,
+      "page": 84,
+      "native_pdf_page_verified": true,
+      "content_disposition": null,
+      "csp_preserved": true
+    },
+    {
+      "name": "D06-2024",
+      "status": 200,
+      "bytes": 1711311,
+      "sha256_matches_original": true,
+      "page": 92,
+      "native_pdf_page_verified": true,
+      "content_disposition": null,
+      "csp_preserved": true
+    },
+    {
+      "name": "D09-2024",
+      "status": 200,
+      "bytes": 489010,
+      "sha256_matches_original": true,
+      "page": 8,
+      "native_pdf_page_verified": true,
+      "content_disposition": null,
+      "csp_preserved": true
+    },
+    {
+      "name": "D04-history-refresh",
+      "status": 200,
+      "bytes": 10092140,
+      "sha256_matches_original": true,
+      "page": 10,
+      "native_pdf_page_verified": true,
+      "content_disposition": null,
+      "csp_preserved": true
+    },
+    {
+      "fault_injection": "same authenticated request redirected to unowned missing asset",
+      "status": 404,
+      "message": "资源不存在"
+    },
+    {
+      "name": "D04-error-retry",
+      "status": 200,
+      "bytes": 10092140,
+      "sha256_matches_original": true,
+      "page": 10,
+      "native_pdf_page_verified": true,
+      "content_disposition": null,
+      "csp_preserved": true
+    }
+  ],
+  "page_errors": [],
+  "unexpected_console_errors": [],
+  "browser": "Google Chrome via Playwright; Browser plugin not available",
+  "viewports": [
+    [
+      1440,
+      1000
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "verified_date": "2026-10-27",
+  "scope": "reviewed backend; real Chrome, success paths without response replacement"
+}

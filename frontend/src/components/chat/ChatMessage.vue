@@ -14,6 +14,7 @@ import RegisteredAsset from "./RegisteredAsset.vue";
 import { IconAlert, IconSpark } from "@/components/ui/icons";
 import { useUiStore, type EvidenceTab } from "@/stores/ui";
 import { periods } from "@/utils/financialDisplay";
+import { registeredAssetId } from "@/services/api";
 const ui = useUiStore();
 const props = defineProps<{
   view: MessageView;
@@ -21,7 +22,7 @@ const props = defineProps<{
 }>();
 const sourceLinks = computed(() => {
   const seen = new Set<string>();
-  const links: Array<{ key: string; stockCode: string; year: number; period: string; page: number; label: string }> = [];
+  const links: Array<{ key: string; assetId: string; stockCode: string; year: number; period: string; page: number; label: string }> = [];
   for (const fact of props.view.facts) {
     const page = fact.source?.page_start;
     const code = fact.stock_code;
@@ -30,14 +31,16 @@ const sourceLinks = computed(() => {
     if (!page || !code || !year || !period) continue;
     const start = Number(page);
     const end = Number(fact.source?.page_end);
-    const key = `${code}|${year}|${period}|${start}|${end || start}`;
+    const source = fact.source;
+    const assetId = registeredAssetId(source?.asset_id) || registeredAssetId(source?.asset_url) || registeredAssetId(source?.source_url);
+    const key = `${assetId}|${code}|${year}|${period}|${start}|${end || start}`;
     if (seen.has(key)) continue;
     seen.add(key);
     const periodLabel = periods[period] || period;
     const pageLabel = end && end !== start ? `第${start}–${end}页` : `第${start}页`;
     const company = fact.stock_abbr ? `${fact.stock_abbr}` : "";
     const label = `打开${company}${year}年${periodLabel}${pageLabel}`;
-    links.push({ key, stockCode: code, year, period, page: start, label });
+    links.push({ key, assetId, stockCode: code, year, period, page: start, label });
   }
   return links;
 });
@@ -61,10 +64,10 @@ defineEmits<{
     </div>
 
     <div class="msg__main">
-      <!-- 作品说明：用户消息 -->
+      <!-- 用户消息 -->
       <div v-if="view.role === 'user'" class="msg__bubble msg__bubble--user">{{ view.content }}</div>
 
-      <!-- 作品说明：助手消息：执行轨迹 + 证据卡片 + 正文 -->
+      <!-- 助手消息：执行轨迹 + 证据卡片 + 正文 -->
       <div v-else class="msg__stack">
         <span v-if="view.datasetProfile?.kind === 'synthetic'" class="msg__outcome" role="note">虚构演示数据 · 仅用于功能验证</span>
         <GenerationStatus v-if="view.live && !view.needsClarification" :steps="view.steps" :error="view.error" :started-at="view.startedAt" :holding="view.holding" />
@@ -77,6 +80,7 @@ defineEmits<{
           <RegisteredAsset
             v-for="link in sourceLinks"
             :key="link.key"
+            :asset-id="link.assetId"
             :stock-code="link.stockCode"
             :report-year="link.year"
             :report-period="link.period"
@@ -223,7 +227,7 @@ defineEmits<{
   min-width: 0;
 }
 
-/* 作品说明：Markdown 渲染样式 */
+/* Markdown 渲染样式 */
 .msg__content :deep(p) {
   margin: 0 0 var(--sp-2);
 }

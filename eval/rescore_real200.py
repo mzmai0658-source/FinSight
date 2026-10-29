@@ -1,18 +1,21 @@
-"""作品说明：评分工具修正另存记录，保留原题、原预期、原回答和初评分。"""
+"""评分工具修正另存记录，保留原题、原预期、原回答和初评分。"""
 import argparse,hashlib,json,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 from eval.real200_acceptance import reference,score,summarize
+from eval.acceptance_scoring import recorded_model
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--run',required=True);p.add_argument('--audit',required=True);p.add_argument('--oracle',required=True);a=p.parse_args()
     folder=ROOT/a.run;ref=reference(ROOT/a.audit);oracle=json.loads((ROOT/a.oracle).read_text(encoding='utf-8'))
     assert oracle['data_version']==ref['version']
+    original=[json.loads(line) for line in (folder/'records.jsonl').read_text(encoding='utf-8').splitlines()]
+    model=recorded_model(folder,original)
     records=[];prior={}
-    for line in (folder/'records.jsonl').read_text(encoding='utf-8').splitlines():
-        row=json.loads(line);group=row['case'].get('group')
+    for row in original:
+        group=row['case'].get('group')
         if row.get('run'):
-            row['original_score']=row['score'];row['score']=score(row['case'],row['run'],ref,oracle,'qwen3.5:9b-q4_K_M',prior.get(group))
+            row['original_score']=row['score'];row['score']=score(row['case'],row['run'],ref,oracle,model,prior.get(group))
             result=row['run']['task'].get('result') or {};facts=result.get('facts') or []
             if group:
                 if row['score']['automated_pass'] and facts:prior[group]=facts

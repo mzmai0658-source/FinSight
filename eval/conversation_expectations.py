@@ -1,4 +1,4 @@
-"""作品说明：人工独立定义多轮与留出问题的条件预期。"""
+"""人工独立定义多轮与留出问题的条件预期。"""
 MAIN=['total_operating_revenue','net_profit','gross_profit_margin','roe']
 R=['total_operating_revenue']; N=['net_profit']; G=['gross_profit_margin']
 

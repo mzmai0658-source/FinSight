@@ -1,4 +1,4 @@
-"""作品说明：通过本机实际服务冒烟检查当前 v3 生产接口。"""
+"""通过本机实际服务冒烟检查当前 v3 生产接口。"""
 import argparse,json,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))

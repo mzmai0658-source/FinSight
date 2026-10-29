@@ -1,4 +1,4 @@
-"""作品说明：从当前 117 份原件准备候选事实，提取完成本身不构成发布资格。"""
+"""从当前 117 份原件准备候选事实，提取完成本身不构成发布资格。"""
 from __future__ import annotations
 
 import argparse
@@ -31,12 +31,12 @@ def accepted_original_cache(engine,folder):
     for line in path.read_text(encoding='utf-8').splitlines():
         row=json.loads(line);pages=documents.setdefault(row['document_version'],{})
         if row['page'] in pages:raise ValueError('Duplicate original cache page')
-        pages[row['page']]=row['text']
+        pages[row['page']]=row.get('original_text',row['text'])
     result={}
     for digest,page_count in page_counts.items():
         pages=documents.get(digest,{})
         if any(page<1 or page>page_count for page in pages):raise ValueError('Original cache page exceeds its accepted physical document')
-        # 作品说明：已验收提取器不将空白文本页纳入叙述；封存的报告清单保留缺页的物理位置。
+        # 已验收提取器不将空白文本页纳入叙述；封存的报告清单保留缺页的物理位置。
         result[digest]=[pages.get(page,'') for page in range(1,page_count+1)]
     return result,dict(version=version,narratives_sha256=receipt)
 

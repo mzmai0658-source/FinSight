@@ -64,6 +64,31 @@ class ChatStreamServiceTest {
         var legacy = json.readTree("{\"validation\":{\"verification\":{\"status\":\"pass\"},\"evidence\":[{\"id\":\"q1\"}]}}");
         assertEquals("pass", json.readTree(service.buildMetadata(legacy)).path("verification").path("status").asText());
     }
+    @Test void v3InputRolesAndMetricUnitsSurviveMetadataAndSavedHistory() throws Exception {
+        var conditions = json.readTree("""
+            {"codes":["000333"],"metrics":["operating_revenue","eps_basic"],
+             "calculation":"yoy","comparison_axis":"years",
+             "calculation_inputs":[{"current":{"year":2024,"period":"FY"},"base":{"year":2023,"period":"FY"}}],
+             "presentation":{"unit":"万元","metric_units":{"eps_basic":"元/股"},"include_inputs":true}}
+            """);
+        var canonical = json.createObjectNode();
+        canonical.put("version", 3);
+        canonical.putObject("request_contract").put("version", 3).set("conditions", conditions);
+        canonical.putObject("dialogue_state").put("version", 3).put("state_revision", 2).set("conditions", conditions);
+        var metadata = service.buildMetadata(canonical);
+        var saved = json.readTree(metadata);
+        assertEquals(conditions, saved.path("request_contract").path("conditions"));
+        assertEquals(conditions, saved.path("dialogue_state").path("conditions"));
+        var mapper = mock(com.finsight.chat.mapper.ChatMessageMapper.class);
+        var historyService = new ChatSessionService(mock(com.finsight.chat.mapper.ChatSessionMapper.class), mapper, json, agent);
+        var message = new com.finsight.chat.entity.ChatMessage();
+        message.setRole("assistant"); message.setContent("已完成"); message.setMetadata(metadata);
+        when(mapper.selectList(any())).thenReturn(List.of(message));
+        var history = historyService.buildHistory(1L);
+        var restored = (java.util.Map<?,?>) history.get(0).get("metadata");
+        var state = (com.fasterxml.jackson.databind.JsonNode) restored.get("dialogue_state");
+        assertEquals(conditions, state.path("conditions"));
+    }
     @Test void upstreamFailureProducesPersistedFailedTerminalAnswer() throws Exception {
         when(agent.taskStatus(anyString(), anyString())).thenReturn(reactor.core.publisher.Mono.just(java.util.Map.of("task_status","failed","error","model_connection_failed")));
         when(agent.streamChat(anyMap(), anyString())).thenReturn(Flux.error(new IllegalStateException("offline")));

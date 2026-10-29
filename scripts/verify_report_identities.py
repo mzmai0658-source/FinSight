@@ -1,4 +1,4 @@
-"""作品说明：独立用原文检查全部候选或已验收报告的公司、期间身份。"""
+"""独立用原文检查全部候选或已验收报告的公司、期间身份。"""
 import argparse,hashlib,json,re,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))

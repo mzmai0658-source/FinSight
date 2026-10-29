@@ -1,4 +1,4 @@
-"""作品说明：提取失败不能发布残缺财务快照。"""
+"""提取失败不能发布残缺财务快照。"""
 from unittest.mock import Mock
 
 import pytest

@@ -1,4 +1,4 @@
-"""作品说明：只读审计财务问答发布链路，联合材料清单、追加式提取记录、详情、现用快照与历史数据库；仅执行 SELECT。"""
+"""只读审计财务问答发布链路，联合材料清单、追加式提取记录、详情、现用快照与历史数据库；仅执行 SELECT。"""
 from __future__ import annotations
 
 import argparse
@@ -70,7 +70,7 @@ def _atomic_write_json(path: Path, payload: Any) -> None:
 
 
 def read_journal(path: Path) -> tuple[list[dict[str, Any]], dict[str, dict[str, Any]], int]:
-    """作品说明：读取可容忍中途写入的 JSONL 日志，每个文件摘要保留最后记录。"""
+    """读取可容忍中途写入的 JSONL 日志，每个文件摘要保留最后记录。"""
     if not path.exists():
         return [], {}, 0
     lines = path.read_text(encoding="utf-8").splitlines()
@@ -132,7 +132,7 @@ def _same_number(left: Any, right: Any, *, reference: Any = None) -> bool:
 
 
 def raw_value_appears(raw_value: Any, text: str) -> bool:
-    """作品说明：判断来源值是否实际出现在 OCR 或 PDF 页文本中。"""
+    """判断来源值是否实际出现在 OCR 或 PDF 页文本中。"""
     if raw_value is None:
         return False
     expected = _to_decimal(raw_value)
@@ -154,7 +154,7 @@ def raw_value_appears(raw_value: Any, text: str) -> bool:
 
 
 class PreparedPages:
-    """作品说明：按需读取已准备页快照，并检查内容摘要。"""
+    """按需读取已准备页快照，并检查内容摘要。"""
 
     def __init__(self, directory: Path):
         self.directory = directory
@@ -186,7 +186,7 @@ def _page_text(pages: list[str], start: Any, end: Any) -> str | None:
 
 
 def _formula_value(data: dict[str, Any], field: str) -> tuple[float | None, str | None, list[str]]:
-    """作品说明：重新计算已知派生字段，不将其冒充 PDF 字面披露。"""
+    """重新计算已知派生字段，不将其冒充 PDF 字面披露。"""
     def number(name: str) -> float | None:
         value = _to_decimal(data.get(name))
         return float(value) if value is not None else None
@@ -199,7 +199,7 @@ def _formula_value(data: dict[str, Any], field: str) -> tuple[float | None, str 
     if field in cash_ratios:
         component, net_cash = number(cash_ratios[field]), number("net_cash_flow")
         if component is not None and net_cash not in (None, 0):
-            # 作品说明：最终净现金流以元存储，报表组成项目采用万元。
+            # 最终净现金流以元存储，报表组成项目采用万元。
             denominators = [net_cash, net_cash / 10000]
             target = number(field)
             for denominator in denominators:
@@ -287,7 +287,7 @@ def _legacy_semantics(
     data: dict[str, Any],
     declared_derived: set[str],
 ) -> tuple[str, dict[str, Any]]:
-    """作品说明：只对当前提取代码实际执行的计算推导语义。"""
+    """只对当前提取代码实际执行的计算推导语义。"""
     explicit = str(source.get("value_semantics") or "")
     if explicit:
         return explicit, {
@@ -370,7 +370,7 @@ def _audit_sources(
         page_text = _page_text(pages, start, end)
         raw_found = raw is not None and page_text is not None and raw_value_appears(raw, page_text)
         semantics, semantic_detail = _legacy_semantics(field, source, data, declared_derived_set)
-        # 作品说明：旧详情缺少数值语义时，只在声明原值未出现时推断计算；可见原始字面值仍按直接披露处理。
+        # 旧详情缺少数值语义时，只在声明原值未出现时推断计算；可见原始字面值仍按直接披露处理。
         if not source.get("value_semantics") and raw_found:
             semantics, semantic_detail = "direct", {"legacy_inferred": False}
         if semantics == "derived":
@@ -475,7 +475,7 @@ def audit_extraction_detail(
 
 
 def load_database_snapshot(engine, *, require_provenance: bool = True) -> dict[str, Any]:
-    """作品说明：只通过 SELECT 加载四张现用财务表及来源记录。"""
+    """只通过 SELECT 加载四张现用财务表及来源记录。"""
     from sqlalchemy import MetaData, Table, inspect, select
 
     available = set(inspect(engine).get_table_names())
@@ -552,7 +552,7 @@ def audit_database_identity(
     if document.get("source_sha256") != manifest_row.get("sha256"):
         issues.append("database_source_hash_mismatch")
     if document.get("source_path") != manifest_row.get("source_path"):
-        # 作品说明：复用快照可能指向旧上传路径；字节相同构成可审计别名，而非证据冲突。
+        # 复用快照可能指向旧上传路径；字节相同构成可审计别名，而非证据冲突。
         issues.append("database_source_path_alias")
     if document.get("page_count") != manifest_row.get("page_count"):
         issues.append("database_page_count_mismatch")
@@ -621,7 +621,7 @@ def compare_legacy(
     target: dict[str, Any],
     details: dict[tuple[str, int, str], dict[str, Any]],
 ) -> dict[str, Any]:
-    """作品说明：将历史行与新提取详情、目标行独立对照。"""
+    """将历史行与新提取详情、目标行独立对照。"""
     legacy_identities = set().union(*(set(legacy["tables"][name]) for name in TABLES))
     target_identities = set().union(*(set(target["tables"][name]) for name in TABLES))
 

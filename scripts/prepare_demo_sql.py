@@ -1,4 +1,4 @@
-"""作品说明：把固定 SQL dump 重定向到隔离的演示数据库后写到标准输出。"""
+"""把固定 SQL dump 重定向到隔离的演示数据库后写到标准输出。"""
 
 from __future__ import annotations
 

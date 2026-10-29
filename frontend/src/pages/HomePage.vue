@@ -27,7 +27,7 @@ const auth = useAuthStore();
 const draft = ref("");
 const summary = ref<MarketSummary | null>(null);
 
-/** 作品说明：一个数字答案从提问到可回查的四个环节 */
+/** 一个数字答案从提问到可回查的四个环节 */
 const evidenceSteps = [
   {
     icon: IconSearch,
@@ -112,7 +112,8 @@ const scopeItems = computed(() => {
   const s = summary.value;
   return [
     { value: s.importedCompanies, unit: "家", label: "公司已结构化入库" },
-    { value: s.importedCompanies + s.pendingCompanies, unit: "家", label: "公司已收录" },
+    s.dataset ? { value: s.dataset.reportCount, unit: "份", label: "财报已收录" }
+      : { value: s.importedCompanies + s.pendingCompanies, unit: "家", label: "公司已收录" },
     { value: yearSpan.value ?? "—", unit: "", label: "年报年度" },
     { value: s.latestYear ?? "—", unit: "", label: "最新年报" },
   ];
@@ -139,7 +140,7 @@ function startChat(question: string) {
 
 <template>
   <PortalShell>
-    <!-- 作品说明：首屏：提问 + 证据链 -->
+    <!-- 首屏：提问 + 证据链 -->
     <section class="hero">
       <div class="hero__content">
         <span class="hero__eyebrow">面向财报学习与研究</span>
@@ -194,11 +195,12 @@ function startChat(question: string) {
       </aside>
     </section>
 
-    <!-- 作品说明：当前数据范围（实时） -->
+    <!-- 当前数据范围（实时） -->
     <section v-if="scopeItems.length" class="scope" aria-label="当前数据范围">
       <div class="scope__intro">
         <strong>当前数据范围</strong>
-        <span>数字问答只覆盖已通过发布检查的公司与报告期</span>
+        <span v-if="summary?.dataset?.experimental">试验财报库：部分数字尚未完成原件逐项核验</span>
+        <span v-else>数字问答只覆盖已通过发布检查的公司与报告期</span>
       </div>
       <dl class="scope__items">
         <div v-for="item in scopeItems" :key="item.label" class="scope__item">
@@ -211,7 +213,7 @@ function startChat(question: string) {
       </router-link>
     </section>
 
-    <!-- 作品说明：功能入口 -->
+    <!-- 功能入口 -->
     <section class="entries">
       <h2 class="section-title">从这里开始</h2>
       <div class="entries__grid">
@@ -224,7 +226,7 @@ function startChat(question: string) {
       </div>
     </section>
 
-    <!-- 作品说明：能力边界 -->
+    <!-- 能力边界 -->
     <section class="bounds">
       <h2 class="section-title">系统的边界</h2>
       <div class="bounds__grid">
@@ -253,7 +255,7 @@ function startChat(question: string) {
   margin-bottom: var(--sp-4);
 }
 
-/* 作品说明：首屏 */
+/* 首屏 */
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.9fr);
@@ -331,7 +333,7 @@ function startChat(question: string) {
   color: var(--c-primary);
 }
 
-/* 作品说明：证据链 */
+/* 证据链 */
 .chain {
   background: var(--c-surface);
   border: 1px solid var(--c-border);
@@ -430,7 +432,7 @@ function startChat(question: string) {
   line-height: 1.5;
 }
 
-/* 作品说明：数据范围 */
+/* 数据范围 */
 .scope {
   display: grid;
   grid-template-columns: minmax(200px, 0.8fr) minmax(0, 2fr) auto;
@@ -499,7 +501,7 @@ function startChat(question: string) {
   white-space: nowrap;
 }
 
-/* 作品说明：功能入口 */
+/* 功能入口 */
 .entries__grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -565,7 +567,7 @@ function startChat(question: string) {
   color: var(--c-primary);
 }
 
-/* 作品说明：边界 */
+/* 边界 */
 .bounds__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

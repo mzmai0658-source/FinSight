@@ -7,7 +7,7 @@ from src.agent.v3.evidence import checked_source
 
 @pytest.fixture(autouse=True)
 def separately_verified_scope(monkeypatch):
-    # 作品说明：用特意构造的非 PDF 字节样例隔离数值、单位、身份和归档检查；物理口径另有专门测试。
+    # 用特意构造的非 PDF 字节样例隔离数值、单位、身份和归档检查；物理口径另有专门测试。
     monkeypatch.setattr('src.agent.v3.evidence.checked_statement_scope',lambda *args:True)
 
 def test_unit_normalization_keeps_amount_share_ratio_and_wrapped_precision_distinct():
@@ -16,7 +16,7 @@ def test_unit_normalization_keeps_amount_share_ratio_and_wrapped_precision_disti
     assert cell_decimal('（1,234.50）')==Decimal('-1234.50')
     assert normalize_cell('0.0033','元/股','元') is None
     assert normalize_cell('10.76','万元','%') is None
-    assert normalize_cell('1 2','元','元')==Decimal(12)  # 作品说明：只核验已定位的单个单元格。
+    assert normalize_cell('1 2','元','元')==Decimal(12)  # 只核验已定位的单个单元格。
     assert cell_decimal('不适用') is None
 
 def test_original_number_presence_does_not_certify_a_different_normalized_value(monkeypatch,tmp_path):

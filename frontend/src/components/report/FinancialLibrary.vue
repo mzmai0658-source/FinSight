@@ -3,11 +3,13 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import AppDialog from '@/components/ui/AppDialog.vue';
 import { fetchFinancialMaterials, fetchFinancialPdf, loadStoredAuth, type FinancialMaterial } from '@/services/api';
 import { reportPeriod } from '@/utils/financialDisplay';
+import type { DatasetInfo } from '@/types/market';
 import ResearchReader from './ResearchReader.vue';
 const selected=ref<FinancialMaterial|null>(null);
 const props = withDefaults(defineProps<{ initialKeyword?: string }>(), { initialKeyword: '' });
 const emit = defineEmits<{ search: [keyword: string] }>();
 const rows=ref<FinancialMaterial[]>([]), total=ref(0), page=ref(1), keyword=ref(''), loading=ref(false), error=ref('');
+const companyCount=ref<number|null>(null), dataset=ref<DatasetInfo|null>(null);
 keyword.value = props.initialKeyword;
 const appliedKeyword = ref(props.initialKeyword);
 const loginTarget = () => ({ path: '/login', query: { redirect: window.location.pathname + window.location.search } });
@@ -15,10 +17,11 @@ const loggedIn=!!loadStoredAuth();
 const pdfUrls=ref<Record<string,string>>({}), pdfErrors=ref<Record<string,string>>({}), pending=ref<Record<string,boolean>>({});
 let version=0, disposed=false;
 function key(item:FinancialMaterial){return item.materialId ? String(item.materialId) : `${item.stockCode}-${item.reportYear}-${item.reportPeriod}-${item.sha256}`;}
+function fileLabel(item:FinancialMaterial){return /^[a-f0-9]{64}\.pdf$/i.test(item.fileName) ? `${item.company}_${reportPeriod(item.reportYear,item.reportPeriod)}财报.pdf` : item.fileName;}
 async function load(){
  if(!loggedIn)return;
  const request=++version;loading.value=true;error.value='';
- try{const result=await fetchFinancialMaterials({page:page.value,size:12,keyword:appliedKeyword.value});if(request===version){rows.value=result.records;total.value=result.total;}}
+ try{const result=await fetchFinancialMaterials({page:page.value,size:12,keyword:appliedKeyword.value});if(request===version){rows.value=result.records;total.value=result.total;companyCount.value=result.stats?.companyCount??null;dataset.value=result.dataset??null;}}
  catch(e){if(request===version)error.value=e instanceof Error?e.message:'财报目录加载失败';}
  finally{if(request===version)loading.value=false;}
 }
@@ -40,12 +43,14 @@ async function openPdf(item:FinancialMaterial){
  }catch(e){if(!disposed)pdfErrors.value[id]=e instanceof Error?`原件未能加载：${e.message}`:'原件加载失败，请重试。';}
  finally{pending.value[id]=false;}
 }
-/** 作品说明：卡片状态文案与视觉色调分别表达，状态含义保持一致。 */
+/** 卡片状态文案与视觉色调分别表达，状态含义保持一致。 */
 function statusLabel(item:FinancialMaterial){
+ if(item.experimental)return '试验数据（待核验）';
  if(item.status==='imported')return item.qualityStatus==='warn'?'已结构化（部分字段待复核）':'已完成结构化入库';
  return item.contentState==='missing'?'正文待补充':item.contentState==='partial'?'部分正文已收录':'正文已收录';
 }
 function statusTone(item:FinancialMaterial){
+ if(item.experimental)return 'warn';
  if(item.status==='imported')return item.qualityStatus==='warn'?'warn':'ok';
  return item.contentState==='missing'?'muted':'info';
 }
@@ -57,7 +62,7 @@ onBeforeUnmount(()=>{disposed=true;version++;Object.values(pdfUrls.value).forEac
 <template>
   <section class="financial-library">
     <div class="toolbar">
-      <p class="toolbar__count">共 {{ total }} 份已收录财报</p>
+      <p class="toolbar__count"><span v-if="companyCount !== null">{{ companyCount }} 家公司 · </span>共 {{ total }} 份已收录财报<span v-if="total > 12"> · 每页 12 份</span></p>
       <form v-if="loggedIn" class="search" @submit.prevent="search">
         <input v-model="keyword" maxlength="120" placeholder="搜索公司、股票代码或文件名" aria-label="搜索公司财报" />
         <button type="submit" class="btn btn--primary">搜索</button>
@@ -66,6 +71,9 @@ onBeforeUnmount(()=>{disposed=true;version++;Object.values(pdfUrls.value).forEac
     </div>
     <div v-if="appliedKeyword" class="filter-summary">当前筛选：<strong>{{ appliedKeyword }}</strong><button type="button" class="btn" @click="clearSearch">清除筛选</button></div>
     <p class="intro">全文与摘要分别展示。正文收录后可阅读；已结构化的财报提供数值问答入口，字段待复核时仍可询问已有字段。</p>
+    <p v-if="dataset && !error" class="dataset-note" role="note">
+      {{ dataset.label }} · {{ dataset.companyCount }} 家公司 · {{ dataset.reportCount }} 份财报，与公司页和 AI 问答使用同一资料范围。<template v-if="dataset.experimental">部分数字尚未完成原件逐项核验，请以 PDF 原件为准。</template>
+    </p>
 
     <div v-if="!loggedIn" class="state">登录后可以查看已入库财报。<router-link :to="loginTarget()">前往登录</router-link></div>
     <div v-else-if="error" class="state state--error" role="alert">{{ error }} <button type="button" class="btn" @click="load">重试</button></div>
@@ -83,10 +91,11 @@ onBeforeUnmount(()=>{disposed=true;version++;Object.values(pdfUrls.value).forEac
         <h3 class="card__period">{{ reportPeriod(item.reportYear,item.reportPeriod) }}财报{{ item.reportKind === 'summary' ? '摘要' : '' }}</h3>
 
         <p class="card__meta">{{ item.pageCount ? `${item.pageCount} 页` : '页数未登记' }} · 公司公开财报</p>
-        <p class="card__file" :title="item.fileName">{{ item.fileName }}</p>
+        <p class="card__file" :title="item.fileName">{{ fileLabel(item) }}</p>
 
         <p v-if="item.identityStatus === 'unresolved'" class="card__note">公司或报告期尚待确认。</p>
-        <p v-if="item.status === 'imported' && item.qualityStatus === 'warn'" class="card__note">已有字段可以问答；缺失或证据不足的字段会拒答。</p>
+        <p v-if="item.experimental" class="card__note">部分字段尚未完成原件核验，可结合 PDF 逐项核对。</p>
+        <p v-else-if="item.status === 'imported' && item.qualityStatus === 'warn'" class="card__note">已有字段可以问答；缺失或证据不足的字段会拒答。</p>
 
         <div class="actions">
           <router-link v-if="item.status === 'imported'" class="btn btn--primary" :to="{path:'/workspace',query:{q:askQuestion(item)}}">用这份财报提问</router-link>
@@ -94,7 +103,7 @@ onBeforeUnmount(()=>{disposed=true;version++;Object.values(pdfUrls.value).forEac
           <template v-if="item.status === 'imported'">
             <template v-if="pdfUrls[key(item)]">
               <a class="btn" :href="pdfUrls[key(item)]+'#page=1'" target="_blank" rel="noopener noreferrer">打开原件</a>
-              <a class="btn" :href="pdfUrls[key(item)]" :download="item.fileName">下载 PDF</a>
+              <a class="btn" :href="pdfUrls[key(item)]" :download="fileLabel(item)">下载 PDF</a>
             </template>
             <button v-else type="button" class="btn" :disabled="!item.pdfAvailable || pending[key(item)]" @click="openPdf(item)">{{ pending[key(item)] ? '正在加载原件…' : item.pdfAvailable ? '查看原件' : '原件暂不可用' }}</button>
           </template>
@@ -125,6 +134,7 @@ onBeforeUnmount(()=>{disposed=true;version++;Object.values(pdfUrls.value).forEac
 </template>
 
 <style scoped>
+.dataset-note { margin: 0; padding: 10px 14px; border: 1px solid var(--c-primary-border); border-radius: var(--r-md); background: var(--c-primary-soft); color: var(--c-text-secondary); font-size: var(--fs-xs); line-height: 1.7; }
 .financial-library {
   display: flex;
   flex-direction: column;
@@ -132,7 +142,7 @@ onBeforeUnmount(()=>{disposed=true;version++;Object.values(pdfUrls.value).forEac
 }
 .filter-summary { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); font-size: var(--fs-sm); color: var(--c-text-secondary); }
 
-/* 作品说明：工具栏 */
+/* 工具栏 */
 .toolbar {
   display: flex;
   align-items: center;
@@ -179,7 +189,7 @@ onBeforeUnmount(()=>{disposed=true;version++;Object.values(pdfUrls.value).forEac
   color: var(--c-text-tertiary);
 }
 
-/* 作品说明：按钮 */
+/* 按钮 */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -223,7 +233,7 @@ onBeforeUnmount(()=>{disposed=true;version++;Object.values(pdfUrls.value).forEac
   padding: 0 var(--sp-4);
 }
 
-/* 作品说明：状态 */
+/* 状态 */
 .state {
   padding: var(--sp-10) var(--sp-6);
   text-align: center;
@@ -243,7 +253,7 @@ onBeforeUnmount(()=>{disposed=true;version++;Object.values(pdfUrls.value).forEac
   margin-left: var(--sp-2);
 }
 
-/* 作品说明：卡片 */
+/* 卡片 */
 .financial-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));

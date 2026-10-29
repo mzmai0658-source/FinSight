@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 /**
- * 作品说明：业务错误码：与 HTTP 状态解耦但显式关联——
+ * 业务错误码：与 HTTP 状态解耦但显式关联——
  * 网关/前端按 HTTP 状态做粗粒度处理（401 刷新、429 退避），按业务码做细粒度提示。
  */
 @Getter

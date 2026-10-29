@@ -50,10 +50,10 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 作品说明：SSE 完成时的 ASYNC 二次分发不携带 SecurityContext，放行避免误拒
+                        // SSE 完成时的 ASYNC 二次分发不携带 SecurityContext，放行避免误拒
                         .dispatcherTypeMatchers(DispatcherType.ASYNC, DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // 作品说明：行情门户 / 研报库公开只读
+                        // 行情门户 / 研报库公开只读
                         .requestMatchers(HttpMethod.GET, "/api/market/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/reports/**").permitAll()
                         .requestMatchers(

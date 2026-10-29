@@ -1,4 +1,4 @@
-"""作品说明：兼容投影仅供数据导入使用，财务字段按明确语义映射。"""
+"""兼容投影仅供数据导入使用，财务字段按明确语义映射。"""
 from __future__ import annotations
 
 from decimal import Decimal, ROUND_HALF_UP, localcontext
@@ -35,7 +35,7 @@ def projections(facts: list[Fact], report: dict):
         }
         mappings.extend(reported_mappings.get(f.metric,[]))
         if f.metric == 'operating_revenue':
-            # 作品说明：迁移后的旧概览字段表示营业收入，利润表同名旧字段仍保持营业总收入身份。
+            # 迁移后的旧概览字段表示营业收入，利润表同名旧字段仍保持营业总收入身份。
             mappings.append((CORE,'total_operating_revenue'))
         for name, field in mappings:
             if field not in rows[name]:
@@ -60,7 +60,7 @@ def projections(facts: list[Fact], report: dict):
 
 
 def apply_projections(conn, facts: list[Fact], reports: list[dict]):
-    """作品说明：兼容投影与现用版本指针在同一事务中发布。"""
+    """兼容投影与现用版本指针在同一事务中发布。"""
     for report in reports:
         scoped = [f for f in facts if (f.stock_code,f.year,f.period)==(report['stock_code'],report['year'],report['period'])]
         rows, sources = projections(scoped,report)

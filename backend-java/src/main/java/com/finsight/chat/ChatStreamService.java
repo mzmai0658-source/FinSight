@@ -35,7 +35,7 @@ import jakarta.annotation.PreDestroy;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/** 作品说明：鉴权后的 SSE 请求组织会话占用、历史、Python 事件、保存与审计。刷新或断网不取消后台任务；停止生成通过独立取消接口处理，终态与保存由持久化任务记录决定。 */
+/** 鉴权后的 SSE 请求组织会话占用、历史、Python 事件、保存与审计。刷新或断网不取消后台任务；停止生成通过独立取消接口处理，终态与保存由持久化任务记录决定。 */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -84,11 +84,11 @@ public class ChatStreamService {
         ChatTurnService.Turn turn = turnService.create(userId, session, clientId, request.question());
         if (!turnService.claimDispatch(turn.taskId())) return restoreStream(userId, turnService.owned(userId, turn.taskId()));
 
-        // 作品说明：会话级并发锁：同一会话同时只允许一轮生成
+        // 会话级并发锁：同一会话同时只允许一轮生成
         String lockKey = TURN_LOCK_KEY.formatted(session.getSessionUid());
         String lockToken = UUID.randomUUID().toString();
-        // 作品说明：数据库唯一活跃任务约束保证会话并发正确性。
-        // 作品说明：Redis 只作短期缓存，不能使已创建任务失去可恢复的持久身份。
+        // 数据库唯一活跃任务约束保证会话并发正确性。
+        // Redis 只作短期缓存，不能使已创建任务失去可恢复的持久身份。
         try { redisTemplate.opsForValue().setIfAbsent(lockKey, lockToken, TURN_LOCK_TTL); }
         catch (RuntimeException cacheUnavailable) { log.warn("[chat] lock cache unavailable"); }
 
@@ -154,7 +154,7 @@ public class ChatStreamService {
                             emitter.complete();
                         });
 
-        // 作品说明：客户端断开不取消上游订阅：让本轮跑完以保证落库；上游时长由 WebClient responseTimeout 兜底
+        // 客户端断开后保留上游订阅以完成结果持久化；上游时长由 WebClient responseTimeout 限制
         emitter.onError(throwable -> {
             clientGone.set(true);
             releaseActiveSse(activeReleased);
@@ -163,7 +163,7 @@ public class ChatStreamService {
             clientGone.set(true);
             releaseActiveSse(activeReleased);
         });
-        // 作品说明：进程关闭兜底
+        // 进程关闭兜底
         emitter.onCompletion(() -> {
             releaseActiveSse(activeReleased);
             if (subscription.isDisposed()) {
@@ -244,7 +244,7 @@ public class ChatStreamService {
                 turnService.finish(userId, taskId, session, result.path("answer").path("content").asText(), buildMetadata(result), result, workerStatus);
             }
         } catch (Exception unavailable) {
-            // 作品说明：传输断连不能作为后台任务已经结束的证明。
+            // 传输断连不能作为后台任务已经结束的证明。
         }
         return turnService.owned(userId, taskId);
     }
@@ -339,14 +339,14 @@ public class ChatStreamService {
                     if (taskId.equals(progress.path("task_id").asText())) {
                         turnService.observeWorkerState(taskId, progress.path("task_status").asText());
                     }
-                } catch (Exception ignored) { /* 作品说明：进度事件不能宣称任务终态。 */ }
+                } catch (Exception ignored) { /* 进度事件不能宣称任务终态。 */ }
             }
             sendSafely(emitter, clientGone, name, data);
             return;
         }
         if (!doneReceived.compareAndSet(false, true)) return;
 
-        // 作品说明：done 事件：解析结果 → 事务落库 → 审计/标题异步任务 → 转发（带 session_uid）
+        // done 事件：解析结果 → 事务落库 → 审计/标题异步任务 → 转发（带 session_uid）
         String status = "ok";
         String forwarded;
         ObjectNode enriched;
@@ -377,7 +377,7 @@ public class ChatStreamService {
                         : isFailedResult(result) || "failed".equals(result.path("task_status").asText()) ? "failed" : "completed";
                 boolean firstTurn = session.getMessageCount() == null || session.getMessageCount() == 0;
                 boolean saved = turnService.finish(userId, taskId, session, content, metadataJson, result, terminal);
-                if (!saved) return; // 作品说明：已取消任务及重复、迟到的终态事件不再提交结果。
+                if (!saved) return; // 已取消任务及重复、迟到的终态事件不再提交结果。
                 agentClient.acknowledgeSaved(taskId, session.getSessionUid());
                 enriched.put("persistence_status", "saved");
                 if (firstTurn && result.path("error").asText("").isBlank() && !isFailedResult(result)) {
@@ -414,14 +414,14 @@ public class ChatStreamService {
         try {
             publishChatLog(userId, session.getSessionUid(), traceId, request.question(), status, startedAt);
         } catch (Exception auditError) {
-            // 作品说明：审计存储不可用时，仍返回回答与真实保存状态。
+            // 审计存储不可用时，仍返回回答与真实保存状态。
             log.warn("[chat] audit publish failed session={}", session.getSessionUid(), auditError);
         }
         recordChatMetric(metricRecorded, status, startedAt);
         sendSafely(emitter, clientGone, "done", forwarded);
     }
 
-    /** 作品说明：助手消息元数据：从 done 结果中拷贝展示所需字段（answer.content 落在消息正文，不重复存） */
+    /** 助手消息元数据：从 done 结果中拷贝展示所需字段（answer.content 落在消息正文，不重复存） */
     String buildMetadata(JsonNode result) {
         ObjectNode metadata = objectMapper.createObjectNode();
         metadata.set("sql", result.path("sql"));
@@ -521,7 +521,7 @@ public class ChatStreamService {
                 || "fail".equals(result.path("verification").path("status").asText(""));
     }
 
-    /** 作品说明：审计经 MQ 异步落库（broker 不可用时发布器内部降级直写） */
+    /** 审计经 MQ 异步落库（broker 不可用时发布器内部降级直写） */
     private void publishChatLog(long userId, String sessionUid, String traceId, String question,
                                 String status, long startedAt) {
         eventPublisher.publishChatLog(new ChatLogMessage(

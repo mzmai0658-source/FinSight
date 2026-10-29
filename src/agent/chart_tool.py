@@ -1,4 +1,4 @@
-"""作品说明：图表工具：生成 PNG 供下载，同时输出前端可直接渲染的 ECharts option。
+"""图表工具：生成 PNG 供下载，同时输出前端可直接渲染的 ECharts option。
 
 图表数据必须来自本轮查询结果，不允许工具自行补数；`chart_data` 中回传的
 x_data / y_data 是后续一致性校验的依据。
@@ -15,7 +15,7 @@ from src.agent.tool_shared import ROOT_DIR
 
 
 class ChartTool:
-    """作品说明：图表生成工具，支持折线图/柱状图/饼图。"""
+    """图表生成工具，支持折线图/柱状图/饼图。"""
 
     name = "chart_tool"
 
@@ -43,7 +43,7 @@ class ChartTool:
             matplotlib.rcParams['axes.unicode_minus'] = False
 
             if not filename:
-                # 作品说明：秒级时间戳在并发请求下会撞名，附加随机短码。
+                # 秒级时间戳在并发请求下会撞名，附加随机短码。
                 filename = f"chart_{datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid4().hex[:6]}.png"
             filepath = os.path.join(self.output_dir, filename)
 

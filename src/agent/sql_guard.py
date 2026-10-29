@@ -1,4 +1,4 @@
-"""作品说明：通过 SQL 语法树限制只读 SELECT，校验失败时阻断。"""
+"""通过 SQL 语法树限制只读 SELECT，校验失败时阻断。"""
 from __future__ import annotations
 import re
 from typing import Optional, Tuple
@@ -24,7 +24,7 @@ SAFE_FUNCTIONS = frozenset({
 })
 
 def _strip_wrappers(sql: str) -> str:
-    # 作品说明：SQL 字符串中的注释符号属于数据，不能按注释删除。
+    # SQL 字符串中的注释符号属于数据，不能按注释删除。
     cleaned = str(sql or '').strip()
     fenced = re.fullmatch(r'```(?:sql|mysql)?\s*\n?([\s\S]*?)\n?```', cleaned, re.I)
     return (fenced.group(1) if fenced else cleaned).strip()
@@ -80,7 +80,7 @@ def normalize_readonly_sql(sql: str) -> Tuple[Optional[str], str]:
         return None, 'SQL is empty'
     try:
         root = _parse_validate(cleaned)
-        # 作品说明：事实查询必须返回数据库身份字段。
+        # 事实查询必须返回数据库身份字段。
         from_clause = root.args.get('from_')
         table = from_clause.this if from_clause else None
         if (isinstance(root, exp.Select) and isinstance(table, exp.Table) and table.name in ALLOWED_TABLES
@@ -98,7 +98,7 @@ def normalize_readonly_sql(sql: str) -> Tuple[Optional[str], str]:
         return None, f'SQL validation failed: {exc}'
 
 def query_lineage(sql: str) -> dict:
-    """作品说明：仅允许可追踪的直接列来源与顶层合取常量。"""
+    """仅允许可追踪的直接列来源与顶层合取常量。"""
     result = {'scope': {}, 'column_lineage': {}}
     try:
         root = _parse_validate(sql)

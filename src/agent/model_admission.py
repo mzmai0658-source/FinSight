@@ -1,4 +1,4 @@
-"""作品说明：统一控制异步聊天、同步提取及标题任务的进程级模型并发。"""
+"""统一控制异步聊天、同步提取及标题任务的进程级模型并发。"""
 from __future__ import annotations
 import asyncio,contextlib,functools,inspect,threading,time
 

@@ -43,6 +43,19 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: "/financial-submissions",
+      name: "financial-submissions",
+      component: () => import("@/pages/FinancialSubmissionsPage.vue"),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/admin/financial-submissions",
+      name: "admin-financial-submissions",
+      component: () => import("@/pages/FinancialSubmissionsPage.vue"),
+      props: { admin: true },
+      meta: { requiresAuth: true, requiresAdmin: true },
+    },
+    {
       path: "/admin",
       name: "admin",
       component: () => import("@/pages/AdminPage.vue"),
@@ -53,6 +66,11 @@ const router = createRouter({
       name: "workspace",
       component: () => import("@/pages/WorkspacePage.vue"),
       meta: { requiresAuth: true },
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "not-found",
+      component: () => import("@/pages/NotFoundPage.vue"),
     },
   ],
 });

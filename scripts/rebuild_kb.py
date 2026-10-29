@@ -1,4 +1,4 @@
-"""作品说明：清空并重建 RAG 知识库（Chroma）。
+"""清空并重建 RAG 知识库（Chroma）。
 
 用法（项目根目录执行）：
 .venv\\Scripts\\python.exe scripts\\rebuild_kb.py

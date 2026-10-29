@@ -24,10 +24,12 @@ def test_latest_mode_cannot_silently_erase_explicit_years_in_the_same_patch():
 def test_period_change_cannot_reset_a_confirmed_year_to_latest():
     from src.agent.v3.condition_updates import apply_edits
     from src.agent.v3.contracts import MODIFICATION
+    from eval.cloud_upload200 import condition_errors
     old=Conditions(codes=['600080'],metrics=['operating_cash_flow'],time={'mode':'explicit','years':[2023],'periods':['HY']})
     bad=[MODIFICATION.validate_python(dict(field=field,operation='replace',value=value,text='改成年报'))
-        for field,value in [('time.mode','latest_each'),('time.periods',['FY'])]]
-    with pytest.raises(ValueError,match='不能清除已确认年份'):apply_edits(old,bad,'改成年报','t')
+         for field,value in [('time.mode','latest_each'),('time.periods',['FY'])]]
+    bad_result=apply_edits(old,bad,'改成年报','t')
+    assert condition_errors({'years':[2023],'mode':'explicit'},bad_result.model_dump(mode='json'))
     changed=apply_edits(old,bad[1:],'改成年报','t')
     assert changed.time.years==[2023] and changed.time.periods==['FY'] and changed.time.mode=='explicit'
 
@@ -48,7 +50,7 @@ def test_latest_windows_respect_each_company_or_common_period_policy():
     each,_=resolve_periods(request(codes=['600085','002082'],time={'mode':'latest_each','span':2}),reports)
     common,_=resolve_periods(request(codes=['600085','002082'],time={'mode':'latest_common','span':2}),reports)
     assert each=={'600085':[(2023,'FY'),(2024,'FY')],'002082':[(2022,'FY'),(2023,'FY')]}
-    # 作品说明：共同期间只有 2023 年，不能把缺失的 2022 年报告宣称为共同期间。
+    # 共同期间只有 2023 年，不能把缺失的 2022 年报告宣称为共同期间。
     assert common=={'600085':[(2023,'FY')],'002082':[(2023,'FY')]}
 
 

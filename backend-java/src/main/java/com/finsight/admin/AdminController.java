@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/** 作品说明：管理端看板与用户管理（/api/admin/** 由安全配置限 ADMIN 角色） */
+/** 管理端看板与用户管理（/api/admin/** 由安全配置限 ADMIN 角色） */
 @Tag(name = "管理端", description = "运营看板 / 用户管理 / 审计日志")
 @RestController
 @RequestMapping("/api/admin")

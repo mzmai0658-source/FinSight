@@ -1,4 +1,4 @@
-"""作品说明：将已有财务行及来源快照复制到独立现用数据库。"""
+"""将已有财务行及来源快照复制到独立现用数据库。"""
 import argparse
 from dataclasses import replace
 import hashlib

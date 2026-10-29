@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * 作品说明：解析 Authorization: Bearer <access token>，构建 SecurityContext。
+ * 解析 Authorization: Bearer <access token>，构建 SecurityContext。
  * token 缺失/无效时不在此处拒绝，交由 SecurityConfig 的授权规则与入口点统一处理。
  */
 @Component
@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             } catch (BizException ignored) {
-                // 作品说明：无效 token 视作未登录，由授权规则决定是否放行
+                // 无效 token 视作未登录，由授权规则决定是否放行
             }
         }
         chain.doFilter(request, response);

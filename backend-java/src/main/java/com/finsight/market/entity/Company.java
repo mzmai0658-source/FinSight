@@ -7,7 +7,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/** 作品说明：上市公司主数据（公司体系唯一事实来源） */
+/** 上市公司主数据（公司体系唯一事实来源） */
 @Data
 @TableName("company")
 public class Company {
@@ -35,10 +35,10 @@ public class Company {
 
     private Integer employees;
 
-    /** 作品说明：数据集标记：医药 / 中药 */
+    /** 数据集标记：医药 / 中药 */
     private String datasetTag;
 
-    /** 作品说明：imported=财务数据已入库 pending=待导入 */
+    /** imported=财务数据已入库 pending=待导入 */
     private String dataStatus;
 
     private Integer firstYear;

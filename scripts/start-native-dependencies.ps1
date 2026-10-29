@@ -1,4 +1,4 @@
-﻿param([string]$EnvFile = ".env.demo")
+﻿param([string]$EnvFile = ".env")
 $ErrorActionPreference = "Stop"
 $Root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 . (Join-Path $PSScriptRoot "Load-Env.ps1") -EnvFile $EnvFile -Override

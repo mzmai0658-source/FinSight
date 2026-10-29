@@ -1,4 +1,4 @@
-"""作品说明：将可编辑技术报告和第三方附件生成 PDF，证据摘要应先填写真实最终结果。"""
+"""将可编辑技术报告和第三方附件生成 PDF，证据摘要应先填写真实最终结果。"""
 from __future__ import annotations
 import argparse
 import html
@@ -20,7 +20,7 @@ def build(output, source_path=None):
     from reportlab.lib.pagesizes import A4
     pdfmetrics.registerFont(UnicodeCIDFont('STSong-Light'))
     styles={
-        'body':ParagraphStyle('body',fontName='STSong-Light',fontSize=10.5,leading=16,spaceAfter=8,wordWrap='CJK',textColor=HexColor('#26384b')),
+        'body':ParagraphStyle('body',fontName='STSong-Light',fontSize=10.5,leading=15.5,spaceAfter=7,wordWrap='CJK',allowWidows=0,allowOrphans=0,textColor=HexColor('#26384b')),
         'h1':ParagraphStyle('h1',fontName='STSong-Light',fontSize=22,leading=30,spaceAfter=14,keepWithNext=True,textColor=HexColor('#15354d')),
         'h2':ParagraphStyle('h2',fontName='STSong-Light',fontSize=14,leading=20,spaceBefore=12,spaceAfter=8,keepWithNext=True,textColor=HexColor('#15354d')),
         'h3':ParagraphStyle('h3',fontName='STSong-Light',fontSize=12,leading=18,spaceBefore=8,spaceAfter=6,keepWithNext=True,textColor=HexColor('#197c83')),
@@ -36,12 +36,12 @@ def build(output, source_path=None):
         while index<len(lines):
             line=lines[index].strip();index+=1
             if not line:continue
-            # 作品说明：正文连续排版，按内容自然换页；只有第三方附件另起一页。
+            # 正文连续排版，按内容自然换页；只有第三方附件另起一页。
             if line in ('<!-- page -->','<!-- appendix -->'):continue
             if line=='<!-- architecture -->':
                 from reportlab.graphics.shapes import Drawing,Rect,String,Line,Polygon
-                diagram=Drawing(495,100)
-                labels=[('用户要求','Vue提交'),('结构提案','Qwen理解'),('条件检查','程序编译'),('执行核验','事实/原页'),('回答保存','Java任务')]
+                diagram=Drawing(495,120)
+                labels=[('用户要求','Vue提交'),('结构提案','云端理解'),('条件检查','程序编译'),('执行核验','事实/原页'),('回答保存','Java任务')]
                 for column,(title,detail) in enumerate(labels):
                     x=column*99
                     diagram.add(Rect(x,35,89,50,rx=6,ry=6,fillColor=HexColor('#e4f0f2'),strokeColor=HexColor('#197c83')))
@@ -50,7 +50,8 @@ def build(output, source_path=None):
                     if column<4:
                         diagram.add(Line(x+90,60,x+97,60,strokeColor=HexColor('#197c83')))
                         diagram.add(Polygon([x+94,63,x+98,60,x+94,57],fillColor=HexColor('#197c83'),strokeColor=None))
-                diagram.add(String(247.5,14,'MySQL规范事实 · Chroma叙述索引 · PDF版本证据',fontName='STSong-Light',fontSize=9,textAnchor='middle',fillColor=HexColor('#62758a')))
+                diagram.add(String(247.5,103,'DeepSeek生成 · 远端PaddleOCR识别 · 百炼1024维向量',fontName='STSong-Light',fontSize=9,textAnchor='middle',fillColor=HexColor('#62758a')))
+                diagram.add(String(247.5,14,'MySQL规范事实 · Chroma叙述索引 · Redis/RabbitMQ · PDF版本证据',fontName='STSong-Light',fontSize=9,textAnchor='middle',fillColor=HexColor('#62758a')))
                 flows.extend([diagram,Spacer(1,12)]);continue
             picture=re.fullmatch(r'!\[([^\]]*)\]\(([^)]+)\)',line)
             if picture:
@@ -81,6 +82,9 @@ def build(output, source_path=None):
         return flows
     source=(source_path or ROOT/'docs/TECHNICAL_REPORT.md').read_text('utf-8')
     if '{{' in source:raise ValueError('技术报告还有未填写的验收占位符，不能生成冒充完成的 PDF')
+    report_date=re.search(r'报告日期[：:]\s*(\d{4}-\d{2}-\d{2})',source)
+    if not report_date:raise ValueError('技术报告缺少明确的报告日期，不能使用过期页脚日期')
+    report_date=report_date.group(1)
     main=source.split('<!-- appendix -->')[0]
     flows=parse(main)
     flows.extend([PageBreak(),Paragraph('附件：第三方资源使用清单',styles['h2'])])
@@ -88,10 +92,10 @@ def build(output, source_path=None):
     appendix_text=re.sub(r'^# [^\n]+\n', '', appendix_text, count=1)
     flows.extend(parse(appendix_text))
     def page(canvas,doc):
-        canvas.setTitle('FinSight财报证据助手 技术报告');canvas.setAuthor('FinSight')
+        canvas.setTitle('FinSight财报证据助手 技术报告');canvas.setAuthor('凌云队')
         canvas.setStrokeColor(HexColor('#197c83'));canvas.setLineWidth(1);canvas.line(50,804,545,804)
         canvas.setFont('STSong-Light',8);canvas.setFillColor(HexColor('#62758a'))
-        canvas.drawString(50,25,'FinSight · 阶段性交付 · 2026-10-02');canvas.drawRightString(545,25,f'第 {doc.page} 页')
+        canvas.drawString(50,25,f'FinSight · 云端版本 · {report_date}');canvas.drawRightString(545,25,f'第 {doc.page} 页')
     output.parent.mkdir(parents=True,exist_ok=True)
     SimpleDocTemplate(str(output),pagesize=A4,rightMargin=50,leftMargin=50,topMargin=58,bottomMargin=48).build(flows,onFirstPage=page,onLaterPages=page)
     from pypdf import PdfReader
@@ -105,7 +109,7 @@ def build(output, source_path=None):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output',type=Path,default=ROOT/'deliverables/20261002/FinSight-技术报告.pdf')
+    parser.add_argument('--output',type=Path,default=ROOT/'docs/FinSight-技术报告.pdf')
     parser.add_argument('--source',type=Path)
     args=parser.parse_args()
     build(args.output.resolve(),args.source.resolve() if args.source else None)

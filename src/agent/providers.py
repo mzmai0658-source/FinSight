@@ -1,36 +1,26 @@
-"""作品说明：统一适配对话与向量服务，本地主路径使用 Ollama 和 BGE；远端服务仅在显式配置时启用。兼容接口的上下文与工具选择差异由适配层处理，原生调用使用各自支持的参数。"""
+"""生成统一使用云端服务，检索严格固定已发布版本登记的向量空间。"""
 
 import os
 from pathlib import Path
-from dataclasses import dataclass
+from dataclasses import dataclass,field
 from threading import RLock
 from typing import Any, Dict, List, Optional, Sequence
+from urllib.parse import urlsplit
 
 from loguru import logger
 
-# 作品说明：对话模型服务适配。
+# 对话模型服务适配。
 
-PROVIDER_OLLAMA = "ollama"
 PROVIDER_OPENAI_COMPAT = "openai_compat"
 
-OLLAMA_DEFAULT_BASE_URL = "http://127.0.0.1:11434/v1"
-OLLAMA_DEFAULT_MODEL = "qwen3.5:9b-q4_K_M"
-OLLAMA_PLACEHOLDER_KEY = "ollama"
-
 OPENAI_COMPAT_DEFAULT_BASE_URL = "https://api.deepseek.com"
-OPENAI_COMPAT_DEFAULT_MODEL = "deepseek-chat"
-
-# 作品说明：长工具和检索请求的建议上下文；实际是否截断取决于请求长度。
-RECOMMENDED_NUM_CTX = 16384
+OPENAI_COMPAT_DEFAULT_MODEL = "deepseek-flash"
 
 _PROVIDER_ALIASES = {
-    "ollama": PROVIDER_OLLAMA,
-    "local": PROVIDER_OLLAMA,
     "openai": PROVIDER_OPENAI_COMPAT,
     "openai_compat": PROVIDER_OPENAI_COMPAT,
     "openai-compat": PROVIDER_OPENAI_COMPAT,
     "deepseek": PROVIDER_OPENAI_COMPAT,
-    "vllm": PROVIDER_OPENAI_COMPAT,
 }
 
 
@@ -66,16 +56,15 @@ def _env_float(*names: str, default: float) -> float:
 
 @dataclass(frozen=True)
 class ChatProviderConfig:
-    """作品说明：一次会话使用的对话模型配置，解析完即不可变，便于日志与健康检查回显。"""
+    """一次会话使用的对话模型配置，解析完即不可变，便于日志与健康检查回显。"""
 
     provider: str
     base_url: str
     model: str
-    api_key: str
+    api_key: str = field(repr=False)
     timeout_seconds: int
     max_retries: int
     retry_backoff_seconds: float
-    num_ctx: int
     max_tokens: int
 
     @property
@@ -84,43 +73,34 @@ class ChatProviderConfig:
 
     @property
     def is_local(self) -> bool:
-        return self.provider == PROVIDER_OLLAMA
+        # 保留只读描述字段兼容旧客户端，不再提供本地生成分支。
+        return False
 
     @property
     def requires_api_key(self) -> bool:
-        return not self.is_local
+        return True
 
     @property
     def is_configured(self) -> bool:
-        """作品说明：本地模型无需 Key；远端必须有 Key 才算可用。"""
-        return self.is_local or bool(self.api_key)
+        return bool(self.api_key)
 
     @property
     def supports_tool_choice(self) -> bool:
-        return not self.is_local
+        return True
 
     @property
     def supports_response_format(self) -> bool:
-        # 作品说明：Ollama 支持 response_format=json_object。
         return True
 
     def missing_config_hint(self) -> str:
         if self.is_configured:
             return ""
         return (
-            "未检测到对话模型 API Key。设置 LLM_API_KEY（或旧变量 DEEPSEEK_API_KEY）"
-            f"，或改用本地开源模型：LLM_PROVIDER=ollama 并在 {OLLAMA_DEFAULT_BASE_URL} 启动 Ollama"
+            "未检测到云端模型密钥，请在服务端私有配置中设置 LLM_API_KEY。"
         )
 
     def context_hint(self) -> str:
-        """作品说明：兼容接口与原生接口的单次调用选项分别适配。"""
-        if not self.is_local:
-            return ""
-        return (
-            f"本地上下文目标={self.num_ctx}；结构化 Agent 使用原生 num_ctx 参数。"
-            f"其他 OpenAI 兼容接口调用需服务端配置 OLLAMA_CONTEXT_LENGTH={self.num_ctx}。"
-            "此提示不是上下文截断的实测结论。"
-        )
+        return ""
 
     def describe(self) -> Dict[str, Any]:
         return {
@@ -130,7 +110,7 @@ class ChatProviderConfig:
             "is_local": self.is_local,
             "is_configured": self.is_configured,
             "requires_api_key": self.requires_api_key,
-            "expected_num_ctx": self.num_ctx,
+            "expected_num_ctx": None,
             "max_tokens": self.max_tokens,
         }
 
@@ -140,60 +120,49 @@ def resolve_chat_provider(
     api_key: Optional[str] = None,
     model: Optional[str] = None,
 ) -> ChatProviderConfig:
-    """作品说明：解析对话模型配置。显式入参优先，其次新变量 LLM_*，最后兼容旧变量 DEEPSEEK_*。
-    
-    LLM_PROVIDER 未设置时按 auto 处理：有 API Key 走远端（保持既有部署行为），
-    没有 Key 则走本地 Ollama，从而保证「零密钥可演示」。
-    """
-    requested = _first_env("LLM_PROVIDER", default="auto").lower()
-    has_remote_key = bool(_first_env("LLM_API_KEY", "DEEPSEEK_API_KEY"))
-
-    if requested in ("auto", ""):
-        provider = PROVIDER_OPENAI_COMPAT if has_remote_key else PROVIDER_OLLAMA
-    else:
-        provider = _PROVIDER_ALIASES.get(requested, PROVIDER_OPENAI_COMPAT)
-        if requested not in _PROVIDER_ALIASES:
-            logger.warning(f"未知 LLM_PROVIDER={requested}，按 openai_compat 处理")
-
-    if provider == PROVIDER_OLLAMA:
-        default_base_url = _first_env("OLLAMA_BASE_URL", default=OLLAMA_DEFAULT_BASE_URL)
-        default_model = _first_env("OLLAMA_MODEL", default=OLLAMA_DEFAULT_MODEL)
-        default_timeout = 300  # 作品说明：为本地模型的首段响应预留等待余量。
-        # 作品说明：Ollama 忽略鉴权头，但空 Bearer 在部分反代下会被拒，填占位值。
-        resolved_key = api_key or _first_env("LLM_API_KEY", default=OLLAMA_PLACEHOLDER_KEY)
-    else:
-        default_base_url = _first_env(
-            "DEEPSEEK_BASE_URL", default=OPENAI_COMPAT_DEFAULT_BASE_URL
-        )
-        default_model = _first_env("DEEPSEEK_MODEL", default=OPENAI_COMPAT_DEFAULT_MODEL)
-        default_timeout = 120
-        resolved_key = api_key or _first_env("LLM_API_KEY", "DEEPSEEK_API_KEY")
-
+    """正式变量优先；旧云端变量仅填补缺项，配置错误不能改变执行路径。"""
+    requested = _first_env("LLM_PROVIDER", default=PROVIDER_OPENAI_COMPAT).lower()
+    if requested not in _PROVIDER_ALIASES:
+        raise ValueError('LLM_PROVIDER 必须明确使用 openai_compat 或 deepseek；请迁移旧模型配置。')
+    def setting(name,legacy,default):
+        canonical=os.getenv(name)
+        if canonical is not None:
+            return canonical.strip()
+        previous=_first_env(legacy)
+        if previous:
+            logger.warning('正在兼容读取 {}，请迁移到 {}。',legacy,name)
+        return previous or default
+    def integer(name,legacy,default,minimum,maximum):
+        raw=setting(name,legacy,str(default))
+        try:value=int(raw)
+        except (TypeError,ValueError):raise ValueError(name+' 必须是有效整数。') from None
+        if not minimum<=value<=maximum:raise ValueError(f'{name} 必须在 {minimum} 到 {maximum} 之间。')
+        return value
+    base=(api_url if api_url is not None else setting('LLM_BASE_URL','DEEPSEEK_BASE_URL',OPENAI_COMPAT_DEFAULT_BASE_URL)).strip().rstrip('/')
+    endpoint=urlsplit(base)
+    if (endpoint.scheme!='https' or not endpoint.hostname or endpoint.username or endpoint.password
+            or endpoint.query or endpoint.fragment):
+        raise ValueError('LLM_BASE_URL 必须是无凭据、无查询参数的 HTTPS 服务地址。')
+    selected_model=(model if model is not None else setting('LLM_MODEL','DEEPSEEK_MODEL',OPENAI_COMPAT_DEFAULT_MODEL)).strip()
+    if not selected_model or ':' in selected_model or '/' in selected_model:
+        raise ValueError('LLM_MODEL 应填写云端服务登记的模型名称，请迁移旧的本地权重配置。')
+    timeout=integer('LLM_TIMEOUT_SECONDS','DEEPSEEK_TIMEOUT_SECONDS',60,1,60)
+    retries=integer('LLM_MAX_RETRIES','DEEPSEEK_MAX_RETRIES',0,0,2)
     return ChatProviderConfig(
-        provider=provider,
-        base_url=api_url or _first_env("LLM_BASE_URL", default=default_base_url),
-        model=model or _first_env("LLM_MODEL", default=default_model),
-        api_key=resolved_key,
-        timeout_seconds=_env_int(
-            "LLM_TIMEOUT_SECONDS", "DEEPSEEK_TIMEOUT_SECONDS", default=default_timeout
-        ),
-        max_retries=_env_int("LLM_MAX_RETRIES", "DEEPSEEK_MAX_RETRIES", default=3),
-        retry_backoff_seconds=_env_float(
-            "LLM_RETRY_BACKOFF_SECONDS", "DEEPSEEK_RETRY_BACKOFF_SECONDS", default=2.0
-        ),
-        num_ctx=_env_int("LLM_NUM_CTX", "OLLAMA_CONTEXT_LENGTH", default=RECOMMENDED_NUM_CTX),
-        # 作品说明：防止小模型在工具参数或合成阶段重复生成直到 HTTP 超时。
-        max_tokens=_env_int("LLM_MAX_TOKENS", default=4096 if provider == PROVIDER_OLLAMA else 1024),
+        provider=PROVIDER_OPENAI_COMPAT,base_url=base,model=selected_model,
+        api_key=(api_key if api_key is not None else setting('LLM_API_KEY','DEEPSEEK_API_KEY','')).strip(),
+        timeout_seconds=timeout,max_retries=retries,retry_backoff_seconds=1.0,
+        max_tokens=integer('LLM_MAX_TOKENS','',3072,1,3072),
     )
 
 
-# 作品说明：向量模型服务适配。
+# 向量模型服务适配。
 
 EMBEDDING_PROVIDER_BGE = "bge_local"
 EMBEDDING_PROVIDER_DASHSCOPE = "dashscope"
 
 BGE_DEFAULT_MODEL = "BAAI/bge-small-zh-v1.5"
-# 作品说明：bge-*-zh-v1.5 官方建议：检索场景下对 query 加指令前缀，文档侧不加。
+# bge-*-zh-v1.5 官方建议：检索场景下对 query 加指令前缀，文档侧不加。
 BGE_DEFAULT_QUERY_INSTRUCTION = "为这个句子生成表示以用于检索相关文章："
 DASHSCOPE_DEFAULT_MODEL = "text-embedding-v4"
 
@@ -203,12 +172,11 @@ _EMBEDDING_ALIASES = {
     "local": EMBEDDING_PROVIDER_BGE,
     "sentence_transformers": EMBEDDING_PROVIDER_BGE,
     "dashscope": EMBEDDING_PROVIDER_DASHSCOPE,
-    "qwen": EMBEDDING_PROVIDER_DASHSCOPE,
 }
 
 
 class BgeLocalEmbeddingFunction:
-    """作品说明：本地开源中文向量模型（默认 BAAI/bge-small-zh-v1.5，MIT，约 100MB，CPU 可跑）。
+    """本地开源中文向量模型（默认 BAAI/bge-small-zh-v1.5，MIT，约 100MB，CPU 可跑）。
     
     权重不入仓库，首次调用时由 sentence-transformers 下载并缓存。
     """
@@ -252,7 +220,7 @@ class BgeLocalEmbeddingFunction:
             return self._model
 
     def _build_model(self, sentence_transformer_cls: Any) -> Any:
-        """作品说明：构造向量模型。
+        """构造向量模型。
         
         bge 系列显式指定 CLS 池化，而不是依赖仓库里的 sentence-transformers 配置
         （modules.json）：该文件缺失或下载失败时，上游会静默退化为 mean pooling，
@@ -270,7 +238,7 @@ class BgeLocalEmbeddingFunction:
         return sentence_transformer_cls(modules=[transformer, pooling], device=self.device)
 
     def _local_model_source(self) -> str:
-        """作品说明：权重缓存完整时直接加载，避免离线环境发起网络探测。"""
+        """权重缓存完整时直接加载，避免离线环境发起网络探测。"""
         if Path(self.model_name).is_dir():
             return self.model_name
         try:
@@ -288,7 +256,7 @@ class BgeLocalEmbeddingFunction:
 
     @staticmethod
     def _import_st_models() -> Any:
-        """作品说明：独立出来的导入接缝，便于在不加载真实权重的前提下单测结构装配。"""
+        """独立出来的导入接缝，便于在不加载真实权重的前提下单测结构装配。"""
         from sentence_transformers import models as st_models
 
         return st_models
@@ -298,7 +266,7 @@ class BgeLocalEmbeddingFunction:
         return "bge" in self.model_name.lower()
 
     def _assert_expected_pooling(self, model: Any) -> None:
-        """作品说明：bge 系列要求 CLS 池化。
+        """bge 系列要求 CLS 池化。
         
         当 sentence-transformers 拉不到仓库里的 ST 配置（modules.json 等）时，它会
         退化为「Transformer + mean pooling」并只打一行提示继续运行。此时向量维度
@@ -342,7 +310,7 @@ class BgeLocalEmbeddingFunction:
             return []
         vectors = self._get_model().encode(
             texts,
-            normalize_embeddings=True,  # 作品说明：余弦相似度要求单位向量
+            normalize_embeddings=True,  # 余弦相似度要求单位向量
             convert_to_numpy=True,
             show_progress_bar=False,
         )
@@ -367,7 +335,7 @@ class BgeLocalEmbeddingFunction:
 
 
 def embedding_fingerprint(ef: Any) -> str:
-    """作品说明：取向量函数的稳定标识，用于写入/校验知识库元数据。
+    """取向量函数的稳定标识，用于写入/校验知识库元数据。
     
     构建与查询使用不同模型时向量空间不可比，检索会返回貌似正常但实际错乱的
     结果，因此必须留下指纹而不是仅打印告警。
@@ -394,7 +362,7 @@ EMBEDDING_FINGERPRINT_KEY = "embedding_fingerprint"
 
 
 def build_collection_metadata(ef: Any, extra: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-    """作品说明：知识库集合元数据：带上向量指纹，供查询侧校验构建/查询模型是否一致。"""
+    """知识库集合元数据：带上向量指纹，供查询侧校验构建/查询模型是否一致。"""
     metadata: Dict[str, Any] = {EMBEDDING_FINGERPRINT_KEY: embedding_fingerprint(ef)}
     if extra:
         metadata.update(extra)
@@ -402,7 +370,7 @@ def build_collection_metadata(ef: Any, extra: Optional[Dict[str, Any]] = None) -
 
 
 def assert_collection_embedding(collection: Any, ef: Any, rebuild_hint: str = "") -> None:
-    """作品说明：校验集合的构建向量模型与当前查询向量模型一致，不一致直接抛错。
+    """校验集合的构建向量模型与当前查询向量模型一致，不一致直接抛错。
     
     向量空间不同时检索仍会返回结果，只是排序毫无意义，这类静默错乱比报错更难
     排查，因此此处选择快速失败。
@@ -432,29 +400,14 @@ def assert_collection_embedding(collection: Any, ef: Any, rebuild_hint: str = ""
 
 
 def resolve_embedding_function(purpose: str = "query") -> Any:
-    """作品说明：解析向量函数。
-    
-    EMBEDDING_PROVIDER 未设置时按 auto 处理：已配置 DashScope Key 则沿用
-    DashScope（避免既有知识库失效），否则使用本地 BGE，从而保证无密钥环境下
-    检索链路全部由开源模型承担。
+    """新建/查询默认使用百炼云端向量；BGE 仅在显式选择历史库时保留。
+
+    兼容旧 auto 名称时仍固定走云端，缺密钥或服务错误不能改变向量空间。
     """
-    requested = _first_env("EMBEDDING_PROVIDER", default="auto").lower()
-
-    if requested in ("auto", ""):
-        from src.agent.dashscope_embedding import DashScopeEmbeddingFunction
-
-        candidate = DashScopeEmbeddingFunction(
-            model_name=_first_env("EMBEDDING_MODEL", default=DASHSCOPE_DEFAULT_MODEL)
-        )
-        if candidate.dashscope is not None and candidate.api_key:
-            logger.info(f"[{purpose}] 使用 DashScope embedding {candidate.model_name}")
-            return candidate
-        provider = EMBEDDING_PROVIDER_BGE
-    else:
-        provider = _EMBEDDING_ALIASES.get(requested)
-        if provider is None:
-            logger.warning(f"未知 EMBEDDING_PROVIDER={requested}，按 {EMBEDDING_PROVIDER_BGE} 处理")
-            provider = EMBEDDING_PROVIDER_BGE
+    requested = _first_env("EMBEDDING_PROVIDER", default=EMBEDDING_PROVIDER_DASHSCOPE).lower()
+    provider = EMBEDDING_PROVIDER_DASHSCOPE if requested == "auto" else _EMBEDDING_ALIASES.get(requested)
+    if provider is None:
+        raise ValueError("EMBEDDING_PROVIDER must be dashscope or an explicitly selected historical bge_local provider.")
 
     if provider == EMBEDDING_PROVIDER_DASHSCOPE:
         from src.agent.dashscope_embedding import DashScopeEmbeddingFunction
@@ -462,17 +415,12 @@ def resolve_embedding_function(purpose: str = "query") -> Any:
         ef = DashScopeEmbeddingFunction(
             model_name=_first_env("EMBEDDING_MODEL", default=DASHSCOPE_DEFAULT_MODEL)
         )
-        if ef.dashscope is None or not ef.api_key:
-            raise RuntimeError(
-                "EMBEDDING_PROVIDER=dashscope 但缺少可用的 DASHSCOPE_API_KEY 或 dashscope 包。"
-                "改用本地开源模型请设置 EMBEDDING_PROVIDER=bge_local"
-            )
         logger.info(f"[{purpose}] 使用 DashScope embedding {ef.model_name}")
         return ef
 
     model_name = _first_env("EMBEDDING_MODEL", default=BGE_DEFAULT_MODEL)
     if model_name == DASHSCOPE_DEFAULT_MODEL:
-        # 作品说明：旧配置残留：DashScope 模型名对本地 provider 无意义。
+        # 旧配置残留：DashScope 模型名对本地 provider 无意义。
         model_name = BGE_DEFAULT_MODEL
     logger.info(f"[{purpose}] 使用本地开源 embedding {model_name}")
     return BgeLocalEmbeddingFunction(model_name=model_name)

@@ -12,9 +12,11 @@ import com.finsight.chat.mapper.ChatMessageMapper;
 import com.finsight.chat.mapper.ChatSessionMapper;
 import com.finsight.common.api.ErrorCode;
 import com.finsight.common.exception.BizException;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -27,15 +29,23 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ChatSessionService {
 
-    /** 作品说明：送往 Agent 的历史条数上限（Python 侧还会做二次截断） */
+    /** 送往 Agent 的历史条数上限（Python 侧还会做二次截断） */
     private static final int HISTORY_LIMIT = 20;
     private static final int TITLE_LIMIT = 30;
-    private static final int MAX_SESSIONS_PER_USER = 100;
+    @Value("${finsight.chat.max-sessions-per-user:100}")
+    private int maxSessionsPerUser = 100;
 
     private final ChatSessionMapper sessionMapper;
     private final ChatMessageMapper messageMapper;
     private final ObjectMapper objectMapper;
     private final AgentClient agentClient;
+
+    @PostConstruct
+    void validateSessionLimit() {
+        if (maxSessionsPerUser < 1 || maxSessionsPerUser > 1000) {
+            throw new IllegalArgumentException("finsight.chat.max-sessions-per-user must be between 1 and 1000");
+        }
+    }
 
     @Transactional
     public ChatSession create(long userId) {
@@ -53,13 +63,13 @@ public class ChatSessionService {
         return sessionMapper.selectList(Wrappers.<ChatSession>lambdaQuery()
                         .eq(ChatSession::getUserId, userId)
                         .orderByDesc(ChatSession::getUpdatedAt)
-                        .last("LIMIT " + MAX_SESSIONS_PER_USER))
+                        .last("LIMIT " + maxSessionsPerUser))
                 .stream()
                 .map(this::toSummary)
                 .toList();
     }
 
-    /** 作品说明：校验归属：会话必须属于当前用户 */
+    /** 校验归属：会话必须属于当前用户 */
     public ChatSession requireOwned(long userId, String sessionUid) {
         ChatSession session = sessionMapper.selectOne(Wrappers.<ChatSession>lambdaQuery()
                 .eq(ChatSession::getSessionUid, sessionUid)
@@ -89,13 +99,13 @@ public class ChatSessionService {
         if (sessionMapper.activeTurns(session.getId()) > 0)
             throw new BizException(ErrorCode.CONFLICT, "会话任务仍在执行，请先停止并等待确认后删除");
         sessionMapper.deleteById(session.getId());
-        // 作品说明：消息物理删除（会话已软删，消息无单独保留价值）
+        // 消息物理删除（会话已软删，消息无单独保留价值）
         messageMapper.delete(Wrappers.<ChatMessage>lambdaQuery().eq(ChatMessage::getSessionId, session.getId()));
-        // 作品说明：异步清理 Python 侧图表文件
+        // 异步清理 Python 侧图表文件
         agentClient.deleteSessionCharts(sessionUid);
     }
 
-    /** 作品说明：向 Agent 传递会话正文与服务端保存的结构化对话状态。 */
+    /** 向 Agent 传递会话正文与服务端保存的结构化对话状态。 */
     public List<Map<String, Object>> buildHistory(long sessionId) {
         List<ChatMessage> recent = messageMapper.selectList(Wrappers.<ChatMessage>lambdaQuery()
                 .eq(ChatMessage::getSessionId, sessionId)
@@ -125,7 +135,7 @@ public class ChatSessionService {
     }
 
     /**
-     * 作品说明：一轮对话落库：用户消息 + 助手消息 + 会话统计，单事务保证一致性。
+     * 一轮对话落库：用户消息 + 助手消息 + 会话统计，单事务保证一致性。
      * 
      * @return 是否为该会话首轮（首轮触发异步标题生成）
      */
@@ -171,17 +181,17 @@ public class ChatSessionService {
         return title.length() > TITLE_LIMIT ? title.substring(0, TITLE_LIMIT) : title;
     }
 
-    /** 作品说明：超出上限时清理最久未活跃的会话 */
+    /** 超出上限时清理最久未活跃的会话 */
     private void prune(long userId) {
         Long count = sessionMapper.selectCount(Wrappers.<ChatSession>lambdaQuery()
                 .eq(ChatSession::getUserId, userId));
-        if (count == null || count < MAX_SESSIONS_PER_USER) {
+        if (count == null || count < maxSessionsPerUser) {
             return;
         }
         List<ChatSession> oldest = sessionMapper.selectList(Wrappers.<ChatSession>lambdaQuery()
                 .eq(ChatSession::getUserId, userId)
                 .orderByAsc(ChatSession::getUpdatedAt)
-                .last("LIMIT " + (count - MAX_SESSIONS_PER_USER + 1)));
+                .last("LIMIT " + (count - maxSessionsPerUser + 1)));
         for (ChatSession session : oldest) {
             if (sessionMapper.lockExisting(session.getId()) == null) continue;
             if (sessionMapper.activeTurns(session.getId()) > 0) continue;
