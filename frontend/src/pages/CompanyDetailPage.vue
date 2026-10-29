@@ -307,8 +307,8 @@ const metricCards = computed(() => {
   const core = detail.value?.latestCore ?? {};
   return [
     { label: "营业收入", value: fmtYi(core.revenue), delta: toNum(core.revenue_yoy) },
-    { label: "净利润", value: fmtYi(core.net_profit), delta: toNum(core.net_profit_yoy) },
-    { label: "扣非净利润", value: fmtYi(core.net_profit_excl), delta: toNum(core.net_profit_excl_yoy) },
+    { label: "归母净利润", value: fmtYi(core.net_profit), delta: toNum(core.net_profit_yoy) },
+    { label: "扣非归母净利润", value: fmtYi(core.net_profit_excl), delta: toNum(core.net_profit_excl_yoy) },
     { label: "ROE", value: fmtPct(core.roe), delta: null },
     { label: "毛利率", value: fmtPct(core.gross_profit_margin), delta: null },
     { label: "每股收益", value: core.eps == null ? "—" : `${core.eps} 元`, delta: null },
@@ -350,7 +350,7 @@ const profitOption = computed<EChartsOption>(() => {
         tooltip: { valueFormatter: fmtChartYi },
       },
       {
-        name: "净利润",
+        name: "归母净利润",
         type: "bar",
         data: rows.map((r) => toYi(r.net_profit)),
         barWidth: 26,
@@ -358,7 +358,7 @@ const profitOption = computed<EChartsOption>(() => {
         tooltip: { valueFormatter: fmtChartYi },
       },
       {
-        name: "净利润同比",
+        name: "归母净利润同比",
         type: "line",
         yAxisIndex: 1,
         smooth: true,
@@ -563,6 +563,9 @@ function askAi(question: string) {
       </section>
 
       <!-- 待入库 -->
+      <p v-if="detail.dataset?.experimental" class="pending" role="note">
+        试验财报库：部分数字尚未完成原件逐项核验，请在 AI 工作台结合原件和页码核对。
+      </p>
       <div v-if="!imported" class="pending" role="status">
         <strong>财务数据待入库</strong>
         <span>
@@ -641,27 +644,31 @@ function askAi(question: string) {
         <div v-else class="charts">
           <AppCard>
             <template #header>
-              <AppSection title="营收与净利润" description="柱：亿元 · 线：净利润同比（%）" dense />
+              <AppSection title="营收与归母净利润" description="合并口径 · 柱：亿元 · 线：归母净利润同比（%）" dense />
             </template>
-            <EChart :option="profitOption" height="300px" />
+            <EChart v-if="series.core.some(row => row.revenue != null || row.net_profit != null)" :option="profitOption" height="300px" />
+            <AppEmpty v-else title="暂无年报营收与归母净利润数据" />
           </AppCard>
           <AppCard>
             <template #header>
               <AppSection title="盈利能力" description="单位：%" dense />
             </template>
-            <EChart :option="marginOption" height="300px" />
+            <EChart v-if="series.core.some(row => row.roe != null || row.gross_profit_margin != null || row.net_profit_margin != null)" :option="marginOption" height="300px" />
+            <AppEmpty v-else title="暂无年报盈利能力数据" />
           </AppCard>
           <AppCard>
             <template #header>
               <AppSection title="资产负债结构" description="柱：亿元 · 线：资产负债率（%）" dense />
             </template>
-            <EChart :option="balanceOption" height="300px" />
+            <EChart v-if="series.balance.length" :option="balanceOption" height="300px" />
+            <AppEmpty v-else title="暂无年报资产负债数据" />
           </AppCard>
           <AppCard>
             <template #header>
               <AppSection title="现金流" description="单位：亿元" dense />
             </template>
-            <EChart :option="cashflowOption" height="300px" />
+            <EChart v-if="series.cashflow.length" :option="cashflowOption" height="300px" />
+            <AppEmpty v-else title="暂无年报现金流数据" />
           </AppCard>
         </div>
       </section>

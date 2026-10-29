@@ -24,6 +24,7 @@ export interface CompanyDetail {
   employees: number;
   latestCore: YearRow;
   coverage: YearRow[];
+  dataset?: DatasetInfo;
 }
 
 export interface CompanySeries {
@@ -48,4 +49,14 @@ export interface MarketSummary {
   yearlyAggregate: YearRow[];
   companyRank: YearRow[];
   hotCompanies: HotCompany[];
+  dataset?: DatasetInfo;
+}
+
+export interface DatasetInfo {
+  dataVersion: string;
+  experimental: boolean;
+  label: string;
+  companyCount: number;
+  reportCount: number;
+  sourceAuditComplete: boolean;
 }

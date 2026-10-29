@@ -181,6 +181,16 @@ async def internal_runtime():
     return {'version':3,'model':SCHEDULER.snapshot(),'worker_tasks':len(_task_manager.runners) if _task_manager else 0}
 
 
+@app.get('/internal/market/snapshot')
+def internal_market_snapshot():
+    from src.api.market import snapshot
+    try:
+        return snapshot(selected_repository(_get_health_engine()))
+    except Exception as exc:
+        logger.warning('Company snapshot unavailable: {}', type(exc).__name__)
+        raise HTTPException(status_code=503, detail='当前财报目录暂不可用，请稍后重试') from None
+
+
 def _health_item(ok: bool, detail: str) -> StatusItem:
     return StatusItem(ok=ok, detail=detail)
 

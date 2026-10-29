@@ -12,6 +12,22 @@ async function mount() {
   await settle(); return el;
 }
 describe('financial catalogue states', () => {
+  it('shows total companies, pagination and trial status from the selected catalogue', async () => {
+    api.fetchFinancialMaterials.mockResolvedValue({total:119,page:1,stats:{companyCount:10},
+      dataset:{label:'试验财报库',companyCount:10,reportCount:119,experimental:true},
+      records:[{stockCode:'300750',company:'宁德时代',reportYear:2025,reportPeriod:'FY',
+        status:'imported',experimental:true,pdfAvailable:true,fileName:'a'.repeat(64)+'.pdf',sha256:'hash',pageCount:200}]});
+    const el=await mount();
+    expect(el.querySelector('.toolbar__count')?.textContent).toContain('10 家公司');
+    expect(el.querySelector('.toolbar__count')?.textContent).toContain('119 份');
+    expect(el.querySelector('.toolbar__count')?.textContent).toContain('每页 12 份');
+    expect(el.querySelector('[role=note]')?.textContent).toContain('与公司页和 AI 问答使用同一资料范围');
+    expect(el.querySelector('.status')?.textContent).toBe('试验数据（待核验）');
+    expect(el.textContent).not.toContain('已完成结构化入库');
+    expect(el.querySelector('.card__file')?.textContent).toBe('宁德时代_2025年全年财报.pdf');
+    [...el.querySelectorAll('button')].find(b=>b.textContent==='下一页')!.click(); await settle();
+    expect(api.fetchFinancialMaterials).toHaveBeenLastCalledWith({page:2,size:12,keyword:''});
+  });
   it('renders returned company and PDF identity, and clearly reports original loading failure', async () => {
     api.fetchFinancialMaterials.mockResolvedValue({ total: 1, records: [{ company: '金花股份', stockCode: '600080', reportYear: 2023, reportPeriod: 'HY', fileName: '600080_20230819_U8CH.pdf', pageCount: 127, sha256: 'hash', pdfAvailable: true, status:'imported' }] });
     api.fetchFinancialPdf.mockRejectedValue(new Error('网络超时'));

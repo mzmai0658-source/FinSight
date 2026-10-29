@@ -231,7 +231,7 @@ const yearlyOption = computed<EChartsOption>(() => {
         tooltip: { valueFormatter: fmtChartYi },
       },
       {
-        name: "净利润合计",
+        name: "归母净利润合计",
         type: "bar",
         data: rows.map((r) => toYi(r.net_profit_sum)),
         barWidth: 22,
@@ -261,7 +261,7 @@ const rankOption = computed<EChartsOption>(() => {
       axisPointer: { type: "shadow" },
       valueFormatter: fmtChartYi,
     },
-    grid: { ...GRID_STYLE, top: 12 },
+    grid: { ...GRID_STYLE, top: 12, right: 36 },
     xAxis: {
       type: "value",
       splitNumber: 4,
@@ -311,6 +311,10 @@ function openCompany(code: string) {
     </AppCard>
 
     <template v-else-if="summary">
+      <p v-if="summary.dataset" class="market__dataset" role="note">
+        <strong>{{ summary.dataset.label }} · {{ summary.dataset.companyCount }} 家公司 · {{ summary.dataset.reportCount }} 份财报</strong>
+        <span>与 AI 问答使用同一资料范围。{{ summary.dataset.experimental ? '部分数字尚未完成原件逐项核验，请结合证据面板核对。' : '' }}</span>
+      </p>
       <!-- 概览 -->
       <section class="kpis" aria-label="数据概览">
         <div class="kpi">
@@ -340,18 +344,23 @@ function openCompany(code: string) {
         <AppCard>
           <template #header>
             <AppSection
-              title="营收排行"
+              title="营业收入排行"
               :description="`${summary.latestYear ?? ''} 年报 · 单位：亿元 · 点击柱条查看公司详情`"
               dense
             />
           </template>
-          <EChart :option="rankOption" height="340px" @click="onRankClick" />
+          <EChart v-if="summary.companyRank.length" :option="rankOption" height="340px" @click="onRankClick" />
+          <AppEmpty v-else title="暂无可展示的年报营业收入" description="当前资料可能仅覆盖季度报告，可前往 AI 工作台按报告期查询。" />
         </AppCard>
         <AppCard>
           <template #header>
-            <AppSection title="已入库公司年度合计" description="柱：亿元 · 线：平均 ROE（%）· 横轴下方为参与合计的公司数" dense />
+            <AppSection title="已入库公司年度合计" description="合并口径 · 柱：亿元 · 线：各公司加权 ROE 的均值（%）" dense />
           </template>
-          <EChart :option="yearlyOption" height="300px" />
+          <EChart v-if="yearRows.length" :option="yearlyOption" height="300px" />
+          <AppEmpty v-else title="暂无可展示的年度指标" description="缺失数据不计为零，也不以季度值代替年报值。" />
+          <p v-if="yearRows.length" class="market__coverage">
+            <span v-for="row in yearRows" :key="String(row.year)">{{ row.year }}：营收 {{ row.revenue_count ?? row.company_count }} 家 / 归母净利润 {{ row.net_profit_count ?? row.company_count }} 家 / ROE {{ row.roe_count ?? row.company_count }} 家</span>
+          </p>
           <p v-if="unevenYearCounts" class="market__note">
             <IconAlert :size="13" />
             各年参与合计的公司数不同（{{ yearCountNote }}），合计值不宜直接跨年比较。
@@ -491,6 +500,9 @@ function openCompany(code: string) {
 </template>
 
 <style scoped>
+.market__dataset { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 12px 16px; border: 1px solid var(--c-primary-border); border-radius: var(--r-md); background: var(--c-primary-soft); color: var(--c-text-secondary); font-size: var(--fs-sm); line-height: 1.7; }
+.market__dataset strong { color: var(--c-ink); }
+.market__coverage { display: flex; flex-direction: column; gap: 4px; color: var(--c-text-secondary); font-size: var(--fs-xs); line-height: 1.6; margin-top: var(--sp-3); }
 .reset-filters { border: 1px solid var(--c-primary-border); border-radius: var(--r-full); color: var(--c-primary); background: var(--c-surface); padding: 8px 16px; cursor: pointer; }
 .market__error {
   padding: var(--sp-6);

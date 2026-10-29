@@ -112,7 +112,8 @@ const scopeItems = computed(() => {
   const s = summary.value;
   return [
     { value: s.importedCompanies, unit: "家", label: "公司已结构化入库" },
-    { value: s.importedCompanies + s.pendingCompanies, unit: "家", label: "公司已收录" },
+    s.dataset ? { value: s.dataset.reportCount, unit: "份", label: "财报已收录" }
+      : { value: s.importedCompanies + s.pendingCompanies, unit: "家", label: "公司已收录" },
     { value: yearSpan.value ?? "—", unit: "", label: "年报年度" },
     { value: s.latestYear ?? "—", unit: "", label: "最新年报" },
   ];
@@ -198,7 +199,8 @@ function startChat(question: string) {
     <section v-if="scopeItems.length" class="scope" aria-label="当前数据范围">
       <div class="scope__intro">
         <strong>当前数据范围</strong>
-        <span>数字问答只覆盖已通过发布检查的公司与报告期</span>
+        <span v-if="summary?.dataset?.experimental">试验财报库：部分数字尚未完成原件逐项核验</span>
+        <span v-else>数字问答只覆盖已通过发布检查的公司与报告期</span>
       </div>
       <dl class="scope__items">
         <div v-for="item in scopeItems" :key="item.label" class="scope__item">

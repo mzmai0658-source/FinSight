@@ -31,6 +31,15 @@ public class AgentClient {
     @Value("${finsight.etl.request-timeout:2h}")
     private java.time.Duration etlRequestTimeout = java.time.Duration.ofHours(2);
 
+    /** Company views pin the same release and source policy as financial chat. */
+    public com.finsight.market.dto.MarketDtos.MarketSnapshot marketSnapshot() {
+        var result = agentWebClient.get().uri("/internal/market/snapshot").retrieve()
+                .bodyToMono(com.finsight.market.dto.MarketDtos.MarketSnapshot.class)
+                .block(java.time.Duration.ofSeconds(10));
+        if (result == null) throw new IllegalStateException("当前财报目录暂不可用");
+        return result;
+    }
+
     public Map<String, Object> financialCandidate(String candidateId) {
         return requireFinancialResponse(etlWebClient.get()
                 .uri("/internal/financial-submissions/{id}", candidateId).retrieve()

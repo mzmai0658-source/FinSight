@@ -15,6 +15,7 @@ import type {
   CompanyDetail,
   CompanyItem,
   CompanySeries,
+  DatasetInfo,
   HotCompany,
   MarketSummary,
 } from "@/types/market";
@@ -349,10 +350,20 @@ export interface FinancialMaterial {
   qualityWarnings?: string[];
   missingFields?: string[];
   pdfAvailable: boolean;
+  experimental?: boolean;
+  dataVersion?: string;
 }
 
-export async function fetchFinancialMaterials(params: { page?: number; size?: number; keyword?: string }): Promise<{ records: FinancialMaterial[]; total: number; page: number }> {
-  const { data } = await api.get<ApiEnvelope<{ records: FinancialMaterial[]; total: number; page: number }>>("/api/materials/financial", { params });
+export interface FinancialMaterialPage {
+  records: FinancialMaterial[];
+  total: number;
+  page: number;
+  stats?: { companyCount?: number };
+  dataset?: DatasetInfo;
+}
+
+export async function fetchFinancialMaterials(params: { page?: number; size?: number; keyword?: string }): Promise<FinancialMaterialPage> {
+  const { data } = await api.get<ApiEnvelope<FinancialMaterialPage>>("/api/materials/financial", { params });
   return unwrap(data);
 }
 

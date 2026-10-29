@@ -56,8 +56,7 @@ def publish_trial(engine, version, acceptance, *, validate_snapshot=None):
         conn.execute(pointer.insert().values(name='ocr_trial',version=version))
 
 
-def configured_trial_agent(engine):
-    """主项目可明确选择试验资料；未选择时仍保持严格来源策略。"""
+def _require_trial_profile(engine):
     import os
     from src.etl.submission_upgrade import DATABASE, PROFILE
     policy=os.getenv('FINSIGHT_DATA_PROFILE','').strip()
@@ -65,5 +64,16 @@ def configured_trial_agent(engine):
                 and engine.url.database==DATABASE)
     if os.getenv('FINSIGHT_OCR_TRIAL')!='true' or not (policy=='ocr-trial-v1' or legacy_lab):
         raise ValueError('OCR trial requires an explicit ocr-trial-v1 data profile and enabled trial policy')
+
+
+def configured_trial_repository(engine):
+    """校验显式资料策略；只读目录无需初始化云端模型。"""
+    _require_trial_profile(engine)
+    return TrialRepository(engine)
+
+
+def configured_trial_agent(engine):
+    """主项目可明确选择试验资料；未选择时仍保持严格来源策略。"""
+    _require_trial_profile(engine)
     from src.agent.v3.published_agent import PublishedAgent
     return PublishedAgent(engine,repository_factory=TrialRepository)

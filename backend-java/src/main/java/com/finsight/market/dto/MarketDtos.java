@@ -30,7 +30,8 @@ public final class MarketDtos {
             String regCapital,
             Integer employees,
             Map<String, Object> latestCore,
-            List<Map<String, Object>> coverage) {
+            List<Map<String, Object>> coverage,
+            DatasetInfo dataset) {
     }
 
     /** 图表序列：core/balance/cashflow 三组年度数据 */
@@ -53,6 +54,14 @@ public final class MarketDtos {
             List<Map<String, Object>> industryDistribution,
             List<Map<String, Object>> yearlyAggregate,
             List<Map<String, Object>> companyRank,
-            List<HotCompany> hotCompanies) {
+            List<HotCompany> hotCompanies,
+            DatasetInfo dataset) {
     }
+
+    public record DatasetInfo(String dataVersion, boolean experimental, String label,
+                              int reportCount, int companyCount, boolean sourceAuditComplete) {}
+
+    public record MarketSnapshot(List<CompanyItem> companies, MarketSummary summary,
+                                 Map<String, CompanyDetail> details, Map<String, CompanySeries> series,
+                                 List<Map<String, String>> examples) {}
 }

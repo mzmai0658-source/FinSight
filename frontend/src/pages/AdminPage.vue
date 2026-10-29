@@ -6,6 +6,7 @@ import AppButton from "@/components/ui/AppButton.vue";
 import AppCard from "@/components/ui/AppCard.vue";
 import AppEmpty from "@/components/ui/AppEmpty.vue";
 import AppSection from "@/components/ui/AppSection.vue";
+import AppSkeleton from "@/components/ui/AppSkeleton.vue";
 import PortalNav from "@/components/market/PortalNav.vue";
 import {
   IconAlert,
@@ -119,6 +120,8 @@ const tasks = ref<EtlTaskItem[]>([]);
 const taskTotal = ref(0);
 const taskPage = ref(1);
 const taskStats = ref<Record<string, number>>({});
+const tasksLoading = ref(false), taskError = ref("");
+let taskRequest = 0;
 const uploading = ref(false);
 const retryingTask = ref<number | null>(null);
 const uploadMessage = ref("");
@@ -136,14 +139,21 @@ const fileInput = ref<HTMLInputElement | null>(null);
 let taskTimer: number | null = null;
 
 async function loadTasks() {
-  const result = await fetchEtlTasks({ page: taskPage.value, size: 10 });
-  tasks.value = result.records;
-  taskTotal.value = result.total;
-  taskStats.value = (result.stats as Record<string, number>) ?? {};
-  const active = tasks.value.some((t) => t.status === "PENDING" || t.status === "RUNNING");
+  const request = ++taskRequest;
+  tasksLoading.value = true; taskError.value = "";
   stopTaskPoll();
-  if (active) {
-    taskTimer = window.setTimeout(() => void loadTasks(), 5000);
+  try {
+    const result = await fetchEtlTasks({ page: taskPage.value, size: 10 });
+    if (request !== taskRequest) return;
+    tasks.value = result.records;
+    taskTotal.value = result.total;
+    taskStats.value = (result.stats as Record<string, number>) ?? {};
+    if (tasks.value.some((t) => t.status === "PENDING" || t.status === "RUNNING"))
+      taskTimer = window.setTimeout(() => void loadTasks(), 5000);
+  } catch {
+    if (request === taskRequest) taskError.value = "任务加载失败，请重试。";
+  } finally {
+    if (request === taskRequest) tasksLoading.value = false;
   }
 }
 
@@ -154,7 +164,10 @@ function stopTaskPoll() {
   }
 }
 
-onBeforeUnmount(stopTaskPoll);
+onBeforeUnmount(() => {
+  taskRequest += 1; userRequest += 1; logRequest += 1;
+  stopTaskPoll();
+});
 
 async function onUpload(event: Event) {
   const input = event.target as HTMLInputElement;
@@ -195,20 +208,32 @@ const users = ref<AdminUserItem[]>([]);
 const userTotal = ref(0);
 const userPage = ref(1);
 const userKeyword = ref("");
+const usersLoading = ref(false), userError = ref("");
+const changingUser = ref<number|null>(null);
+let userRequest = 0;
 
 async function loadUsers() {
-  const result = await fetchAdminUsers({
-    page: userPage.value,
-    size: 10,
-    keyword: userKeyword.value || undefined,
-  });
-  users.value = result.records;
-  userTotal.value = result.total;
+  const request = ++userRequest;
+  usersLoading.value = true; userError.value = "";
+  try {
+    const result = await fetchAdminUsers({page:userPage.value,size:10,keyword:userKeyword.value || undefined});
+    if (request !== userRequest) return;
+    users.value = result.records; userTotal.value = result.total;
+  } catch {
+    if (request === userRequest) userError.value = "用户列表加载失败，请重试。";
+  } finally {
+    if (request === userRequest) usersLoading.value = false;
+  }
 }
 
 async function toggleUser(user: AdminUserItem) {
-  await updateUserStatus(user.id, user.status === 1 ? 0 : 1);
-  user.status = user.status === 1 ? 0 : 1;
+  if (changingUser.value !== null) return;
+  changingUser.value = user.id; userError.value = "";
+  try {
+    await updateUserStatus(user.id, user.status === 1 ? 0 : 1);
+    user.status = user.status === 1 ? 0 : 1;
+  } catch { userError.value = "用户状态更新失败，请重试。"; }
+  finally { changingUser.value = null; }
 }
 
 /* 审计日志 */
@@ -216,11 +241,21 @@ async function toggleUser(user: AdminUserItem) {
 const logs = ref<ChatLogItem[]>([]);
 const logTotal = ref(0);
 const logPage = ref(1);
+const logsLoading = ref(false), logError = ref("");
+let logRequest = 0;
 
 async function loadLogs() {
-  const result = await fetchAdminChatLogs(logPage.value, 12);
-  logs.value = result.records;
-  logTotal.value = result.total;
+  const request = ++logRequest;
+  logsLoading.value = true; logError.value = "";
+  try {
+    const result = await fetchAdminChatLogs(logPage.value, 12);
+    if (request !== logRequest) return;
+    logs.value = result.records; logTotal.value = result.total;
+  } catch {
+    if (request === logRequest) logError.value = "审计日志加载失败，请重试。";
+  } finally {
+    if (request === logRequest) logsLoading.value = false;
+  }
 }
 
 /* tab 切换加载 */
@@ -441,7 +476,9 @@ const badgeVariant = (status: string) => {
               <AppButton variant="outline" size="sm" @click="loadTasks">刷新</AppButton>
             </div>
           </template>
-          <div class="admin__table-wrap">
+          <div v-if="taskError" class="admin__load-error" role="alert">{{ taskError }}<AppButton size="sm" variant="outline" @click="loadTasks">重新加载</AppButton></div>
+          <AppSkeleton v-if="tasksLoading && !tasks.length" :lines="3" />
+          <div v-else class="admin__table-wrap">
             <table class="admin__table">
               <thead>
                 <tr><th>#</th><th>文件</th><th>类型</th><th>状态</th><th>结果</th><th>时间</th></tr>
@@ -463,7 +500,7 @@ const badgeVariant = (status: string) => {
                   </td>
                   <td class="mono admin__time">{{ task.createdAt?.replace("T", " ").slice(0, 16) }}</td>
                 </tr>
-                <tr v-if="!tasks.length">
+                <tr v-if="!tasks.length && !taskError">
                   <td colspan="6">
                     <AppEmpty title="暂无任务" />
                   </td>
@@ -472,9 +509,9 @@ const badgeVariant = (status: string) => {
             </table>
           </div>
           <div v-if="taskTotal > 10" class="admin__pager">
-            <AppButton variant="outline" size="sm" :disabled="taskPage <= 1" @click="taskPage -= 1">上一页</AppButton>
+            <AppButton variant="outline" size="sm" :disabled="taskPage <= 1 || tasksLoading" @click="taskPage -= 1">上一页</AppButton>
             <span class="mono">{{ taskPage }}</span>
-            <AppButton variant="outline" size="sm" :disabled="taskPage * 10 >= taskTotal" @click="taskPage += 1">下一页</AppButton>
+            <AppButton variant="outline" size="sm" :disabled="taskPage * 10 >= taskTotal || tasksLoading" @click="taskPage += 1">下一页</AppButton>
           </div>
         </AppCard>
       </section>
@@ -493,7 +530,9 @@ const badgeVariant = (status: string) => {
               />
             </div>
           </template>
-          <div class="admin__table-wrap">
+          <div v-if="userError" class="admin__load-error" role="alert">{{ userError }}<AppButton size="sm" variant="outline" @click="loadUsers">重新加载</AppButton></div>
+          <AppSkeleton v-if="usersLoading && !users.length" :lines="3" />
+          <div v-else class="admin__table-wrap">
             <table class="admin__table">
               <thead>
                 <tr><th>#</th><th>用户名</th><th>昵称</th><th>角色</th><th>风险偏好</th><th>状态</th><th>注册时间</th><th></th></tr>
@@ -514,21 +553,21 @@ const badgeVariant = (status: string) => {
                   </td>
                   <td class="mono admin__time">{{ user.createdAt?.replace("T", " ").slice(0, 16) }}</td>
                   <td>
-                    <button v-if="user.role !== 'ADMIN'" type="button" class="link-btn" @click="toggleUser(user)">
+                    <button v-if="user.role !== 'ADMIN'" type="button" class="link-btn" :disabled="changingUser !== null" @click="toggleUser(user)">
                       {{ user.status === 1 ? "禁用" : "启用" }}
                     </button>
                   </td>
                 </tr>
-                <tr v-if="!users.length">
+                <tr v-if="!users.length && !userError">
                   <td colspan="8"><AppEmpty title="暂无用户" /></td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div v-if="userTotal > 10" class="admin__pager">
-            <AppButton variant="outline" size="sm" :disabled="userPage <= 1" @click="userPage -= 1">上一页</AppButton>
+            <AppButton variant="outline" size="sm" :disabled="userPage <= 1 || usersLoading" @click="userPage -= 1">上一页</AppButton>
             <span class="mono">{{ userPage }}</span>
-            <AppButton variant="outline" size="sm" :disabled="userPage * 10 >= userTotal" @click="userPage += 1">下一页</AppButton>
+            <AppButton variant="outline" size="sm" :disabled="userPage * 10 >= userTotal || usersLoading" @click="userPage += 1">下一页</AppButton>
           </div>
         </AppCard>
       </section>
@@ -539,7 +578,9 @@ const badgeVariant = (status: string) => {
           <template #header>
             <AppSection title="对话审计" :description="`MQ 异步落库，共 ${logTotal} 条`" dense />
           </template>
-          <div class="admin__table-wrap">
+          <div v-if="logError" class="admin__load-error" role="alert">{{ logError }}<AppButton size="sm" variant="outline" @click="loadLogs">重新加载</AppButton></div>
+          <AppSkeleton v-if="logsLoading && !logs.length" :lines="3" />
+          <div v-else class="admin__table-wrap">
             <table class="admin__table">
               <thead>
                 <tr><th>#</th><th>用户</th><th>问题</th><th>状态</th><th>耗时</th><th>traceId</th><th>时间</th></tr>
@@ -553,19 +594,19 @@ const badgeVariant = (status: string) => {
                     <AppBadge :variant="badgeVariant(item.status)">{{ item.status }}</AppBadge>
                   </td>
                   <td class="mono">{{ (item.durationMs / 1000).toFixed(1) }}s</td>
-                  <td class="mono admin__trace" :title="item.requestId">{{ item.requestId.slice(0, 8) }}</td>
+                  <td class="mono admin__trace" :title="item.requestId">{{ item.requestId?.slice(0, 8) || '—' }}</td>
                   <td class="mono admin__time">{{ item.createdAt?.replace("T", " ").slice(0, 16) }}</td>
                 </tr>
-                <tr v-if="!logs.length">
+                <tr v-if="!logs.length && !logError">
                   <td colspan="7"><AppEmpty title="暂无审计日志" /></td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div v-if="logTotal > 12" class="admin__pager">
-            <AppButton variant="outline" size="sm" :disabled="logPage <= 1" @click="logPage -= 1">上一页</AppButton>
+            <AppButton variant="outline" size="sm" :disabled="logPage <= 1 || logsLoading" @click="logPage -= 1">上一页</AppButton>
             <span class="mono">{{ logPage }}</span>
-            <AppButton variant="outline" size="sm" :disabled="logPage * 12 >= logTotal" @click="logPage += 1">下一页</AppButton>
+            <AppButton variant="outline" size="sm" :disabled="logPage * 12 >= logTotal || logsLoading" @click="logPage += 1">下一页</AppButton>
           </div>
         </AppCard>
       </section>
@@ -574,6 +615,7 @@ const badgeVariant = (status: string) => {
 </template>
 
 <style scoped>
+.admin__load-error { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 12px 0; color: var(--c-danger); font-size: var(--fs-sm); }
 .admin {
   min-height: 100%;
   background: var(--c-bg);

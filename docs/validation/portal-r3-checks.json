@@ -1,0 +1,65 @@
+{
+  "release_id": "FinSight-AIC-2026-96123955-r3",
+  "verified_date": "2026-10-29",
+  "report_scope": {
+    "companies": 10,
+    "reports": 119,
+    "years": [
+      2023,
+      2024,
+      2025
+    ]
+  },
+  "data_version": "caaa851bfac89f33498e0c8c4569582214a048b45c05dc49a173090889202b6a",
+  "experimental": true,
+  "source_audit_complete": false,
+  "all_original_sha256_match": 119,
+  "local_tests": {
+    "python_passed": 1707,
+    "python_skipped": 10,
+    "java_passed": 142,
+    "frontend_passed": 81,
+    "frontend_build": "passed"
+  },
+  "browser_checks": {
+    "company_catalogue": true,
+    "annual_charts": true,
+    "financial_library_search_pagination": true,
+    "new_company_pdf": true,
+    "largest_pdf_bytes": 21957373,
+    "largest_pdf_sha256_matches": true,
+    "watchlist_name_and_annual_metrics": true,
+    "temporary_watchlist_change_restored": true,
+    "not_found_return_link": true,
+    "admin_errors_and_retry": true,
+    "mobile_320px_upload": true,
+    "page_errors": 0,
+    "missing_component_warnings": 0
+  },
+  "qa_generation_rerun": false,
+  "historical_score_preserved": "64/88",
+  "new_human_financial_audit": false,
+  "credentials_sessions_paid_responses_included": false,
+  "r3_restored_profile_checks": [
+    {
+      "profile": "minimal",
+      "reports": 3,
+      "companies": 3,
+      "selected_version_consistent": true,
+      "annual_data_available": false,
+      "minimal_originals_checked": 3,
+      "model_generation_called": false,
+      "ocr_or_embeddings_rebuilt": false
+    },
+    {
+      "profile": "full",
+      "reports": 119,
+      "companies": 10,
+      "selected_version_consistent": true,
+      "annual_data_available": true,
+      "minimal_originals_checked": 0,
+      "model_generation_called": false,
+      "ocr_or_embeddings_rebuilt": false
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # 当前版本安装、运行与恢复
 
-版本：FinSight-AIC-2026-96123955-r1。已验证平台为Windows，Python3.11；前端使用Node/npm，后端使用JDK（目标17）和Maven。MySQL、Redis、RabbitMQ由使用者安装。云端生成、OCR和向量需各自有效账号，可能计费。不能只下载源码就获得真实财报库。首次复核可先使用[最小复现](MINIMAL_REPRODUCTION.md)的3份严格资料；完整119份试验库另行恢复。
+版本：FinSight-AIC-2026-96123955-r3。已验证平台为Windows，Python3.11；前端使用Node/npm，后端使用JDK（目标17）和Maven。MySQL、Redis、RabbitMQ由使用者安装。云端生成、OCR和向量需各自有效账号，可能计费。不能只下载源码就获得真实财报库。首次复核可先使用[最小复现](MINIMAL_REPRODUCTION.md)的3份严格资料；完整119份试验库另行恢复。
 
 ## 1. 安装源码依赖
 
@@ -40,6 +40,8 @@ restore要求数据库不存在、目标Chroma目录为空；不会删除已有�
 
 使用当前试验库须显式设置FINSIGHT_DATA_PROFILE=ocr-trial-v1及FINSIGHT_OCR_TRIAL=true，并保留未完整核验提示。关闭试验开关时读取同库严格serving；这与历史117库切换无关。首次使用原件上传重建而非快照恢复时，走网页上传、PaddleOCR、候选审核和管理员发布；OCR结果不确定先对账，避免重复付费提交。
 
+公司页、资料库、原件下载、关注列表和示例问题均遵循Python的同一资料选择。完整试验库正常显示10家公司、119份报告和2023—2025年度指标；关闭试验开关后的严格最小库只有3份季度报告，年报图应显示缺项说明。目录不可用时明确报错，不回退旧表掩盖范围差异。资料库每页12份，搜索和分页不会改变完整目录统计。
+
 ## 3. 启动服务
 
 先启动并配置MySQL、Redis、RabbitMQ。可在三个PowerShell5.1终端分别运行；路径带空格时保留引号。各窗口先进入相同项目目录。
@@ -60,7 +62,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-frontend.ps1 -
 & '.venv/Scripts/python.exe' -B -X utf8 scripts/preflight.py --env .env
 ```
 
-浏览器打开http://127.0.0.1:5173，注册普通用户或使用私有管理员配置。管理员登录入口与普通用户分别鉴权。录屏请按照[演示指南](VIDEO_GUIDE.md)操作。PowerShell7用户可选start-finsight.ps1统一入口；没有pwsh时直接使用上面三个终端，不需要为了看页面安装本地问答模型。
+浏览器打开http://127.0.0.1:5173，注册普通用户或使用私有管理员配置。管理员登录入口与普通用户分别鉴权。基础验证按照[最小复现说明](MINIMAL_REPRODUCTION.md)操作。PowerShell7用户可选start-finsight.ps1统一入口；没有pwsh时直接使用上面三个终端，不需要为了看页面安装本地问答模型。
 
 ## 4. 停止、恢复与排查
 

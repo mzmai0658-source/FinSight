@@ -54,3 +54,18 @@ it("keeps the followed company visible if removal fails", async () => {
   expect(root.textContent).toContain("取消关注失败");
   expect(root.querySelector(".watch__name")?.textContent).toContain("金花股份");
 });
+
+it("shows selected annual metrics and trial scope, while retaining uncovered followed codes", async () => {
+  api.fetchNotifications.mockResolvedValue({records:[],total:0});
+  api.fetchWatchlist.mockResolvedValue([
+    {stockCode:'300750',abbr:'宁德时代',lastYear:2025,revenue:'42370183.4',netProfit:'7220128.2',roe:'24.91',experimental:true,dataStatus:'imported'},
+    {stockCode:'999999',abbr:'999999',dataStatus:'unavailable',revenue:null,netProfit:null},
+  ]);
+  const root=await mount();
+  expect(root.querySelector('[role=note]')?.textContent).toContain('部分数字尚未完成原件核验');
+  expect(root.textContent).toContain('2025 年报');
+  expect(root.textContent).toContain('4237.02 亿');
+  expect(root.textContent).toContain('归母净利润');
+  expect(root.textContent).toContain('当前资料库未覆盖');
+  expect(root.querySelector('a[href="/market/999999"]')).toBeNull();
+});

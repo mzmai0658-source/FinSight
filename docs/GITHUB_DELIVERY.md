@@ -1,8 +1,8 @@
 # AIC-2026-96123955 GitHub交付范围
 
-作品：FinSight财报证据助手；团队：凌云队；版本：FinSight-AIC-2026-96123955-r1。
+作品：FinSight财报证据助手；团队：凌云队；版本：FinSight-AIC-2026-96123955-r3。
 
-本次成果入口为[提交分支](https://github.com/mzmai0658-source/FinSight/tree/codex/aic-96123955-final)。本地交付回执记录发布后的完整提交SHA和固定链接；复核时使用该提交，不把main分支的历史版本当本次成果。
+本次成果入口为[仓库默认分支](https://github.com/mzmai0658-source/FinSight)及[发布分支](https://github.com/mzmai0658-source/FinSight/tree/codex/aic-96123955-final)。本地交付回执记录发布后的完整提交SHA、文件树和固定链接；复核时使用固定提交与同批RELEASE_MANIFEST.json，避免后续分支变化影响身份。
 
 公开内容包括自研源码、类型、依赖锁、测试、运行说明、技术报告Markdown及PDF、作品简介、第三方资源清单、AI辅助披露、演示数字核验表和最小复现说明。RELEASE_MANIFEST.json逐文件记录SHA-256；检查命令见SUBMISSION_VERIFICATION.md。
 
@@ -11,3 +11,5 @@
 不发布私有配置、API密钥、密码、测试账号、私人会话、完整付费模型请求响应、缓存、数据库用户表或本机日志。资源范围与许可见THIRD_PARTY.md及RESOURCE_REVIEW.md；Apache-2.0不扩展到第三方报告、模型、框架或云端条款。
 
 当前工程成绩仍为64/88。本次原件核对、入口回归和最小安装检查单列，不增加准确率分子或掩盖失败。团队成员与分工按提供的信息记录；视频、报名系统提交和真实用户试用不因GitHub发布而视为完成。
+
+本r3同步公司目录、资料库、关注列表和页面可用性修复及其回归测试。团队拍摄稿、提词器和报名操作说明留在本地交付目录，不纳入公开评审源码。

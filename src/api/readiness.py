@@ -9,8 +9,8 @@ from src.agent.cloud_protocol import tls_context,status_reason
 def selected_repository(engine):
     """就绪检查与问答使用同一显式资料策略，不以严格小库代替试验库验收。"""
     if os.getenv('FINSIGHT_OCR_TRIAL')=='true':
-        from src.etl.ocr_trial import configured_trial_agent
-        return configured_trial_agent(engine).repository_factory(engine)
+        from src.etl.ocr_trial import configured_trial_repository
+        return configured_trial_repository(engine)
     from src.agent.v3.repository import CanonicalRepository
     return CanonicalRepository(engine)
 

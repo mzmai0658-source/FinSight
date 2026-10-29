@@ -65,10 +65,11 @@ export interface WatchlistItem {
   industry: string | null;
   dataStatus: string | null;
   lastYear: number | null;
-  revenue: number | null;
-  netProfit: number | null;
-  netProfitYoy: number | null;
-  roe: number | null;
+  revenue: number | string | null;
+  netProfit: number | string | null;
+  netProfitYoy: number | string | null;
+  roe: number | string | null;
+  experimental?: boolean;
   createdAt: string;
 }
 

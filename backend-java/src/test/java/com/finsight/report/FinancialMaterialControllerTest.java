@@ -17,6 +17,25 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FinancialMaterialControllerTest {
+    @Test void supportsSelectedReportsLargerThanTheSharedEightMiBLimit() throws Exception {
+        login();
+        byte[] pdf = new byte[10 * 1024 * 1024];
+        System.arraycopy("%PDF-1.7".getBytes(StandardCharsets.US_ASCII), 0, pdf, 0, 8);
+        var server = com.sun.net.httpserver.HttpServer.create(new java.net.InetSocketAddress("127.0.0.1",0),0);
+        server.createContext("/internal/materials/financial/601668/2025/FY/file", exchange -> {
+            exchange.getResponseHeaders().set("Content-Type", "application/pdf");
+            exchange.sendResponseHeaders(200,pdf.length);
+            try (var output = exchange.getResponseBody()) { output.write(pdf); }
+        });
+        server.start();
+        try {
+            var client = WebClient.builder().baseUrl("http://127.0.0.1:"+server.getAddress().getPort())
+                    .codecs(c -> c.defaultCodecs().maxInMemorySize(8 * 1024 * 1024)).build();
+            var result = new FinancialMaterialController(client).file("601668", 2025, "FY");
+            assertArrayEquals(pdf, result.getBody());
+            assertEquals(pdf.length, result.getHeaders().getContentLength());
+        } finally { server.stop(0); }
+    }
     @AfterEach void clear() { SecurityContextHolder.clearContext(); }
     void login() {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(

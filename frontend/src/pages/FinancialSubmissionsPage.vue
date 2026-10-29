@@ -228,8 +228,8 @@ onBeforeUnmount(() => { destroyed = true; listGeneration += 1; detailGeneration 
 <style scoped>
 h2 { font-size: var(--fs-lg); color: var(--c-ink); } p { font-size: var(--fs-sm); line-height: 1.7; color: var(--c-text-secondary); }
 .submissions__upload form { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: var(--sp-4); }
-.submissions__upload form > div { grid-column: 1 / -1; } .submissions__upload label { display: grid; gap: var(--sp-2); font-size: var(--fs-sm); color: var(--c-text-secondary); }
-.submissions__upload input { display: block; max-width: 100%; font-size: var(--fs-sm); padding: var(--sp-3); background: var(--c-bg); border: 1px solid var(--c-border); border-radius: var(--r-md); }
+.submissions__upload form > div { grid-column: 1 / -1; } .submissions__upload label { display: grid; min-width: 0; gap: var(--sp-2); font-size: var(--fs-sm); color: var(--c-text-secondary); }
+.submissions__upload input { display: block; box-sizing: border-box; width: 100%; min-width: 0; max-width: 100%; font-size: var(--fs-sm); padding: var(--sp-3); background: var(--c-bg); border: 1px solid var(--c-border); border-radius: var(--r-md); }
 .submissions__filename { display: none; } .submissions__toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--sp-4); }
 .submissions__toolbar > div { flex: 1 1 320px; } .submissions__records { display: grid; gap: var(--sp-4); }
 .submissions__filter { display: flex; align-items: center; flex-wrap: wrap; gap: var(--sp-2); font-size: var(--fs-sm); color: var(--c-text-secondary); }

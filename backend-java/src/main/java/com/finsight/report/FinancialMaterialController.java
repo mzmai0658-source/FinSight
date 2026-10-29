@@ -57,13 +57,16 @@ public class FinancialMaterialController {
         if(!code.matches("\\d{6}") || year<1900 || year>2200 || !period.matches("FY|HY|Q1|Q3")) throw new BizException(ErrorCode.NOT_FOUND);
         ResponseEntity<byte[]> response;
         try {
-            response=agentWebClient.get().uri("/internal/materials/financial/{code}/{year}/{period}/file",code,year,period)
+            // The selected 119-report corpus includes PDFs larger than the shared 8 MiB JSON limit.
+            // Bound this PDF request separately; leave other client response limits unchanged.
+            response=agentWebClient.mutate()
+                    .codecs(config -> config.defaultCodecs().maxInMemorySize(32 * 1024 * 1024)).build()
+                    .get().uri("/internal/materials/financial/{code}/{year}/{period}/file",code,year,period)
                     .retrieve().toEntity(byte[].class).block(Duration.ofSeconds(30));
         } catch(WebClientResponseException.NotFound e) {
             throw new BizException(ErrorCode.NOT_FOUND,"原件缺失或版本已变化，请重新导入");
         }
         if(response==null || response.getBody()==null) throw new BizException(ErrorCode.AGENT_UNAVAILABLE);
-        // 当前 117 份原件在 WebClient 的 8 MiB 缓冲上限内。
         // 在 MVC 提交 PDF 响应头之前，先完成下载与内容校验。
         // 响应式缓冲区不直接写入 Servlet 流，避免两类响应生命周期混用。
         byte[] body=response.getBody();

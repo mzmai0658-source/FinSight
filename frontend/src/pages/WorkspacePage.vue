@@ -334,7 +334,7 @@ function retryMessage(messageIndex: number) {
               <div class="ws__welcome-label">试试这样问</div>
               <div class="ws__welcome-actions">
                 <button
-                  v-for="example in examplesStore.examples.slice(0, 2)"
+                  v-for="example in examplesStore.examples.slice(0, 4)"
                   :key="example.id"
                   type="button"
                   class="ws__welcome-action"
@@ -805,7 +805,7 @@ function retryMessage(messageIndex: number) {
 .ws__welcome-actions {
   margin-top: var(--sp-2);
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
   gap: var(--sp-3);
 }
 

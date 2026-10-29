@@ -28,6 +28,7 @@ export const GRID_STYLE = { left: 12, right: 18, top: 54, bottom: 10, containLab
 
 /** 万元 → 亿元（保留 2 位） */
 export function toYi(value: unknown): number | null {
+  if (value == null || value === "") return null;
   const num = Number(value);
   if (!Number.isFinite(num)) return null;
   return Math.round((num / 10000) * 100) / 100;
@@ -35,6 +36,7 @@ export function toYi(value: unknown): number | null {
 
 /** 数字安全转换（null 保留为 null，断点不连线） */
 export function toNum(value: unknown): number | null {
+  if (value == null || value === "") return null;
   const num = Number(value);
   return Number.isFinite(num) ? Math.round(num * 100) / 100 : null;
 }
@@ -45,6 +47,7 @@ export function fmtYi(value: unknown): string {
 }
 
 export function fmtPct(value: unknown): string {
+  if (value == null || value === "") return "—";
   const num = Number(value);
   return Number.isFinite(num) ? `${num.toFixed(2)}%` : "—";
 }
@@ -60,11 +63,13 @@ export function fmtTimes(value: unknown): string {
 }
 
 export function fmtChartYi(value: unknown): string {
+  if (value == null || value === "") return "—";
   const num = Number(value);
   return Number.isFinite(num) ? `${num.toLocaleString("zh-CN", { maximumFractionDigits: 2 })} 亿元` : "—";
 }
 
 export function fmtChartPct(value: unknown): string {
+  if (value == null || value === "") return "—";
   const num = Number(value);
   return Number.isFinite(num) ? `${num.toLocaleString("zh-CN", { maximumFractionDigits: 2 })}%` : "—";
 }
